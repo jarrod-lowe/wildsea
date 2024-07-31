@@ -1,2 +1,3 @@
-# wildsea
+# Wildsea
+
 Wildsea companion app
