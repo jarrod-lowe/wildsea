@@ -7,11 +7,11 @@ Wildsea companion app
 To set up a github repository:
 
 * Log into Codacy, and connect the repo
+  * Configure the rule to maximum
 * Create a branch restriction rule called "main":
   * Enforcement: Active
   * Target Branches: Include default branch
   * Tick Restrict creations
-  * Tick Restrict updates
   * Tick Restrict deletions
   * Tick Require linear history
   * Tick Require a pull request before merging
