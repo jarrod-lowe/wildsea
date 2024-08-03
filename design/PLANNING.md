@@ -43,7 +43,7 @@ in any game could be the firefly (GM) or a player with a player character.
 
 A user has the following properties:
 
-*   A name
+* A name
 
 A user will be linked to a Cognito login.
 
@@ -51,14 +51,14 @@ A user will be linked to a Cognito login.
 
 A game has a few properties and linkages:
 
-*   A name
-*   A description
-*   Public Notes (readable by players and the firefly)
-*   Private Notes (readable only by the firefly)
-*   A Firefly User (a user object)
-*   A number of player users, each with a player sheet
-*   A ship sheet
-*   A number of clocks
+* A name
+* A description
+* Public Notes (readable by players and the firefly)
+* Private Notes (readable only by the firefly)
+* A Firefly User (a user object)
+* A number of player users, each with a player sheet
+* A ship sheet
+* A number of clocks
 
 ### Player Sheet
 
@@ -68,50 +68,50 @@ players in the game can read the player sheet - except where noted.
 
 A player sheet as a number of properties and linkages:
 
-*   A User who owns the sheet
-*   The game the player sheet is in
-*   A character name
-*   Pronouns
-*   A Bloodline
-*   An Origin
-*   A Post
-*   Public Notes
-*   Private Notes (not visible to other players in the game)
-*   Secret Notes (not visible to other players in the game, or the firefly of the game)
-*   Firefly Notes (not visible to any players in the game - just for the firefly)
-*   0+ Milestones, each of which has:
-    *   A Type: Major or Minor
-    *   A Description
-*   A number of Drives (each of which is free-form text)
-*   A number of Mires, each of which has:
-    *   A Description
-    *   Notes
-    *   A 2-level
-*   A list of Edges, containing:
-    *   A name
-    *   A description
-*   A list of skills, containing:
-    *   A name
-    *   A description
-    *   A 3-level
-*   A list of languages, containing:
-    *   A name
-    *   A description
-    *   A 3-level
-*   0+ Resources, containing:
-    *   A Type: Salvage, Specimens, Whispers, or Charts
-    *   A description
-    *   A number of tags
-*   A number of aspects, containing:
-    *   A name
-    *   A Type: Trait, Gear, or Companion
-    *   A track, of a configurable length
-    *   A description
-*   A number of Temporary Tracks, containing:
-    *   A name
-    *   A Type; Benefit, Injury, or Track
-    *   A track, of a configurable length
-    *   A description
+* A User who owns the sheet
+* The game the player sheet is in
+* A character name
+* Pronouns
+* A Bloodline
+* An Origin
+* A Post
+* Public Notes
+* Private Notes (not visible to other players in the game)
+* Secret Notes (not visible to other players in the game, or the firefly of the game)
+* Firefly Notes (not visible to any players in the game - just for the firefly)
+* 0+ Milestones, each of which has:
+  * A Type: Major or Minor
+  * A Description
+* A number of Drives (each of which is free-form text)
+* A number of Mires, each of which has:
+  * A Description
+  * Notes
+  * A 2-level
+* A list of Edges, containing:
+  * A name
+  * A description
+* A list of skills, containing:
+  * A name
+  * A description
+  * A 3-level
+* A list of languages, containing:
+  * A name
+  * A description
+  * A 3-level
+* 0+ Resources, containing:
+  * A Type: Salvage, Specimens, Whispers, or Charts
+  * A description
+  * A number of tags
+* A number of aspects, containing:
+  * A name
+  * A Type: Trait, Gear, or Companion
+  * A track, of a configurable length
+  * A description
+* A number of Temporary Tracks, containing:
+  * A name
+  * A Type; Benefit, Injury, or Track
+  * A track, of a configurable length
+  * A description
 
 ### Ship Sheet
 
@@ -121,50 +121,50 @@ where noted.
 
 A ship sheet has a number of properties and linkages:
 
-*   A name
-*   Public Notes
-*   GM Notes (readable and writeable only by the firefly for the game)
-*   A set of conditions (e.g; Damaged, Pretty)
-*   Stakes Used (an int) and Stakes Total (an int)
-*   A set of six ratings, containing:
-    *   A name, from a pre-defined list
-    *   A 6-track
-*   The Design, with:
-    *   Size
-    *   Frame
-    *   Hull
-    *   Bite
-    *   Engine
-*   Fittings, with:
-    *   0+ Motifs
-    *   0+ Additions
-    *   0+ Rooms
-    *   0+ Armaments
-    *   0+ Outriders
-*   0+ Undercrew, with:
-    *   A Name
-    *   A Type: Officer, Gang, or Pack
-    *   A configurable track
-    *   A description
-*   0+ Reputation, with:
-    *   A name
-    *   A 3-track
-*   0+ Cargo
-*   0+ Passengers
+* A name
+* Public Notes
+* GM Notes (readable and writeable only by the firefly for the game)
+* A set of conditions (e.g; Damaged, Pretty)
+* Stakes Used (an int) and Stakes Total (an int)
+* A set of six ratings, containing:
+  * A name, from a pre-defined list
+  * A 6-track
+* The Design, with:
+  * Size
+  * Frame
+  * Hull
+  * Bite
+  * Engine
+* Fittings, with:
+  * 0+ Motifs
+  * 0+ Additions
+  * 0+ Rooms
+  * 0+ Armaments
+  * 0+ Outriders
+* 0+ Undercrew, with:
+  * A Name
+  * A Type: Officer, Gang, or Pack
+  * A configurable track
+  * A description
+* 0+ Reputation, with:
+  * A name
+  * A 3-track
+* 0+ Cargo
+* 0+ Passengers
 
 ### Clocks
 
 A Firefly can create any number if clocks, of any lengths they like. They can define:
 
-*   A name
-*   The lengths of the clock
-*   The visibility of the clock
-*   GM Notes (visible only to the GM)
+* A name
+* The lengths of the clock
+* The visibility of the clock
+* GM Notes (visible only to the GM)
 
 The options for visibility are:
 
-*   Public - any player in the game can see them
-*   Hidden - only the firefly can see them
+* Public - any player in the game can see them
+* Hidden - only the firefly can see them
 
 ### Dice Roller
 
@@ -175,20 +175,20 @@ rolls per game.
 On a roll, the player or firefly rolling selects the number of dice to roll, and
 the number of dice to cut. The back-end system will:
 
-*   Produce a random number between 1 and 6 (inclusive) for each of the dice to roll
-*   Sort them highest to lowest
-*   Drop the highest N results, where N is the number of the cut
-*   Take the highest remaining value, and report that back
-*   If there are any doubles in the non-cut dice, it will report that there is a "twist"
+* Produce a random number between 1 and 6 (inclusive) for each of the dice to roll
+* Sort them highest to lowest
+* Drop the highest N results, where N is the number of the cut
+* Take the highest remaining value, and report that back
+* If there are any doubles in the non-cut dice, it will report that there is a "twist"
 
 The data stored for a dice roll is:
 
-*   The nane of the player character (from the character sheet) who rolled the dice
-*   The number rolled
-*   The number cut
-*   The reported result value
-*   Whether or not there was a twist
-*   The sorted values of all the dice rolled
+* The nane of the player character (from the character sheet) who rolled the dice
+* The number rolled
+* The number cut
+* The reported result value
+* Whether or not there was a twist
+* The sorted values of all the dice rolled
 
 ## Additional Data
 
@@ -289,91 +289,91 @@ Assistant:
 ### Record Types**
 
 1. **User**
-   *   `PK`: `USER#<userId>`
-   *   `SK`: `METADATA`
-   *   Other fields: `name`, `createdAt`, `updatedAt`
+   * `PK`: `USER#<userId>`
+   * `SK`: `METADATA`
+   * Other fields: `name`, `createdAt`, `updatedAt`
 
 2. **Game**
-   *   `PK`: `GAME#<gameId>`
-   *   `SK`: `METADATA`
-   *   Other fields: `name`, `description`, `publicNotes`, `privateNotes`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI2PK`, `GSI2SK`
+   * `PK`: `GAME#<gameId>`
+   * `SK`: `METADATA`
+   * Other fields: `name`, `description`, `publicNotes`, `privateNotes`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI2PK`, `GSI2SK`
 
 3. **Player Sheet**
-   *   `PK`: `GAME#<gameId>`
-   *   `SK`: `PLAYER#<userId>`
-   *   `characterName` (String)
-   *   `pronouns` (String)
-   *   `bloodline` (String)
-   *   `origin` (String)
-   *   `post` (String)
-   *   `publicNotes` (String)
-   *   `privateNotes` (String)
-   *   `secretNotes` (String)
-   *   `fireflyNotes` (String)
-   *   `milestones` (List of Maps)
-        *   Each map in the list represents a milestone and contains fields like `type` (String: "Major" or "Minor"), `description` (String)
-   *   `drives` (List of Strings)
-   *   `mires` (List of Maps)
-        *   Each map in the list represents a mire and contains fields like `description` (String), `notes` (String), `level` (Number: 0, 1, or 2)
-   *   `edges` (List of Maps)
-        *   Each map in the list represents an edge and contains fields like `name` (String), `description` (String)
-   *   `skills` (List of Maps)
-        *   Each map in the list represents a skill and contains fields like `name` (String), `description` (String), `level` (Number: 0, 1, 2, or 3)
-   *   `languages` (List of Maps)
-        *   Each map in the list represents a language and contains fields like `name` (String), `description` (String), `level` (Number: 0, 1, 2, or 3)
-   *   `resources` (List of Maps)
-        *   Each map in the list represents a resource and contains fields like `type` (String: "Salvage", "Specimens", "Whispers", or "Charts"), `description` (String), `tags` (List of Strings)
-   *   `aspects` (List of Maps)
-        *   Each map in the list represents an aspect and contains fields like `name` (String), `type` (String: "Trait", "Gear", or "Companion"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
-   *   `temporaryTracks` (List of Maps)
-        *   Each map in the list represents a temporary track and contains fields like `name` (String), `type` (String: "Benefit", "Injury", or "Track"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
-   *   Other fields: `createdAt`, `updatedAt`, `GSI1PK`, `GSI1SK`
+   * `PK`: `GAME#<gameId>`
+   * `SK`: `PLAYER#<userId>`
+   * `characterName` (String)
+   * `pronouns` (String)
+   * `bloodline` (String)
+   * `origin` (String)
+   * `post` (String)
+   * `publicNotes` (String)
+   * `privateNotes` (String)
+   * `secretNotes` (String)
+   * `fireflyNotes` (String)
+   * `milestones` (List of Maps)
+        * Each map in the list represents a milestone and contains fields like `type` (String: "Major" or "Minor"), `description` (String)
+   * `drives` (List of Strings)
+   * `mires` (List of Maps)
+        * Each map in the list represents a mire and contains fields like `description` (String), `notes` (String), `level` (Number: 0, 1, or 2)
+   * `edges` (List of Maps)
+        * Each map in the list represents an edge and contains fields like `name` (String), `description` (String)
+   * `skills` (List of Maps)
+        * Each map in the list represents a skill and contains fields like `name` (String), `description` (String), `level` (Number: 0, 1, 2, or 3)
+   * `languages` (List of Maps)
+        * Each map in the list represents a language and contains fields like `name` (String), `description` (String), `level` (Number: 0, 1, 2, or 3)
+   * `resources` (List of Maps)
+        * Each map in the list represents a resource and contains fields like `type` (String: "Salvage", "Specimens", "Whispers", or "Charts"), `description` (String), `tags` (List of Strings)
+   * `aspects` (List of Maps)
+        * Each map in the list represents an aspect and contains fields like `name` (String), `type` (String: "Trait", "Gear", or "Companion"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
+   * `temporaryTracks` (List of Maps)
+        * Each map in the list represents a temporary track and contains fields like `name` (String), `type` (String: "Benefit", "Injury", or "Track"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
+   * Other fields: `createdAt`, `updatedAt`, `GSI1PK`, `GSI1SK`
 
 4. **Ship Sheet**
-   *   `PK`: `GAME#<gameId>`
-   *   `SK`: `SHIP#<shipId>`
-   *   `name` (String)
-   *   `publicNotes` (String)
-   *   `gmNotes` (String)
-   *   `conditions` (List of Strings)
-   *   `stakesUsed` (Number)
-   *   `stakesTotal` (Number)
-   *   `ratings` (List of Maps)
-        *   Each map in the list represents a rating and contains fields like `name` (String: "Armour", "Seals", "Speed", "Saws", "Stealth", or "Tilt"), `track` (Map with fields like `length` (Number) and `currentValue` (Number))
-   *   `design` (Map)
-        *   Contains fields like `size` (String), `frame` (String), `hull` (String), `bite` (String), `engine` (String)
-   *   `fittings` (Map)
-        *   Contains fields like `name` (String), `description` (String) and  `type` (String)
-        *   The possible types will be in `SEED#FITTINGSTYPES`
-   *   `undercrew` (List of Maps)
-        *   Each map in the list represents an undercrew and contains fields like `name` (String), `type` (String: "Officer", "Gang", or "Pack"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
-   *   `reputation` (List of Maps)
-        *   Each map in the list represents a reputation and contains fields like `name` (String), `track` (Map with fields like `length` (Number) and `currentValue` (Number))
-   *   `cargo` (List of Strings)
-   *   `passengers` (List of Strings)
-   *   Other fields: `createdAt`, `updatedAt`
+   * `PK`: `GAME#<gameId>`
+   * `SK`: `SHIP#<shipId>`
+   * `name` (String)
+   * `publicNotes` (String)
+   * `gmNotes` (String)
+   * `conditions` (List of Strings)
+   * `stakesUsed` (Number)
+   * `stakesTotal` (Number)
+   * `ratings` (List of Maps)
+        * Each map in the list represents a rating and contains fields like `name` (String: "Armour", "Seals", "Speed", "Saws", "Stealth", or "Tilt"), `track` (Map with fields like `length` (Number) and `currentValue` (Number))
+   * `design` (Map)
+        * Contains fields like `size` (String), `frame` (String), `hull` (String), `bite` (String), `engine` (String)
+   * `fittings` (Map)
+        * Contains fields like `name` (String), `description` (String) and  `type` (String)
+        * The possible types will be in `SEED#FITTINGSTYPES`
+   * `undercrew` (List of Maps)
+        * Each map in the list represents an undercrew and contains fields like `name` (String), `type` (String: "Officer", "Gang", or "Pack"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
+   * `reputation` (List of Maps)
+        * Each map in the list represents a reputation and contains fields like `name` (String), `track` (Map with fields like `length` (Number) and `currentValue` (Number))
+   * `cargo` (List of Strings)
+   * `passengers` (List of Strings)
+   * Other fields: `createdAt`, `updatedAt`
 
 5. **Clock**
-   *   `PK`: `GAME#<gameId>`
-   *   `SK`: `CLOCK#<clockId>`
-   *   Other fields: `name`, `lengths`, `visibility`, `gmNotes`, `createdAt`, `updatedAt`
+   * `PK`: `GAME#<gameId>`
+   * `SK`: `CLOCK#<clockId>`
+   * Other fields: `name`, `lengths`, `visibility`, `gmNotes`, `createdAt`, `updatedAt`
 
 6. **Dice Roll**
-   *   `PK`: `GAME#<gameId>`
-   *   `SK`: `DICEROLL#<timeSortableGuid>`
-   *   Other fields: `playerCharacterName`, `numRolled`, `numCut`, `result`, `twist`, `rollValues`, `createdAt`
+   * `PK`: `GAME#<gameId>`
+   * `SK`: `DICEROLL#<timeSortableGuid>`
+   * Other fields: `playerCharacterName`, `numRolled`, `numCut`, `result`, `twist`, `rollValues`, `createdAt`
 
 7. **Seed Data**
-   *   `PK`: `SEED#<type>`
-   *   `SK`: `<id>`
-   *   Other fields: vary based on the type, e.g., `name`, `description`, `trackLength`, etc.
-   *   `<type>`'s include: `MIRE`, `EDGE`, `SKILL`, `LANGUAGE`, `RESOURCE`, `ASPECT`, `RATING`, `DESIGN`, `UNDERCREW`, `FITTINGTYPE`
+   * `PK`: `SEED#<type>`
+   * `SK`: `<id>`
+   * Other fields: vary based on the type, e.g., `name`, `description`, `trackLength`, etc.
+   * `<type>`'s include: `MIRE`, `EDGE`, `SKILL`, `LANGUAGE`, `RESOURCE`, `ASPECT`, `RATING`, `DESIGN`, `UNDERCREW`, `FITTINGTYPE`
 
 8. **Level Name**
-   *   `PK`: `LEVELNAME#<type>`
-   *   `SK`: `<numDots>`
-   *   Other fields: `name`
-   *   `<type>`'s include: `SKILL`, `LANGUAGE`, `MIRE`, `DICEROLL`
+   * `PK`: `LEVELNAME#<type>`
+   * `SK`: `<numDots>`
+   * Other fields: `name`
+   * `<type>`'s include: `SKILL`, `LANGUAGE`, `MIRE`, `DICEROLL`
 
 ### Local Secondary Indexes (LSIs)
 
@@ -382,33 +382,33 @@ No LSIs are required for this table design.
 ### Global Secondary Indexes (GSIs)
 
 1. **GSI1: UserGameIndex**
-   *   Partition Key: `GSI1PK` (String)
-   *   Sort Key: `GSI1SK` (String)
-   *   For Player Sheet records:
-       *   `GSI1PK`: `USER#<userId>`
-       *   `GSI1SK`: `GAME#<gameId>`
-   *   This index allows us to query all games where the user is a player.
+   * Partition Key: `GSI1PK` (String)
+   * Sort Key: `GSI1SK` (String)
+   * For Player Sheet records:
+       * `GSI1PK`: `USER#<userId>`
+       * `GSI1SK`: `GAME#<gameId>`
+   * This index allows us to query all games where the user is a player.
 
 2. **GSI2: FireflyGameIndex**
-   *   Partition Key: `GSI2PK` (String)
-   *   Sort Key: `GSI2SK` (String)
-   *   For Game records:
-       *   `GSI2PK`: `USER#<fireflyUserId>`
-       *   `GSI2SK`: `GAME#<gameId>`
-   *   This index allows us to query all games where the user is the firefly.
+   * Partition Key: `GSI2PK` (String)
+   * Sort Key: `GSI2SK` (String)
+   * For Game records:
+       * `GSI2PK`: `USER#<fireflyUserId>`
+       * `GSI2SK`: `GAME#<gameId>`
+   * This index allows us to query all games where the user is the firefly.
 
 In this updated design, we have two generic record types:
 
 1. **Seed Data**
-   *   `PK`: `SEED#<type>`
-   *   `SK`: `<id>`
-   *   This record type stores the seed data for various entities like mires, edges, skills, languages, resources, aspects, ratings, designs, and undercrews. The `<type>` in the partition key represents the specific entity type (e.g., `MIRE`, `EDGE`, `SKILL`, etc.), and the `<id>` in the sort key is a unique identifier for the specific seed data item.
+   * `PK`: `SEED#<type>`
+   * `SK`: `<id>`
+   * This record type stores the seed data for various entities like mires, edges, skills, languages, resources, aspects, ratings, designs, and undercrews. The `<type>` in the partition key represents the specific entity type (e.g., `MIRE`, `EDGE`, `SKILL`, etc.), and the `<id>` in the sort key is a unique identifier for the specific seed data item.
 
 2. **Level Name**
-   *   `PK`: `LEVELNAME#<type>`
-   *   `SK`: `<numDots>`
-   *   Other fields: `<numDots>DotsName`
-   *   This record type stores the level names for entities that have a numeric level or number of dots marked. The `<type>` in the partition key represents the specific entity type (e.g., `SKILL`, `LANGUAGE`, `MIRE`, etc.), and the `<numDots>` in the sort key represents the number of dots marked (0, 1, 2, 3, etc.).
+   * `PK`: `LEVELNAME#<type>`
+   * `SK`: `<numDots>`
+   * Other fields: `<numDots>DotsName`
+   * This record type stores the level names for entities that have a numeric level or number of dots marked. The `<type>` in the partition key represents the specific entity type (e.g., `SKILL`, `LANGUAGE`, `MIRE`, etc.), and the `<numDots>` in the sort key represents the number of dots marked (0, 1, 2, 3, etc.).
 
 With this more concise documentation, we can easily understand the structure and purpose of these generic record types, while still maintaining the flexibility to store different types of data within them.
 
@@ -419,59 +419,59 @@ Sure, here's a list of all the queries and updates we can perform with the updat
 ### Queries
 
 1. **Get all games for a user (as a player)**
-   *   Query on GSI1: `GSI1PK = USER#<userId>`
+   * Query on GSI1: `GSI1PK = USER#<userId>`
 
 2. **Get all games for a user (as a firefly)**
-   *   Query on GSI2: `GSI2PK = USER#<userId>`
+   * Query on GSI2: `GSI2PK = USER#<userId>`
 
 3. **Get all player sheets for a game**
-   *   Query: `PK = GAME#<gameId> and SK begins with PLAYER#`
+   * Query: `PK = GAME#<gameId> and SK begins with PLAYER#`
 
 4. **Get a specific player sheet for a user in a game**
-   *   Query: `PK = GAME#<gameId> and SK = PLAYER#<userId>`
+   * Query: `PK = GAME#<gameId> and SK = PLAYER#<userId>`
 
 5. **Get the ship sheet for a game**
-   *   Query: `PK = GAME#<gameId> and SK = SHIP#<shipId>`
+   * Query: `PK = GAME#<gameId> and SK = SHIP#<shipId>`
 
 6. **Get all clocks for a game**
-   *   Query: `PK = GAME#<gameId> and SK begins with CLOCK#`
+   * Query: `PK = GAME#<gameId> and SK begins with CLOCK#`
 
 7. **Get dice roll history for a game**
-   *   Query: `PK = GAME#<gameId> and SK begins with DICEROLL#`
+   * Query: `PK = GAME#<gameId> and SK begins with DICEROLL#`
 
 8. **Get seed data for a specific type (e.g., mires, edges, skills, etc.)**
-   *   Query: `PK = SEED#<type>`
+   * Query: `PK = SEED#<type>`
 
 9. **Get level name for a specific type and number of dots (e.g., skill level for 2 dots, language level for 0 dots, etc.)**
-   *   Query: `PK = LEVELNAME#<type> and SK = <numDots>`
+   * Query: `PK = LEVELNAME#<type> and SK = <numDots>`
 
 ### Updates
 
 1. **Create/Update a user**
-   *   Write a User record with the appropriate `PK` and `SK`
+   * Write a User record with the appropriate `PK` and `SK`
 
 2. **Create/Update a game**
-   *   Write a Game record with the appropriate `PK` and `SK`
-   *   Update the `GSI2PK` and `GSI2SK` fields with the firefly user ID and game ID
+   * Write a Game record with the appropriate `PK` and `SK`
+   * Update the `GSI2PK` and `GSI2SK` fields with the firefly user ID and game ID
 
 3. **Create/Update a player sheet**
-   *   Write a Player Sheet record with the appropriate `PK` and `SK`
-   *   Update the `GSI1PK` and `GSI1SK` fields with the user ID and game ID
+   * Write a Player Sheet record with the appropriate `PK` and `SK`
+   * Update the `GSI1PK` and `GSI1SK` fields with the user ID and game ID
 
 4. **Update the ship sheet**
-   *   Write a Ship Sheet record with the appropriate `PK` and `SK`
+   * Write a Ship Sheet record with the appropriate `PK` and `SK`
 
 5. **Create/Update a clock**
-   *   Write a Clock record with the appropriate `PK` and `SK`
+   * Write a Clock record with the appropriate `PK` and `SK`
 
 6. **Record a dice roll**
-   *   Write a Dice Roll record with the appropriate `PK` and `SK` (using a time-sortable GUID)
+   * Write a Dice Roll record with the appropriate `PK` and `SK` (using a time-sortable GUID)
 
 7. **Create/Update seed data for a specific type (e.g., mires, edges, skills, etc.)**
-   *   Write a Seed Data record with `PK = SEED#<type>` and an appropriate `SK`
+   * Write a Seed Data record with `PK = SEED#<type>` and an appropriate `SK`
 
 8. **Create/Update level name for a specific type and number of dots (e.g., skill level for 2 dots, language level for 0 dots, etc.)**
-   *   Write a Level Name record with `PK = LEVELNAME#<type>` and `SK = <numDots>`
+   * Write a Level Name record with `PK = LEVELNAME#<type>` and `SK = <numDots>`
 
 Human:
 
