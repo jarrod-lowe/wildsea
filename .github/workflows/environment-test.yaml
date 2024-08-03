@@ -6,6 +6,10 @@ on:
     branches:
     - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   envtesr:
     name: Environment Test
@@ -14,6 +18,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
-    - run: echo ${{ vars.TEST_VAR }} is VarValue end
-    - run: echo ${{ secrets.TEST_SECRET }} is SecretValue end
-      
+    - name: Configure AWS Access
+      uses: aws-actions/configure-aws-credentials@v1.7.0
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GitHubAction-Wildsea
+        role-session-name: GitHubTest
+    - name: GetCallerIdentity
+      run: aws sts get-caller-identity
