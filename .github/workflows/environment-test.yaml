@@ -14,6 +14,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
-    - run: echo $TEST_VAR end
-    - run: echo $TEST_SECRET end
+    - run: echo ${{ vars.TEST_VAR }} is VarValue end
+    - run: echo ${{ secrets.TEST_SECRET }} is SecretValue end
       
