@@ -22,3 +22,8 @@ To set up a github repository:
     * Add "Codacy Static Code Analysis" to status checks that are required
   * Block force pushes
   * TODO: Require code scanning results
+* Install <https://github.com/apps/renovate> into the repo
+* Create an AWS Account for deployment
+  * Set up OIDC as per <https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/>
+* Add an environment "main"
+  * TODO

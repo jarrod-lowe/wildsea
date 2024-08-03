@@ -12,6 +12,7 @@ jobs:
   terraform:
     name: Validate Terraform
     runs-on: ubuntu-latest
+    environment: main
     steps:
     - name: Checkout code
       uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
@@ -19,4 +20,6 @@ jobs:
       uses: dflook/terraform-validate@9cfdf207ffbd0ec5d171403a24feb222591ffdc7
       with:
         path: terraform/environment/github
+    - run: echo $TEST_VAR
+    - run: echo $TEST_SECRET
       
