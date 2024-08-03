@@ -9,6 +9,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  pull-requests: write
 
 jobs:
   envtesr:
@@ -27,7 +28,7 @@ jobs:
         role-session-name: GitHubTest
         aws-region: ${{ secrets.AWS_REGION }}
     - name: terraform plan
-      uses: dflook/terraform-plan@v1
+      uses: dflook/terraform-plan@d9df4f6c2484e709ba7ffaa16c98a6906f4760cd
       with:
         path: terraform/environment/github
 
