@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
     - name: Validate Terraform
-      uses: dflook/terraform-validate@v1
+      uses: dflook/terraform-validate@9cfdf207ffbd0ec5d171403a24feb222591ffdc7
       with:
         path: terraform/environment/github
       
