@@ -15,14 +15,19 @@ jobs:
     name: Environment Test
     runs-on: ubuntu-latest
     environment: main
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
     - name: Configure AWS Access
-      uses: aws-actions/configure-aws-credentials@v1.7.0
+      uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
       with:
         role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GitHubAction-Wildsea
         role-session-name: GitHubTest
         aws-region: ${{ secrets.AWS_REGION }}
-    - name: GetCallerIdentity
-      run: aws sts get-caller-identity
+    - name: terraform plan
+      uses: dflook/terraform-plan@v1
+      with:
+        path: terraform/environment/github
+

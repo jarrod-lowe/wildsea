@@ -23,6 +23,10 @@ To set up a github repository:
   * Block force pushes
   * TODO: Require code scanning results
 * Install <https://github.com/apps/renovate> into the repo
+* Under settings, "Set up code scanning"
+  * Enable everything exeept Dependabot version updates
+  * Set up CodeQL to default
+  * Set the Protection rules to Any/Any
 * Create an AWS Account for deployment
   * Set up OIDC as per <https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/>
   * Restrict it to the repo and branch main
