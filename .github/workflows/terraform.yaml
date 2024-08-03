@@ -1,0 +1,22 @@
+name: Terraform Validation
+
+on:
+  pull_request:
+    paths:
+    - terraform/environment/github/**
+  push:
+    branches:
+    - main
+
+jobs:
+  terraform:
+    name: Validate Terraform
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: action/checkout@v4
+    - name: Validate Terraform
+      uses: dflook/terraform-validate@v1
+      with:
+        path: terraform/environment/github
+      
