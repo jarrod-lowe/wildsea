@@ -23,5 +23,6 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GitHubAction-Wildsea
         role-session-name: GitHubTest
+        aws-region: ${{ secrets.AWS_REGION }}
     - name: GetCallerIdentity
       run: aws sts get-caller-identity
