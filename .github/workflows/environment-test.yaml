@@ -32,5 +32,5 @@ jobs:
       with:
         path: terraform/environment/github
         variables: |
-          aws_account=${{ secrets.AWS_ACCOUNT }}
+          aws_account="${{ secrets.AWS_ACCOUNT }}"
           aws_region=${{ secrets.AWS_REGION }}
