@@ -16,7 +16,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
     - name: Validate Terraform
-      uses: dflook/terraform-validate@9cfdf207ffbd0ec5d171403a24feb222591ffdc7
+      uses: dflook/terraform-validate@93108d6d37b2fd79d527ec77c190105de1429bb5
       with:
         path: terraform/environment/github
       
