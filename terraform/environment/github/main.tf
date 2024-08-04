@@ -17,5 +17,13 @@ variable "aws_region" {
 }
 
 provider "aws" {
-  
+    assume_role {
+      role_arn = "arn:aws:iam::${var.aws_account}:role/GitHubAction-Wildsea"
+    }
+}
+
+resource "aws_ssm_parameter" "test" {
+    name = "test"
+    type = "String"
+    value = "test"
 }
