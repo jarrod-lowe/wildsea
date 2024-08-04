@@ -11,10 +11,10 @@ variable "aws_account" {
     sensitive = true
 }
 
-variable "aws_region" {
-    type = string
-    sensitive = true
-}
+#variable "aws_region" {
+#    type = string
+#    sensitive = true
+#}
 
 provider "aws" {
     assume_role {
