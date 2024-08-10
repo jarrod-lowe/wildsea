@@ -2,38 +2,43 @@
 
 Wildsea companion app
 
-## Repository Setup
+## Setup
 
-To set up a github repository:
+* Clone `git@github.com:jarrod-lowe/wildsea.git` and then `cd wildsea`
+* Configure git:
 
+  ```bash
+  git config gpg.format ssh
+  git config user.signingkey ~/.ssh/id_rsa
+  git config commit.gpgsign true
+  ```
+
+* Create an AWS Account for deployment
+  * Define a profile in your `~/.aws/config` to access it as admin for the initial setup deploys
+* Create an S3 bucket `terraform-state-<accountid>`
+* Create `terraform/environment/aws/terraform.tfvars`
+  * Add `workspace = "<your github org>"` to the vars file
+* Run `.AWS_PROFILE=<profile> ./terraform/environment/github/aws.sh <aws account id>`
 * Log into Codacy, and connect the repo
   * Configure the rule to maximum
-* Create a branch restriction rule called "main":
-  * Enforcement: Active
-  * Target Branches: Include default branch
-  * Tick Restrict creations
-  * Tick Restrict deletions
-  * Tick Require linear history
-  * Tick Require a pull request before merging
-    * Require 0 Approvals
-    * Require review from code owners
-  * Tick Require status checks to pass
-    * Tick require branches to be up to date before merging
-    * Add "Codacy Static Code Analysis" to status checks that are required
-  * Block force pushes
-  * TODO: Require code scanning results
+* In Codacy, in the repo, go to code patterns, and edit the coding standard:
+  * Set the languages to: CSS, Go, JSON, Javascript, Markdown, Python, Shell, Terraform, Typescript, XML, YAML
+  * Select every tool that is:
+    * NOT client-side
+    * NOT deprecated
+    * NOT remark-lint
+    * Matches one of the above languages
+* Log into Github and create a personal access token with the "repo" scope, and 7 days expiry
+* Create `terraform/environment/github/terraform.tfvars`
+  * Add `token = "<the token>"` to the vars file
+  * Add `workspace = "<your github org>"` to the vars file
+* Run `.AWS_PROFILE=<profile> ./terraform/environment/github/deploy.sh <aws account id>`
+
 * Install <https://github.com/apps/renovate> into the repo
-* Under settings, "Set up code scanning"
-  * Enable everything exeept Dependabot version updates
+
+To automate:
+
+* In Github, Under settings, "Set up code scanning"
+  * Enable everything except Dependabot version updates
   * Set up CodeQL to default
   * Set the Protection rules to Any/Any
-* Create an AWS Account for deployment
-  * Set up OIDC as per <https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/>
-  * Restrict it to the repo and branch main
-  * Add AdministratorAccess, for now, and call it GitHubAccess-Wildsea-main
-  * Add another role with ReadyOnlyAccess, don't restrict the branch, and call it GitHubAccess-Wildsea
-* Add an environment "main"
-  * Add an Environment Variable in the environment "AWS_ACCOUNT" with the ID of the AWS Account
-  * Add an Environment Variable in the environment "AWS_REGION" with the AWS Region you want to use
-  * Add an Environment Variable in the environment "STATE_BUCKET" with the name of the state bucket you created
-  * Add an Environment Variable in the environment "ENVIRONMENT" with the name of the environment
