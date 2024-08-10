@@ -6,7 +6,7 @@ import {
 resource "aws_s3_bucket" "state" {
     # checkov:skip=CKV_AWS_18:Access logging is overkill for us
     # checkov:skip=CKV_AWS_144:Cross-Region replication not required
-    # checkov:skip=CKV_AWS_62:Event notifications not required
+    # checkov:skip=CKV2_AWS_62:Event notifications not required
     # checkov:skip=CKV_AWS_145:AWS Key is sufficient
     bucket = "terraform-state-${data.aws_caller_identity.current.account_id}"
     force_destroy = false
