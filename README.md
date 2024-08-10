@@ -21,6 +21,12 @@ Wildsea companion app
 * Run `.AWS_PROFILE=<profile> ./terraform/environment/github/aws.sh <aws account id>`
 * Log into Codacy, and connect the repo
   * Configure the rule to maximum
+* In Codacy, in the repo, go to code patterns, and edit the coding standard:
+  * Set the languages to: CSS, Go, JSON, Javascript, Markdown, Python, Shell, Terraform, Typescript, XML, YAML
+  * Select every tool that is:
+    * NOT client-side
+    * NOT deprecated
+    * Matches one of the above languages
 * Log into Github and create a personal access token with the "repo" scope, and 7 days expiry
 * Create `terraform/environment/github/terraform.tfvars`
   * Add `token = "<the token>"` to the vars file

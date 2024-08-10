@@ -55,7 +55,8 @@ data "aws_iam_policy_document" "ro" {
     statement {
         sid = "ReadState"
         actions = [
-          "s3:GetObject"
+          "s3:GetObject",
+          "s3:HeadObject"
         ]
         resources = [
           "${aws_s3_bucket.state.arn}/${var.environment}/terraform.tfstate"
@@ -138,6 +139,7 @@ data "aws_iam_policy_document" "rw_boundary" {
       sid = "s3"
       actions = [
         "s3:GetObject",
+        "s3:HeadObject",
         "s3:PutObject"
       ]
       resources = [
