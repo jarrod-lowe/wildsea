@@ -39,3 +39,4 @@ jobs:
         backend_config:
           bucket="${{ vars.STATE_BUCKET }}"
           key="${{ vars.ENVIRONMENT }}/terraform.tfstate"
+          region="${{ vars.AWS_REGION }}"
