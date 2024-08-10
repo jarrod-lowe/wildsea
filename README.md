@@ -30,7 +30,7 @@ To set up a github repository:
 * Create an AWS Account for deployment
   * Set up OIDC as per <https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/>
   * Restrict it to the repo and branch main
-  * Add AdministratorAccess, for now, and call it GitHubAccess-Wildsea@main
+  * Add AdministratorAccess, for now, and call it GitHubAccess-Wildsea-main
   * Add another role with ReadyOnlyAccess, don't restrict the branch, and call it GitHubAccess-Wildsea
 * Add an environment "main"
   * Add an Environment Variable in the environment "AWS_ACCOUNT" with the ID of the AWS Account
