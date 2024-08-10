@@ -26,6 +26,7 @@ Wildsea companion app
   * Select every tool that is:
     * NOT client-side
     * NOT deprecated
+    * NOT remark-lint
     * Matches one of the above languages
 * Log into Github and create a personal access token with the "repo" scope, and 7 days expiry
 * Create `terraform/environment/github/terraform.tfvars`

@@ -55,11 +55,20 @@ data "aws_iam_policy_document" "ro" {
     statement {
         sid = "ReadState"
         actions = [
-          "s3:GetObject",
-          "s3:ListBucket"
+          "s3:GetObject"
         ]
         resources = [
           "${aws_s3_bucket.state.arn}/${var.environment}/terraform.tfstate"
+        ]
+    }
+
+    statement {
+        sid = "ListState"
+        actions = [
+          "s3:ListBucket"
+        ]
+        resources = [
+          aws_s3_bucket.state.arn
         ]
     }
 }
@@ -139,12 +148,21 @@ data "aws_iam_policy_document" "rw_boundary" {
       sid = "s3"
       actions = [
         "s3:GetObject",
-        "s3:PutObject",
-        "s3:ListBucket"
+        "s3:PutObject"
       ]
       resources = [
           "${aws_s3_bucket.state.arn}/${var.environment}/terraform.tfstate",
           "arn:${data.aws_partition.current.id}:s3:::${var.app_name}-${var.environment}-*/*"
       ]
+    }
+
+    statement {
+        sid = "ListState"
+        actions = [
+          "s3:ListBucket"
+        ]
+        resources = [
+          aws_s3_bucket.state.arn
+        ]
     }
 }
