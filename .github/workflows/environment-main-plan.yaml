@@ -25,7 +25,7 @@ jobs:
         role-session-name: GitHubTest
         aws-region: ${{ vars.AWS_REGION }}
     - name: terraform plan
-      uses: dflook/terraform-apply
+      uses: dflook/terraform-apply@v1.44.0
       with:
         path: terraform/environment/github
         variables: |
