@@ -36,3 +36,6 @@ jobs:
           aws_region="${{ vars.AWS_REGION }}"
           state_bucket="${{ vars.STATE_BUCKET }}"
           environment="${{ vars.ENVIRONMENT }}"
+        backend_config:
+          state_bucket="${{ vars.STATE_BUCKET }}"
+          environment="${{ vars.ENVIRONMENT }}"
