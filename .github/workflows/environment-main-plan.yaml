@@ -37,6 +37,6 @@ jobs:
           state_bucket="${{ vars.STATE_BUCKET }}"
           environment="${{ vars.ENVIRONMENT }}"
         backend_config:
-          bucket="${{ vars.STATE_BUCKET }}"
-          key="${{ vars.ENVIRONMENT }}/terraform.tfstate"
+          bucket=${{ vars.STATE_BUCKET }}
+          key=${{ vars.ENVIRONMENT }}/terraform.tfstate
           region=${{ vars.AWS_REGION }}
