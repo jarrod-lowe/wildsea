@@ -2,9 +2,16 @@
 
 Wildsea companion app
 
-## Repository Setup
+## Setup
 
-To set up a github repository:
+* Clone `git@github.com:jarrod-lowe/wildsea.git` and then `cd wildsea`
+* Configure git:
+
+  ```bash
+  git config gpg.format ssh
+  git config user.signingkey ~/.ssh/id_rsa
+  git config commit.gpgsign true
+  ```
 
 * Create an AWS Account for deployment
   * Define a profile in your `~/.aws/config` to access it as admin for the initial setup deploys
