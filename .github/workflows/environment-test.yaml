@@ -24,13 +24,15 @@ jobs:
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
       with:
-        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GitHubAction-Wildsea
+        role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT }}:role/GitHubAction-Wildsea
         role-session-name: GitHubTest
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ env.AWS_REGION }}
     - name: terraform plan
       uses: dflook/terraform-plan@d9df4f6c2484e709ba7ffaa16c98a6906f4760cd
       with:
         path: terraform/environment/github
         variables: |
-          aws_account="${{ secrets.AWS_ACCOUNT }}"
-          aws_region=${{ secrets.AWS_REGION }}
+          aws_account="${{ env.AWS_ACCOUNT }}"
+          aws_region="${{ env.AWS_REGION }}"
+          state_bucket="${{ env.STATE_BUCKET }}"
+          environment="${{ env.ENVIRONMENT }}"

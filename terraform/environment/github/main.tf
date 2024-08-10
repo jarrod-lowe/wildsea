@@ -1,29 +1,37 @@
 resource "null_resource" "test" {}
 
-data "aws_region" "current" {}
-
-output "aws_region" {
-    value = data.aws_region.current.id
-}
-
 variable "aws_account" {
+    description = "ID of the AWS Account"
     type = string
     sensitive = true
 }
 
-#variable "aws_region" {
-#    type = string
-#    sensitive = true
-#}
+variable "aws_region" {
+    description = "AWS Region name"
+    type = string
+    sensitive = true
+}
+
+variable "state_bucket" {
+    description = "Name of the S3 state bucket"
+    type        = string
+}
+
+variable "environment" {
+    description = "Name of the Environment"
+    type        = string
+}
+
+terraform {
+    backend "s3" {
+        bucket = var.state_bucket
+        key = "${var.environment}/terraform.tfstate"
+        region = var.aws_region
+    }
+}
 
 provider "aws" {
     assume_role {
       role_arn = "arn:aws:iam::${var.aws_account}:role/GitHubAction-Wildsea"
     }
-}
-
-resource "aws_ssm_parameter" "test" {
-    name = "test"
-    type = "String"
-    value = "test"
 }

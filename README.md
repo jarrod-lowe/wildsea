@@ -33,5 +33,7 @@ To set up a github repository:
   * Add AdministratorAccess, for now, and call it GitHubAccess-Wildsea@main
   * Add another role with ReadyOnlyAccess, don't restrict the branch, and call it GitHubAccess-Wildsea
 * Add an environment "main"
-  * Add an Environment Secret "AWS_ACCOUNT" with the ID of the AWS Account
-  * Add an Environment Secret "AWS_REGION" with the AWS Region you want to use
+  * Add an Environment Variable in the environment "AWS_ACCOUNT" with the ID of the AWS Account
+  * Add an Environment Variable in the environment "AWS_REGION" with the AWS Region you want to use
+  * Add an Environment Variable in the environment "STATE_BUCKET" with the name of the state bucket you created
+  * Add an Environment Variable in the environment "ENVIRONMENT" with the name of the environment
