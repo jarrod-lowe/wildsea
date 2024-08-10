@@ -112,12 +112,14 @@ locals {
     AWS_ACCOUNT  = var.aws_account
     AWS_REGION   = var.aws_region
     STATE_BUCKET = var.state_bucket
+    ENVIRONMENT  = var.environment
   }
   ro_vars = {
     AWS_ROLE     = "GitHubAction-Wildsea-ro-${var.environment}"
     AWS_ACCOUNT  = var.aws_account
     AWS_REGION   = var.aws_region
     STATE_BUCKET = var.state_bucket
+    ENVIRONMENT  = var.environment
   }
 }
 
