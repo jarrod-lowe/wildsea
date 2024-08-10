@@ -24,6 +24,7 @@ variable "environment" {
 
 terraform {
     backend "s3" {
+        // bucket and key come from -backend-config
         region = var.aws_region
     }
 }
