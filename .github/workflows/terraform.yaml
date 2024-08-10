@@ -3,7 +3,7 @@ name: Terraform Validation
 on:
   pull_request:
     paths:
-    - terraform/environment/github/**
+    - terraform/environment/wildsea/**
   push:
     branches:
     - main
@@ -18,5 +18,5 @@ jobs:
     - name: Validate Terraform
       uses: dflook/terraform-validate@93108d6d37b2fd79d527ec77c190105de1429bb5
       with:
-        path: terraform/environment/github
+        path: terraform/environment/wildsea
       

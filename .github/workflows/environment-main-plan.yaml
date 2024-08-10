@@ -12,7 +12,7 @@ jobs:
   envtest:
     name: Environment Main - Plan
     runs-on: ubuntu-latest
-    environment: main
+    environment: primary-ro
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -21,13 +21,13 @@ jobs:
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@39228ca2bffc0bfc8f7761ce893f5b80e7eaaf8f
       with:
-        role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/GitHubAction-Wildsea
-        role-session-name: GitHubTest
+        role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE_RO }}
+        role-session-name: GitHubTest-${{ vars.ENVIRONMENT }}
         aws-region: ${{ vars.AWS_REGION }}
     - name: terraform plan
       uses: dflook/terraform-plan@b0877a1bf56160160ab482f4aff8a12fff35fe06
       with:
-        path: terraform/environment/github
+        path: terraform/environment/wildsea
         variables: |
           aws_account="${{ vars.AWS_ACCOUNT }}"
           aws_region="${{ vars.AWS_REGION }}"
