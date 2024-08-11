@@ -46,6 +46,8 @@ data "aws_iam_policy_document" "rw" {
     actions = [
       "dynamodb:CreateTable",
       "dynamodb:DeleteTable",
+      "dynamodb:TagResource",
+      "dynamodb:UntagResource",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
@@ -88,6 +90,8 @@ data "aws_iam_policy_document" "rw_boundary" {
       "dynamodb:DeleteItem",
       "dynamodb:UpdateItem*",
       "dynamodb:PutItem*",
+      "dynamodb:TagResource",
+      "dynamodb:UntagResource",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
