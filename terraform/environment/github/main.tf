@@ -47,9 +47,9 @@ variable "environment" {
 }
 
 terraform {
-    backend "s3" {
-        // region, bucket and key come from -backend-config
-    }
+  backend "s3" {
+    // region, bucket and key come from -backend-config
+  }
 }
 
 provider "github" {
