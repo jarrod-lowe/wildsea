@@ -38,10 +38,14 @@ terraform {
   }
 }
 
+locals {
+  prefix = "${var.app_name}-${var.environment}"
+}
+
 provider "aws" {
   default_tags {
     tags = {
-      Application = "Wildsea-setup-${var.environment}"
+      Application = "${var.app_name}-setup-${var.environment}"
     }
   }
 }
