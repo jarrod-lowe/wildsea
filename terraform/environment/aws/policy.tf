@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "rw" {
   }
 
   statement {
-    sid    = "DynamodbNoItem"
+    sid = "DynamodbNoItem"
     effect = "Deny"
     actions = [
       "dynamodb:DeleteItem",
@@ -90,6 +90,21 @@ data "aws_iam_policy_document" "rw" {
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
     ]
+  }
+
+  statement {
+    sid = "CognitoIdpCreate"
+    actions = [
+      "cognito-idp:Create*",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:userpool/*",
+    ]
+    condition {
+      test = "StringEquals"
+      variable = "aws:RequestTag/Application"
+      values = [ local.prefix ]
+    }
   }
 
   statement {
