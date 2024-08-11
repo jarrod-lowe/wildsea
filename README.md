@@ -81,3 +81,12 @@ to the URL you got earlier.
 
 Since you require the details of the Cognito pool before creating the Jumpcloud
 setup, you will need to re-run the deployment after adding the secrets.
+
+## Development Environment
+
+After having set up the AWS Account, use `AWS_PROFILE=<profile> make dev` to
+deploy a development version. If this is a different AWS Account from the real
+deployment, you will need to create an S3 bucket for the state, in the same way
+as you did for the real deployment.
+
+Development environments will not use Jumpcloud, but instead use Cognito.

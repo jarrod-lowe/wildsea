@@ -59,3 +59,8 @@ resource "aws_s3_bucket_versioning" "state" {
     status = "Enabled"
   }
 }
+
+output "arn" {
+  description = "ARN of the state bucket"
+  value = aws_s3_bucket.state.arn
+}

@@ -31,10 +31,8 @@ jobs:
       with:
         path: terraform/environment/wildsea
         variables: |
-          aws_account="${{ vars.AWS_ACCOUNT }}"
-          aws_region="${{ vars.AWS_REGION }}"
-          state_bucket="${{ vars.STATE_BUCKET }}"
           environment="${{ vars.ENVIRONMENT }}"
+          saml_metadata_url="${{ secrets.SAML_METADATA_URL }}"
         backend_config:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate

@@ -1,13 +1,3 @@
-resource "aws_iam_openid_connect_provider" "oidc" {
-  url = "https://token.actions.githubusercontent.com"
-  client_id_list = [
-    "sts.${data.aws_partition.current.dns_suffix}"
-  ]
-  thumbprint_list = [
-    "d89e3bd43d5d909b47a18977aa9d5ce36cee184c"
-  ]
-}
-
 resource "aws_iam_role" "ro" {
   name               = "${var.action_prefix}-${var.app_name}-ro-${var.environment}"
   assume_role_policy = data.aws_iam_policy_document.ro_assume.json
@@ -19,20 +9,26 @@ resource "aws_iam_role" "ro" {
 
 data "aws_iam_policy_document" "ro_assume" {
   statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
+    actions = [ var.oidc_type == "Federated" ? "sts:AssumeRoleWithWebIdentity" : "sts:AssumeRole" ]
     principals {
-      type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.oidc.arn]
+      type        = var.oidc_type
+      identifiers = [var.oidc_arn]
     }
-    condition {
-      test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:aud"
-      values   = ["sts.${data.aws_partition.current.dns_suffix}"]
+    dynamic "condition" {
+      for_each = var.oidc_type == "Federated" ? toset([1]) : toset([])
+      content {
+        test     = "StringEquals"
+        variable = "token.actions.githubusercontent.com:aud"
+        values   = ["sts.${data.aws_partition.current.dns_suffix}"]
+      }
     }
-    condition {
-      test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.workspace}/${var.repo}:environment:${var.environment}-ro"]
+    dynamic "condition" {
+      for_each = var.oidc_type == "Federated" ? toset([1]) : toset([])
+      content {
+        test     = "StringEquals"
+        variable = "token.actions.githubusercontent.com:sub"
+        values   = ["repo:${var.workspace}/${var.repo}:environment:${var.environment}-ro"]
+      }
     }
   }
 }
@@ -63,20 +59,26 @@ resource "aws_iam_role" "rw" {
 
 data "aws_iam_policy_document" "rw_assume" {
   statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
+    actions = [ var.oidc_type == "Federated" ? "sts:AssumeRoleWithWebIdentity" : "sts:AssumeRole" ]
     principals {
-      type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.oidc.arn]
+      type        = var.oidc_type
+      identifiers = [var.oidc_arn]
     }
-    condition {
-      test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:aud"
-      values   = ["sts.${data.aws_partition.current.dns_suffix}"]
+    dynamic "condition" {
+      for_each = var.oidc_type == "Federated" ? toset([1]) : toset([])
+      content {
+        test     = "StringEquals"
+        variable = "token.actions.githubusercontent.com:aud"
+        values   = ["sts.${data.aws_partition.current.dns_suffix}"]
+      }
     }
-    condition {
-      test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.workspace}/${var.repo}:environment:${var.environment}-rw"]
+    dynamic "condition" {
+      for_each = var.oidc_type == "Federated" ? toset([1]) : toset([])
+      content {
+        test     = "StringEquals"
+        variable = "token.actions.githubusercontent.com:sub"
+        values   = ["repo:${var.workspace}/${var.repo}:environment:${var.environment}-rw"]
+      }
     }
   }
 }
