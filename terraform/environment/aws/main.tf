@@ -50,6 +50,11 @@ provider "aws" {
   }
 }
 
+import {
+  to = module.state-bucket.aws_s3_bucket.state
+  id = var.state_bucket
+}
+
 module "iac-roles" {
   source           = "../../module/iac-roles"
   app_name         = var.app_name
@@ -58,7 +63,7 @@ module "iac-roles" {
   workspace        = var.workspace
   repo             = var.repo
   state_bucket_arn = module.state-bucket.arn
-  oidc_arn         = module.oidc.arn
+  oidc_arn         = module.oidc.oidc_arn
   oidc_type        = "Federated"
 }
 

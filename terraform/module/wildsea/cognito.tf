@@ -92,7 +92,7 @@ data "aws_iam_policy_document" "cognito" {
     actions = [
       "cognito-identity:GetCredentialsForIdentity",
     ]
-    resources = ["*"]
+    resources = ["*"] # checkov:skip=CKV_AWS_107:Has to be wildcard
   }
 }
 
