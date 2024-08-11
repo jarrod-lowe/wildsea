@@ -29,6 +29,30 @@ data "aws_iam_policy_document" "ro" {
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
     ]
   }
+
+  statement {
+    sid = "CognitoIdp"
+    actions = [
+      "cognito-idp:List*",
+      "cognito-idp:Describe*",
+      "cognito-idp:Get*",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:userpool/${var.app_name}-${var.environment}",
+    ]
+  }
+
+  statement {
+    sid = "CognitoIdentity"
+    actions = [
+      "cognito-identity:List*",
+      "cognito-identity:Describe*",
+      "cognito-identity:Get*",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:identitypool/${var.app_name}-${var.environment}",
+    ]
+  }
 }
 
 data "aws_iam_policy_document" "rw" {
@@ -43,7 +67,7 @@ data "aws_iam_policy_document" "rw" {
   }
 
   statement {
-    sid = "DynamodbNoItem"
+    sid    = "DynamodbNoItem"
     effect = "Deny"
     actions = [
       "dynamodb:DeleteItem",
@@ -65,6 +89,32 @@ data "aws_iam_policy_document" "rw" {
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
+    ]
+  }
+
+  statement {
+    sid = "CognitoIdp"
+    actions = [
+      "cognito-idp:Create*",
+      "cognito-idp:Delete*",
+      "cognito-idp:TagResource",
+      "cognito-idp:UntagResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:userpool/${var.app_name}-${var.environment}",
+    ]
+  }
+  statement {
+    sid = "CognitoIdentity"
+    actions = [
+      "cognito-identity:Create*",
+      "cognito-identity:Update*",
+      "cognito-identity:Delete*",
+      "cognito-identity:TagResource",
+      "cognito-identity:UntagResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:identitypool/${var.app_name}-${var.environment}",
     ]
   }
 }
@@ -110,6 +160,39 @@ data "aws_iam_policy_document" "rw_boundary" {
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
+    ]
+  }
+
+  statement {
+    sid = "CognitoIdp"
+    actions = [
+      "cognito-idp:List*",
+      "cognito-idp:Describe*",
+      "cognito-idp:Get*",
+      "cognito-idp:Create*",
+      "cognito-idp:Delete*",
+      "cognito-idp:TagResource",
+      "cognito-idp:UntagResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:userpool/${var.app_name}-${var.environment}",
+    ]
+  }
+
+  statement {
+    sid = "CognitoIdentity"
+    actions = [
+      "cognito-identity:List*",
+      "cognito-identity:Describe*",
+      "cognito-identity:Get*",
+      "cognito-identity:Create*",
+      "cognito-identity:Update*",
+      "cognito-identity:Delete*",
+      "cognito-identity:TagResource",
+      "cognito-identity:UntagResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:identitypool/${var.app_name}-${var.environment}",
     ]
   }
 }
