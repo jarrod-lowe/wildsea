@@ -82,6 +82,8 @@ to the URL you got earlier.
 Since you require the details of the Cognito pool before creating the Jumpcloud
 setup, you will need to re-run the deployment after adding the secrets.
 
+If you do not set the secret, then Cognito will be used as the identity source.
+
 ## Development Environment
 
 After having set up the AWS Account, use `AWS_PROFILE=<profile> make dev` to
