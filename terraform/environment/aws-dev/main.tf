@@ -10,11 +10,6 @@ variable "action_prefix" {
   default = "GitHubAction"
 }
 
-variable "workspace" {
-  description = "Github Organisation name"
-  type        = string
-}
-
 variable "repo" {
   description = "Repository name"
   type        = string
@@ -50,28 +45,14 @@ provider "aws" {
   }
 }
 
-import {
-  to = module.state-bucket.aws_s3_bucket.state
-  id = var.state_bucket
-}
-
 module "iac-roles" {
-  source           = "../../module/iac-roles"
-  app_name         = var.app_name
-  environment      = var.environment
-  action_prefix    = var.action_prefix
-  workspace        = var.workspace
-  repo             = var.repo
-  state_bucket_arn = module.state-bucket.arn
-  oidc_arn         = module.oidc.oidc_arn
-  oidc_type        = "Federated"
-}
-
-module "state-bucket" {
-  source       = "../../module/state-bucket"
-  state_bucket = var.state_bucket
-}
-
-module "oidc" {
-  source = "../../module/oidc"
+  source = "../../module/iac-roles"
+  app_name = var.app_name
+  environment = var.environment
+  action_prefix = var.action_prefix
+  workspace = "none"
+  repo = var.repo
+  state_bucket_arn = "arn:${data.aws_partition.current.id}:s3:::${var.state_bucket}"
+  oidc_type = "AWS"
+  oidc_arn = data.aws_caller_identity.current.account_id
 }

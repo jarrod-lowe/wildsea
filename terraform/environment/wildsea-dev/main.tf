@@ -1,18 +1,13 @@
-variable "environment" {
-  description = "Name of the Environment"
-  type        = string
-}
-
 variable "saml_metadata_url" {
   description = "SAML Metadata URL"
   type        = string
   sensitive   = true
-  default     = "TODO"
+  default     = ""
 }
 
 locals {
   app_name = "Wildsea"
-  prefix   = "${local.app_name}-${var.environment}"
+  prefix   = "${local.app_name}-dev"
 }
 
 terraform {

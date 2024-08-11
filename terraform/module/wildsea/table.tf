@@ -1,7 +1,7 @@
 # nosemgrep: aws-dynamodb-table-unencrypted // AWS Key is fine
 resource "aws_dynamodb_table" "table" {
   # checkov:skip=CKV_AWS_119:AWS Key is fine
-  name                        = local.prefix
+  name                        = var.prefix
   billing_mode                = "PAY_PER_REQUEST"
   deletion_protection_enabled = true
   hash_key                    = "PK"
@@ -22,6 +22,6 @@ resource "aws_dynamodb_table" "table" {
   }
 
   tags = {
-    Name = local.prefix
+    Name = var.prefix
   }
 }

@@ -1,8 +1,3 @@
-import {
-  to = aws_s3_bucket.state
-  id = var.state_bucket
-}
-
 resource "aws_s3_bucket" "state" {
   # checkov:skip=CKV_AWS_18:Access logging is overkill for us
   # checkov:skip=CKV_AWS_144:Cross-Region replication not required
@@ -58,4 +53,9 @@ resource "aws_s3_bucket_versioning" "state" {
   versioning_configuration {
     status = "Enabled"
   }
+}
+
+output "arn" {
+  description = "ARN of the state bucket"
+  value = aws_s3_bucket.state.arn
 }
