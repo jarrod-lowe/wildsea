@@ -1,12 +1,13 @@
 data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 variable "app_name" {
-    default = "Wildsea"
+  default = "Wildsea"
 }
 
 variable "action_prefix" {
-    default = "GitHubAction"
+  default = "GitHubAction"
 }
 
 variable "workspace" {
@@ -32,15 +33,15 @@ variable "environment" {
 }
 
 terraform {
-    backend "s3" {
-        // region, bucket and key come from -backend-config
-    }
+  backend "s3" {
+    // region, bucket and key come from -backend-config
+  }
 }
 
 provider "aws" {
-    default_tags {
-      tags = {
-        Application = "Wildsea-setup-${var.environment}"
-      }
+  default_tags {
+    tags = {
+      Application = "Wildsea-setup-${var.environment}"
     }
+  }
 }

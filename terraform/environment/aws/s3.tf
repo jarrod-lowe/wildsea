@@ -1,35 +1,35 @@
 import {
-    to = aws_s3_bucket.state
-    id = var.state_bucket
+  to = aws_s3_bucket.state
+  id = var.state_bucket
 }
 
 resource "aws_s3_bucket" "state" {
-    # checkov:skip=CKV_AWS_18:Access logging is overkill for us
-    # checkov:skip=CKV_AWS_144:Cross-Region replication not required
-    # checkov:skip=CKV2_AWS_62:Event notifications not required
-    # checkov:skip=CKV_AWS_145:AWS Key is sufficient
-    bucket = "terraform-state-${data.aws_caller_identity.current.account_id}"
-    force_destroy = false
+  # checkov:skip=CKV_AWS_18:Access logging is overkill for us
+  # checkov:skip=CKV_AWS_144:Cross-Region replication not required
+  # checkov:skip=CKV2_AWS_62:Event notifications not required
+  # checkov:skip=CKV_AWS_145:AWS Key is sufficient
+  bucket        = "terraform-state-${data.aws_caller_identity.current.account_id}"
+  force_destroy = false
 
-    tags = {
-        Name = "terraform-state-${data.aws_caller_identity.current.account_id}"
-    }
+  tags = {
+    Name = "terraform-state-${data.aws_caller_identity.current.account_id}"
+  }
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "state" {
-    bucket = aws_s3_bucket.state.id
-    depends_on = [ aws_s3_bucket_versioning.state ]
+  bucket     = aws_s3_bucket.state.id
+  depends_on = [aws_s3_bucket_versioning.state]
 
-    rule {
-        id = "clean"
-        noncurrent_version_expiration {
-          noncurrent_days = 30
-        }
-        abort_incomplete_multipart_upload {
-          days_after_initiation = 7
-        }
-        status = "Enabled"
+  rule {
+    id = "clean"
+    noncurrent_version_expiration {
+      noncurrent_days = 30
     }
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+    status = "Enabled"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "state" {
