@@ -1,5 +1,3 @@
-resource "null_resource" "test" {}
-
 variable "aws_account" {
   description = "ID of the AWS Account"
   type        = string
