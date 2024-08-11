@@ -1,4 +1,6 @@
 resource "aws_dynamodb_table" "table" {
+  # checkov:skip=CKV_AWS_119:AWS Key is fine
+  # semgrep:aws-dynamodb-table-unencrypted // AWS Key is fine
   name                        = local.prefix
   billing_mode                = "PAY_PER_REQUEST"
   deletion_protection_enabled = true
@@ -13,6 +15,10 @@ resource "aws_dynamodb_table" "table" {
   attribute {
     name = "SK"
     type = "S"
+  }
+
+  point_in_time_recovery {
+    enabled = true
   }
 
   tags = {
