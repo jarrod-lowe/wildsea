@@ -1,3 +1,7 @@
+data "aws_region" "current" {}
+data "aws_partition" "current" {}
+data "aws_caller_identity" "current" {}
+
 variable "aws_account" {
   description = "ID of the AWS Account"
   type        = string
@@ -18,6 +22,13 @@ variable "state_bucket" {
 variable "environment" {
   description = "Name of the Environment"
   type        = string
+}
+
+variable "saml_metadata_url" {
+  description = "SAML Metadata URL"
+  type        = string
+  sensitive   = true
+  default     = "TODO"
 }
 
 locals {
