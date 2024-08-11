@@ -22,7 +22,8 @@ data "aws_iam_policy_document" "ro" {
   statement {
     sid = "Dynamodb"
     actions = [
-      "dynamodb:DescribeTable*"
+      "dynamodb:Describe*",
+      "dynamodb:List*",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
@@ -42,12 +43,25 @@ data "aws_iam_policy_document" "rw" {
   }
 
   statement {
+    sid = "DynamodbNoItem"
+    effect = "Deny"
+    actions = [
+      "dynamodb:DeleteItem",
+      "dynamodb:UpdateItem",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
+    ]
+  }
+
+  statement {
     sid = "Dynamodb"
     actions = [
-      "dynamodb:CreateTable",
-      "dynamodb:DeleteTable",
+      "dynamodb:Create*",
+      "dynamodb:Delete*",
       "dynamodb:TagResource",
       "dynamodb:UntagResource",
+      "dynamodb:Update*",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
@@ -81,17 +95,18 @@ data "aws_iam_policy_document" "rw_boundary" {
   statement {
     sid = "Dynamodb"
     actions = [
-      "dynamodb:DescribeTable",
-      "dynamodb:CreateTable",
-      "dynamodb:DeleteTable",
-      "dynamodb:BatchGet*",
-      "dynamodb:GetItem",
+      "dynamodb:Describe*",
+      "dynamodb:Create*",
+      "dynamodb:Delete*",
+      "dynamodb:Batch*",
+      "dynamodb:Get*",
       "dynamodb:Query",
-      "dynamodb:DeleteItem",
-      "dynamodb:UpdateItem*",
-      "dynamodb:PutItem*",
+      "dynamodb:Delete*",
+      "dynamodb:Update*",
+      "dynamodb:Put*",
       "dynamodb:TagResource",
       "dynamodb:UntagResource",
+      "dynamodb:List*",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
