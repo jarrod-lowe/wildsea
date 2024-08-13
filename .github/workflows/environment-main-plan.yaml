@@ -19,7 +19,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
     - name: Configure AWS Access
-      uses: aws-actions/configure-aws-credentials@39228ca2bffc0bfc8f7761ce893f5b80e7eaaf8f
+      uses: aws-actions/configure-aws-credentials@55f725fcb586ca16a5ed5b0d75d464defbfa831b
       with:
         role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE }}
         role-session-name: GitHubTest-${{ vars.ENVIRONMENT }}
