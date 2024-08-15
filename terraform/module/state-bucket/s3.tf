@@ -57,5 +57,5 @@ resource "aws_s3_bucket_versioning" "state" {
 
 output "arn" {
   description = "ARN of the state bucket"
-  value = aws_s3_bucket.state.arn
+  value       = aws_s3_bucket.state.arn
 }

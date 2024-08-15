@@ -11,5 +11,5 @@ resource "aws_iam_openid_connect_provider" "oidc" {
 }
 
 output "oidc_arn" {
-    value = aws_iam_openid_connect_provider.oidc.arn
+  value = aws_iam_openid_connect_provider.oidc.arn
 }

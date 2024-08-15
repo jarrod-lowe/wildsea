@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
     - terraform/environment/wildsea/**
+    - terraform/modules/wildsea/**
   push:
     branches:
     - main

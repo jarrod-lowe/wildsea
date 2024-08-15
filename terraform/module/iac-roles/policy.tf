@@ -46,6 +46,9 @@ data "aws_iam_policy_document" "ro" {
     sid = "CognitoIdpGlobal"
     actions = [
       "cognito-idp:DescribeUserPoolDomain",
+      "appsync:SetWebACL",
+      "wafv2:GetWebACLForResource",
+      "wafv2:GetWebAcl",
     ]
     resources = [
       "*"
@@ -106,6 +109,19 @@ data "aws_iam_policy_document" "ro" {
     resources = [
       "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"
     ]
+  }
+
+  statement {
+    actions = [
+      "wafv2:ListWebACLs",
+      "wafv2:ListTagsForResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
   }
 }
 
@@ -254,7 +270,7 @@ data "aws_iam_policy_document" "rw" {
   }
 
   statement {
-    actions = ["iam:CreateServiceLinkedRole"]
+    actions   = ["iam:CreateServiceLinkedRole"]
     resources = ["*"]
     condition {
       test     = "StringEquals"
@@ -262,6 +278,44 @@ data "aws_iam_policy_document" "rw" {
       values   = ["appsync.${data.aws_partition.current.dns_suffix}"]
     }
   }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebAcl",
+      "wafv2:TagResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebACL",
+    ]
+    resources = [
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "wafv2:UpdateWebACL",
+      "wafv2:DeleteWebACL",
+      "wafv2:ListTagsForResource",
+      "wafv2:AssociateWebACL",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
 }
 
 data "aws_iam_policy_document" "rw_boundary" {
@@ -326,9 +380,11 @@ data "aws_iam_policy_document" "rw_boundary" {
   }
 
   statement {
-    sid = "CognitoIdpGlobal"
     actions = [
       "cognito-idp:DescribeUserPoolDomain",
+      "appsync:SetWebACL",
+      "wafv2:GetWebACLForResource",
+      "wafv2:GetWebAcl",
     ]
     resources = [
       "*"
@@ -441,12 +497,63 @@ data "aws_iam_policy_document" "rw_boundary" {
   }
 
   statement {
-    actions = ["iam:CreateServiceLinkedRole"]
+    actions   = ["iam:CreateServiceLinkedRole"]
     resources = ["*"]
     condition {
       test     = "StringEquals"
       variable = "iam:AWSServiceName"
       values   = ["appsync.${data.aws_partition.current.dns_suffix}"]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebAcl",
+      "wafv2:TagResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebACL",
+    ]
+    resources = [
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "wafv2:UpdateWebACL",
+      "wafv2:DeleteWebACL",
+      "wafv2:UpdatebACL",
+      "wafv2:ListTagsForResource",
+      "wafv2:AssociateWebACL",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:ListWebACLs",
+      "wafv2:ListTagsForResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
     }
   }
 }

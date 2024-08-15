@@ -28,5 +28,5 @@ module "wildsea" {
   source = "../../module/wildsea"
 
   saml_metadata_url = var.saml_metadata_url
-  prefix = local.prefix
+  prefix            = local.prefix
 }
