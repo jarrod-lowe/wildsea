@@ -167,3 +167,62 @@ resource "aws_wafv2_web_acl" "graphql" {
     Name = var.prefix
   }
 }
+
+resource "aws_appsync_datasource" "graphql" {
+  api_id           = aws_appsync_graphql_api.graphql.id
+  name             = replace(var.prefix, "-", "_")
+  type             = "AMAZON_DYNAMODB"
+  service_role_arn = aws_iam_role.graphql_datasource.arn
+  description      = "DynamoDB Resolver"
+
+  dynamodb_config {
+    table_name = aws_dynamodb_table.table.name
+    region     = data.aws_region.current.name
+  }
+}
+
+resource "aws_iam_role" "graphql_datasource" {
+  name               = "${var.prefix}-graphql-datasource"
+  assume_role_policy = data.aws_iam_policy_document.graphql_datasource_assume.json
+
+  tags = {
+    Name = var.prefix
+  }
+}
+
+data "aws_iam_policy_document" "graphql_datasource_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["appsync.${data.aws_partition.current.dns_suffix}"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "graphql_datasource" {
+  name   = "${var.prefix}-graphql-datasource"
+  policy = data.aws_iam_policy_document.graphql_datasource.json
+
+  tags = {
+    Name = var.prefix
+  }
+}
+
+data "aws_iam_policy_document" "graphql_datasource" {
+  statement {
+    actions = [
+      "dynamodb:BatchGetItem",
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateutItem",
+      "dynamodb:Query",
+    ]
+    resources = [aws_dynamodb_table.table.arn]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "graphql_datasource" {
+  role       = aws_iam_role.graphql_datasource.name
+  policy_arn = aws_iam_policy.graphql_datasource.arn
+}
