@@ -24,7 +24,7 @@ variable "state_bucket" {
 variable "environment" {
   description = "Unique name for the deployment"
   type        = string
-  default     = "primary"
+  default     = "dev"
 }
 
 terraform {
@@ -46,13 +46,13 @@ provider "aws" {
 }
 
 module "iac-roles" {
-  source = "../../module/iac-roles"
-  app_name = var.app_name
-  environment = var.environment
-  action_prefix = var.action_prefix
-  workspace = "none"
-  repo = var.repo
+  source           = "../../module/iac-roles"
+  app_name         = var.app_name
+  environment      = var.environment
+  action_prefix    = var.action_prefix
+  workspace        = "none"
+  repo             = var.repo
   state_bucket_arn = "arn:${data.aws_partition.current.id}:s3:::${var.state_bucket}"
-  oidc_type = "AWS"
-  oidc_arn = data.aws_caller_identity.current.account_id
+  oidc_type        = "AWS"
+  oidc_arn         = data.aws_caller_identity.current.account_id
 }

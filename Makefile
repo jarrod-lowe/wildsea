@@ -2,6 +2,7 @@ default: all
 
 TERRAFORM_ENVIRONMENTS := aws github wildsea aws-dev wildsea-dev
 TERRAFOM_VALIDATE := $(addsuffix /.validate,$(addprefix terraform/environment/, $(TERRAFORM_ENVIRONMENTS)))
+TERRAFORM_MODULES := iac-roles oidc state-bucket wildsea
 ACCOUNT_ID := $(shell aws sts get-caller-identity --query 'Account' --output text)
 AWS_REGION ?= "ap-southeast-2"
 RO_ROLE = arn:aws:iam::$(ACCOUNT_ID):role/GitHubAction-Wildsea-ro-dev
@@ -9,13 +10,25 @@ RW_ROLE = arn:aws:iam::$(ACCOUNT_ID):role/GitHubAction-Wildsea-rw-dev
 
 all: $(TERRAFOM_VALIDATE)
 
-terraform/environment/%/.validate: terraform/environment/%/*.tf
+.PHONY: terraform-format
+terraform-format: $(addprefix terraform-format-environment-,$(TERRAFORM_ENVIRONMENTS)) $(addprefix terraform-format-module-,$(TERRAFORM_MODULES))
+	@true
+
+.PHONY: terraform-format-environment-%
+terraform-format-environment-%:
+	cd terraform/environment/$*; terraform fmt
+
+.PHONY: terraform-format-module-%
+terraform-format-module-%:
+	cd terraform/module/$*; terraform fmt
+
+terraform/environment/%/.validate: terraform/environment/%/*.tf terraform-format
 	cd terraform/environment/$* ; terraform fmt
 	cd terraform/environment/$* ; terraform validate
 	touch $@
 
 .PHONY: dev
-dev: terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply
+dev: terraform-format terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply
 	@true
 
 terraform/environment/aws-dev/.apply: terraform/environment/aws-dev/*.tf terraform/module/iac-roles/*.tf

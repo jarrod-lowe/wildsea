@@ -9,7 +9,7 @@ resource "aws_iam_role" "ro" {
 
 data "aws_iam_policy_document" "ro_assume" {
   statement {
-    actions = [ var.oidc_type == "Federated" ? "sts:AssumeRoleWithWebIdentity" : "sts:AssumeRole" ]
+    actions = [var.oidc_type == "Federated" ? "sts:AssumeRoleWithWebIdentity" : "sts:AssumeRole"]
     principals {
       type        = var.oidc_type
       identifiers = [var.oidc_arn]
@@ -59,7 +59,7 @@ resource "aws_iam_role" "rw" {
 
 data "aws_iam_policy_document" "rw_assume" {
   statement {
-    actions = [ var.oidc_type == "Federated" ? "sts:AssumeRoleWithWebIdentity" : "sts:AssumeRole" ]
+    actions = [var.oidc_type == "Federated" ? "sts:AssumeRoleWithWebIdentity" : "sts:AssumeRole"]
     principals {
       type        = var.oidc_type
       identifiers = [var.oidc_arn]

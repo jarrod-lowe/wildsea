@@ -1,0 +1,31 @@
+type Mutation {
+    createGame(input: CreateGameInput!): Game!
+}
+
+type Query {
+    getGame(input: ID!): Game!
+}
+
+input CreateGameInput {
+    name: String!
+    description: String
+    publicNotes: String
+    privateNotes: String
+    fireflyUserId: ID!
+    players: [ID!]!
+}
+
+type Game {
+  id: ID!
+  name: String!
+  description: String
+  publicNotes: String
+  privateNotes: String
+#  fireflyUser: User!
+#  players: [ID!]!
+#  playerSheets: [PlayerSheet!]!
+#  shipSheet: ShipSheet
+#  clocks: [Clock!]!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}

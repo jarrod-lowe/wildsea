@@ -46,6 +46,9 @@ data "aws_iam_policy_document" "ro" {
     sid = "CognitoIdpGlobal"
     actions = [
       "cognito-idp:DescribeUserPoolDomain",
+      "appsync:SetWebACL",
+      "wafv2:GetWebACLForResource",
+      "wafv2:GetWebAcl",
     ]
     resources = [
       "*"
@@ -74,6 +77,51 @@ data "aws_iam_policy_document" "ro" {
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-*",
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:policy/${local.prefix}-*",
     ]
+  }
+
+  statement {
+    actions = [
+      "appsync:GetGraphqlApi",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
+  }
+  statement {
+    actions = [
+      "appsync:GetSchemaCreationStatus",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:ListTagsForResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "wafv2:ListWebACLs",
+      "wafv2:ListTagsForResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
   }
 }
 
@@ -167,6 +215,108 @@ data "aws_iam_policy_document" "rw" {
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:policy/${local.prefix}-*",
     ]
   }
+
+  statement {
+    actions = [
+      "appsync:CreateGraphqlApi",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "appsync:StartSchemaCreation",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "appsync:UpdateGraphqlApi",
+      "appsync:DeleteGraphqlApi",
+      "appsync:TagResource",
+      "appsync:UntagResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:DeleteLogGroup",
+      "logs:TagResource",
+      "logs:UntagResource",
+      "logs:PutRetentionPolicy",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"
+    ]
+  }
+
+  statement {
+    actions   = ["iam:CreateServiceLinkedRole"]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:AWSServiceName"
+      values   = ["appsync.${data.aws_partition.current.dns_suffix}"]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebAcl",
+      "wafv2:TagResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebACL",
+      "wafv2:UpdateWebACL",
+    ]
+    resources = [
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*",
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/webacl/*/*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "wafv2:DeleteWebACL",
+      "wafv2:ListTagsForResource",
+      "wafv2:AssociateWebACL",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
 }
 
 data "aws_iam_policy_document" "rw_boundary" {
@@ -231,9 +381,11 @@ data "aws_iam_policy_document" "rw_boundary" {
   }
 
   statement {
-    sid = "CognitoIdpGlobal"
     actions = [
       "cognito-idp:DescribeUserPoolDomain",
+      "appsync:SetWebACL",
+      "wafv2:GetWebACLForResource",
+      "wafv2:GetWebAcl",
     ]
     resources = [
       "*"
@@ -285,5 +437,125 @@ data "aws_iam_policy_document" "rw_boundary" {
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-*",
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:policy/${local.prefix}-*",
     ]
+  }
+
+  statement {
+    actions = [
+      "appsync:CreateGraphqlApi",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "appsync:StartSchemaCreation",
+      "appsync:GetSchemaCreationStatus",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "appsync:StartSchemaCreation",
+      "appsync:UpdateGraphqlApi",
+      "appsync:DeleteGraphqlApi",
+      "appsync:TagResource",
+      "appsync:UntagResource",
+      "appsync:GetGraphqlApi",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:DeleteLogGroup",
+      "logs:TagResource",
+      "logs:UntagResource",
+      "logs:PutRetentionPolicy",
+      "logs:DescribeLogGroups",
+      "logs:ListTagsForResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"
+    ]
+  }
+
+  statement {
+    actions   = ["iam:CreateServiceLinkedRole"]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:AWSServiceName"
+      values   = ["appsync.${data.aws_partition.current.dns_suffix}"]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebAcl",
+      "wafv2:TagResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebACL",
+      "wafv2:UpdateWebACL",
+    ]
+    resources = [
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*",
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/webacl/*/*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "wafv2:DeleteWebACL",
+      "wafv2:UpdatebACL",
+      "wafv2:ListTagsForResource",
+      "wafv2:AssociateWebACL",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
+  }
+
+  statement {
+    actions = [
+      "wafv2:ListWebACLs",
+      "wafv2:ListTagsForResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Name"
+      values   = [local.prefix]
+    }
   }
 }

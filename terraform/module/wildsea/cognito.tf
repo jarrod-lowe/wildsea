@@ -7,7 +7,7 @@ resource "aws_cognito_user_pool" "cognito" {
 }
 
 resource "aws_cognito_identity_provider" "idp" {
-  for_each = var.saml_metadata_url == "" ? toset([]) : toset([1])
+  for_each      = var.saml_metadata_url == "" ? toset([]) : toset([1])
   user_pool_id  = aws_cognito_user_pool.cognito.id
   provider_name = "SAML"
   provider_type = "SAML"
@@ -34,7 +34,7 @@ resource "aws_cognito_user_pool_client" "cognito" {
   logout_urls                          = ["https://TODO"]
   allowed_oauth_flows                  = ["code", "implicit"]
   allowed_oauth_scopes                 = ["openid"]
-  supported_identity_providers         = [ var.saml_metadata_url == "" ? "COGNITO" : aws_cognito_identity_provider.idp[0].provider_name ]
+  supported_identity_providers         = [var.saml_metadata_url == "" ? "COGNITO" : aws_cognito_identity_provider.idp[0].provider_name]
 }
 
 resource "aws_cognito_identity_pool" "cognito" {
@@ -86,7 +86,7 @@ resource "aws_iam_policy" "cognito" {
   name   = "${var.prefix}-user"
   policy = data.aws_iam_policy_document.cognito.json
 }
-  
+
 data "aws_iam_policy_document" "cognito" {
   statement {
     actions = [
