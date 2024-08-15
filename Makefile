@@ -35,13 +35,13 @@ terraform/environment/aws-dev/.apply: terraform/environment/aws-dev/*.tf terrafo
 	./terraform/environment/aws-dev/deploy.sh $(ACCOUNT_ID) dev
 	touch $@
 
-terraform/environment/wildsea-dev/.plan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform
+terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform
 	cd terraform/environment/wildsea-dev ; ../../../scripts/run-as.sh $(RO_ROLE) \
-		terraform plan -out=./plan
+		terraform plan -out=./plan.tfplan
 
-terraform/environment/wildsea-dev/.apply: terraform/environment/wildsea-dev/.plan
+terraform/environment/wildsea-dev/.apply: terraform/environment/wildsea-dev/plan.tfplan
 	cd terraform/environment/wildsea-dev ; ../../../scripts/run-as.sh $(RW_ROLE) \
-		terraform apply ./plan
+		terraform apply ./plan.tfplan
 	touch $@
 
 terraform/environment/wildsea-dev/.terraform: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf 
@@ -49,3 +49,8 @@ terraform/environment/wildsea-dev/.terraform: terraform/environment/wildsea-dev/
 		-backend-config=bucket=terraform-state-$(ACCOUNT_ID) \
         -backend-config=key=dev/terraform.tfstate \
         -backend-config=region=$(AWS_REGION)
+
+.PHONY: clean
+clean:
+	rm -f terraform/environment/*/.validate
+	rm -f terraform/environment/*/plan.tfplan
