@@ -55,6 +55,58 @@ resource "aws_s3_bucket_versioning" "state" {
   }
 }
 
+resource "aws_s3_bucket_policy" "state" {
+  bucket = aws_s3_bucket.state.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "disallow-https"
+    Statement = [
+      {
+        Sid       = "HTTPSOnly"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.state.arn,
+          "${aws_s3_bucket.state.arn}/*",
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_s3_bucket_policy" "state" {
+  bucket = aws_s3_bucket.state.name
+
+  policy = data.aws_iam_policy_document.state_resource_policy.json
+}
+
+data "aws_iam_policy_document" "state_resource_policy" {
+  statement {
+    sid       = "DisallowHTTPAccess"
+    effect    = "Deny"
+    actions   = ["s3:*"]
+    resources = [aws_s3_bucket.state.arn, "${aws_s3_bucket.state.arn}/*"]
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}
+
 output "arn" {
   description = "ARN of the state bucket"
   value       = aws_s3_bucket.state.arn

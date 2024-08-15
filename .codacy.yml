@@ -1,0 +1,4 @@
+---
+exclude_paths:
+  - "graphql/mutation/*/appsync.js"
+  - "graphql/query/*/appsync.js"

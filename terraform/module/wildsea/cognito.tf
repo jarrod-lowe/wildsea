@@ -27,7 +27,7 @@ resource "aws_cognito_identity_provider" "idp" {
 resource "aws_cognito_user_pool_client" "cognito" {
   name                                 = var.prefix
   user_pool_id                         = aws_cognito_user_pool.cognito.id
-  generate_secret                      = true
+  generate_secret                      = false
   explicit_auth_flows                  = ["ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_USER_SRP_AUTH"]
   allowed_oauth_flows_user_pool_client = true
   callback_urls                        = ["https://TODO"]

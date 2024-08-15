@@ -10,6 +10,8 @@ RW_ROLE = arn:aws:iam::$(ACCOUNT_ID):role/GitHubAction-Wildsea-rw-dev
 
 all: $(TERRAFOM_VALIDATE)
 
+include graphql/graphql.mk
+
 .PHONY: terraform-format
 terraform-format: $(addprefix terraform-format-environment-,$(TERRAFORM_ENVIRONMENTS)) $(addprefix terraform-format-module-,$(TERRAFORM_MODULES))
 	@true
@@ -35,13 +37,16 @@ terraform/environment/aws-dev/.apply: terraform/environment/aws-dev/*.tf terrafo
 	./terraform/environment/aws-dev/deploy.sh $(ACCOUNT_ID) dev
 	touch $@
 
-terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform
+terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform $(GRAPHQL)
 	cd terraform/environment/wildsea-dev ; ../../../scripts/run-as.sh $(RO_ROLE) \
 		terraform plan -out=./plan.tfplan
 
-terraform/environment/wildsea-dev/.apply: terraform/environment/wildsea-dev/plan.tfplan
+terraform/environment/wildsea-dev/.apply: terraform/environment/wildsea-dev/plan.tfplan $(GRAPHQL)
 	cd terraform/environment/wildsea-dev ; ../../../scripts/run-as.sh $(RW_ROLE) \
-		terraform apply ./plan.tfplan
+		terraform apply ./plan.tfplan ; \
+		status=$$? ; \
+		rm -f $< ; \
+		[ "$$status" -eq 0 ]
 	touch $@
 
 terraform/environment/wildsea-dev/.terraform: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf 
@@ -54,3 +59,10 @@ terraform/environment/wildsea-dev/.terraform: terraform/environment/wildsea-dev/
 clean:
 	rm -f terraform/environment/*/.validate
 	rm -f terraform/environment/*/plan.tfplan
+	rm -f graphql/mutation/*/appsync.js
+	rm -f graphql/query/*/appsync.js
+	rm -rf graphql/node_modules
+
+.PHONY: graphql-eslint
+graphql-eslint:
+	docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/code pipelinecomponents/eslint eslint

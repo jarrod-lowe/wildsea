@@ -22,7 +22,7 @@ Wildsea companion app
 * Log into Codacy, and connect the repo
   * Configure the rule to maximum
 * In Codacy, in the repo, go to code patterns, and edit the coding standard:
-  * Set the languages to: CSS, Go, JSON, Javascript, Markdown, Python, Shell, Terraform, Typescript, XML, YAML
+  * Set the languages to: CSS, Go, JSON, Markdown, Python, Shell, Terraform, Typescript, XML, YAML
   * Select every tool that is:
     * NOT client-side
     * NOT deprecated
@@ -85,6 +85,8 @@ setup, you will need to re-run the deployment after adding the secrets.
 If you do not set the secret, then Cognito will be used as the identity source.
 
 ## Development Environment
+
+Install esbuild with `sudo npm install -g --save-exact --save-dev esbuild`
 
 After having set up the AWS Account, use `AWS_PROFILE=<profile> make dev` to
 deploy a development version. If this is a different AWS Account from the real

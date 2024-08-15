@@ -1,0 +1,13 @@
+{
+    "name": "graphql",
+    "version": "1.0.0",
+    "dependencies": {
+        "@aws-appsync/utils": "^1.7.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "9.9.0",
+        "eslint": "9.9.0",
+        "globals": "15.9.0",
+        "typescript-eslint": "8.1.0"
+    }
+}

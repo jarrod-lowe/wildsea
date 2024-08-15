@@ -1,21 +1,17 @@
 type Mutation {
-    createGame(input: CreateGameInput!): Game!
+    createGame(input: CreateGameInput!): Game! @aws_cognito_user_pools
 }
 
 type Query {
-    getGame(input: ID!): Game!
+    getGame(input: ID!): Game! @aws_cognito_user_pools
 }
 
 input CreateGameInput {
     name: String!
     description: String
-    publicNotes: String
-    privateNotes: String
-    fireflyUserId: ID!
-    players: [ID!]!
 }
 
-type Game {
+type Game @aws_cognito_user_pools {
   id: ID!
   name: String!
   description: String
