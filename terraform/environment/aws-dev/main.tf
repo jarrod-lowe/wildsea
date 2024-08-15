@@ -24,7 +24,7 @@ variable "state_bucket" {
 variable "environment" {
   description = "Unique name for the deployment"
   type        = string
-  default     = "primary"
+  default     = "dev"
 }
 
 terraform {

@@ -8,10 +8,18 @@ fi
 DIR="$( dirname "$0" )"
 cd "${DIR}"
 
+if [[ "${DIR}" == *-dev ]] ; then
+    DEFAULT_ENVIRONMENT="dev"
+else
+    DEFAULT_ENVIRONMENT="primary"
+fi
+
 ACCOUNT_ID="$1"
-ENVIRONMENT="${2:-primary}"
+ENVIRONMENT="${2:-${DEFAULT_ENVIRONMENT}}"
 AWS_REGION="${3:-ap-southeast-2}"
 STATE_BUCKET="terraform-state-${ACCOUNT_ID}"
+
+echo "Using ${ENVIRONMENT} environment"
 
 if ! aws help >/dev/null ; then
     echo >&2 "Error: aws cli not installed"
