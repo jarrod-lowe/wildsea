@@ -59,11 +59,16 @@ resource "aws_iam_role_policy_attachment" "grahql_log" {
 }
 
 resource "aws_wafv2_web_acl_association" "graphql" {
+  count = var.enable_waf ? 1 : 0
+
   resource_arn = aws_appsync_graphql_api.graphql.arn
-  web_acl_arn  = aws_wafv2_web_acl.graphql.arn
+  web_acl_arn  = aws_wafv2_web_acl.graphql[0].arn
 }
 
 resource "aws_wafv2_web_acl" "graphql" {
+  # checkov:skip=CKV2_AWS_31:Full logging could be too expensive
+  count = var.enable_waf ? 1 : 0
+
   name  = "${var.prefix}-graphql-waf"
   scope = "REGIONAL"
 
@@ -88,7 +93,7 @@ resource "aws_wafv2_web_acl" "graphql" {
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = true
       metric_name                = "Ratelimit"
       sampled_requests_enabled   = false
     }
@@ -105,14 +110,12 @@ resource "aws_wafv2_web_acl" "graphql" {
       }
     }
     override_action {
-      count {
-
-      }
+      none {}
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "AWSManagedRulesCommonRuleSet"
-      sampled_requests_enabled   = true
+      sampled_requests_enabled   = false
     }
   }
 
@@ -126,14 +129,31 @@ resource "aws_wafv2_web_acl" "graphql" {
       }
     }
     override_action {
-      count {
-
-      }
+      none {}
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "AWSManagedRulesAmazonIpReputationList"
-      sampled_requests_enabled   = true
+      sampled_requests_enabled   = false
+    }
+  }
+
+  rule {
+    name     = "AWSManagedRulesKnownBadInputsRuleSet"
+    priority = 40
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesKnownBadInputsRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    override_action {
+      none {}
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWSManagedRulesKnownBadInputsRuleSet"
+      sampled_requests_enabled   = false
     }
   }
 

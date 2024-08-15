@@ -11,3 +11,9 @@ variable "saml_metadata_url" {
   description = "SAML metadata URL"
   type        = string
 }
+
+variable "enable_waf" {
+  description = "Enable WAF? Has codt implications"
+  type        = bool
+  default     = false
+}

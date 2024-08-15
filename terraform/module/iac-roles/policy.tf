@@ -295,15 +295,16 @@ data "aws_iam_policy_document" "rw" {
   statement {
     actions = [
       "wafv2:CreateWebACL",
+      "wafv2:UpdateWebACL",
     ]
     resources = [
-      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*"
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*",
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/webacl/*/*",
     ]
   }
 
   statement {
     actions = [
-      "wafv2:UpdateWebACL",
       "wafv2:DeleteWebACL",
       "wafv2:ListTagsForResource",
       "wafv2:AssociateWebACL",
@@ -522,15 +523,16 @@ data "aws_iam_policy_document" "rw_boundary" {
   statement {
     actions = [
       "wafv2:CreateWebACL",
+      "wafv2:UpdateWebACL",
     ]
     resources = [
-      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*"
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*",
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/webacl/*/*",
     ]
   }
 
   statement {
     actions = [
-      "wafv2:UpdateWebACL",
       "wafv2:DeleteWebACL",
       "wafv2:UpdatebACL",
       "wafv2:ListTagsForResource",
