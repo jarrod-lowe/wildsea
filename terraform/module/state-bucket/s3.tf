@@ -56,33 +56,7 @@ resource "aws_s3_bucket_versioning" "state" {
 }
 
 resource "aws_s3_bucket_policy" "state" {
-  bucket = aws_s3_bucket.state.name
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Id      = "disallow-https"
-    Statement = [
-      {
-        Sid       = "HTTPSOnly"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = "s3:*"
-        Resource = [
-          aws_s3_bucket.state.arn,
-          "${aws_s3_bucket.state.arn}/*",
-        ]
-        Condition = {
-          Bool = {
-            "aws:SecureTransport" = "false"
-          }
-        }
-      },
-    ]
-  })
-}
-
-resource "aws_s3_bucket_policy" "state" {
-  bucket = aws_s3_bucket.state.name
+  bucket = aws_s3_bucket.state.id
 
   policy = data.aws_iam_policy_document.state_resource_policy.json
 }

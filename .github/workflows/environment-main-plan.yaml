@@ -27,8 +27,8 @@ jobs:
     - name: Install esbuild
       run: npm install -g esbuild
 
-    - name: Compile graphql
-      run: make graphql
+    - name: Compile, check and test graphql
+      run: IN_PIPELINE=true make graphql
 
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@55f725fcb586ca16a5ed5b0d75d464defbfa831b

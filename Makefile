@@ -30,18 +30,18 @@ terraform/environment/%/.validate: terraform/environment/%/*.tf terraform-format
 	touch $@
 
 .PHONY: dev
-dev: terraform-format terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply
+dev: $(GRAPHQL_DEV) terraform-format terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply
 	@true
 
 terraform/environment/aws-dev/.apply: terraform/environment/aws-dev/*.tf terraform/module/iac-roles/*.tf
 	./terraform/environment/aws-dev/deploy.sh $(ACCOUNT_ID) dev
 	touch $@
 
-terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform $(GRAPHQL)
+terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform $(GRAPHQL_JS)
 	cd terraform/environment/wildsea-dev ; ../../../scripts/run-as.sh $(RO_ROLE) \
 		terraform plan -out=./plan.tfplan
 
-terraform/environment/wildsea-dev/.apply: terraform/environment/wildsea-dev/plan.tfplan $(GRAPHQL)
+terraform/environment/wildsea-dev/.apply: terraform/environment/wildsea-dev/plan.tfplan $(GRAPHQL_JS)
 	cd terraform/environment/wildsea-dev ; ../../../scripts/run-as.sh $(RW_ROLE) \
 		terraform apply ./plan.tfplan ; \
 		status=$$? ; \
@@ -62,7 +62,3 @@ clean:
 	rm -f graphql/mutation/*/appsync.js
 	rm -f graphql/query/*/appsync.js
 	rm -rf graphql/node_modules
-
-.PHONY: graphql-eslint
-graphql-eslint:
-	docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/code pipelinecomponents/eslint eslint
