@@ -267,21 +267,10 @@ resource "aws_appsync_resolver" "resolver" {
   }
 }
 
-resource "null_resource" "graphql_compile" {
-  for_each = local.all
-
-  provisioner "local-exec" {
-    command = "cd ${path.module}/../../.. && make ${each.value.make}"
-  }
-
-  triggers = {
-    source_change = filesha256(each.value.source)
-    dest_file     = each.value.path
-  }
-}
-
 data "local_file" "graphql_code" {
   for_each = local.all
 
-  filename = null_resource.graphql_compile[each.key].triggers.dest_file
+  # For dev, the makefile will rebuild this before calling terraform
+  # In pipelines, a previous step will do the build
+  filename = each.value.path
 }
