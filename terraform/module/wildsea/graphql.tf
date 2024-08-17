@@ -226,3 +226,62 @@ resource "aws_iam_role_policy_attachment" "graphql_datasource" {
   role       = aws_iam_role.graphql_datasource.name
   policy_arn = aws_iam_policy.graphql_datasource.arn
 }
+
+locals {
+  mutations = distinct([for d in fileset("${path.module}/../../../graphql/mutation", "**") : dirname(d)])
+  queries   = distinct([for d in fileset("${path.module}/../../../graphql/query", "**") : dirname(d)])
+
+  mutations_map = {
+    for mutation in local.mutations : replace(mutation, "../../../graphql/mutation/", "") => {
+      "type" : "Mutation",
+      "path" : "../../../graphql/mutation/${mutation}/appsync.js",
+      "make" : "graphql/mutation/${mutation}/appsync.js",
+      "source" : "../../../graphql/mutation/${mutation}/appsync.ts"
+    }
+  }
+
+  queries_map = {
+    for query in local.queries : replace(query, "../../../graphql/query/", "") => {
+      "type" : "Query",
+      "path" : "../../../graphql/query/${query}/appsync.js",
+      "make" : "graphql/query/${query}/appsync.js",
+      "source" : "../../../graphql/query/${query}/appsync.ts"
+    }
+  }
+
+  all = merge(local.mutations_map, local.queries_map)
+}
+
+resource "aws_appsync_resolver" "resolver" {
+  for_each = local.all
+
+  api_id      = aws_appsync_graphql_api.graphql.id
+  type        = each.value.type
+  field       = each.key
+  data_source = aws_appsync_datasource.graphql.name
+  code        = data.local_file.graphql_code[each.key].content
+
+  runtime {
+    name            = "APPSYNC_JS"
+    runtime_version = "1.0.0"
+  }
+}
+
+resource "null_resource" "graphql_compile" {
+  for_each = local.all
+
+  provisioner "local-exec" {
+    command = "cd ${path.module}/../../.. && make ${each.value.make}"
+  }
+
+  triggers = {
+    source_change = filesha256(each.value.source)
+    dest_file     = each.value.path
+  }
+}
+
+data "local_file" "graphql_code" {
+  for_each = local.all
+
+  filename = null_resource.graphql_compile[each.key].triggers.dest_file
+}

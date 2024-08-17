@@ -46,9 +46,9 @@ data "aws_iam_policy_document" "ro" {
     sid = "CognitoIdpGlobal"
     actions = [
       "cognito-idp:DescribeUserPoolDomain",
-      "appsync:SetWebACL",
       "wafv2:GetWebACLForResource",
       "wafv2:GetWebAcl",
+      "appsync:GetResolver",
     ]
     resources = [
       "*"
@@ -194,6 +194,10 @@ data "aws_iam_policy_document" "rw" {
       "cognito-identity:SetIdentityPoolRoles",
       "cognito-identity:TagResource",
       "cognito-identity:UntagResource",
+      "appsync:CreateResolver",
+      "appsync:DeleteResolver",
+      "appsync:UpdateResolver",
+      "appsync:SetWebACL",
     ]
     resources = [
       "*"
@@ -389,6 +393,10 @@ data "aws_iam_policy_document" "rw_boundary" {
       "appsync:SetWebACL",
       "wafv2:GetWebACLForResource",
       "wafv2:GetWebAcl",
+      "appsync:CreateResolver",
+      "appsync:DeleteResolver",
+      "appsync:UpdateResolver",
+      "appsync:GetResolver",
     ]
     resources = [
       "*"
