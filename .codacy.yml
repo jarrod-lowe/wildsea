@@ -1,4 +1,7 @@
 ---
 exclude_paths:
+  # Auto-generated files
   - "graphql/mutation/*/appsync.js"
   - "graphql/query/*/appsync.js"
+  # The auto-formatter fights with Codacy PMD wanting to be compatiable with all browsers, but this is a local config file
+  - "graphql/jest.config.js"
