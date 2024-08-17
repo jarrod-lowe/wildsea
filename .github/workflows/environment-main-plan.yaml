@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
 
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
 
