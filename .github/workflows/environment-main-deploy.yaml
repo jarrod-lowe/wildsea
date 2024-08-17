@@ -20,12 +20,25 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install esbuild
+      run: npm install -g esbuild
+
+    - name: Compile graphql
+      run: make graphql
+
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@55f725fcb586ca16a5ed5b0d75d464defbfa831b
       with:
         role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE }}
         role-session-name: GitHubDeploy-${{ vars.ENVIRONMENT }}
         aws-region: ${{ vars.AWS_REGION }}
+
     - name: terraform apply
       uses: dflook/terraform-apply@7d435d4d115a11e5db1e710ac969f5382f0f6f9f
       with:

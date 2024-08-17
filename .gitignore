@@ -36,3 +36,7 @@ terraform.rc
 .validate
 .apply
 plan.tfplan
+
+graphql/node_modules
+graphql/mutation/*/appsync.js
+graphql/query/*/appsync.js

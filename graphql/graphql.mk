@@ -11,7 +11,7 @@ graphql/%/appsync.js: graphql/node_modules graphql/%/appsync.ts
 		--outdir=$*
 
 graphql/node_modules: graphql/package.json
-	cd graphql && npm install
+	cd graphql && npm install && npm ci
 
 GRAPHQL := $(patsubst %.ts,%.js,$(wildcard graphql/*/*/appsync.ts))
 
