@@ -5,17 +5,20 @@ data "aws_iam_policy_document" "ro" {
       "s3:GetObject"
     ]
     resources = [
-      "${var.state_bucket_arn}/${var.environment}/terraform.tfstate"
+      "${var.state_bucket_arn}/${var.environment}/terraform.tfstate",
     ]
   }
 
   statement {
     sid = "ListState"
     actions = [
-      "s3:ListBucket"
+      "s3:ListBucket",
+      "s3:GetBucket*",
+      "s3:Get*Configuration",
     ]
     resources = [
-      var.state_bucket_arn
+      var.state_bucket_arn,
+      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui",
     ]
   }
 
@@ -43,12 +46,17 @@ data "aws_iam_policy_document" "ro" {
   }
 
   statement {
-    sid = "CognitoIdpGlobal"
+    sid = "Global"
     actions = [
       "cognito-idp:DescribeUserPoolDomain",
       "wafv2:GetWebACLForResource",
       "wafv2:GetWebAcl",
       "appsync:GetResolver",
+      "cloudfront:List*",
+      "cloudfront:Get*Policy",
+      "cloudfront:GetDistribution",
+      "cloudfront:GetOriginAccessControl",
+      "iam:SimulatePrincipalPolicy",
     ]
     resources = [
       "*"
@@ -157,9 +165,11 @@ data "aws_iam_policy_document" "rw" {
       "dynamodb:TagResource",
       "dynamodb:UntagResource",
       "dynamodb:Update*",
+      "s3:Put*Configuration",
     ]
     resources = [
-      "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
+      "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}",
+      "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
     ]
   }
 
@@ -188,7 +198,7 @@ data "aws_iam_policy_document" "rw" {
   }
 
   statement {
-    sid = "CognitoIdentityGlobal"
+    sid = "Global"
     actions = [
       "cognito-identity:CreateIdentityPool",
       "cognito-identity:SetIdentityPoolRoles",
@@ -198,6 +208,13 @@ data "aws_iam_policy_document" "rw" {
       "appsync:DeleteResolver",
       "appsync:UpdateResolver",
       "appsync:SetWebACL",
+      "s3:CreateBucket",
+      "cloudfront:CreateOriginAccessControl",
+      "cloudfront:DeleteOriginAccessControl",
+      "cloudfront:CreateDistribution*",
+      "cloudfront:UpdateDistribution",
+      "cloudfront:DeleteDistribution",
+      "cloudfront:TagResource",
     ]
     resources = [
       "*"
@@ -254,7 +271,7 @@ data "aws_iam_policy_document" "rw" {
       "appsync:UntagResource",
     ]
     resources = [
-      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*",
     ]
     condition {
       test     = "StringEquals"
@@ -270,9 +287,12 @@ data "aws_iam_policy_document" "rw" {
       "logs:TagResource",
       "logs:UntagResource",
       "logs:PutRetentionPolicy",
+      "s3:DeleteBucket",
+      "s3:PutBucket*",
     ]
     resources = [
-      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"
+      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*",
+      "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
     ]
   }
 
@@ -335,18 +355,21 @@ data "aws_iam_policy_document" "rw_boundary" {
     ]
     resources = [
       "${var.state_bucket_arn}/${var.environment}/terraform.tfstate",
-      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-*/*"
+      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-*/*",
     ]
   }
 
   statement {
     sid = "ListState"
     actions = [
-      "s3:ListBucket"
+      "s3:ListBucket",
+      "s3:GetBucket*",
+      "s3:Get*Configuration",
+      "s3:Put*Configuration",
     ]
     resources = [
       "${var.state_bucket_arn}/${var.environment}/terraform.tfstate",
-      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-*/*"
+      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-*",
     ]
   }
 
@@ -397,6 +420,18 @@ data "aws_iam_policy_document" "rw_boundary" {
       "appsync:DeleteResolver",
       "appsync:UpdateResolver",
       "appsync:GetResolver",
+      "s3:CreateBucket",
+      "cloudfront:List*",
+      "cloudfront:Get*Policy",
+      "cloudfront:CreateOriginAccessControl",
+      "cloudfront:GetOriginAccessControl",
+      "cloudfront:DeleteOriginAccessControl",
+      "cloudfront:CreateDistribution*",
+      "cloudfront:UpdateDistribution",
+      "cloudfront:DeleteDistribution",
+      "cloudfront:TagResource",
+      "cloudfront:GetDistribution",
+      "iam:SimulatePrincipalPolicy",
     ]
     resources = [
       "*"
@@ -487,7 +522,7 @@ data "aws_iam_policy_document" "rw_boundary" {
       "appsync:GetGraphqlApi",
     ]
     resources = [
-      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*",
     ]
     condition {
       test     = "StringEquals"
@@ -505,9 +540,12 @@ data "aws_iam_policy_document" "rw_boundary" {
       "logs:PutRetentionPolicy",
       "logs:DescribeLogGroups",
       "logs:ListTagsForResource",
+      "s3:DeleteBucket",
+      "s3:PutBucket*",
     ]
     resources = [
-      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*"
+      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*",
+      "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
     ]
   }
 

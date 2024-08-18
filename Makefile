@@ -34,7 +34,7 @@ dev: $(GRAPHQL_DEV) terraform-format terraform/environment/aws-dev/.apply terraf
 	@true
 
 terraform/environment/aws-dev/.apply: terraform/environment/aws-dev/*.tf terraform/module/iac-roles/*.tf
-	./terraform/environment/aws-dev/deploy.sh $(ACCOUNT_ID) dev
+	AUTO_APPROVE=yes ./terraform/environment/aws-dev/deploy.sh $(ACCOUNT_ID) dev
 	touch $@
 
 terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform $(GRAPHQL_JS)
@@ -42,11 +42,11 @@ terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev
 		terraform plan -out=./plan.tfplan
 
 terraform/environment/wildsea-dev/.apply: terraform/environment/wildsea-dev/plan.tfplan $(GRAPHQL_JS)
-	cd terraform/environment/wildsea-dev ; ../../../scripts/run-as.sh $(RW_ROLE) \
-		terraform apply ./plan.tfplan ; \
-		status=$$? ; \
-		rm -f $< ; \
-		[ "$$status" -eq 0 ]
+	cd terraform/environment/wildsea-dev ; \
+	../../../scripts/run-as.sh $(RW_ROLE) \
+		terraform apply ./plan.tfplan || status=$$? ; \
+		rm -v ./plan.tfplan ; \
+		[ -z "$$status" ] || exit $$status
 	touch $@
 
 terraform/environment/wildsea-dev/.terraform: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf 
