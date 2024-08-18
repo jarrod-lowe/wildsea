@@ -42,6 +42,6 @@ terraform init \
     -backend-config="key=${ENVIRONMENT}/aws.tfstate" \
     -backend-config="region=${AWS_REGION}"
 
-terraform apply \
+terraform apply ${AUTO_APPROVE:+-auto-approve} \
     -var environment="${ENVIRONMENT}" \
     -var state_bucket="${STATE_BUCKET}"

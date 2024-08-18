@@ -88,6 +88,18 @@ resource "github_repository_ruleset" "ruleset" {
         #                github_repository_environment.ro.id
       ]
     }
+    required_status_checks {
+      strict_required_status_checks_policy = true
+      required_check {
+        context = "Codacy Static Code Analysis"
+      }
+      required_check {
+        context = "Environment Main - Plan"
+      }
+      required_check {
+        context = "SonarCloud Code Analysis"
+      }
+    }
   }
 
   conditions {

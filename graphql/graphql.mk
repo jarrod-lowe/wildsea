@@ -24,17 +24,16 @@ graphql: $(GRAPHQL_JS) graphql-test
 .PHONY: graphql-test
 graphql-test: graphql/node_modules
 	if [ -z "$(IN_PIPELINE)" ] ; then \
-		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/app -w /app --entrypoint ./node_modules/jest/bin/jest.js node:20 \
+		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/app -w /app --entrypoint ./node_modules/jest/bin/jest.js node:20 ; \
 	else \
-		cd graphql && jest ; \
+		cd graphql && ./node_modules/jest/bin/jest.js ; \
 	fi
 
 # Won't auto-fix in pipeline
 .PHONY: graphql-eslint
 graphql-eslint: $(GRAPHQL_TS)
 	if [ -z "$(IN_PIPELINE)" ] ; then \
-		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/code pipelinecomponents/eslint eslint --fix
+		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/code pipelinecomponents/eslint eslint --fix ; \
 	else \
-		cd graphql && eslint ;:w
-		\
+		cd graphql && eslint ; \
 	fi
