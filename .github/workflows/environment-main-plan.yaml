@@ -30,6 +30,12 @@ jobs:
     - name: Compile, check and test graphql
       run: IN_PIPELINE=true make graphql
 
+    - name: Run codacy-coverage-reporter
+      uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699
+      with:
+        project-token: ${{ secrets.CODACY_API_TOKEN }}
+        coverage-reports: graphql/coverage/lcov.info
+
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@55f725fcb586ca16a5ed5b0d75d464defbfa831b
       with:

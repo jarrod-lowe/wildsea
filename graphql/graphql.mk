@@ -24,9 +24,9 @@ graphql: $(GRAPHQL_JS) graphql-test
 .PHONY: graphql-test
 graphql-test: graphql/node_modules
 	if [ -z "$(IN_PIPELINE)" ] ; then \
-		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/app -w /app --entrypoint ./node_modules/jest/bin/jest.js node:20 ; \
+		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/app -w /app --entrypoint ./node_modules/jest/bin/jest.js node:20 --coverage ; \
 	else \
-		cd graphql && ./node_modules/jest/bin/jest.js ; \
+		cd graphql && ./node_modules/jest/bin/jest.js --coverage ; \
 	fi
 
 # Won't auto-fix in pipeline
