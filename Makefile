@@ -63,4 +63,4 @@ clean:
 	rm -f graphql/mutation/*/appsync.js
 	rm -f graphql/query/*/appsync.js
 	rm -rf graphql/node_modules
-	rm -f appsync/.graphqlconfig.yml
+	rm -rf appsync/node_modules
