@@ -3,6 +3,7 @@
 Wildsea companion app
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/31f30fef56544a3c931c56da17afc2e9)](https://app.codacy.com/gh/jarrod-lowe/wildsea/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/31f30fef56544a3c931c56da17afc2e9)](https://app.codacy.com/gh/jarrod-lowe/wildsea/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 
 ## Setup
 
