@@ -40,3 +40,4 @@ plan.tfplan
 graphql/node_modules
 graphql/mutation/*/appsync.js
 graphql/query/*/appsync.js
+graphql/coverage/

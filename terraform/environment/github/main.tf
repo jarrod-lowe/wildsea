@@ -46,6 +46,12 @@ variable "environment" {
   default     = "primary"
 }
 
+variable "codacy_api_token" {
+  description = "Codacy API Token"
+  sensitive   = true
+  type        = string
+}
+
 terraform {
   backend "s3" {
     // region, bucket and key come from -backend-config
@@ -127,6 +133,12 @@ locals {
     STATE_BUCKET = var.state_bucket
     ENVIRONMENT  = var.environment
   }
+  rw_secrets = {
+    CODACY_API_TOKEN = var.codacy_api_token
+  }
+  ro_secrets = {
+    CODACY_API_TOKEN = var.codacy_api_token
+  }
 }
 
 resource "github_repository_environment" "rw" {
@@ -165,4 +177,24 @@ resource "github_actions_environment_variable" "ro" {
   repository    = data.github_repository.repo.name
   variable_name = each.key
   value         = each.value
+}
+
+resource "github_actions_environment_secret" "rw" {
+  # checkov:skip=CKV_GIT_4:Value comes from a file not checked in
+  for_each = local.rw_secrets
+
+  environment     = github_repository_environment.rw.environment
+  repository      = data.github_repository.repo.name
+  secret_name     = each.key
+  plaintext_value = each.value
+}
+
+resource "github_actions_environment_secret" "ro" {
+  # checkov:skip=CKV_GIT_4:Value comes from a file not checked in
+  for_each = local.ro_secrets
+
+  environment     = github_repository_environment.ro.environment
+  repository      = data.github_repository.repo.name
+  secret_name     = each.key
+  plaintext_value = each.value
 }

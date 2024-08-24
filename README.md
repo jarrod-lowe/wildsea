@@ -2,6 +2,8 @@
 
 Wildsea companion app
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/31f30fef56544a3c931c56da17afc2e9)](https://app.codacy.com/gh/jarrod-lowe/wildsea/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 ## Setup
 
 * Clone `git@github.com:jarrod-lowe/wildsea.git` and then `cd wildsea`
@@ -28,10 +30,12 @@ Wildsea companion app
     * NOT deprecated
     * NOT remark-lint
     * Matches one of the above languages
+* In codacy, go to the repo -> settings -> coverage and copy the repository API token
 * Log into Github and create a personal access token with the "repo" scope, and 7 days expiry
 * Create `terraform/environment/github/terraform.tfvars`
   * Add `token = "<the token>"` to the vars file
   * Add `workspace = "<your github org>"` to the vars file
+  * Add `codacy_api_token = "<the token>"` to the vars file
 * Run `.AWS_PROFILE=<profile> ./terraform/environment/github/deploy.sh <aws account id>`
 * Install <https://github.com/apps/renovate> into the repo
 * Go into the two environments, and set a secret called `SAML_METADATA_URL` with the metadata URL for you SAML (See Jumpcloud for an example)
