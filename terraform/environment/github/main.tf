@@ -96,9 +96,10 @@ resource "github_repository_ruleset" "ruleset" {
     }
     required_status_checks {
       strict_required_status_checks_policy = true
-      required_check {
-        context = "Codacy Static Code Analysis"
-      }
+# Far too often, Codacy just doesn't report back
+#      required_check {
+#        context = "Codacy Static Code Analysis"
+#      }
       required_check {
         context = "Environment Main - Plan"
       }
