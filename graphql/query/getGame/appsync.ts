@@ -1,5 +1,6 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
+import type { Game } from "../../../appsync/graphql";
 
 export function request(
   context: Context<{ id: string }>,
@@ -47,11 +48,7 @@ export function response(context: Context) {
   return context.result;
 }
 
-interface Data {
-  fireflyUserId: string;
-  players: string[];
-}
-function permitted(identity: AppSyncIdentityCognito, data: Data): boolean {
+function permitted(identity: AppSyncIdentityCognito, data: Game): boolean {
   if (data === null) {
     return false;
   }
@@ -60,9 +57,11 @@ function permitted(identity: AppSyncIdentityCognito, data: Data): boolean {
     return true;
   }
 
-  for (const player of data.players) {
-    if (player === identity.sub) {
-      return true;
+  if (data.players) {
+    for (const player of data.players) {
+      if (player === identity.sub) {
+        return true;
+      }
     }
   }
 

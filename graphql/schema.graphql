@@ -1,3 +1,5 @@
+scalar AWSDateTime
+
 type Mutation {
     createGame(input: CreateGameInput!): Game! @aws_cognito_user_pools
 }
