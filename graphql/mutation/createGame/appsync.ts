@@ -1,10 +1,8 @@
-import {
-  util,
-  Context,
+import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
+import type {
   DynamoDBPutItemRequest,
-  AppSyncIdentityCognito,
   PutItemInputAttributeMap,
-} from "@aws-appsync/utils";
+} from "@aws-appsync/utils/lib/resolver-return-types";
 
 /**
  * A CreateGameInput creates a Game.
@@ -41,6 +39,7 @@ export function request(
       description: input.description,
       id: id,
       fireflyUserId: identity.sub,
+      // players: no value yet
       createdAt: timestamp,
       updatedAt: timestamp,
     }) as PutItemInputAttributeMap,

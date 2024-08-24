@@ -3,7 +3,7 @@ type Mutation {
 }
 
 type Query {
-    getGame(input: ID!): Game! @aws_cognito_user_pools
+    getGame(id: ID!): Game! @aws_cognito_user_pools
 }
 
 input CreateGameInput {
@@ -17,8 +17,8 @@ type Game @aws_cognito_user_pools {
   description: String
   publicNotes: String
   privateNotes: String
-#  fireflyUser: User!
-#  players: [ID!]!
+  fireflyUserId: ID!
+  players: [ID!]
 #  playerSheets: [PlayerSheet!]!
 #  shipSheet: ShipSheet
 #  clocks: [Clock!]!
