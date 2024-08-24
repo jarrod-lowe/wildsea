@@ -1,3 +1,7 @@
+import { awsAppsyncUtilsMock } from "./mocks";
+
+jest.mock("@aws-appsync/utils", () => awsAppsyncUtilsMock);
+
 import { request, response } from "../mutation/createGame/appsync";
 import {
   util,
@@ -5,31 +9,6 @@ import {
   AppSyncIdentityCognito,
   Info,
 } from "@aws-appsync/utils";
-
-// Mock specific functions in the util object
-jest.mock("@aws-appsync/utils", () => ({
-  util: {
-    autoId: jest.fn(),
-    time: {
-      nowISO8601: jest.fn(),
-    },
-    error: jest.fn().mockImplementation((message: string) => {
-      throw new Error(message);
-    }),
-    appendError: jest.fn(),
-    dynamodb: {
-      toMapValues: jest.fn().mockImplementation((input) =>
-        Object.entries(input).reduce(
-          (acc: Record<string, { S: string }>, [key, value]) => {
-            acc[key] = { S: value as string };
-            return acc;
-          },
-          {},
-        ),
-      ),
-    },
-  },
-}));
 
 describe("request function", () => {
   beforeEach(() => {

@@ -44,11 +44,6 @@ export function response(context: Context) {
     return;
   }
 
-  if (!context.result) {
-    util.appendError("Game not found." as string);
-    return;
-  }
-
   return context.result;
 }
 
