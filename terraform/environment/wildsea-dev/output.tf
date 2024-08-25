@@ -29,3 +29,7 @@ output "ui_bucket" {
 output "cdn_id" {
   value = module.wildsea.cdn_id
 }
+
+output "cdn_domain_name" {
+  value = module.wildsea.cdn_domain_name
+}

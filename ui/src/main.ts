@@ -17,15 +17,16 @@ function getPageURL() {
 }
 
 /**
- * Fetch the configuration from config.json and update the amplify configuration
- * object with the values from the JSON file.
+ * Merges configuration updates from a provided JSON object into the existing
+ * Amplify configuration object. This function primarily updates the OAuth
+ * redirect URLs, Cognito identity pool, user pools, AppSync, and regional 
+ * settings within the Amplify configuration.
  *
- * @returns the updated amplify configuration object
+ * @param {AmplifyConfigJSON} configUpdates - The configuration updates retrieved from the config.json file.
+ * @param {string} pageUrl - The URL to be used for OAuth redirect sign-in and sign-out.
+ * @returns {AmplifyConfig} The updated Amplify configuration object.
  */
-async function getConfig() {
-    const response = await fetch("/config.json");
-    const configUpdates = await response.json();
-    const pageUrl = getPageURL();
+export async function mergeConfig(configUpdates: AmplifyConfigJSON, pageUrl: string) {
     amplifyconfig.oauth.redirectSignIn = pageUrl;
     amplifyconfig.oauth.redirectSignOut = pageUrl;
     amplifyconfig.aws_cognito_identity_pool_id = configUpdates.identity_pool;
@@ -39,8 +40,21 @@ async function getConfig() {
     return amplifyconfig;
 }
 
+interface AmplifyConfigJSON {
+    identity_pool: string;
+    loginDomain: string;
+    region: string;
+    graphql: string;
+    web_client: string;
+    user_pool: string;
+}
+
 async function amplifySetup() {
-    const config = await getConfig();
+    const response = await fetch("/config.json");
+    const configUpdates = await response.json();
+    const pageUrl = getPageURL();
+
+    const config = await mergeConfig(configUpdates, pageUrl);
     Amplify.configure(config);
 
     const loginButton = document.getElementById("login-button");
@@ -53,4 +67,6 @@ async function main() {
     await amplifySetup();
 }
 
-main();
+if (typeof window !== "undefined") {
+    main();
+}
