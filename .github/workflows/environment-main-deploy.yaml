@@ -32,6 +32,9 @@ jobs:
     - name: Compile, check and test graphql
       run: IN_PIPELINE=true make graphql
 
+    - name: Test ui
+      run: IN_PIPELINE=true make ui-test
+
     - name: Run codacy-coverage-reporter
       uses: codacy/codacy-coverage-reporter-action@a38818475bb21847788496e9f0fddaa4e84955ba
       with:
@@ -47,6 +50,7 @@ jobs:
 
     - name: terraform apply
       uses: dflook/terraform-apply@7d435d4d115a11e5db1e710ac969f5382f0f6f9f
+      id: terraform
       with:
         path: terraform/environment/wildsea
         variables: |
@@ -56,3 +60,23 @@ jobs:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate
           region=${{ vars.AWS_REGION }}
+
+    - name: write UI config file
+      run: |
+        cat > ui/config/output-${{ vars.ENVIRONMENT }}.json <<EOF
+        {
+          "ui_bucket": {"value": "${{ steps.terraform.outputs.ui_bucket }}"},
+          "cdn_id": {"value": "${{ steps.terraform.outputs.cdn_id }}"},
+          "cognito_identity_pool_id": {"value": ""},
+          "cognito_user_pool_id": {"value": ""},
+          "cognito_web_client_id": {"value": ""},
+          "graphql_uri": {"value": ""},
+          "region": {"value": ""},
+          "cognito_login_domain": {"value": ""},
+          "cdn_domain_name": {"value": ""},
+        }
+        EOF
+
+    - name: Push UI
+      run: |
+        IN_PIPELINE=true make ui/.push-${{ vars.ENVIRONMENT }}
