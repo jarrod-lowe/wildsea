@@ -32,8 +32,8 @@ terraform/environment/%/.validate: terraform/environment/%/*.tf terraform-format
 	touch $@
 
 .PHONY: dev
-dev: $(GRAPHQL_DEV) terraform-format terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply ui/.push
-	@true
+dev: ui/config/output-dev.json $(GRAPHQL_DEV) terraform-format terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply ui/.push 
+	@echo URL is "https://$$(jq -r .cdn_domain_name.value $<)/"
 
 terraform/environment/aws-dev/.apply: terraform/environment/aws-dev/*.tf terraform/module/iac-roles/*.tf
 	AUTO_APPROVE=yes ./terraform/environment/aws-dev/deploy.sh $(ACCOUNT_ID) dev
@@ -64,8 +64,10 @@ clean:
 	rm -f graphql/mutation/*/appsync.js
 	rm -f graphql/query/*/appsync.js
 	rm -rf graphql/node_modules
+	rm -rf graphql/coverage
 	rm -rf appsync/node_modules
 	rm -rf ui/node_modules
 	rm -f ui/config/*
 	rm -f ui/public/*
 	rm -rf ui/dist/*
+	rm -rf ui/coverage

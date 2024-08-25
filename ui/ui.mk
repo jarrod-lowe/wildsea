@@ -25,7 +25,17 @@ ui/dist/index.html: ui/config/config-dev.json appsync/schema.ts appsync/graphql.
 	cp $< ui/public/config.json
 	docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --network host node:20 npm run build
 
-ui/.push: ui/config/output-dev.json ui/dist/index.html
+ui/.push: ui/config/output-dev.json ui/dist/index.html ui-test
 	aws --no-cli-pager s3 sync ui/dist "s3://$$(jq -r .ui_bucket.value $< )"
 	aws --no-cli-pager s3 sync --delete ui/dist "s3://$$(jq -r .ui_bucket.value $< )"
 	aws --no-cli-pager cloudfront create-invalidation --distribution-id "$$(jq -r .cdn_id.value $<)" --paths '/*'
+	touch $@
+
+.PHONY: ui-test
+ui-test:
+	if [ -z "$(IN_PIPELINE)" ] ; then \
+		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --entrypoint ./node_modules/.bin/jest node:20 --coverage ; \
+	else \
+		cd ui && ./node_modules/.bin/jests --coverage ; \
+	fi
+
