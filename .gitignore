@@ -51,3 +51,6 @@ ui/config/*
 !ui/config/.emptyDir
 ui/public/*
 !ui/public/.emptyDir
+ui/dist/*
+!ui/dist/.emptyDir
+ui/.push

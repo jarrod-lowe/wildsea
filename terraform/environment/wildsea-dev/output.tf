@@ -21,3 +21,11 @@ output "region" {
 output "cognito_login_domain" {
   value = module.wildsea.cognito_login_domain
 }
+
+output "ui_bucket" {
+  value = module.wildsea.ui_bucket
+}
+
+output "cdn_id" {
+  value = module.wildsea.cdn_id
+}
