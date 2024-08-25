@@ -35,6 +35,7 @@ ui/.build-%: appsync/schema.ts appsync/graphql.ts ui/src/*.ts ui/src/amplifyconf
 ui/.push: ui-test ui/.push-dev
 	touch $@
 
+# We really should run this as RW_ROLE on a make dev...
 ui/.push-%: ui/config/output-%.json ui/config/config-%.json ui/.build-%
 	aws --no-cli-pager s3 sync ui/dist "s3://$$(jq -r .ui_bucket.value $< )"
 	aws --no-cli-pager s3 sync --delete ui/dist "s3://$$(jq -r .ui_bucket.value $< )"

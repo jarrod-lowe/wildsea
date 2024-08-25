@@ -63,17 +63,18 @@ jobs:
 
     - name: write UI config file
       run: |
+        echo "${{ toJSON(steps.terraform.outputs) }}"
         cat > ui/config/output-${{ vars.ENVIRONMENT }}.json <<EOF
         {
           "ui_bucket": {"value": "${{ steps.terraform.outputs.ui_bucket }}"},
           "cdn_id": {"value": "${{ steps.terraform.outputs.cdn_id }}"},
-          "cognito_identity_pool_id": {"value": ""},
-          "cognito_user_pool_id": {"value": ""},
-          "cognito_web_client_id": {"value": ""},
-          "graphql_uri": {"value": ""},
-          "region": {"value": ""},
-          "cognito_login_domain": {"value": ""},
-          "cdn_domain_name": {"value": ""}
+          "cognito_identity_pool_id": {"value": "${{ steps.terraform.outputs.cognito_identity_pool_id }}"},
+          "cognito_user_pool_id": {"value": "${{ steps.terraform.outputs.cognito_user_pool_id }}"},
+          "cognito_web_client_id": {"value": "${{ steps.terraform.outputs.cognito_web_client_id }}"},
+          "graphql_uri": {"value": "${{ steps.terraform.outputs.graphql_uri }}"},
+          "region": {"value": "${{ steps.terraform.outputs.region }}"},
+          "cognito_login_domain": {"value": "${{ steps.terraform.outputs.cognito_login_domain }}"},
+          "cdn_domain_name": {"value": "${{ steps.terraform.outputs.cdn_domain_name }}"}
         }
         EOF
 
