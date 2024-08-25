@@ -7,8 +7,10 @@ UI_JQ_FILTER := { \
 	loginDomain: .cognito_login_domain.value \
 }
 
+ifndef IN_PIPELINE
 ui/config/output-%.json: terraform/environment/wildsea-%/.apply
 	cd $(dir $^) ; terraform output -json | tee ../../../$@
+endif
 
 ui/config/config-%.json: ui/config/output-%.json
 	jq "$(UI_JQ_FILTER)" $< >$@
@@ -21,11 +23,18 @@ ui-local: ui/config/config-dev.json appsync/schema.ts appsync/graphql.ts terrafo
 ui/node_modules: ui/package.json
 	cd ui ; npm install
 
-ui/dist/index.html: ui/config/config-dev.json appsync/schema.ts appsync/graphql.ts terraform/environment/wildsea-dev/.apply ui/src/*.ts ui/src/amplifyconfiguration.json ui/index.html ui/node_modules
-	cp $< ui/public/config.json
-	docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --network host node:20 npm run build
+ui/.build-%: appsync/schema.ts appsync/graphql.ts ui/src/*.ts ui/src/amplifyconfiguration.json ui/index.html ui/node_modules
+	cp ui/config/config-$*.json ui/public/config.json
+	if [ -z "$(IN_PIPELINE)" ] ; then \
+		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --network host node:20 npm run build ; \
+	else \
+		cd ui ; npm run build ; \
+	fi
+	touch $@
 
-ui/.push: ui/config/output-dev.json ui/dist/index.html ui-test
+ui/.push: ui-test ui/.push-dev
+
+ui/.push-%: ui/config/output-%.json ui/config/config-%.json ui/.build-%
 	aws --no-cli-pager s3 sync ui/dist "s3://$$(jq -r .ui_bucket.value $< )"
 	aws --no-cli-pager s3 sync --delete ui/dist "s3://$$(jq -r .ui_bucket.value $< )"
 	aws --no-cli-pager cloudfront create-invalidation --distribution-id "$$(jq -r .cdn_id.value $<)" --paths '/*'
@@ -38,4 +47,3 @@ ui-test: ui/node_modules
 	else \
 		cd ui && ./node_modules/.bin/jest --coverage ; \
 	fi
-
