@@ -12,6 +12,7 @@ all: $(TERRAFOM_VALIDATE)
 
 include graphql/graphql.mk
 include appsync/appsync.mk
+include ui/ui.mk
 
 .PHONY: terraform-format
 terraform-format: $(addprefix terraform-format-environment-,$(TERRAFORM_ENVIRONMENTS)) $(addprefix terraform-format-module-,$(TERRAFORM_MODULES))
@@ -64,3 +65,5 @@ clean:
 	rm -f graphql/query/*/appsync.js
 	rm -rf graphql/node_modules
 	rm -rf appsync/node_modules
+	rm -f ui/config/*
+	rm -f ui/public/*
