@@ -141,7 +141,21 @@ data "aws_iam_policy_document" "rw" {
       "s3:PutObject"
     ]
     resources = [
-      "${var.state_bucket_arn}/${var.environment}/terraform.tfstate"
+      "${var.state_bucket_arn}/${var.environment}/terraform.tfstate",
+    ]
+  }
+
+  statement {
+    sid = "s3ui"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "cloudfront:CreateInvalidation",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui/*",
+      "arn:${data.aws_partition.current.id}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
     ]
   }
 
@@ -356,7 +370,20 @@ data "aws_iam_policy_document" "rw_boundary" {
     ]
     resources = [
       "${var.state_bucket_arn}/${var.environment}/terraform.tfstate",
-      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-*/*",
+    ]
+  }
+
+  statement {
+    sid = "s3ui"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "cloudfront:CreateInvalidation",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui/*",
+      "arn:${data.aws_partition.current.id}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
     ]
   }
 
