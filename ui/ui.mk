@@ -33,6 +33,7 @@ ui/.build-%: appsync/schema.ts appsync/graphql.ts ui/src/*.ts ui/src/amplifyconf
 	touch $@
 
 ui/.push: ui-test ui/.push-dev
+	touch $@
 
 ui/.push-%: ui/config/output-%.json ui/config/config-%.json ui/.build-%
 	aws --no-cli-pager s3 sync ui/dist "s3://$$(jq -r .ui_bucket.value $< )"
