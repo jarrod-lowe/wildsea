@@ -12,7 +12,14 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  AWSDateTime: { input: any; output: any; }
+  AWSDateTime: { input: string; output: string; }
+  AWSEmail: { input: string; output: string; }
+  AWSIPAddress: { input: string; output: string; }
+  AWSJSON: { input: string; output: string; }
+  AWSPhone: { input: string; output: string; }
+  AWSTime: { input: string; output: string; }
+  AWSTimestamp: { input: string; output: string; }
+  AWSURL: { input: string; output: string; }
 };
 
 export type CreateGameInput = {
