@@ -99,3 +99,6 @@ deployment, you will need to create an S3 bucket for the state, in the same way
 as you did for the real deployment.
 
 Development environments will not use Jumpcloud, but instead use Cognito.
+
+You can run the UI without pushing to the S3 bucket by running `make ui-local`.
+This may still perform a terraform apply.

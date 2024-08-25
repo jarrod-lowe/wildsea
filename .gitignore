@@ -36,6 +36,7 @@ terraform.rc
 .validate
 .apply
 plan.tfplan
+terraform/environment/*/output.json
 
 graphql/node_modules
 graphql/mutation/*/appsync.js
@@ -44,3 +45,9 @@ graphql/coverage/
 
 appsync/node_modules
 appsync/.graphqlconfig.yml
+
+ui/node_modules
+ui/config/*
+!ui/config/.emptyDir
+ui/public/*
+!ui/public/.emptyDir
