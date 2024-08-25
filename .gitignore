@@ -53,5 +53,6 @@ ui/public/*
 !ui/public/.emptyDir
 ui/dist/*
 !ui/dist/.emptyDir
-ui/.push
+ui/.push-*
 ui/coverage
+ui/.build-*
