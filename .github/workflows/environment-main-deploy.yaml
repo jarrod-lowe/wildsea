@@ -73,7 +73,7 @@ jobs:
           "graphql_uri": {"value": ""},
           "region": {"value": ""},
           "cognito_login_domain": {"value": ""},
-          "cdn_domain_name": {"value": ""},
+          "cdn_domain_name": {"value": ""}
         }
         EOF
 
