@@ -32,10 +32,10 @@ ui/.push: ui/config/output-dev.json ui/dist/index.html ui-test
 	touch $@
 
 .PHONY: ui-test
-ui-test:
+ui-test: ui/node_modules
 	if [ -z "$(IN_PIPELINE)" ] ; then \
 		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --entrypoint ./node_modules/.bin/jest node:20 --coverage ; \
 	else \
-		cd ui && ./node_modules/.bin/jests --coverage ; \
+		cd ui && ./node_modules/.bin/jest --coverage ; \
 	fi
 
