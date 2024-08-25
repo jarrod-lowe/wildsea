@@ -21,3 +21,11 @@ output "region" {
 output "cognito_login_domain" {
   value = "${aws_cognito_user_pool_domain.cognito.domain}.auth.${data.aws_region.current.name}.amazoncognito.com"
 }
+
+output "ui_bucket" {
+  value = aws_s3_bucket.ui.bucket
+}
+
+output "cdn_id" {
+  value = aws_cloudfront_distribution.cdn.id
+}

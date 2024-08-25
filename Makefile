@@ -32,7 +32,7 @@ terraform/environment/%/.validate: terraform/environment/%/*.tf terraform-format
 	touch $@
 
 .PHONY: dev
-dev: $(GRAPHQL_DEV) terraform-format terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply
+dev: $(GRAPHQL_DEV) terraform-format terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply ui/.push
 	@true
 
 terraform/environment/aws-dev/.apply: terraform/environment/aws-dev/*.tf terraform/module/iac-roles/*.tf
@@ -65,5 +65,7 @@ clean:
 	rm -f graphql/query/*/appsync.js
 	rm -rf graphql/node_modules
 	rm -rf appsync/node_modules
+	rm -rf ui/node_modules
 	rm -f ui/config/*
 	rm -f ui/public/*
+	rm -rf ui/dist/*

@@ -36,7 +36,6 @@ async function getConfig() {
     amplifyconfig.aws_appsync_region = configUpdates.region;
     amplifyconfig.aws_cognito_region = configUpdates.region;
     amplifyconfig.oauth.domain = configUpdates.loginDomain;
-    console.log(amplifyconfig);
     return amplifyconfig;
 }
 
