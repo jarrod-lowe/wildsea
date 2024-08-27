@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "aws-amplify": "6.5.2"
+    "aws-amplify": "6.5.3"
   },
   "scripts": {
     "dev": "vite",
