@@ -2,29 +2,29 @@
     display: none;
 }
 
-.gamesList {
+.gameslist {
     font-family: Arial, sans-serif;
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
     background-color: #f2f2f2;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0 0 0 0.1);
 }
 
-.allGames {
+.allgames {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
 
-.joinGame,
-.newGame {
+.joingame,
+.newgame {
     width: 48%;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0 0 0 0.1);
 }
 
 h1 {

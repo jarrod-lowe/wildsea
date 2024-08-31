@@ -3,7 +3,7 @@ import { createGameMutation, getGamesQuery } from "../../appsync/schema";
 import { GameSummary, CreateGameInput, Game } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 
-async function fetchGames(): Promise<GameSummary[]> {
+export async function fetchGames(): Promise<GameSummary[]> {
     const client = generateClient();
     const response = await client.graphql({
         query: getGamesQuery.replace(/\(\)/g, ''),
@@ -12,13 +12,13 @@ async function fetchGames(): Promise<GameSummary[]> {
     return response.data.getGames;
 }
 
-function createGameElement(game: GameSummary): HTMLLIElement {
+export function createGameElement(game: GameSummary): HTMLLIElement {
     const li = document.createElement('li');
     li.textContent = `${game.gameName} - ${game.gameDescription}`;
     return li;
 }
 
-function createGamesList(games: GameSummary[]): HTMLUListElement {
+export function createGamesList(games: GameSummary[]): HTMLUListElement {
     const ul = document.createElement('ul');
     for (const game of games) {
         const li = createGameElement(game);
@@ -27,7 +27,7 @@ function createGamesList(games: GameSummary[]): HTMLUListElement {
     return ul;
 }
 
-function createNewGameForm(): HTMLFormElement {
+export function createNewGameForm(): HTMLFormElement {
     const form = document.createElement('form');
 
     const gameNameLabel = document.createElement('label');
@@ -63,7 +63,7 @@ function createNewGameForm(): HTMLFormElement {
     return form;
 }
 
-async function doCreateGame(data: CreateGameInput): Promise<String> {
+export async function doCreateGame(data: CreateGameInput): Promise<String> {
     try {
         const client = generateClient();
         const result = await client.graphql({
@@ -82,7 +82,8 @@ async function doCreateGame(data: CreateGameInput): Promise<String> {
     }
 
 }
-async function handleCreateGame(event: SubmitEvent) {
+
+export async function handleCreateGame(event: SubmitEvent) {
     event.preventDefault();
 
     const formData = new FormData(event.target as HTMLFormElement);
@@ -103,13 +104,13 @@ async function handleCreateGame(event: SubmitEvent) {
 export async function gamesScreen(): Promise<void> {
     const games = await fetchGames();
 
-    const gamesList = document.getElementById('gamesList');
+    const gamesList = document.getElementById('gameslist');
     if (gamesList) {
         const all = document.createElement('div');
-        all.className = 'allGames';
+        all.className = 'allgames';
 
         const join = document.createElement('div');
-        join.className = 'joinGame';
+        join.className = 'joingame';
         all.appendChild(join);
 
         const h1 = document.createElement('h1');
@@ -120,7 +121,7 @@ export async function gamesScreen(): Promise<void> {
         join.appendChild(ul);
 
         const newGame = document.createElement('div');
-        newGame.className = 'newGame';
+        newGame.className = 'newgame';
 
         const h1b = document.createElement('h1');
         h1b.innerText = 'Create New Game';
@@ -133,6 +134,6 @@ export async function gamesScreen(): Promise<void> {
 
         gamesList.innerHTML = '';
         gamesList.appendChild(all);
-        gamesList.className = 'gamesList';
+        gamesList.className = 'gameslist';
     }
 }
