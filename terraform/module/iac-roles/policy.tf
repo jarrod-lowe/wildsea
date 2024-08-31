@@ -240,6 +240,7 @@ data "aws_iam_policy_document" "rw" {
     actions = [
       "iam:CreateRole",
       "iam:CreatePolicy",
+      "iam:CreatePolicyVersion",
       "iam:DeleteRole",
       "iam:DeletePolicy",
       "iam:TagRole",
@@ -498,6 +499,7 @@ data "aws_iam_policy_document" "rw_boundary" {
     actions = [
       "iam:CreateRole",
       "iam:CreatePolicy",
+      "iam:CreatePolicyVersion",
       "iam:DeleteRole",
       "iam:DeletePolicy",
       "iam:TagRole",

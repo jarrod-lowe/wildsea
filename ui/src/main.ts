@@ -1,7 +1,7 @@
-// npm install aws-amplify
 import { Amplify } from "aws-amplify";
 import { signInWithRedirect, signOut } from "@aws-amplify/auth";
 import amplifyconfig from "./amplifyconfiguration.json";
+import { gamesScreen } from "./game";
 
 function handleSignOutClick() {
     signOut();
@@ -65,6 +65,8 @@ async function amplifySetup() {
 
 async function main() {
     await amplifySetup();
+
+    await gamesScreen();
 }
 
 if (typeof window !== "undefined") {

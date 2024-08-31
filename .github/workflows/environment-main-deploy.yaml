@@ -30,10 +30,10 @@ jobs:
       run: npm install -g esbuild
 
     - name: Compile, check and test graphql
-      run: IN_PIPELINE=true make graphql
+      run: IN_PIPELINE=true ENVIRONMENT=${{ vars.ENVIRONMENT }} make graphql
 
     - name: Test ui
-      run: IN_PIPELINE=true make ui-test
+      run: IN_PIPELINE=true ENVIRONMENT=${{ vars.ENVIRONMENT }} make ui-test
 
     - name: Run codacy-coverage-reporter
       uses: codacy/codacy-coverage-reporter-action@a38818475bb21847788496e9f0fddaa4e84955ba
@@ -67,4 +67,4 @@ jobs:
 
     - name: Push UI
       run: |
-        IN_PIPELINE=true make ui/.push-${{ vars.ENVIRONMENT }}
+        IN_PIPELINE=true ENVIRONMENT=${{ vars.ENVIRONMENT }} make ui/.push-${{ vars.ENVIRONMENT }}

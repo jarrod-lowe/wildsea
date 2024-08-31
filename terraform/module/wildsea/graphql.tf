@@ -218,7 +218,10 @@ data "aws_iam_policy_document" "graphql_datasource" {
       "dynamodb:UpdateutItem",
       "dynamodb:Query",
     ]
-    resources = [aws_dynamodb_table.table.arn]
+    resources = [
+      aws_dynamodb_table.table.arn,
+      "${aws_dynamodb_table.table.arn}/index/*",
+    ]
   }
 }
 

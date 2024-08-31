@@ -1,6 +1,9 @@
 import { awsAppsyncUtilsMock } from "./mocks";
 
 jest.mock("@aws-appsync/utils", () => awsAppsyncUtilsMock);
+jest.mock("../environment.json", () => ({
+  name: "MOCK",
+}));
 
 import { request, response } from "../mutation/createGame/appsync";
 import {
@@ -15,7 +18,7 @@ describe("request function", () => {
     jest.clearAllMocks();
   });
 
-  it("should return a valid DynamoDBPutItemRequest when context is valid", () => {
+  it("should return a valid DynamoDBTransactWriteItem when context is valid", () => {
     // Arrange
     const mockContext: Context<{
       input: { name: string; description?: string };
@@ -65,19 +68,44 @@ describe("request function", () => {
 
     // Assert
     expect(result).toEqual({
-      operation: "PutItem",
-      key: {
-        PK: { S: `GAME#${mockId}` },
-        SK: { S: "GAME" },
-      },
-      attributeValues: {
-        name: { S: "Test Game" },
-        description: { S: "Test Description" },
-        id: { S: mockId },
-        fireflyUserId: { S: "1234-5678-91011" },
-        createdAt: { S: mockTimestamp },
-        updatedAt: { S: mockTimestamp },
-      },
+      operation: "TransactWriteItems",
+      transactItems: [
+        {
+          operation: "PutItem",
+          key: {
+            PK: { S: `GAME#${mockId}` },
+            SK: { S: "GAME" },
+          },
+          table: "Wildsea-MOCK",
+          attributeValues: {
+            gameName: { S: "Test Game" },
+            gameDescription: { S: "Test Description" },
+            gameId: { S: mockId },
+            fireflyUserId: { S: "1234-5678-91011" },
+            createdAt: { S: mockTimestamp },
+            updatedAt: { S: mockTimestamp },
+            type: { S: "GAME" },
+          },
+        },
+        {
+          operation: "PutItem",
+          key: {
+            PK: { S: `GAME#${mockId}` },
+            SK: { S: `PLAYER#GM#1234-5678-91011` },
+          },
+          table: "Wildsea-MOCK",
+          attributeValues: {
+            userId: { S: "1234-5678-91011" },
+            gameId: { S: mockId },
+            gameName: { S: "Test Game" },
+            gameDescription: { S: "Test Description" },
+            GSI1PK: { S: "USER#1234-5678-91011" },
+            createdAt: { S: mockTimestamp },
+            updatedAt: { S: mockTimestamp },
+            type: { S: "CHARACTER" },
+          },
+        },
+      ],
     });
   });
 
@@ -224,8 +252,29 @@ describe("response function", () => {
         selectionSetList: [],
         selectionSetGraphQL: "",
       } as Info,
-      result: { someKey: "someValue" },
-      stash: {},
+      result: {
+        keys: [
+          {
+            PK: "testPK",
+            SK: "testSK",
+          },
+          {
+            PK: "testPK2",
+            SK: "testSK2",
+          },
+        ],
+      },
+      stash: {
+        record: {
+          gameName: "testGameName",
+          gameDescription: "testGameDescription",
+          gameId: "testGameId",
+          fireflyUserId: "testFireflyUserId",
+          createdAt: "testCreatedAt",
+          updatedAt: "testUpdatedAt",
+          type: "testType",
+        },
+      },
       prev: undefined,
       request: {
         headers: {},
@@ -237,6 +286,16 @@ describe("response function", () => {
     const result = response(mockContext);
 
     // Assert
-    expect(result).toEqual({ someKey: "someValue" });
+    expect(result).toEqual({
+      PK: "testPK",
+      SK: "testSK",
+      gameName: "testGameName",
+      gameDescription: "testGameDescription",
+      gameId: "testGameId",
+      fireflyUserId: "testFireflyUserId",
+      createdAt: "testCreatedAt",
+      updatedAt: "testUpdatedAt",
+      type: "testType",
+    });
   });
 });

@@ -296,11 +296,23 @@ Assistant:
 2. **Game**
    * `PK`: `GAME#<gameId>`
    * `SK`: `METADATA`
-   * Other fields: `name`, `description`, `publicNotes`, `privateNotes`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI2PK`, `GSI2SK`
+   * `gameId`: gameId
+   * Other fields: `gameName`, `gameDescription`, `publicNotes`, `privateNotes`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI1PK`
 
-3. **Player Sheet**
+3. **GM Info**
    * `PK`: `GAME#<gameId>`
-   * `SK`: `PLAYER#<userId>`
+   * `SK`: `PLAYER#GM#<userId>`
+   * `GSI1PK`: `USER#<userId>`
+   * `userId`: userId
+   * `gameId`: gameId
+   * gameName and gameDescription: Duplicated from game
+
+4. **Player Sheet**
+   * `PK`: `GAME#<gameId>`
+   * `SK`: `PLAYER#PC#<userId>`
+   * `GSI1PK`: `USER#<userId>`
+   * `userId`: userId
+   * `gameId`: gameId
    * `characterName` (String)
    * `pronouns` (String)
    * `bloodline` (String)
@@ -327,9 +339,10 @@ Assistant:
         * Each map in the list represents an aspect and contains fields like `name` (String), `type` (String: "Trait", "Gear", or "Companion"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
    * `temporaryTracks` (List of Maps)
         * Each map in the list represents a temporary track and contains fields like `name` (String), `type` (String: "Benefit", "Injury", or "Track"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
-   * Other fields: `createdAt`, `updatedAt`, `GSI1PK`, `GSI1SK`
+   * Other fields: `createdAt`, `updatedAt`
+   * gameName and gameDescription: Duplicated from game
 
-4. **Ship Sheet**
+5. **Ship Sheet**
    * `PK`: `GAME#<gameId>`
    * `SK`: `SHIP#<shipId>`
    * `name` (String)
@@ -353,23 +366,23 @@ Assistant:
    * `passengers` (List of Strings)
    * Other fields: `createdAt`, `updatedAt`
 
-5. **Clock**
+6. **Clock**
    * `PK`: `GAME#<gameId>`
    * `SK`: `CLOCK#<clockId>`
    * Other fields: `name`, `lengths`, `visibility`, `gmNotes`, `createdAt`, `updatedAt`
 
-6. **Dice Roll**
+7. **Dice Roll**
    * `PK`: `GAME#<gameId>`
    * `SK`: `DICEROLL#<timeSortableGuid>`
    * Other fields: `playerCharacterName`, `numRolled`, `numCut`, `result`, `twist`, `rollValues`, `createdAt`
 
-7. **Seed Data**
+8. **Seed Data**
    * `PK`: `SEED#<type>`
    * `SK`: `<id>`
    * Other fields: vary based on the type, e.g., `name`, `description`, `trackLength`, etc.
    * `<type>`'s include: `MIRE`, `EDGE`, `SKILL`, `LANGUAGE`, `RESOURCE`, `ASPECT`, `RATING`, `DESIGN`, `UNDERCREW`, `FITTINGTYPE`
 
-8. **Level Name**
+9. **Level Name**
    * `PK`: `LEVELNAME#<type>`
    * `SK`: `<numDots>`
    * Other fields: `name`
@@ -384,18 +397,10 @@ No LSIs are required for this table design.
 1. **GSI1: UserGameIndex**
    * Partition Key: `GSI1PK` (String)
    * Sort Key: `GSI1SK` (String)
-   * For Player Sheet records:
+   * For GM or Player Sheet records:
        * `GSI1PK`: `USER#<userId>`
-       * `GSI1SK`: `GAME#<gameId>`
-   * This index allows us to query all games where the user is a player.
-
-2. **GSI2: FireflyGameIndex**
-   * Partition Key: `GSI2PK` (String)
-   * Sort Key: `GSI2SK` (String)
-   * For Game records:
-       * `GSI2PK`: `USER#<fireflyUserId>`
-       * `GSI2SK`: `GAME#<gameId>`
-   * This index allows us to query all games where the user is the firefly.
+       * The GSI SK is `PK`
+   * This index allows us to query all games where the user is a firefly or player.
 
 In this updated design, we have two generic record types:
 
