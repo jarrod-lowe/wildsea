@@ -3,7 +3,15 @@
       export const getGameQuery = `
         query getGame($id: ID!) {
           getGame(id: $id) {
-            id name description publicNotes privateNotes fireflyUserId players createdAt updatedAt
+            gameId gameName gameDescription publicNotes privateNotes fireflyUserId players createdAt updatedAt type
+          }
+        }
+      `;
+    
+      export const getGamesQuery = `
+        query getGames {
+          getGames {
+            gameId gameName gameDescription type
           }
         }
       `;
@@ -13,7 +21,7 @@
       export const createGameMutation = `
         mutation createGame($input: CreateGameInput!) {
           createGame(input: $input) {
-            id name description publicNotes privateNotes fireflyUserId players createdAt updatedAt
+            gameId gameName gameDescription publicNotes privateNotes fireflyUserId players createdAt updatedAt type
           }
         }
       `;

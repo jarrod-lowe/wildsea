@@ -1,5 +1,6 @@
 default: all
 
+ENVIRONMENT ?= dev
 TERRAFORM_ENVIRONMENTS := aws github wildsea aws-dev wildsea-dev
 TERRAFOM_VALIDATE := $(addsuffix /.validate,$(addprefix terraform/environment/, $(TERRAFORM_ENVIRONMENTS)))
 TERRAFORM_MODULES := iac-roles oidc state-bucket wildsea

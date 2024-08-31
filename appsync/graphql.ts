@@ -30,14 +30,23 @@ export type CreateGameInput = {
 export type Game = {
   __typename?: 'Game';
   createdAt: Scalars['AWSDateTime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
   fireflyUserId: Scalars['ID']['output'];
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
+  gameDescription?: Maybe<Scalars['String']['output']>;
+  gameId: Scalars['ID']['output'];
+  gameName: Scalars['String']['output'];
   players?: Maybe<Array<Scalars['ID']['output']>>;
   privateNotes?: Maybe<Scalars['String']['output']>;
   publicNotes?: Maybe<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
+};
+
+export type GameSummary = {
+  __typename?: 'GameSummary';
+  gameDescription: Scalars['String']['output'];
+  gameId: Scalars['ID']['output'];
+  gameName: Scalars['String']['output'];
+  type: Scalars['String']['output'];
 };
 
 export type Mutation = {
@@ -53,6 +62,7 @@ export type MutationCreateGameArgs = {
 export type Query = {
   __typename?: 'Query';
   getGame: Game;
+  getGames?: Maybe<Array<GameSummary>>;
 };
 
 

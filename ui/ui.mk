@@ -16,7 +16,7 @@ ui/config/config-%.json: ui/config/output-%.json
 	jq "$(UI_JQ_FILTER)" $< >$@
 
 .PHONY: ui-local
-ui-local: ui/config/config-dev.json appsync/schema.ts appsync/graphql.ts terraform/environment/wildsea-dev/.apply
+ui-local: ui/config/config-dev.json appsync/schema.ts appsync/graphql.ts terraform/environment/wildsea-dev/.apply ui/node_modules
 	cp $< ui/public/config.json
 	docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --network host node:20 npm run dev
 

@@ -17,6 +17,18 @@ resource "aws_dynamodb_table" "table" {
     type = "S"
   }
 
+  attribute {
+    name = "GSI1PK"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name            = "GSI1"
+    hash_key        = "GSI1PK"
+    range_key       = "PK"
+    projection_type = "ALL"
+  }
+
   point_in_time_recovery {
     enabled = true
   }

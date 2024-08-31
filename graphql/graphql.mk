@@ -1,4 +1,4 @@
-graphql/%/appsync.js: graphql/node_modules graphql/%/appsync.ts appsync/graphql.ts appsync/schema.ts
+graphql/%/appsync.js: graphql/node_modules graphql/%/appsync.ts appsync/graphql.ts appsync/schema.ts graphql/environment.json
 	cd graphql && \
 	esbuild $*/*.ts \
 		--bundle \
@@ -9,6 +9,10 @@ graphql/%/appsync.js: graphql/node_modules graphql/%/appsync.ts appsync/graphql.
 		--sourcemap=inline \
 		--sources-content=false \
 		--outdir=$*
+
+.PRECIOUS: graphql/environment.json
+graphql/environment.json:	
+	echo '{"name":"$(ENVIRONMENT)"}' >$@
 
 graphql/node_modules: graphql/package.json
 	cd graphql && npm install && npm ci \
@@ -22,7 +26,7 @@ graphql: $(GRAPHQL_JS) appsync/graphql.ts appsync/schema.ts graphql-test
 	echo $(GRAPHQL_JS)
 
 .PHONY: graphql-test
-graphql-test: graphql/node_modules appsync/graphql.ts appsync/schema.ts
+graphql-test: graphql/node_modules appsync/graphql.ts appsync/schema.ts graphql/environment.json
 	if [ -z "$(IN_PIPELINE)" ] ; then \
 		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/graphql --entrypoint ./node_modules/jest/bin/jest.js node:20 --coverage ; \
 	else \
