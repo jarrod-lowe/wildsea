@@ -96,9 +96,8 @@ export async function handleCreateGame(event: SubmitEvent) {
     };
 
     const gameId = await doCreateGame(createGameInput);
-    console.log(gameId);
     // Redirect to the new game page
-    // window.location.href = `${window.location.origin}/${gameId}`;
+    window.location.href = `${window.location.origin}/?gameId=${gameId}`;
 }
 
 export async function gamesScreen(): Promise<void> {

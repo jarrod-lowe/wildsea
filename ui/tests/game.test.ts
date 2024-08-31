@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { createGameElement, createGamesList, createNewGameForm } from "../src/game";
 import { GameSummary } from '../../appsync/graphql';
 
