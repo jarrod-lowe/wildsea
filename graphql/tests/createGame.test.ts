@@ -58,9 +58,12 @@ describe("request function", () => {
     };
 
     const mockId = "unique-id";
+    const mockJoinToken = "unique-join-token";
     const mockTimestamp = "2024-08-17T00:00:00Z";
 
-    (util.autoId as jest.Mock).mockReturnValue(mockId);
+    (util.autoId as jest.Mock)
+      .mockReturnValueOnce(mockId)
+      .mockReturnValueOnce(mockJoinToken);
     (util.time.nowISO8601 as jest.Mock).mockReturnValue(mockTimestamp);
 
     // Act
@@ -82,6 +85,7 @@ describe("request function", () => {
             gameDescription: { S: "Test Description" },
             gameId: { S: mockId },
             fireflyUserId: { S: "1234-5678-91011" },
+            joinToken: { S: mockJoinToken },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
             type: { S: "GAME" },
@@ -102,7 +106,8 @@ describe("request function", () => {
             GSI1PK: { S: "USER#1234-5678-91011" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
-            type: { S: "CHARACTER" },
+            type: { S: "FIREFLY" },
+            characterName: { S: "Firefly" },
           },
         },
       ],

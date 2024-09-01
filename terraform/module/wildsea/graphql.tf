@@ -215,7 +215,7 @@ data "aws_iam_policy_document" "graphql_datasource" {
       "dynamodb:BatchGetItem",
       "dynamodb:GetItem",
       "dynamodb:PutItem",
-      "dynamodb:UpdateutItem",
+      "dynamodb:UpdateItem",
       "dynamodb:Query",
     ]
     resources = [
@@ -233,6 +233,7 @@ resource "aws_iam_role_policy_attachment" "graphql_datasource" {
 locals {
   mutations = distinct([for d in fileset("${path.module}/../../../graphql/mutation", "**") : dirname(d)])
   queries   = distinct([for d in fileset("${path.module}/../../../graphql/query", "**") : dirname(d)])
+  functions = distinct([for d in fileset("${path.module}/../../../graphql/function", "**") : dirname(d)])
 
   mutations_map = {
     for mutation in local.mutations : replace(mutation, "../../../graphql/mutation/", "") => {
@@ -252,11 +253,28 @@ locals {
     }
   }
 
-  all = merge(local.mutations_map, local.queries_map)
+  functions_map = {
+    for function in local.functions : replace(function, "../../../graphql/function/", "") => {
+      "type" : "Function",
+      "path" : "../../../graphql/function/${function}/appsync.js",
+      "make" : "graphql/function/${function}/appsync.js",
+      "source" : "../../../graphql/function/${function}/appsync.ts"
+    }
+  }
+
+  all       = merge(local.mutations_map, local.queries_map, local.functions_map)
+  resolvers = merge(local.mutations_map, local.queries_map)
+
+  pipelines_map = {
+    joinGame = {
+      type : "Mutation",
+      functions = ["fnGetGameWithToken", "fnJoinGame"]
+    }
+  }
 }
 
 resource "aws_appsync_resolver" "resolver" {
-  for_each = local.all
+  for_each = local.resolvers
 
   api_id      = aws_appsync_graphql_api.graphql.id
   type        = each.value.type
@@ -268,6 +286,36 @@ resource "aws_appsync_resolver" "resolver" {
     name            = "APPSYNC_JS"
     runtime_version = "1.0.0"
   }
+}
+
+resource "aws_appsync_resolver" "pipeline" {
+  for_each = local.pipelines_map
+
+  api_id            = aws_appsync_graphql_api.graphql.id
+  type              = each.value.type
+  field             = each.key
+  kind              = "PIPELINE"
+  request_template  = "{}"
+  response_template = "$util.toJson($ctx.result)"
+
+  pipeline_config {
+    functions = [for f in each.value.functions : aws_appsync_function.function[f].function_id]
+  }
+}
+
+resource "aws_appsync_function" "function" {
+  for_each = local.functions_map
+
+  api_id      = aws_appsync_graphql_api.graphql.id
+  data_source = aws_appsync_datasource.graphql.name
+  name        = each.key
+
+  runtime {
+    name            = "APPSYNC_JS"
+    runtime_version = "1.0.0"
+  }
+
+  code = data.local_file.graphql_code[each.key].content
 }
 
 data "local_file" "graphql_code" {

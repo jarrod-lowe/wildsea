@@ -1,24 +1,24 @@
 import { generateClient } from "aws-amplify/api";
 import { createGameMutation, getGamesQuery } from "../../appsync/schema";
-import { GameSummary, CreateGameInput, Game } from "../../appsync/graphql";
+import { PlayerSheetSummary, CreateGameInput, Game } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 
-export async function fetchGames(): Promise<GameSummary[]> {
+export async function fetchGames(): Promise<PlayerSheetSummary[]> {
     const client = generateClient();
     const response = await client.graphql({
         query: getGamesQuery.replace(/\(\)/g, ''),
-    }) as GraphQLResult<{ getGames: GameSummary[] }>;
+    }) as GraphQLResult<{ getGames: PlayerSheetSummary[] }>;
 
     return response.data.getGames;
 }
 
-export function createGameElement(game: GameSummary): HTMLLIElement {
+export function createGameElement(game: PlayerSheetSummary): HTMLLIElement {
     const li = document.createElement('li');
     li.textContent = `${game.gameName} - ${game.gameDescription}`;
     return li;
 }
 
-export function createGamesList(games: GameSummary[]): HTMLUListElement {
+export function createGamesList(games: PlayerSheetSummary[]): HTMLUListElement {
     const ul = document.createElement('ul');
     for (const game of games) {
         const li = createGameElement(game);

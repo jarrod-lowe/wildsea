@@ -297,7 +297,7 @@ Assistant:
    * `PK`: `GAME#<gameId>`
    * `SK`: `METADATA`
    * `gameId`: gameId
-   * Other fields: `gameName`, `gameDescription`, `publicNotes`, `privateNotes`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI1PK`
+   * Other fields: `gameName`, `gameDescription`, `publicNotes`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI1PK`
 
 3. **GM Info**
    * `PK`: `GAME#<gameId>`

@@ -3,12 +3,12 @@
  */
 
 import { createGameElement, createGamesList, createNewGameForm } from "../src/game";
-import { GameSummary } from '../../appsync/graphql';
+import { PlayerSheetSummary } from '../../appsync/graphql';
 
 describe('createGameElement', () => {
   it('should create a game element correctly', () => {
-    const game: GameSummary = {
-      __typename: 'GameSummary',
+    const game: PlayerSheetSummary = {
+      __typename: 'PlayerSheetSummary',
       gameName: 'Test Game',
       gameDescription: 'Test Description',
       gameId: '1',
@@ -22,16 +22,16 @@ describe('createGameElement', () => {
 
 describe('createGamesList', () => {
   it('should create a games list correctly', () => {
-    const games: GameSummary[] = [
+    const games: PlayerSheetSummary[] = [
       {
-        __typename: 'GameSummary',
+        __typename: 'PlayerSheetSummary',
         gameName: 'Game 1',
         gameDescription: 'Description 1',
         gameId: '1',
         type: 'Type 1',
       },
       {
-        __typename: 'GameSummary',
+        __typename: 'PlayerSheetSummary',
         gameName: 'Game 2',
         gameDescription: 'Description 2',
         gameId: '2',

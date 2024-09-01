@@ -104,6 +104,7 @@ data "aws_iam_policy_document" "ro" {
     actions = [
       "appsync:GetSchemaCreationStatus",
       "appsync:GetDataSource",
+      "appsync:GetFunction",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
@@ -273,6 +274,9 @@ data "aws_iam_policy_document" "rw" {
       "appsync:StartSchemaCreation",
       "appsync:CreateDataSource",
       "appsync:DeleteDataSource",
+      "appsync:CreateFunction",
+      "appsync:DeleteFunction",
+      "appsync:UpdateFunction",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
@@ -537,6 +541,10 @@ data "aws_iam_policy_document" "rw_boundary" {
       "appsync:CreateDataSource",
       "appsync:DeleteDataSource",
       "appsync:GetDataSource",
+      "appsync:GetFunction",
+      "appsync:CreateFunction",
+      "appsync:DeleteFunction",
+      "appsync:UpdateFunction",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"

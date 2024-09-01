@@ -18,11 +18,12 @@ directive @aws_cognito_user_pools(
 
 type Mutation {
     createGame(input: CreateGameInput!): Game! @aws_cognito_user_pools
+    joinGame(input: JoinGameInput!): Game! @aws_cognito_user_pools
 }
 
 type Query {
     getGame(id: ID!): Game! @aws_cognito_user_pools
-    getGames: [GameSummary!] @aws_cognito_user_pools
+    getGames: [PlayerSheetSummary!] @aws_cognito_user_pools
 }
 
 input CreateGameInput {
@@ -30,23 +31,25 @@ input CreateGameInput {
     description: String
 }
 
+input JoinGameInput {
+  gameId: ID!
+  joinToken: ID!
+}
+
 type Game @aws_cognito_user_pools {
   gameId: ID!
   gameName: String!
   gameDescription: String
   publicNotes: String
-  privateNotes: String
   fireflyUserId: ID!
   players: [ID!]
-#  playerSheets: [PlayerSheet!]!
-#  shipSheet: ShipSheet
-#  clocks: [Clock!]!
+  joinToken: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   type: String!
 }
 
-type GameSummary @aws_cognito_user_pools {
+type PlayerSheetSummary @aws_cognito_user_pools {
   gameId: ID!
   gameName: String!
   gameDescription: String!
