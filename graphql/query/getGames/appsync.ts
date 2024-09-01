@@ -1,6 +1,6 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBQueryRequest } from "@aws-appsync/utils/lib/resolver-return-types";
-import type { GameSummary } from "../../../appsync/graphql";
+import type { PlayerSheetSummary } from "../../../appsync/graphql";
 
 export function request(context: Context): DynamoDBQueryRequest {
   if (!context.identity) {
@@ -27,10 +27,10 @@ export function request(context: Context): DynamoDBQueryRequest {
   };
 }
 
-export function response(context: Context): GameSummary[] {
+export function response(context: Context): PlayerSheetSummary[] {
   if (context.error) {
     util.appendError(context.error.message, context.error.type, context.result);
     return [];
   }
-  return context.result.items as GameSummary[];
+  return context.result.items as PlayerSheetSummary[];
 }

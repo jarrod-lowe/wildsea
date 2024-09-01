@@ -34,24 +34,22 @@ export type Game = {
   gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
+  joinToken?: Maybe<Scalars['String']['output']>;
   players?: Maybe<Array<Scalars['ID']['output']>>;
-  privateNotes?: Maybe<Scalars['String']['output']>;
   publicNotes?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
 };
 
-export type GameSummary = {
-  __typename?: 'GameSummary';
-  gameDescription: Scalars['String']['output'];
-  gameId: Scalars['ID']['output'];
-  gameName: Scalars['String']['output'];
-  type: Scalars['String']['output'];
+export type JoinGameInput = {
+  gameId: Scalars['ID']['input'];
+  joinToken: Scalars['ID']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createGame: Game;
+  joinGame: Game;
 };
 
 
@@ -59,10 +57,23 @@ export type MutationCreateGameArgs = {
   input: CreateGameInput;
 };
 
+
+export type MutationJoinGameArgs = {
+  input: JoinGameInput;
+};
+
+export type PlayerSheetSummary = {
+  __typename?: 'PlayerSheetSummary';
+  gameDescription: Scalars['String']['output'];
+  gameId: Scalars['ID']['output'];
+  gameName: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getGame: Game;
-  getGames?: Maybe<Array<GameSummary>>;
+  getGames?: Maybe<Array<PlayerSheetSummary>>;
 };
 
 

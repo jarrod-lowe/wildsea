@@ -1,19 +1,7 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
-import { Game } from "../../../appsync/graphql";
-
-/**
- * A CreateGameInput creates a Game.
- * They are stored in DynamoDB with a PK of `GAME#<id>` and an SK of `GAME`.
- * The ID is a UUID
- * The fireflyUserId is the Cognito ID of the user
- */
-
-interface CreateGameInput {
-  name: string;
-  description?: string;
-}
+import { Game, CreateGameInput } from "../../../appsync/graphql";
 
 export function request(context: Context<{ input: CreateGameInput }>): unknown {
   if (!context.identity) {
@@ -27,6 +15,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
 
   const input = context.arguments.input;
   const id = util.autoId();
+  const joinToken = util.autoId();
   const timestamp = util.time.nowISO8601();
 
   context.stash.record = {
@@ -35,6 +24,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
     gameId: id,
     fireflyUserId: identity.sub,
     // players: no value yet
+    joinToken: joinToken,
     createdAt: timestamp,
     updatedAt: timestamp,
     type: "GAME",
@@ -61,10 +51,11 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
       gameId: id,
       gameName: input.name,
       gameDescription: input.description,
+      characterName: "Firefly",
       GSI1PK: "USER#" + identity.sub,
       createdAt: timestamp,
       updatedAt: timestamp,
-      type: "CHARACTER",
+      type: "FIREFLY",
     }) as PutItemInputAttributeMap,
   };
 
