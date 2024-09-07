@@ -297,7 +297,7 @@ Assistant:
    * `PK`: `GAME#<gameId>`
    * `SK`: `METADATA`
    * `gameId`: gameId
-   * Other fields: `gameName`, `gameDescription`, `publicNotes`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI1PK`
+   * Other fields: `gameName`, `gameDescription`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI1PK`
 
 1. **GM Info**
    * `PK`: `GAME#<gameId>`
@@ -353,7 +353,8 @@ Assistant:
 1. **Ship Sheet**
    * `PK`: `GAME#<gameId>`
    * `SK`: `SHIP#<shipId>`
-   * `name` (String)
+   * `characterName` (String)
+   * Each section is one of: (TODO: Modify)
    * `publicNotes` (String)
    * `gmNotes` (String)
    * `conditions` (List of Strings)
@@ -509,7 +510,6 @@ input UpdateUserInput {
 input CreateGameInput {
   name: String!
   description: String
-  publicNotes: String
   privateNotes: String
   fireflyUserId: ID!
   players: [ID!]!
@@ -518,7 +518,6 @@ input CreateGameInput {
 input UpdateGameInput {
   name: String
   description: String
-  publicNotes: String
   privateNotes: String
   players: [ID!]
 }
@@ -531,7 +530,6 @@ input CreatePlayerSheetInput {
   bloodline: String
   origin: String
   post: String
-  publicNotes: String
   privateNotes: String
   secretNotes: String
   fireflyNotes: String
@@ -543,7 +541,6 @@ input UpdatePlayerSheetInput {
   bloodline: String
   origin: String
   post: String
-  publicNotes: String
   privateNotes: String
   secretNotes: String
   fireflyNotes: String
@@ -552,7 +549,6 @@ input UpdatePlayerSheetInput {
 input CreateShipSheetInput {
   gameId: ID!
   name: String!
-  publicNotes: String
   gmNotes: String
   conditions: [String!]!
   stakesUsed: Int!
@@ -561,7 +557,6 @@ input CreateShipSheetInput {
 
 input UpdateShipSheetInput {
   name: String
-  publicNotes: String
   gmNotes: String
   conditions: [String!]
   stakesUsed: Int
@@ -601,7 +596,6 @@ type Game {
   id: ID!
   name: String!
   description: String
-  publicNotes: String
   privateNotes: String
   fireflyUser: User!
   players: [ID!]!
@@ -622,7 +616,6 @@ type PlayerSheet {
   bloodline: String
   origin: String
   post: String
-  publicNotes: String
   privateNotes: String
   secretNotes: String
   fireflyNotes: String
@@ -691,7 +684,6 @@ type ShipSheet {
   id: ID!
   game: Game!
   name: String!
-  publicNotes: String
   gmNotes: String
   conditions: [String!]!
   stakesUsed: Int!

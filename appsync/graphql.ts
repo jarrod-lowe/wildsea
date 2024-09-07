@@ -35,7 +35,6 @@ export type Game = {
   gameName: Scalars['String']['output'];
   joinToken?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
-  publicNotes?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
 };

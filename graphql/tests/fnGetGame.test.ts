@@ -114,7 +114,6 @@ describe("response", () => {
             gameId: "game1",
             gameName: "Test Game",
             gameDescription: "A test game",
-            publicNotes: "Some notes",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             fireflyUserId: "user1",
@@ -160,7 +159,6 @@ describe("response", () => {
       gameId: "game1",
       gameName: "Test Game",
       gameDescription: "A test game",
-      publicNotes: "Some notes",
       playerSheets: [
         {
           userId: "user1",
@@ -205,7 +203,6 @@ describe("response", () => {
             gameId: "game1",
             gameName: "Test Game",
             gameDescription: "A test game",
-            publicNotes: "Some notes",
             fireflyUserId: "user1",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
@@ -251,7 +248,6 @@ describe("response", () => {
       gameId: "game1",
       gameName: "Test Game",
       gameDescription: "A test game",
-      publicNotes: "Some notes",
       playerSheets: [
         {
           userId: "user1",
@@ -322,7 +318,6 @@ describe("response", () => {
             gameId: "game1",
             gameName: "Test Game",
             gameDescription: "A test game",
-            publicNotes: "Some notes",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeGame,
@@ -350,12 +345,11 @@ describe("makeGameData", () => {
       gameId: "game1",
       gameName: "Test Game",
       gameDescription: "A test game",
-      publicNotes: "Some notes",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       joinToken: "token",
       type: TypeGame,
-      players: ["user1", "user2"],
+      players: ["user3", "user2"],
       fireflyUserId: "user1",
     };
 
@@ -365,7 +359,6 @@ describe("makeGameData", () => {
       gameId: "game1",
       gameName: "Test Game",
       gameDescription: "A test game",
-      publicNotes: "Some notes",
       joinToken: null,
       playerSheets: [],
       createdAt: "2023-01-01",
@@ -379,12 +372,11 @@ describe("makeGameData", () => {
       gameId: "game1",
       gameName: "Test Game",
       gameDescription: "A test game",
-      publicNotes: "Some notes",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       joinToken: "token",
       type: TypeGame,
-      players: ["user1", "user2"],
+      players: ["user3", "user2"],
       fireflyUserId: "user1",
     };
 
@@ -394,7 +386,6 @@ describe("makeGameData", () => {
       gameId: "game1",
       gameName: "Test Game",
       gameDescription: "A test game",
-      publicNotes: "Some notes",
       playerSheets: [],
       joinToken: "token",
       createdAt: "2023-01-01",

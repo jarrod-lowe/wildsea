@@ -40,7 +40,6 @@ type Game @aws_cognito_user_pools {
   gameId: ID!
   gameName: String!
   gameDescription: String
-  publicNotes: String
   playerSheets: [PlayerSheet!]!
   joinToken: String
   createdAt: AWSDateTime!
