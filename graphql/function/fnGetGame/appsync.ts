@@ -141,7 +141,6 @@ export function makeGameData(data: DataGame, sub: string): Game {
     gameId: data.gameId,
     gameName: data.gameName,
     gameDescription: data.gameDescription,
-    publicNotes: data.publicNotes,
     playerSheets: [],
     joinToken: joinToken,
     createdAt: data.createdAt,

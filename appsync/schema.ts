@@ -3,7 +3,7 @@
       export const getGameQuery = `
         query getGame($id: ID!) {
           getGame(id: $id) {
-            gameId gameName gameDescription publicNotes playerSheets { userId gameId characterName sections { userId gameId type createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId type createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
           }
         }
       `;
@@ -21,7 +21,7 @@
       export const createGameMutation = `
         mutation createGame($input: CreateGameInput!) {
           createGame(input: $input) {
-            gameId gameName gameDescription publicNotes playerSheets { userId gameId characterName sections { userId gameId type createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId type createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
           }
         }
       `;
@@ -29,7 +29,7 @@
       export const joinGameMutation = `
         mutation joinGame($input: JoinGameInput!) {
           joinGame(input: $input) {
-            gameId gameName gameDescription publicNotes playerSheets { userId gameId characterName sections { userId gameId type createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId type createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
           }
         }
       `;
