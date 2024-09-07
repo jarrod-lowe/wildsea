@@ -25,6 +25,11 @@ import {
 export function request(
   context: Context<QueryGetGameArgs>,
 ): DynamoDBQueryRequest {
+  validateIdentity(context);
+  return buildDynamoDBQuery(context.arguments.id);
+}
+
+function validateIdentity(context: Context<QueryGetGameArgs>): void {
   if (!context.identity) {
     util.error("Unauthorized: Identity information is missing." as string);
   }
@@ -33,8 +38,9 @@ export function request(
   if (!identity.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
+}
 
-  const id = context.arguments.id;
+function buildDynamoDBQuery(id: string): DynamoDBQueryRequest {
   const pk = "GAME#" + id;
   const expr: DynamoDBExpression = {
     expression: "#pk = :pk",
@@ -45,7 +51,6 @@ export function request(
       ":pk": { S: pk },
     },
   };
-  // Do a dynamodb query to get all records where pk = "GAME#" + id
   return {
     operation: "Query",
     query: expr,
@@ -61,61 +66,70 @@ type ResponseContext = Context<
 >;
 
 export function response(context: ResponseContext): Game | undefined {
+  validateResponse(context);
+  validateIdentity(context);
+
+  const identity = context.identity as AppSyncIdentityCognito;
+  const sheets = buildPlayerSheets(context.result.items);
+  const game = findAndBuildGame(context.result.items, identity.sub);
+
+  addSheetsToGame(game, sheets);
+  return game;
+}
+
+function validateResponse(context: ResponseContext): void {
   if (context.error) {
     util.error(context.error.message, context.error.type, context.result);
   }
-  if (
-    !context.result ||
-    !context.result.items ||
-    context.result.items.length == 0
-  ) {
+
+  if (!context.result?.items?.length) {
     util.error("Game not found");
   }
+}
 
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
-  const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
-
+function buildPlayerSheets(items: Data[]): Record<string, PlayerSheet> {
   const sheets: Record<string, PlayerSheet> = {};
-  let game: Game | null = null;
-
-  for (const data of context.result.items) {
-    if (data.type == TypeGame) {
-      game = makeGameData(data as DataGame, identity.sub);
-    } else if (data.type == TypeCharacter || data.type == TypeFirefly) {
+  items.forEach((data) => {
+    if (data.type === TypeCharacter || data.type === TypeFirefly) {
       const sheet = makeCharacterSheetData(data as DataPlayerSheet);
       sheets[sheet.userId] = sheet;
-    } else if (data.type == TypeSection) {
-      const section = makeSheetSection(data as DataSheetSection);
-      const sheet = sheets[section.userId];
-      if (sheet === undefined) {
-        util.error("Sheet not found");
-      }
-      sheet.sections.push(section);
-    } else {
+    } else if (data.type === TypeSection) {
+      addSectionToSheet(sheets, data as DataSheetSection);
+    } else if (data.type != TypeGame) {
       util.error("Unknown type: " + data.type);
     }
-  }
+  });
+  return sheets;
+}
 
-  if (game === null) {
+function addSectionToSheet(
+  sheets: Record<string, PlayerSheet>,
+  data: DataSheetSection,
+): void {
+  const section = makeSheetSection(data);
+  const sheet = sheets[section.userId];
+  if (sheet === undefined) {
+    util.error("Sheet not found");
+  }
+  sheet.sections.push(section);
+}
+
+function findAndBuildGame(items: Data[], sub: string): Game {
+  const gameData = items.find((data) => data.type === TypeGame) as DataGame;
+  if (!gameData) {
     util.error("Game record not found");
   }
+  return makeGameData(gameData, sub);
+}
 
-  // Get an array of user IDs and sort them
-  const userIds = Object.keys(sheets).sort();
-
-  // Iterate through sorted user IDs and add corresponding sheets to the game
-  for (const userId of userIds) {
-    const sheet = sheets[userId];
-    game.playerSheets.push(sheet);
-  }
-
-  return game;
+function addSheetsToGame(
+  game: Game,
+  sheets: Record<string, PlayerSheet>,
+): void {
+  const userIds = Object.keys(sheets).sort(); // NOSONAR we do not want a locale-based sort
+  userIds.forEach((userId) => {
+    game.playerSheets.push(sheets[userId]);
+  });
 }
 
 export function makeGameData(data: DataGame, sub: string): Game {

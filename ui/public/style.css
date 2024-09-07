@@ -91,7 +91,7 @@ button:hover {
 
 .error-message {
     color: #f44336;
-    margin: 0 0 10px 0;
+    margin-bottom: 10px;
 }
 
 .error-container button {

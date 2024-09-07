@@ -89,7 +89,7 @@ export function createNewGameForm(): HTMLFormElement {
     return form;
 }
 
-export async function doCreateGame(data: CreateGameInput): Promise<String | undefined> {
+export async function doCreateGame(data: CreateGameInput): Promise<string | undefined> {
     try {
         const client = generateClient();
         const result = await client.graphql({
