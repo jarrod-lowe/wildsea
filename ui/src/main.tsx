@@ -1,8 +1,11 @@
+import React, { useEffect, useState, Suspense } from "react";
+import { createRoot } from "react-dom/client";
 import { Amplify } from "aws-amplify";
 import { signInWithRedirect, signOut } from "@aws-amplify/auth";
 import amplifyconfig from "./amplifyconfiguration.json";
-import { gamesMenuScreen } from "./gamesMenu";
-import { play } from "./game";
+
+const GamesMenu = React.lazy(() => import("./gamesMenu"))
+const Game = React.lazy(() => import("./game"))
 
 function handleSignOutClick() {
     signOut();
@@ -82,23 +85,39 @@ async function amplifySetup() {
 
     const config = await mergeConfig(configUpdates, pageUrl);
     Amplify.configure(config);
-
-    const loginButton = document.getElementById("login-button");
-    loginButton?.addEventListener("click", handleSignInClick);
-    const logoutButton = document.getElementById("logout-button");
-    logoutButton?.addEventListener("click", handleSignOutClick);
 }
 
 async function main() {
     await amplifySetup();
+}
 
-    const gameId = getGameId();
+function App() {
+    const [gameId, setGameId] = useState<string | null>(null);
+    const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
 
-    if (gameId) {
-        await play(gameId);
-    } else {
-        await gamesMenuScreen();
+    useEffect(() => {
+        async function setup() {
+            await amplifySetup();
+            setIsAmplifyConfigured(true);
+            const id = getGameId();
+            setGameId(id);
+        }
+        setup();
+    }, []);
+
+    if (!isAmplifyConfigured) {
+        return <div>Loading...</div>;
     }
+
+    return (
+        <div>
+            <button onClick={handleSignInClick} id="login-button">Login</button>
+            <button onClick={handleSignOutClick} id="logout-button">Logout</button>
+            <Suspense fallback={<div>Loading games menu...</div>}>
+                {gameId ? <Game id={gameId} /> : <GamesMenu />}
+            </Suspense>
+        </div>
+    );
 }
 
 function getGameId(): string | null {
@@ -107,5 +126,6 @@ function getGameId(): string | null {
 }
 
 if (typeof window !== "undefined") {
-    main();
+    const root = createRoot(document.getElementById("root") as HTMLElement);
+    root.render(<App />);
 }
