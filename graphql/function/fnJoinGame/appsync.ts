@@ -2,6 +2,7 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
 import type { Game, JoinGameInput } from "../../../appsync/graphql";
+import { TypeCharacter, DefaultPlayerCharacterName } from "../../lib/constants";
 
 export function request(context: Context<{ input: JoinGameInput }>): unknown {
   if (!context.identity) {
@@ -49,8 +50,8 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
       GSI1PK: "USER#" + identity.sub,
       gameName: context.prev.result.gameName,
       gameDescription: context.prev.result.gameDescription,
-      characterName: "Unnamed Character",
-      type: "CHARACTER",
+      characterName: DefaultPlayerCharacterName,
+      type: TypeCharacter,
       createdAt: timestamp,
       updatedAt: timestamp,
     }),

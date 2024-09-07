@@ -30,12 +30,11 @@ export type CreateGameInput = {
 export type Game = {
   __typename?: 'Game';
   createdAt: Scalars['AWSDateTime']['output'];
-  fireflyUserId: Scalars['ID']['output'];
   gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   joinToken?: Maybe<Scalars['String']['output']>;
-  players?: Maybe<Array<Scalars['ID']['output']>>;
+  playerSheets: Array<PlayerSheet>;
   publicNotes?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
@@ -62,12 +61,25 @@ export type MutationJoinGameArgs = {
   input: JoinGameInput;
 };
 
+export type PlayerSheet = {
+  __typename?: 'PlayerSheet';
+  characterName: Scalars['String']['output'];
+  createdAt: Scalars['AWSDateTime']['output'];
+  gameId: Scalars['ID']['output'];
+  sections: Array<SheetSection>;
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
+  userId: Scalars['ID']['output'];
+};
+
 export type PlayerSheetSummary = {
   __typename?: 'PlayerSheetSummary';
+  createdAt: Scalars['AWSDateTime']['output'];
   gameDescription: Scalars['String']['output'];
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   type: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
 };
 
 export type Query = {
@@ -79,4 +91,13 @@ export type Query = {
 
 export type QueryGetGameArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type SheetSection = {
+  __typename?: 'SheetSection';
+  createdAt: Scalars['AWSDateTime']['output'];
+  gameId: Scalars['ID']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
+  userId: Scalars['ID']['output'];
 };

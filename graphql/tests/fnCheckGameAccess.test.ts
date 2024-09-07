@@ -3,13 +3,14 @@ import { awsAppsyncUtilsMock } from "./mocks";
 jest.mock("@aws-appsync/utils", () => awsAppsyncUtilsMock);
 
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
-import { request, response } from "../query/getGame/appsync";
+import {
+  request,
+  response,
+  permitted,
+} from "../function/fnCheckGameAccess/appsync";
+import type { DataGame } from "../lib/dataTypes";
 
 describe("request", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it("should return a DynamoDBGetItemRequest when identity and id are present", () => {
     const context: Context<{ id: string }> = {
       arguments: { id: "test-id" },
@@ -30,6 +31,7 @@ describe("request", () => {
   it("should throw an error when identity is missing", () => {
     const context: Context<{ id: string }> = {
       arguments: { id: "test-id" },
+      identity: null,
     } as Context<{ id: string }>;
 
     expect(() => request(context)).toThrow(
@@ -48,10 +50,6 @@ describe("request", () => {
 });
 
 describe("response", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it("should append error if context.error is present", () => {
     const context: Context = {
       error: { message: "Some error", type: "SomeType" },
@@ -89,19 +87,6 @@ describe("response", () => {
     );
   });
 
-  it("should append error if context.result is null", () => {
-    const context: Context = {
-      identity: { sub: "test-sub" } as AppSyncIdentityCognito,
-      result: null,
-    } as Context;
-
-    response(context);
-
-    expect(util.appendError).toHaveBeenCalledWith(
-      "Unauthorized: User does not have access to the game.",
-    );
-  });
-
   it("should return context.result if user has access", () => {
     const context: Context = {
       identity: { sub: "authorized-sub" } as AppSyncIdentityCognito,
@@ -112,31 +97,64 @@ describe("response", () => {
 
     expect(result).toEqual({ fireflyUserId: "authorized-sub", players: [] });
   });
+});
 
-  it("should return context.result if the caller is one of the players", () => {
-    const context: Context = {
-      identity: { sub: "player-sub" } as AppSyncIdentityCognito,
-      result: { fireflyUserId: "some-other-id", players: ["player-sub"] },
-    } as Context;
+describe("permitted", () => {
+  const baseGameData: DataGame = {
+    gameId: "game-1",
+    gameName: "Test Game",
+    gameDescription: "A test game",
+    createdAt: "2023-01-01T00:00:00Z",
+    updatedAt: "2023-01-01T00:00:00Z",
+    type: "GAME",
+    fireflyUserId: "firefly-sub",
+    players: [],
+  };
 
-    const result = response(context);
+  it("should return false if data is null", () => {
+    const identity = { sub: "test-sub" } as AppSyncIdentityCognito;
+    const data = null as unknown as DataGame;
 
-    expect(result).toEqual({
-      fireflyUserId: "some-other-id",
-      players: ["player-sub"],
-    });
+    expect(permitted(identity, data)).toBe(false);
   });
 
-  it("should append error if players are set but the caller is not a player or firefly", () => {
-    const context: Context = {
-      identity: { sub: "unauthorized-sub" } as AppSyncIdentityCognito,
-      result: { fireflyUserId: "some-other-id", players: ["player-sub"] },
-    } as Context;
+  it("should return true if user is firefly", () => {
+    const identity = { sub: "firefly-sub" } as AppSyncIdentityCognito;
+    const data: DataGame = { ...baseGameData, fireflyUserId: "firefly-sub" };
 
-    response(context);
+    expect(permitted(identity, data)).toBe(true);
+  });
 
-    expect(util.appendError).toHaveBeenCalledWith(
-      "Unauthorized: User does not have access to the game.",
-    );
+  it("should return true if user is a player", () => {
+    const identity = { sub: "player-sub" } as AppSyncIdentityCognito;
+    const data: DataGame = {
+      ...baseGameData,
+      fireflyUserId: "firefly-sub",
+      players: ["player-sub"],
+    };
+
+    expect(permitted(identity, data)).toBe(true);
+  });
+
+  it("should return false if user is neither firefly nor a player", () => {
+    const identity = { sub: "unauthorized-sub" } as AppSyncIdentityCognito;
+    const data: DataGame = {
+      ...baseGameData,
+      fireflyUserId: "firefly-sub",
+      players: ["player-sub"],
+    };
+
+    expect(permitted(identity, data)).toBe(false);
+  });
+
+  it("should return false if players array is empty", () => {
+    const identity = { sub: "unauthorized-sub" } as AppSyncIdentityCognito;
+    const data: DataGame = {
+      ...baseGameData,
+      fireflyUserId: "firefly-sub",
+      players: [],
+    };
+
+    expect(permitted(identity, data)).toBe(false);
   });
 });

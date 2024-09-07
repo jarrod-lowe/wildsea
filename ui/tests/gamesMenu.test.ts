@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { createGameElement, createGamesList, createNewGameForm } from "../src/game";
+import { createGameElement, createGamesList, createNewGameForm } from "../src/gamesMenu";
 import { PlayerSheetSummary } from '../../appsync/graphql';
 
 describe('createGameElement', () => {
@@ -13,6 +13,8 @@ describe('createGameElement', () => {
       gameDescription: 'Test Description',
       gameId: '1',
       type: 'Test Type',
+      createdAt: '2023-05-01T00:00:00.000Z',
+      updatedAt: '2023-05-01T00:00:00.000Z',
     };
 
     const li = createGameElement(game);
@@ -29,6 +31,8 @@ describe('createGamesList', () => {
         gameDescription: 'Description 1',
         gameId: '1',
         type: 'Type 1',
+        createdAt: '2023-05-01T00:00:00.000Z',
+        updatedAt: '2023-05-01T00:00:00.000Z',
       },
       {
         __typename: 'PlayerSheetSummary',
@@ -36,6 +40,8 @@ describe('createGamesList', () => {
         gameDescription: 'Description 2',
         gameId: '2',
         type: 'Type 2',
+        createdAt: '2023-05-01T00:00:00.000Z',
+        updatedAt: '2023-05-01T00:00:00.000Z',
       },
     ];
 
@@ -54,6 +60,6 @@ describe('createNewGameForm', () => {
   it('should create a new game form correctly', () => {
     const form = createNewGameForm();
     expect(form.tagName).toBe('FORM');
-    expect(form.querySelectorAll('input, textarea, button').length).toBe(3);
+    expect(form.querySelectorAll('input, textarea, button').length).toBe(4);
   });
 });

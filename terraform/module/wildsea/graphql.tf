@@ -270,6 +270,10 @@ locals {
       type : "Mutation",
       functions = ["fnGetGameWithToken", "fnJoinGame"]
     }
+    getGame = {
+      type : "Query",
+      functions = ["fnCheckGameAccess", "fnGetGame"]
+    }
   }
 }
 

@@ -292,12 +292,20 @@ describe("response function", () => {
 
     // Assert
     expect(result).toEqual({
-      PK: "testPK",
-      SK: "testSK",
       gameName: "testGameName",
       gameDescription: "testGameDescription",
       gameId: "testGameId",
-      fireflyUserId: "testFireflyUserId",
+      playerSheets: [
+        {
+          characterName: "Firefly",
+          userId: "testFireflyUserId",
+          gameId: "testGameId",
+          type: "FIREFLY",
+          sections: [],
+          createdAt: "testCreatedAt",
+          updatedAt: "testUpdatedAt",
+        },
+      ],
       createdAt: "testCreatedAt",
       updatedAt: "testUpdatedAt",
       type: "testType",
