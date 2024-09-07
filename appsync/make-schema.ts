@@ -6,6 +6,11 @@ import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLFieldMap,
+  GraphQLOutputType,
+  isEnumType,
+  isInterfaceType,
+  isObjectType,
+  isScalarType,
 } from 'graphql';
 
 // Function to read all data from STDIN
@@ -106,10 +111,13 @@ function generateOperationStrings(
       .map((arg) => `$${arg.name}: ${arg.type}`)
       .join(', ');
 
+    const operationArgsDef = argsDef ? `(${argsDef})` : '';
+    const fieldArgs = args ? `(${args})` : '';
+
     result += `
       export const ${name}${capitalize(operationType)} = \`
-        ${operationType} ${name}(${argsDef}) {
-          ${name}(${args}) {
+        ${operationType} ${name}${operationArgsDef} {
+          ${name}${fieldArgs} {
             ${getFieldSelection(field.type)}
           }
         }
@@ -121,13 +129,31 @@ function generateOperationStrings(
 }
 
 // Helper function to determine field selection based on type
-function getFieldSelection(type: any): string {
-  if (type.ofType) {
-    return getFieldSelection(type.ofType);
+function getFieldSelection(type: GraphQLOutputType, depth: number = 0): string {
+  if (depth > 3) {
+    // Limit recursion depth to avoid circular references
+    return '';
   }
-  if (type.getFields) {
-    return Object.keys(type.getFields()).join(' ');
+
+  if ('ofType' in type && type.ofType) {
+    return getFieldSelection(type.ofType, depth);
   }
+
+  if (isObjectType(type) || isInterfaceType(type)) {
+    const fields = type.getFields();
+    const fieldSelections = Object.entries(fields)
+      .map(([fieldName, field]) => {
+        if (isScalarType(field.type) || isEnumType(field.type)) {
+          return fieldName;
+        } else {
+          const subFields = getFieldSelection(field.type, depth + 1);
+          return subFields ? `${fieldName} { ${subFields} }` : fieldName;
+        }
+      })
+      .filter(Boolean); // Remove empty strings
+    return fieldSelections.join(' ');
+  }
+
   return ''; // Scalar types don't need field selections
 }
 

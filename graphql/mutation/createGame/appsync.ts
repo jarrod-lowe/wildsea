@@ -2,6 +2,11 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
 import { Game, CreateGameInput } from "../../../appsync/graphql";
+import {
+  TypeFirefly,
+  DefaultFireflyCharacterName,
+  TypeGame,
+} from "../../lib/constants";
 
 export function request(context: Context<{ input: CreateGameInput }>): unknown {
   if (!context.identity) {
@@ -27,7 +32,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
     joinToken: joinToken,
     createdAt: timestamp,
     updatedAt: timestamp,
-    type: "GAME",
+    type: TypeGame,
   };
 
   const gameItem = {
@@ -51,11 +56,11 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
       gameId: id,
       gameName: input.name,
       gameDescription: input.description,
-      characterName: "Firefly",
+      characterName: DefaultFireflyCharacterName,
       GSI1PK: "USER#" + identity.sub,
       createdAt: timestamp,
       updatedAt: timestamp,
-      type: "FIREFLY",
+      type: TypeFirefly,
     }) as PutItemInputAttributeMap,
   };
 
@@ -71,14 +76,22 @@ export function response(context: Context): Game | null {
     return null;
   }
   return {
-    PK: context.result.keys[0].PK,
-    SK: context.result.keys[0].SK,
     gameName: context.stash.record.gameName,
     gameDescription: context.stash.record.gameDescription,
     gameId: context.stash.record.gameId,
-    fireflyUserId: context.stash.record.fireflyUserId,
+    playerSheets: [
+      {
+        gameId: context.stash.record.gameId,
+        userId: context.stash.record.fireflyUserId,
+        characterName: DefaultFireflyCharacterName,
+        type: TypeFirefly,
+        sections: [],
+        createdAt: context.stash.record.createdAt,
+        updatedAt: context.stash.record.updatedAt,
+      },
+    ],
     createdAt: context.stash.record.createdAt,
     updatedAt: context.stash.record.updatedAt,
     type: context.stash.record.type,
-  } as Game;
+  };
 }

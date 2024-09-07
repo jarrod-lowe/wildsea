@@ -69,6 +69,6 @@ clean:
 	rm -rf appsync/node_modules
 	rm -rf ui/node_modules
 	rm -f ui/config/*
-	rm -f ui/public/*
+	rm -f ui/public/config.json
 	rm -rf ui/dist/*
 	rm -rf ui/coverage

@@ -1,9 +1,10 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
-import type { Game } from "../../../appsync/graphql";
+import type { DataGame } from "../../lib/dataTypes";
+import type { QueryGetGameArgs } from "../../../appsync/graphql";
 
 export function request(
-  context: Context<{ id: string }>,
+  context: Context<QueryGetGameArgs>,
 ): DynamoDBGetItemRequest {
   if (!context.identity) {
     util.error("Unauthorized: Identity information is missing." as string);
@@ -26,7 +27,15 @@ export function request(
   };
 }
 
-export function response(context: Context) {
+type ResponseContext = Context<
+  QueryGetGameArgs,
+  Record<string, unknown>,
+  undefined,
+  undefined,
+  DataGame
+>;
+
+export function response(context: ResponseContext): DataGame | undefined {
   if (context.error) {
     util.appendError(context.error.message, context.error.type, context.result);
     return;
@@ -48,7 +57,10 @@ export function response(context: Context) {
   return context.result;
 }
 
-function permitted(identity: AppSyncIdentityCognito, data: Game): boolean {
+export function permitted(
+  identity: AppSyncIdentityCognito,
+  data: DataGame,
+): boolean {
   if (data === null) {
     return false;
   }

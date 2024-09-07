@@ -41,8 +41,7 @@ type Game @aws_cognito_user_pools {
   gameName: String!
   gameDescription: String
   publicNotes: String
-  fireflyUserId: ID!
-  players: [ID!]
+  playerSheets: [PlayerSheet!]!
   joinToken: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -54,4 +53,24 @@ type PlayerSheetSummary @aws_cognito_user_pools {
   gameName: String!
   gameDescription: String!
   type: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type PlayerSheet @aws_cognito_user_pools {
+  userId: ID!
+  gameId: ID!
+  characterName: String!
+  sections: [SheetSection!]!
+  type: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type SheetSection @aws_cognito_user_pools {
+  userId: ID!
+  gameId: ID!
+  type: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }

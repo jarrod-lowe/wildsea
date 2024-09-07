@@ -293,13 +293,13 @@ Assistant:
    * `SK`: `METADATA`
    * Other fields: `name`, `createdAt`, `updatedAt`
 
-2. **Game**
+1. **Game**
    * `PK`: `GAME#<gameId>`
    * `SK`: `METADATA`
    * `gameId`: gameId
    * Other fields: `gameName`, `gameDescription`, `publicNotes`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI1PK`
 
-3. **GM Info**
+1. **GM Info**
    * `PK`: `GAME#<gameId>`
    * `SK`: `PLAYER#GM#<userId>`
    * `GSI1PK`: `USER#<userId>`
@@ -307,21 +307,29 @@ Assistant:
    * `gameId`: gameId
    * gameName and gameDescription: Duplicated from game
 
-4. **Player Sheet**
+1. **Player Sheet**
    * `PK`: `GAME#<gameId>`
    * `SK`: `PLAYER#PC#<userId>`
    * `GSI1PK`: `USER#<userId>`
    * `userId`: userId
    * `gameId`: gameId
-   * `characterName` (String)
-   * `pronouns` (String)
-   * `bloodline` (String)
-   * `origin` (String)
-   * `post` (String)
-   * `publicNotes` (String)
-   * `privateNotes` (String)
-   * `secretNotes` (String)
-   * `fireflyNotes` (String)
+
+1. **Player Sheet Sections**
+   * `PK`: `GAME#<gameId>`
+   * `SK`: `PLAYER#SECTION#<userId>#<section>#<item>`
+   * `dataType`: The type of the data (key/value, ticks, clock, ...)
+   * Each section is one of: (TODO: Modify)
+   * `notes` - text
+        * `publicNotes` (String)
+        * `privateNotes` (String)
+        * `secretNotes` (String)
+        * `fireflyNotes` (String)
+   * `strings` - key/value pairs
+        * `characterName` (String)
+        * `pronouns` (String)
+        * `bloodline` (String)
+        * `origin` (String)
+        * `post` (String)
    * `milestones` (List of Maps)
         * Each map in the list represents a milestone and contains fields like `type` (String: "Major" or "Minor"), `description` (String)
    * `drives` (List of Strings)
@@ -342,7 +350,7 @@ Assistant:
    * Other fields: `createdAt`, `updatedAt`
    * gameName and gameDescription: Duplicated from game
 
-5. **Ship Sheet**
+1. **Ship Sheet**
    * `PK`: `GAME#<gameId>`
    * `SK`: `SHIP#<shipId>`
    * `name` (String)
@@ -366,23 +374,23 @@ Assistant:
    * `passengers` (List of Strings)
    * Other fields: `createdAt`, `updatedAt`
 
-6. **Clock**
+1. **Clock**
    * `PK`: `GAME#<gameId>`
    * `SK`: `CLOCK#<clockId>`
    * Other fields: `name`, `lengths`, `visibility`, `gmNotes`, `createdAt`, `updatedAt`
 
-7. **Dice Roll**
+1. **Dice Roll**
    * `PK`: `GAME#<gameId>`
    * `SK`: `DICEROLL#<timeSortableGuid>`
    * Other fields: `playerCharacterName`, `numRolled`, `numCut`, `result`, `twist`, `rollValues`, `createdAt`
 
-8. **Seed Data**
+1. **Seed Data**
    * `PK`: `SEED#<type>`
    * `SK`: `<id>`
    * Other fields: vary based on the type, e.g., `name`, `description`, `trackLength`, etc.
    * `<type>`'s include: `MIRE`, `EDGE`, `SKILL`, `LANGUAGE`, `RESOURCE`, `ASPECT`, `RATING`, `DESIGN`, `UNDERCREW`, `FITTINGTYPE`
 
-9. **Level Name**
+1. **Level Name**
    * `PK`: `LEVELNAME#<type>`
    * `SK`: `<numDots>`
    * Other fields: `name`
