@@ -15,7 +15,7 @@ function handleSignInClick() {
     signInWithRedirect({});
 }
 
-function getPageURL() {
+export function getPageURL() {
     const url = new URL(window.location.href);
     return url.origin + url.pathname;
 }
@@ -78,7 +78,7 @@ export async function mergeConfig(configUpdates: AmplifyConfigJSON, pageUrl: str
     return amplifyconfig;
 }
 
-async function amplifySetup() {
+export async function amplifySetup() {
     const response = await fetch("/config.json");
     const configUpdates = await response.json();
     const pageUrl = getPageURL();
@@ -87,11 +87,7 @@ async function amplifySetup() {
     Amplify.configure(config);
 }
 
-async function main() {
-    await amplifySetup();
-}
-
-function App() {
+export function App() {
     const [gameId, setGameId] = useState<string | null>(null);
     const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
 
@@ -106,7 +102,7 @@ function App() {
     }, []);
 
     if (!isAmplifyConfigured) {
-        return <div>Loading...</div>;
+        return <div data-testid="loading">Loading...</div>;
     }
 
     return (
@@ -120,12 +116,12 @@ function App() {
     );
 }
 
-function getGameId(): string | null {
+export function getGameId(): string | null {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('gameId');
 }
 
-if (typeof window !== "undefined") {
+if (process.env.NODE_ENV !== "test") {
     const root = createRoot(document.getElementById("root") as HTMLElement);
     root.render(<App />);
 }

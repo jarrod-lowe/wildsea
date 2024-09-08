@@ -1,6 +1,17 @@
 module.exports = {
-  transform: { "^.+\\.ts?$": "ts-jest" },
-  testEnvironment: "node",
-  testRegex: "/tests/.*\\.(test|spec)?\\.(ts|tsx)$",
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"]
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1'
+  },
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: 'tsconfig.json',
+      isolatedModules: true
+    }]
+  },
+  globals: {
+    "process.env.NODE_ENV": "test"
+  }
 };

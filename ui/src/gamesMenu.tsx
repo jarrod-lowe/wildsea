@@ -4,9 +4,9 @@ import { createGameMutation, getGamesQuery } from "../../appsync/schema";
 import { PlayerSheetSummary, CreateGameInput, Game } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 
-const client = generateClient();
 
 export const GamesMenu: React.FC = () => {
+    const client = generateClient();
     const [games, setGames] = useState<PlayerSheetSummary[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [gameName, setGameName] = useState('');
@@ -22,7 +22,6 @@ export const GamesMenu: React.FC = () => {
                 query: getGamesQuery,
             }) as GraphQLResult<{ getGames: PlayerSheetSummary[] }>;
             setGames(response.data.getGames);
-            console.log(response);
         } catch (error) {
             setError('Error fetching games: ' + JSON.stringify(error));
         }
@@ -59,7 +58,7 @@ export const GamesMenu: React.FC = () => {
                 <div className="joingame">
                     <h1>Available Games</h1>
                     <ul>
-                        {games.map((game) => (
+                        {games?.map((game) => (
                             <li key={game.gameId}>
                                 <a href={`/?gameId=${game.gameId}`} aria-label={`Play game: ${game.gameName}`}>
                                     {game.gameName} - {game.gameDescription}
