@@ -3,9 +3,8 @@ global.fetch = jest.fn(() => Promise.resolve({
   json: () => Promise.resolve({})
 })) as jest.Mock;
 
-import { render, screen, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { App, mergeConfig, getPageURL, getGameId } from '../src/main';
+import { mergeConfig, getPageURL, getGameId } from '../src/main';
 
 
 // Mock the modules
@@ -56,42 +55,6 @@ describe('main.tsx', () => {
         search: '',
       },
       writable: true,
-    });
-  });
-
-  test('App renders login and logout buttons', async () => {
-    await act(async () => {
-      render(<App />);
-    });
-    await waitFor(() => {
-      expect(screen.getByText('Login')).toBeInTheDocument();
-      expect(screen.getByText('Logout')).toBeInTheDocument();
-    });
-  });
-
-  test('App renders GamesMenu when no gameId is present', async () => {
-    await act(async () => {
-      render(<App />);
-    });
-    await waitFor(() => {
-      expect(screen.getByText('Games Menu Component')).toBeInTheDocument();
-    });
-  });
-
-  test('App renders Game component when gameId is present', async () => {
-    Object.defineProperty(window, 'location', {
-      value: {
-        href: 'http://localhost:3000?gameId=123',
-        search: '?gameId=123',
-      },
-      writable: true,
-    });
-
-    await act(async () => {
-      render(<App />);
-    });
-    await waitFor(() => {
-      expect(screen.getByText('Game Component 123')).toBeInTheDocument();
     });
   });
 

@@ -47,7 +47,9 @@ export type JoinGameInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createGame: Game;
+  createSection: SheetSection;
   joinGame: Game;
+  updateSection: SheetSection;
 };
 
 
@@ -56,8 +58,18 @@ export type MutationCreateGameArgs = {
 };
 
 
+export type MutationCreateSectionArgs = {
+  input: UpdateSectionInput;
+};
+
+
 export type MutationJoinGameArgs = {
   input: JoinGameInput;
+};
+
+
+export type MutationUpdateSectionArgs = {
+  input: UpdateSectionInput;
 };
 
 export type PlayerSheet = {
@@ -94,9 +106,21 @@ export type QueryGetGameArgs = {
 
 export type SheetSection = {
   __typename?: 'SheetSection';
+  content: Scalars['String']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
   gameId: Scalars['ID']['output'];
+  sectionId: Scalars['ID']['output'];
+  sectionName: Scalars['String']['output'];
+  sectionType: Scalars['String']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
   userId: Scalars['ID']['output'];
+};
+
+export type UpdateSectionInput = {
+  content?: InputMaybe<Scalars['String']['input']>;
+  gameId: Scalars['ID']['input'];
+  sectionName: Scalars['String']['input'];
+  sectionType: Scalars['String']['input'];
+  userId: Scalars['ID']['input'];
 };

@@ -1,5 +1,8 @@
 export const messages = {
   en: {
+    'wildsea': 'Wildsea',
+    'pleaseLogin': 'Please Log In',
+
     'availableGames': 'Available Games',
     'createNewGame': 'Create New Game',
     'gameName': 'Game Name:',
@@ -17,5 +20,9 @@ export const messages = {
     'error': 'Error',
     'loadingGameData': 'Loading game data...',
     'gameTitle': 'Game',
+
+    'addSection': 'Add Section',
+    'sectionName': 'Name',
+    'create': 'Add',
   },
 };

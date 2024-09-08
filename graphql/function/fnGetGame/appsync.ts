@@ -165,6 +165,10 @@ export function makeSheetSection(data: DataSheetSection): SheetSection {
   return {
     userId: data.userId,
     gameId: data.gameId,
+    sectionId: data.sectionId,
+    sectionName: data.sectionName,
+    sectionType: data.sectionType,
+    content: data.content,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     type: data.type,
