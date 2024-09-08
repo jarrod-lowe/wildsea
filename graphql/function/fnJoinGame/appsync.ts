@@ -71,5 +71,6 @@ export function response(
   }
 
   context.prev.result.joinToken = null;
+  context.prev.result.playerSheets = [];
   return context.prev.result;
 }

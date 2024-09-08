@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game as GameType, SheetSection, PlayerSheet } from "../../appsync/graphql";
+import { Game, SheetSection, PlayerSheet } from "../../appsync/graphql";
 import { getGameQuery, updateSectionMutation, createSectionMutation } from "../../appsync/schema";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { messages } from './translations';
 import { FaPencilAlt, FaPlus } from 'react-icons/fa';
 import { TopBar } from "./frame";
+import { TypeFirefly } from "../../graphql/lib/constants";
 
 // Section component
 const Section: React.FC<{ section: SheetSection, onUpdate: (updatedSection: SheetSection) => void }> = ({ section, onUpdate }) => {
@@ -58,7 +59,7 @@ const Section: React.FC<{ section: SheetSection, onUpdate: (updatedSection: Shee
 };
 
 // PlayerSheetTab component
-const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, onUpdate }) => {
+const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, game, onUpdate }) => {
   const [newSectionName, setNewSectionName] = useState('');
   const [newSectionType, setNewSectionType] = useState('TEXT');
   const [showNewSection, setShowNewSection] = useState(false);
@@ -92,7 +93,7 @@ const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, onUpdate: (updatedSheet: Pl
 
   return (
     <div className="player-sheet">
-      <h2>{sheet.characterName}</h2>
+      <SheetHeader sheet={sheet} game={game}/>
       {sheet.sections.map((section) => (
         <Section
           key={section.sectionName}
@@ -129,9 +130,34 @@ const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, onUpdate: (updatedSheet: Pl
   );
 };
 
+const SheetHeader: React.FC<{ sheet: PlayerSheet; game: Game }> = ({ sheet, game }) => {
+      const joinUrl = game.joinToken ? getJoinUrl(game.joinToken) : null;
+    const headerContent = (
+        <div className="sheet-header">
+            <h2>{sheet.characterName}</h2>
+            {sheet.type === TypeFirefly && joinUrl && (
+                <p>
+                    <FormattedMessage id='joinToken' />: {' '}
+                    <a href={joinUrl}> {joinUrl}
+                    </a>
+                </p>
+            )}
+        </div>
+    );
+
+    return headerContent;
+};
+
+// Helper function to generate the join URL
+const getJoinUrl = (joinToken: string): string => {
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('joinToken', joinToken);
+    return currentUrl.toString();
+};
+
 // Main Game component
 const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmail }) => {
-  const [game, setGame] = useState<GameType | null>(null);
+  const [game, setGame] = useState<Game | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const intl = useIntl();
@@ -143,7 +169,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         const response = await client.graphql({
           query: getGameQuery,
           variables: { id }
-        }) as GraphQLResult<{ getGame: GameType }>;
+        }) as GraphQLResult<{ getGame: Game }>;
 
         setGame(response.data.getGame);
         if (response.data.getGame.playerSheets.length > 0) {
@@ -181,6 +207,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
       </div>
       {activeSheet && (
         <PlayerSheetTab
+          game={game}
           sheet={game.playerSheets.find(s => s.userId === activeSheet)!}
           onUpdate={(updatedSheet) => {
             const updatedSheets = game.playerSheets.map(s =>
@@ -194,10 +221,10 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
   );
 };
 
-const Game: React.FC<{ id: string, userEmail: string }> = (props) => (
+const AppGame: React.FC<{ id: string, userEmail: string }> = (props) => (
   <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
     <GameContent {...props} />
   </IntlProvider>
 );
 
-export default Game;
+export default AppGame;

@@ -1,3 +1,56 @@
+@media screen and (width <= 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  .gameslist {
+    padding: 10px;
+  }
+
+  .allgames {
+    flex-direction: column;
+  }
+
+  .joingame,
+  .newgame {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  input,
+  textarea,
+  button {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .game-container {
+    padding: 10px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-menu {
+    margin-top: 10px;
+  }
+
+  .tab-bar {
+    flex-wrap: wrap;
+  }
+
+  .tab-bar button {
+    flex: 1 0 50%;
+    margin-bottom: 5px;
+  }
+}
+
 .hidden {
     display: none;
 }

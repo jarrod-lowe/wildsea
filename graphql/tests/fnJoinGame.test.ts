@@ -278,6 +278,7 @@ describe("fnJoinGame response function", () => {
     expect(result).toEqual({
       joinToken: null,
       fireflyUserId: "user456",
+      playerSheets: [],
       players: [],
       gameId: "game123",
       gameName: "Test Game",
