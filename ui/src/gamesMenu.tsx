@@ -3,14 +3,17 @@ import { generateClient } from "aws-amplify/api";
 import { createGameMutation, getGamesQuery } from "../../appsync/schema";
 import { PlayerSheetSummary, CreateGameInput, Game } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
+import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
+import { messages } from './translations';
 
 
-export const GamesMenu: React.FC = () => {
+export const GamesMenuContent: React.FC = () => {
     const client = generateClient();
     const [games, setGames] = useState<PlayerSheetSummary[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [gameName, setGameName] = useState('');
     const [gameDescription, setGameDescription] = useState('');
+    const intl = useIntl();
 
     useEffect(() => {
         fetchGames();
@@ -23,7 +26,7 @@ export const GamesMenu: React.FC = () => {
             }) as GraphQLResult<{ getGames: PlayerSheetSummary[] }>;
             setGames(response.data.getGames);
         } catch (error) {
-            setError('Error fetching games: ' + JSON.stringify(error));
+            setError(intl.formatMessage({ id: 'errorFetchingGames' }) + JSON.stringify(error));
         }
     };
 
@@ -56,11 +59,11 @@ export const GamesMenu: React.FC = () => {
         <div className="gameslist">
             <div className="allgames">
                 <div className="joingame">
-                    <h1>Available Games</h1>
+                    <h1><FormattedMessage id="availableGames" /></h1>
                     <ul>
                         {games?.map((game) => (
                             <li key={game.gameId}>
-                                <a href={`/?gameId=${game.gameId}`} aria-label={`Play game: ${game.gameName}`}>
+                                <a href={`/?gameId=${game.gameId}`} aria-label={intl.formatMessage({ id: "playGame"}) + game.gameName}>
                                     {game.gameName} - {game.gameDescription}
                                 </a>
                             </li>
@@ -102,5 +105,11 @@ export const GamesMenu: React.FC = () => {
         </div>
     );
 };
+
+export const GamesMenu: React.FC = () => (
+    <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
+        <GamesMenuContent />
+    </IntlProvider>
+);
 
 export default GamesMenu;

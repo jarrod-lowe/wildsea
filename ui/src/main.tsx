@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { Amplify } from "aws-amplify";
 import { signInWithRedirect, signOut } from "@aws-amplify/auth";
 import amplifyconfig from "./amplifyconfiguration.json";
+import { IntlProvider, FormattedMessage } from 'react-intl';
+import { messages } from './translations';
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const Game = React.lazy(() => import("./game"))
@@ -87,7 +89,7 @@ export async function amplifySetup() {
     Amplify.configure(config);
 }
 
-export function App() {
+export function AppContent() {
     const [gameId, setGameId] = useState<string | null>(null);
     const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
 
@@ -102,14 +104,14 @@ export function App() {
     }, []);
 
     if (!isAmplifyConfigured) {
-        return <div data-testid="loading">Loading...</div>;
+        return <div data-testid="loading"><FormattedMessage id="loading" /></div>;
     }
 
     return (
         <div>
-            <button onClick={handleSignInClick} id="login-button">Login</button>
-            <button onClick={handleSignOutClick} id="logout-button">Logout</button>
-            <Suspense fallback={<div>Loading games menu...</div>}>
+            <button onClick={handleSignInClick} id="login-button"><FormattedMessage id="login" /></button>
+            <button onClick={handleSignOutClick} id="logout-button"><FormattedMessage id="logout" /></button>
+            <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
                 {gameId ? <Game id={gameId} /> : <GamesMenu />}
             </Suspense>
         </div>
@@ -119,6 +121,15 @@ export function App() {
 export function getGameId(): string | null {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('gameId');
+}
+
+
+export function App() {
+    return (
+        <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
+            <AppContent />
+        </IntlProvider>
+    );
 }
 
 if (process.env.NODE_ENV !== "test") {

@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { Game as GameType } from "../../appsync/graphql";
 import { getGameQuery } from "../../appsync/schema";
+import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
+import { messages } from './translations';
 
 interface GameProps {
     id: string;
 }
 
-const Game: React.FC<GameProps> = ({ id }) => {
+const GameContent: React.FC<GameProps> = ({ id }) => {
     const [game, setGame] = useState<GameType | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const intl = useIntl();
 
     useEffect(() => {
         async function fetchGame() {
@@ -24,8 +27,7 @@ const Game: React.FC<GameProps> = ({ id }) => {
 
                 setGame(response.data.getGame);
             } catch (err) {
-                setError('Error fetching game data');
-                console.error(err);
+                setError(intl.formatMessage({ id: 'errorFetchingGameData'}));
             }
         }
 
@@ -33,16 +35,16 @@ const Game: React.FC<GameProps> = ({ id }) => {
     }, [id]);
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div><FormattedMessage id="error" />: {error}</div>;
     }
 
     if (!game) {
-        return <div>Loading game data...</div>;
+        return <div><FormattedMessage id="loadingGameData" /></div>;
     }
 
     return (
         <div>
-            <h1>Game: {game.gameName}</h1>
+            <h1><FormattedMessage id="gameTitle" />: {game.gameName}</h1>
             <pre style={{
                 backgroundColor: '#f4f4f4',
                 padding: '10px',
@@ -55,5 +57,11 @@ const Game: React.FC<GameProps> = ({ id }) => {
         </div>
     );
 };
+
+const Game: React.FC<GameProps> = (props) => (
+    <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
+        <GameContent {...props} />
+    </IntlProvider>
+);
 
 export default Game;
