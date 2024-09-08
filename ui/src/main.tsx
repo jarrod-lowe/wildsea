@@ -6,9 +6,12 @@ import amplifyconfig from "./amplifyconfiguration.json";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
 import { messages } from './translations';
 import { TopBar } from "./frame";
+import { generateClient, GraphQLResult } from "aws-amplify/api";
+import { joinGameMutation } from "../../appsync/schema";
+import type { Game } from "../../appsync/graphql";
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
-const Game = React.lazy(() => import("./game"))
+const AppGame = React.lazy(() => import("./game"))
 
 export function getPageURL() {
     const url = new URL(window.location.href);
@@ -96,6 +99,17 @@ export function AppContent() {
             setUserEmail(email);
             const id = getGameId();
             setGameId(id);
+            const token = getJoinToken();
+
+            if (id && token) {
+                try {
+                    await joinGame(id, token);
+                }
+                catch (error) {
+                    console.log(error);
+                    alert(intl.formatMessage({ id: 'unableToJoin' }));
+                }
+            }
         }
         setup();
     }, []);
@@ -116,7 +130,7 @@ export function AppContent() {
     return (
         <div>
             <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
-                {gameId ? <Game id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
+                {gameId ? <AppGame id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
             </Suspense>
         </div>
     );
@@ -127,6 +141,39 @@ export function getGameId(): string | null {
     return urlParams.get('gameId');
 }
 
+export function getJoinToken(): string | null {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('joinToken');
+}
+
+async function joinGame(gameId: string, joinToken: string) {
+    const client = generateClient();
+    try {
+        const response = await client.graphql({
+            query: joinGameMutation,
+            variables: {
+                input: {
+                    gameId: gameId,
+                    joinToken: joinToken,
+                }
+            }
+        }) as GraphQLResult<{ joinGame: Game }>;
+        if (response.errors) {
+            throw new Error(response.errors[0].message);
+        }
+    }
+    catch(error) {
+      const e = error as CustomError;
+      if (!(e.errors && e.errors.length > 0 && e.errors[0].errorType === "Conflict")) {
+        throw error;
+      }
+    }
+    window.location.href = `${window.location.origin}/?gameId=${gameId}`;
+}
+
+interface CustomError extends Error {
+    errors?: { errorType: string }[];
+}
 
 export function App() {
     return (

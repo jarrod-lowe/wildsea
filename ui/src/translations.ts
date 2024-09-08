@@ -2,6 +2,7 @@ export const messages = {
   en: {
     'wildsea': 'Wildsea',
     'pleaseLogin': 'Please Log In',
+    'unableToJoin': 'Unable to join game',
 
     'availableGames': 'Available Games',
     'createNewGame': 'Create New Game',
@@ -24,5 +25,6 @@ export const messages = {
     'addSection': 'Add Section',
     'sectionName': 'Name',
     'create': 'Add',
+    'joinToken': 'Join Token',
   },
 };
