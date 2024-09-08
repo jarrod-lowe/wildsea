@@ -1,8 +1,13 @@
+import React, { useEffect, useState, Suspense } from "react";
+import { createRoot } from "react-dom/client";
 import { Amplify } from "aws-amplify";
 import { signInWithRedirect, signOut } from "@aws-amplify/auth";
 import amplifyconfig from "./amplifyconfiguration.json";
-import { gamesMenuScreen } from "./gamesMenu";
-import { play } from "./game";
+import { IntlProvider, FormattedMessage } from 'react-intl';
+import { messages } from './translations';
+
+const GamesMenu = React.lazy(() => import("./gamesMenu"))
+const Game = React.lazy(() => import("./game"))
 
 function handleSignOutClick() {
     signOut();
@@ -12,7 +17,7 @@ function handleSignInClick() {
     signInWithRedirect({});
 }
 
-function getPageURL() {
+export function getPageURL() {
     const url = new URL(window.location.href);
     return url.origin + url.pathname;
 }
@@ -75,37 +80,59 @@ export async function mergeConfig(configUpdates: AmplifyConfigJSON, pageUrl: str
     return amplifyconfig;
 }
 
-async function amplifySetup() {
+export async function amplifySetup() {
     const response = await fetch("/config.json");
     const configUpdates = await response.json();
     const pageUrl = getPageURL();
 
     const config = await mergeConfig(configUpdates, pageUrl);
     Amplify.configure(config);
-
-    const loginButton = document.getElementById("login-button");
-    loginButton?.addEventListener("click", handleSignInClick);
-    const logoutButton = document.getElementById("logout-button");
-    logoutButton?.addEventListener("click", handleSignOutClick);
 }
 
-async function main() {
-    await amplifySetup();
+export function AppContent() {
+    const [gameId, setGameId] = useState<string | null>(null);
+    const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
 
-    const gameId = getGameId();
+    useEffect(() => {
+        async function setup() {
+            await amplifySetup();
+            setIsAmplifyConfigured(true);
+            const id = getGameId();
+            setGameId(id);
+        }
+        setup();
+    }, []);
 
-    if (gameId) {
-        await play(gameId);
-    } else {
-        await gamesMenuScreen();
+    if (!isAmplifyConfigured) {
+        return <div data-testid="loading"><FormattedMessage id="loading" /></div>;
     }
+
+    return (
+        <div>
+            <button onClick={handleSignInClick} id="login-button"><FormattedMessage id="login" /></button>
+            <button onClick={handleSignOutClick} id="logout-button"><FormattedMessage id="logout" /></button>
+            <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
+                {gameId ? <Game id={gameId} /> : <GamesMenu />}
+            </Suspense>
+        </div>
+    );
 }
 
-function getGameId(): string | null {
+export function getGameId(): string | null {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('gameId');
 }
 
-if (typeof window !== "undefined") {
-    main();
+
+export function App() {
+    return (
+        <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
+            <AppContent />
+        </IntlProvider>
+    );
+}
+
+if (process.env.NODE_ENV !== "test") {
+    const root = createRoot(document.getElementById("root") as HTMLElement);
+    root.render(<App />);
 }
