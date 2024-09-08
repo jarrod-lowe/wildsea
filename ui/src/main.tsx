@@ -1,21 +1,14 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { Amplify } from "aws-amplify";
-import { signInWithRedirect, signOut } from "@aws-amplify/auth";
+import { fetchUserAttributes } from 'aws-amplify/auth';
 import amplifyconfig from "./amplifyconfiguration.json";
-import { IntlProvider, FormattedMessage } from 'react-intl';
+import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
 import { messages } from './translations';
+import { TopBar } from "./frame";
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const Game = React.lazy(() => import("./game"))
-
-function handleSignOutClick() {
-    signOut();
-}
-
-function handleSignInClick() {
-    signInWithRedirect({});
-}
 
 export function getPageURL() {
     const url = new URL(window.location.href);
@@ -92,27 +85,38 @@ export async function amplifySetup() {
 export function AppContent() {
     const [gameId, setGameId] = useState<string | null>(null);
     const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
+    const [userEmail, setUserEmail] = useState<string | undefined | null>(null);
+    const intl = useIntl();
 
     useEffect(() => {
         async function setup() {
             await amplifySetup();
             setIsAmplifyConfigured(true);
+            const email = await getUserEmail();
+            setUserEmail(email);
             const id = getGameId();
             setGameId(id);
         }
         setup();
     }, []);
 
-    if (!isAmplifyConfigured) {
+    if (!isAmplifyConfigured || userEmail === null) {
         return <div data-testid="loading"><FormattedMessage id="loading" /></div>;
+    }
+
+    if (!userEmail) {
+        return (
+            <div>
+                <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} />
+                <div><FormattedMessage id="pleaseLogin" /></div>
+            </div>
+        )
     }
 
     return (
         <div>
-            <button onClick={handleSignInClick} id="login-button"><FormattedMessage id="login" /></button>
-            <button onClick={handleSignOutClick} id="logout-button"><FormattedMessage id="logout" /></button>
             <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
-                {gameId ? <Game id={gameId} /> : <GamesMenu />}
+                {gameId ? <Game id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
             </Suspense>
         </div>
     );
@@ -130,6 +134,15 @@ export function App() {
             <AppContent />
         </IntlProvider>
     );
+}
+
+async function getUserEmail(): Promise<string | undefined> {
+  try {
+    const userAttributes = await fetchUserAttributes();
+    return userAttributes.email;
+  } catch (error) {
+    return undefined;
+  }
 }
 
 if (process.env.NODE_ENV !== "test") {

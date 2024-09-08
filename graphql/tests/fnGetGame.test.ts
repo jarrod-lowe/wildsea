@@ -427,6 +427,10 @@ describe("makeSheetSection", () => {
     const data: DataSheetSection = {
       userId: "user1",
       gameId: "game1",
+      sectionId: "XXXXXX",
+      sectionName: "Section 1",
+      sectionType: "type1",
+      content: "{}",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       type: TypeSection,
@@ -437,6 +441,10 @@ describe("makeSheetSection", () => {
     expect(result).toEqual({
       userId: "user1",
       gameId: "game1",
+      sectionId: "XXXXXX",
+      sectionName: "Section 1",
+      sectionType: "type1",
+      content: "{}",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       type: TypeSection,

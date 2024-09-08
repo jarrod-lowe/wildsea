@@ -10,7 +10,8 @@
     "oauth": {
         "domain": "From Config",
         "scope": [
-            "openid"
+            "openid",
+            "aws.cognito.signin.user.admin"
         ],
         "redirectSignIn": "From Config",
         "redirectSignOut": "From Config",

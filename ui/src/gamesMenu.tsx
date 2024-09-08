@@ -5,9 +5,10 @@ import { PlayerSheetSummary, CreateGameInput, Game } from "../../appsync/graphql
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
 import { messages } from './translations';
+import { TopBar } from "./frame";
 
 
-export const GamesMenuContent: React.FC = () => {
+export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) => {
     const client = generateClient();
     const [games, setGames] = useState<PlayerSheetSummary[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -57,6 +58,7 @@ export const GamesMenuContent: React.FC = () => {
 
     return (
         <div className="gameslist">
+            <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={ userEmail } />
             <div className="allgames">
                 <div className="joingame">
                     <h1><FormattedMessage id="availableGames" /></h1>
@@ -106,9 +108,9 @@ export const GamesMenuContent: React.FC = () => {
     );
 };
 
-export const GamesMenu: React.FC = () => (
+export const GamesMenu: React.FC<{ userEmail: string }> = (props) => (
     <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
-        <GamesMenuContent />
+        <GamesMenuContent {...props} />
     </IntlProvider>
 );
 

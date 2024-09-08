@@ -32,8 +32,8 @@ resource "aws_cognito_user_pool_client" "cognito" {
   allowed_oauth_flows_user_pool_client = true
   callback_urls                        = ["http://localhost:5173/", "https://${aws_cloudfront_distribution.cdn.domain_name}/"]
   logout_urls                          = ["http://localhost:5173/", "https://${aws_cloudfront_distribution.cdn.domain_name}/"]
-  allowed_oauth_flows                  = ["code", "implicit"]
-  allowed_oauth_scopes                 = ["openid"]
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_scopes                 = ["openid", "aws.cognito.signin.user.admin"]
   supported_identity_providers         = [var.saml_metadata_url == "" ? "COGNITO" : aws_cognito_identity_provider.idp[0].provider_name]
 }
 
