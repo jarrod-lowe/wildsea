@@ -4,7 +4,7 @@
     "@types/node": "22.5.4",
     "fs": "0.0.1-security",
     "path": "0.12.7",
-    "typescript": "5.5.4"
+    "typescript": "5.6.2"
   },
   "dependencies": {
     "graphql": "16.9.0"
