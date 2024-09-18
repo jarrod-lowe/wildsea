@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@aws-amplify/api-graphql": "4.3.1",
+    "@aws-amplify/api-graphql": "4.3.2",
     "@vitejs/plugin-react": "4.3.1",
     "aws-amplify": "6.6.2",
     "md5": "2.3.0",
