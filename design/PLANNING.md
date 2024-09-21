@@ -299,80 +299,32 @@ Assistant:
    * `gameId`: gameId
    * Other fields: `gameName`, `gameDescription`, `fireflyUserId`, `createdAt`, `updatedAt`, `GSI1PK`
 
-1. **GM Info**
+1. **Player Sheet** (Includes GM Sheet)
    * `PK`: `GAME#<gameId>`
-   * `SK`: `PLAYER#GM#<userId>`
+   * `SK`: `PLAYER#<userId>`
    * `GSI1PK`: `USER#<userId>`
+   * `characterName`
    * `userId`: userId
    * `gameId`: gameId
-   * gameName and gameDescription: Duplicated from game
-
-1. **Player Sheet**
-   * `PK`: `GAME#<gameId>`
-   * `SK`: `PLAYER#PC#<userId>`
-   * `GSI1PK`: `USER#<userId>`
-   * `userId`: userId
-   * `gameId`: gameId
+   * Other fields: `createdAt`, `updatedAt`
 
 1. **Player Sheet Sections**
    * `PK`: `GAME#<gameId>`
-   * `SK`: `PLAYER#SECTION#<userId>#<section>#<item>`
-   * `dataType`: The type of the data (key/value, ticks, clock, ...)
-   * Each section is one of: (TODO: Modify)
-   * `notes` - text
-        * `publicNotes` (String)
-        * `privateNotes` (String)
-        * `secretNotes` (String)
-        * `fireflyNotes` (String)
-   * `strings` - key/value pairs
-        * `characterName` (String)
-        * `pronouns` (String)
-        * `bloodline` (String)
-        * `origin` (String)
-        * `post` (String)
-   * `milestones` (List of Maps)
-        * Each map in the list represents a milestone and contains fields like `type` (String: "Major" or "Minor"), `description` (String)
-   * `drives` (List of Strings)
-   * `mires` (List of Maps)
-        * Each map in the list represents a mire and contains fields like `description` (String), `notes` (String), `level` (Number: 0, 1, or 2)
-   * `edges` (List of Maps)
-        * Each map in the list represents an edge and contains fields like `name` (String), `description` (String)
-   * `skills` (List of Maps)
-        * Each map in the list represents a skill and contains fields like `name` (String), `description` (String), `level` (Number: 0, 1, 2, or 3)
-   * `languages` (List of Maps)
-        * Each map in the list represents a language and contains fields like `name` (String), `description` (String), `level` (Number: 0, 1, 2, or 3)
-   * `resources` (List of Maps)
-        * Each map in the list represents a resource and contains fields like `type` (String: "Salvage", "Specimens", "Whispers", or "Charts"), `description` (String), `tags` (List of Strings)
-   * `aspects` (List of Maps)
-        * Each map in the list represents an aspect and contains fields like `name` (String), `type` (String: "Trait", "Gear", or "Companion"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
-   * `temporaryTracks` (List of Maps)
-        * Each map in the list represents a temporary track and contains fields like `name` (String), `type` (String: "Benefit", "Injury", or "Track"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
+   * `SK`: `SECTION#<userId>#<section>`
+   * `userId`: userId
+   * `gameId`: gameId
+   * `sectionType`: The type of the data (key/value, ticks, clock, ...)
+   * `sectionName`
+   * `content` - sectionType-specific JSON
    * Other fields: `createdAt`, `updatedAt`
-   * gameName and gameDescription: Duplicated from game
 
 1. **Ship Sheet**
    * `PK`: `GAME#<gameId>`
-   * `SK`: `SHIP#<shipId>`
-   * `characterName` (String)
-   * Each section is one of: (TODO: Modify)
-   * `publicNotes` (String)
-   * `gmNotes` (String)
-   * `conditions` (List of Strings)
-   * `stakesUsed` (Number)
-   * `stakesTotal` (Number)
-   * `ratings` (List of Maps)
-        * Each map in the list represents a rating and contains fields like `name` (String: "Armour", "Seals", "Speed", "Saws", "Stealth", or "Tilt"), `track` (Map with fields like `length` (Number) and `currentValue` (Number))
-   * `design` (Map)
-        * Contains fields like `size` (String), `frame` (String), `hull` (String), `bite` (String), `engine` (String)
-   * `fittings` (Map)
-        * Contains fields like `name` (String), `description` (String) and  `type` (String)
-        * The possible types will be in `SEED#FITTINGSTYPES`
-   * `undercrew` (List of Maps)
-        * Each map in the list represents an undercrew and contains fields like `name` (String), `type` (String: "Officer", "Gang", or "Pack"), `track` (Map with fields like `length` (Number) and `currentValue` (Number)), `description` (String)
-   * `reputation` (List of Maps)
-        * Each map in the list represents a reputation and contains fields like `name` (String), `track` (Map with fields like `length` (Number) and `currentValue` (Number))
-   * `cargo` (List of Strings)
-   * `passengers` (List of Strings)
+   * `SK`: `PLAYER#SHIP#<shipId>`
+   * `GSI1PK`: `SHIP#<userId>`
+   * `characterName`
+   * `userId`: userId
+   * `gameId`: gameId
    * Other fields: `createdAt`, `updatedAt`
 
 1. **Clock**

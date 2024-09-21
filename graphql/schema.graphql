@@ -19,7 +19,7 @@ directive @aws_cognito_user_pools(
 type Mutation {
     createGame(input: CreateGameInput!): Game! @aws_cognito_user_pools
     joinGame(input: JoinGameInput!): Game! @aws_cognito_user_pools
-    createSection(input: UpdateSectionInput!): SheetSection! @aws_cognito_user_pools
+    createSection(input: CreateSectionInput!): SheetSection! @aws_cognito_user_pools
     updateSection(input: UpdateSectionInput!): SheetSection! @aws_cognito_user_pools
 }
 
@@ -38,12 +38,19 @@ input JoinGameInput {
   joinToken: ID!
 }
 
-input UpdateSectionInput {
-  userId: ID!
+input CreateSectionInput {
   gameId: ID!
   sectionName: String!
   sectionType: String!
-  content: String
+  content: AWSJSON
+}
+
+input UpdateSectionInput {
+  gameId: ID!
+  sectionId: ID!
+  sectionName: String!
+  sectionType: String!
+  content: AWSJSON!
 }
 
 type Game @aws_cognito_user_pools {
@@ -83,7 +90,7 @@ type SheetSection @aws_cognito_user_pools {
   type: String!
   sectionName: String!
   sectionType: String!
-  content: String!
+  content: AWSJSON!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }

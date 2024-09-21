@@ -42,7 +42,7 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     table: "Wildsea-" + environment.name,
     key: util.dynamodb.toMapValues({
       PK: "GAME#" + id,
-      SK: "PLAYER#PC#" + identity.sub,
+      SK: "PLAYER#" + identity.sub,
     }),
     attributeValues: util.dynamodb.toMapValues({
       gameId: id,

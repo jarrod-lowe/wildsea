@@ -1,5 +1,5 @@
 import { awsAppsyncUtilsMock } from "./mocks";
-import { request, response } from "../function/fnJoinGame/appsync";
+import { request, response } from "../function/fnJoinGame/joinGame";
 import { Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { JoinGameInput } from "../../appsync/graphql";
 
@@ -166,7 +166,7 @@ describe("fnJoinGame request function", () => {
           table: "Wildsea-MOCK",
           key: {
             PK: { S: "GAME#game123" },
-            SK: { S: "PLAYER#PC#user123" },
+            SK: { S: "PLAYER#user123" },
           },
           attributeValues: {
             gameId: { S: "game123" },

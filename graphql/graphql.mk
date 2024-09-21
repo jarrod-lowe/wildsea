@@ -1,4 +1,6 @@
-graphql/%/appsync.js: graphql/node_modules graphql/%/appsync.ts appsync/graphql.ts appsync/schema.ts graphql/environment.json
+graphql/%/appsync.js: graphql/node_modules graphql/%/*.ts appsync/graphql.ts appsync/schema.ts graphql/environment.json
+	echo $(GRAPHQL_TS)
+	echo $(GRAPHQL_JS)
 	cd graphql && \
 	esbuild $*/*.ts \
 		--bundle \
@@ -8,7 +10,7 @@ graphql/%/appsync.js: graphql/node_modules graphql/%/appsync.ts appsync/graphql.
 		--target=esnext \
 		--sourcemap=inline \
 		--sources-content=false \
-		--outdir=$*
+		--outfile=$*/appsync.js
 
 .PRECIOUS: graphql/environment.json
 graphql/environment.json:	
@@ -17,8 +19,8 @@ graphql/environment.json:
 graphql/node_modules: graphql/package.json
 	cd graphql && npm install && npm ci \
 
-GRAPHQL_TS := $(wildcard graphql/*/*/appsync.ts)
-GRAPHQL_JS := $(patsubst %.ts,%.js,$(GRAPHQL_TS))
+GRAPHQL_TS := $(wildcard graphql/function/*/*.ts) $(wildcard graphql/mutation/*/*.ts) $(wildcard graphql/query/*/*.ts)
+GRAPHQL_JS := $(foreach file,$(GRAPHQL_TS),$(dir $(file))appsync.js)
 GRAPHQL_DEV := graphql-eslint graphql-test
 
 .PHONY: graphql

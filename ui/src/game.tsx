@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game, SheetSection, PlayerSheet } from "../../appsync/graphql";
+import { Game, SheetSection, PlayerSheet, UpdateSectionInput } from "../../appsync/graphql";
 import { getGameQuery, updateSectionMutation, createSectionMutation } from "../../appsync/schema";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
@@ -8,24 +8,32 @@ import { messages } from './translations';
 import { FaPencilAlt, FaPlus } from 'react-icons/fa';
 import { TopBar } from "./frame";
 import { TypeFirefly } from "../../graphql/lib/constants";
+import { fetchUserAttributes } from 'aws-amplify/auth';
+
+type SectionTypeText = {
+  text: string;
+};
 
 // Section component
-const Section: React.FC<{ section: SheetSection, onUpdate: (updatedSection: SheetSection) => void }> = ({ section, onUpdate }) => {
+const Section: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = ({ section, userSubject, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState(JSON.parse(section.content));
+  const [content, setContent] = useState(JSON.parse(section.content) as SectionTypeText);
+  const [sectionName, setSectionName] = useState(section.sectionName);
 
   const handleUpdate = async () => {
     try {
+      const input: UpdateSectionInput = {
+            gameId: section.gameId,
+            sectionId: section.sectionId,
+            sectionName: sectionName,
+            sectionType: section.sectionType,
+            content: JSON.stringify(content),
+      }
       const client = generateClient();
       const response = await client.graphql({
         query: updateSectionMutation,
         variables: {
-          input: {
-            gameId: section.gameId,
-            userId: section.userId,
-            sectionName: section.sectionName,
-            content: JSON.stringify(content)
-          }
+          input: input,
         }
       }) as GraphQLResult<{ updateSection: SheetSection }>;
       onUpdate(response.data.updateSection);
@@ -35,10 +43,23 @@ const Section: React.FC<{ section: SheetSection, onUpdate: (updatedSection: Shee
     }
   };
 
+  if (userSubject !== section.userId) {
+    return (
+      <div className="section">
+        <h3>{sectionName}</h3>
+        <p>{content.text}</p>
+      </div>
+    );
+  }
+
   if (isEditing) {
     return (
       <div className="section">
-        <h3>{section.sectionName} <FaPencilAlt onClick={() => setIsEditing(false)} /></h3>
+        <input
+          type="text"
+          value={sectionName}
+          onChange={(e) => setSectionName(e.target.value)}
+        />
         <textarea
           value={content.text}
           onChange={(e) => setContent({ ...content, text: e.target.value })}
@@ -52,14 +73,14 @@ const Section: React.FC<{ section: SheetSection, onUpdate: (updatedSection: Shee
 
   return (
     <div className="section">
-      <h3>{section.sectionName} <FaPencilAlt onClick={() => setIsEditing(true)} /></h3>
+      <h3>{sectionName} <FaPencilAlt onClick={() => setIsEditing(true)} /></h3>
       <p>{content.text}</p>
     </div>
   );
 };
 
 // PlayerSheetTab component
-const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, game, onUpdate }) => {
+const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, userSubject, game, onUpdate }) => {
   const [newSectionName, setNewSectionName] = useState('');
   const [newSectionType, setNewSectionType] = useState('TEXT');
   const [showNewSection, setShowNewSection] = useState(false);
@@ -73,10 +94,9 @@ const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, game: Game, onUpdate: (upda
         variables: {
           input: {
             gameId: sheet.gameId,
-            userId: sheet.userId,
             sectionName: newSectionName,
             sectionType: newSectionType,
-            content: JSON.stringify({ text: '' })
+            content: JSON.stringify({})
           }
         }
       }) as GraphQLResult<{ createSection: SheetSection}>;
@@ -98,6 +118,7 @@ const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, game: Game, onUpdate: (upda
         <Section
           key={section.sectionName}
           section={section}
+          userSubject={userSubject}
           onUpdate={(updatedSection) => {
             const updatedSections = sheet.sections.map(s =>
               s.sectionName === updatedSection.sectionName ? updatedSection : s
@@ -106,10 +127,14 @@ const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, game: Game, onUpdate: (upda
           }}
         />
       ))}
-      <button onClick={() => setShowNewSection(true)}>
-        <FaPlus /> <FormattedMessage id="addSection" />
-      </button>
-      {showNewSection && (
+
+      {userSubject == sheet.userId && !showNewSection && (
+        <button onClick={() => setShowNewSection(true)}>
+          <FaPlus /> <FormattedMessage id="addSection" />
+        </button>
+      )}
+
+      {userSubject == sheet.userId && showNewSection && (
         <div className="new-section">
           <input
             type="text"
@@ -160,11 +185,13 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
   const [game, setGame] = useState<Game | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
+  const [userSubject, setUserSubject] = useState<string>("");
   const intl = useIntl();
 
   useEffect(() => {
     async function fetchGame() {
       try {
+        const sub = await fetchUserSubject();
         const client = generateClient();
         const response = await client.graphql({
           query: getGameQuery,
@@ -172,6 +199,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         }) as GraphQLResult<{ getGame: Game }>;
 
         setGame(response.data.getGame);
+        setUserSubject(sub);
         if (response.data.getGame.playerSheets.length > 0) {
           setActiveSheet(response.data.getGame.playerSheets[0].userId);
         }
@@ -209,6 +237,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         <PlayerSheetTab
           game={game}
           sheet={game.playerSheets.find(s => s.userId === activeSheet)!}
+          userSubject={userSubject}
           onUpdate={(updatedSheet) => {
             const updatedSheets = game.playerSheets.map(s =>
               s.userId === updatedSheet.userId ? updatedSheet : s
@@ -226,5 +255,13 @@ const AppGame: React.FC<{ id: string, userEmail: string }> = (props) => (
     <GameContent {...props} />
   </IntlProvider>
 );
+
+async function fetchUserSubject(): Promise<string> {
+  const userAttributes = await fetchUserAttributes();
+  if (userAttributes.sub === undefined) {
+    throw new Error("User subject not found");
+  }
+  return userAttributes.sub;
+}
 
 export default AppGame;

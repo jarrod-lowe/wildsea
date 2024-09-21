@@ -44,11 +44,9 @@ export const TopBar: React.FC<{ title: string, userEmail: string | undefined }> 
       <div className="top-bar">
         <h1>{title}</h1>
         <div className="user-menu">
-          <div className="dropdown">
             <button onClick={() => { handleSignInClick(); }}>
               <FormattedMessage id="login" />
             </button>
-          </div>
         </div>
       </div>
     );

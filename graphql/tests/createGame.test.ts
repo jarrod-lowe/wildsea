@@ -5,7 +5,7 @@ jest.mock("../environment.json", () => ({
   name: "MOCK",
 }));
 
-import { request, response } from "../mutation/createGame/appsync";
+import { request, response } from "../mutation/createGame/createGame";
 import {
   util,
   Context,
@@ -95,7 +95,7 @@ describe("request function", () => {
           operation: "PutItem",
           key: {
             PK: { S: `GAME#${mockId}` },
-            SK: { S: `PLAYER#GM#1234-5678-91011` },
+            SK: { S: `PLAYER#1234-5678-91011` },
           },
           table: "Wildsea-MOCK",
           attributeValues: {
