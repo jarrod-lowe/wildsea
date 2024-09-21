@@ -244,3 +244,49 @@ button:hover {
   border: 1px solid #ddd;
   border-radius: 4px;
 }
+
+/* NotificationToast.css */
+
+.toast-manager {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between each toast */
+  z-index: 1000; /* Make sure it's on top of other UI elements */
+}
+
+.notification-toast {
+  background-color: rgba(255 0 0 90%); /* For errors: red background */
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0 0 0 10%);
+  animation: slide-in 0.3s ease-out;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-in;
+  opacity: 1;
+  max-width: 300px;
+}
+
+.notification-toast.success {
+  background-color: rgba(0 128 0 90%); /* For success: green background */
+}
+
+.notification-toast.fade-out {
+  opacity: 0;
+  transform: translateY(-20px); /* Move up when fading out */
+  transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

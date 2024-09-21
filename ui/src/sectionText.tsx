@@ -5,6 +5,7 @@ import { updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPencilAlt } from 'react-icons/fa';
+import { useToast } from './notificationToast';
 
 type SectionTypeText = {
   text: string;
@@ -16,6 +17,7 @@ export const SectionText: React.FC<{ section: SheetSection, userSubject: string,
   const [content, setContent] = useState(JSON.parse(section.content) as SectionTypeText);
   const [sectionName, setSectionName] = useState(section.sectionName);
   const intl = useIntl(); // Get the intl object for translation
+  const toast = useToast();
 
   const handleUpdate = async () => {
     try {
@@ -37,6 +39,8 @@ export const SectionText: React.FC<{ section: SheetSection, userSubject: string,
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating section:", error);
+      toast.addToast(intl.formatMessage({ id: "sectionText.updateError" }), 'error');
+
     }
   };
 
@@ -61,7 +65,7 @@ export const SectionText: React.FC<{ section: SheetSection, userSubject: string,
         <textarea
           value={content.text}
           onChange={(e) => setContent({ ...content, text: e.target.value })}
-          placeholder={intl.formatMessage({ id: "sectionContent.text" })}
+          placeholder={intl.formatMessage({ id: "sectionText.sampleContent" })}
         />
         <button onClick={handleUpdate}>
           <FormattedMessage id="save" />
