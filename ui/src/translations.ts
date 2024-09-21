@@ -30,6 +30,7 @@ export const messages = {
     'addSection': 'Add Section',
     'sectionName': 'Name',
     'save': 'Save Changes',
+    'cancel': 'Cancel',
 
     'sectionType.text': 'Text',
     'sectionText.sampleContent': 'Write your content here.',
@@ -39,5 +40,13 @@ export const messages = {
     'sectionNumber.value': 'Number: {number}',
     'sectionNumber.increment': 'Add 1',
     'sectionNumber.updateError': 'Failed to update the number. Please try again.',
+
+    'sectionType.trackable': 'Trackable',
+    'sectionTrackable.itemName': 'Item Name',
+    'sectionTrackable.itemDescription': 'Item Description',
+    'sectionTrackable.updateError': 'Failed to update the trackable. Please try again.',
+    'sectionTrackable.showZeros': 'Show empty trackable items?',
+    'sectionTrackable.addItem': 'Add a new Item',
+    'sectionTrackable.removeItem': '❌',
   },
 };

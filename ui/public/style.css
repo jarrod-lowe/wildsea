@@ -290,3 +290,67 @@ button:hover {
     transform: translateY(0);
   }
 }
+
+.trackable-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.trackable-item span {
+  flex-grow: 1;
+}
+
+.trackable-item input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.info-icon {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.trackable-item-edit {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.trackable-item-edit input[type="text"], 
+.trackable-item-edit textarea {
+  margin-right: 1rem;
+}
+
+.item-length-controls {
+  display: flex;
+  align-items: center;
+}
+
+.item-length-controls button {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 0.5rem;
+}
+
+.show-zeros-toggle {
+  margin-top: 1rem;
+}
+
+.trackable-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.trackable-items-edit {
+  display: flex;
+  flex-direction: column;
+}
+
+.react-tooltip {
+  max-width: 250px; /* Adjust to the width you prefer */
+  white-space: normal; /* Allow text to wrap */
+  word-wrap: break-word; /* Ensure long words are broken if needed */
+  text-align: left; /* Align text left for readability */
+  padding: 10px; /* Optional: Adds padding around the text */
+}
