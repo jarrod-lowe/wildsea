@@ -22,11 +22,18 @@ export const messages = {
     'loadingGameData': 'Loading game data...',
     'gameTitle': 'Game',
 
-    'addSection': 'Add Section',
-    'sectionName': 'Name',
     'create': 'Add',
     'joinToken': 'Join Token',
 
+    'addSection': 'Add Section',
+    'sectionName': 'Name',
     'save': 'Save Changes',
+
+    'sectionType.text': 'Text',
+    'sectionContent.text': 'Write your content here.',
+
+    'sectionType.number': 'Number',
+    'sectionNumber.value': 'Number: {number}',
+    'sectionNumber.increment': 'Add 1',
   },
 };
