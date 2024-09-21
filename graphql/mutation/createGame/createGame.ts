@@ -47,7 +47,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
   const fireflyItem = {
     key: util.dynamodb.toMapValues({
       PK: "GAME#" + id,
-      SK: "PLAYER#GM#" + identity.sub,
+      SK: "PLAYER#" + identity.sub,
     }),
     operation: "PutItem",
     table: "Wildsea-" + environment.name,

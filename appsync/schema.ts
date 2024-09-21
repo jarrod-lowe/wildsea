@@ -35,7 +35,7 @@
       `;
     
       export const createSectionMutation = `
-        mutation createSection($input: UpdateSectionInput!) {
+        mutation createSection($input: CreateSectionInput!) {
           createSection(input: $input) {
             userId gameId sectionId type sectionName sectionType content createdAt updatedAt
           }

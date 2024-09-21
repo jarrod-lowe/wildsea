@@ -26,5 +26,7 @@ export const messages = {
     'sectionName': 'Name',
     'create': 'Add',
     'joinToken': 'Join Token',
+
+    'save': 'Save Changes',
   },
 };

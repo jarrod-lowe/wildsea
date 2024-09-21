@@ -9,7 +9,7 @@ import {
   makeCharacterSheetData,
   makeSheetSection,
   makeGameData,
-} from "../function/fnGetGame/appsync";
+} from "../function/fnGetGame/getGame";
 import {
   TypeCharacter,
   TypeFirefly,

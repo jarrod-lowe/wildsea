@@ -274,6 +274,10 @@ locals {
       type : "Query",
       functions = ["fnCheckGameAccess", "fnGetGame"]
     }
+    createSection = {
+      type : "Mutation",
+      functions = ["fnCheckPlayerSheetAccess", "fnCreateSection"]
+    }
   }
 }
 
