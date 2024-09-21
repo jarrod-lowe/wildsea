@@ -9,6 +9,7 @@ import { TopBar } from "./frame";
 import { generateClient, GraphQLResult } from "aws-amplify/api";
 import { joinGameMutation } from "../../appsync/schema";
 import type { Game } from "../../appsync/graphql";
+import { ToastProvider } from "./notificationToast";
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const AppGame = React.lazy(() => import("./game"))
@@ -178,7 +179,9 @@ interface CustomError extends Error {
 export function App() {
     return (
         <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
-            <AppContent />
+            <ToastProvider>
+                <AppContent />
+            </ToastProvider>
         </IntlProvider>
     );
 }

@@ -25,15 +25,19 @@ export const messages = {
     'create': 'Add',
     'joinToken': 'Join Token',
 
+    'error.retry': 'Retry',
+
     'addSection': 'Add Section',
     'sectionName': 'Name',
     'save': 'Save Changes',
 
     'sectionType.text': 'Text',
-    'sectionContent.text': 'Write your content here.',
+    'sectionText.sampleContent': 'Write your content here.',
+    'sectionText.updateError': 'Failed to update the text. Please try again.',
 
     'sectionType.number': 'Number',
     'sectionNumber.value': 'Number: {number}',
     'sectionNumber.increment': 'Add 1',
+    'sectionNumber.updateError': 'Failed to update the number. Please try again.',
   },
 };

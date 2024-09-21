@@ -3,9 +3,12 @@ import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
 import { generateClient } from "aws-amplify/api";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { updateSectionMutation } from '../../appsync/schema';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useToast } from './notificationToast';
 
 export const SectionNumber: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = ({ section, userSubject, onUpdate }) => {
+  const intl = useIntl();
+  const toast = useToast();
   const content = JSON.parse(section.content) as { number: number };
 
   const handleIncrement = async () => {
@@ -26,6 +29,7 @@ export const SectionNumber: React.FC<{ section: SheetSection, userSubject: strin
       onUpdate(response.data.updateSection);
     } catch (error) {
       console.error("Error updating section:", error);
+      toast.addToast(intl.formatMessage({ id: "sectionNumber.updateError" }), 'error');
     }
   };
 
