@@ -15,7 +15,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
   const [game, setGame] = useState<Game | null>(null);
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [userSubject, setUserSubject] = useState<string>("");
-  const [fetchFailed, setFetchFailed] = useState<boolean>(false);
+  const gameRef = useRef<Game | null>(null);
   const intl = useIntl();
   const toast = useToast();
 
@@ -30,6 +30,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         }) as GraphQLResult<{ getGame: Game }>;
 
         setGame(response.data.getGame);
+        gameRef.current = response.data.getGame;
         setUserSubject(sub);
         if (response.data.getGame.playerSheets.length > 0) {
           setActiveSheet(response.data.getGame.playerSheets[0].userId);
@@ -37,18 +38,15 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
       } catch (err) {
         console.error("Error fetching game data", err);
         toast.addToast(intl.formatMessage({ id: 'errorFetchingGameData' }), 'error');
-        setFetchFailed(true);
       }
     }
 
-    if (!fetchFailed) {
-      fetchGame();
-    }
+    fetchGame();
 
     subscribeToPlayerSheetUpdates(id, (updatedSheetSummary) => {
-      console.log("Received updated player sheet summary", updatedSheetSummary);
-      if (game) {
-        const updatedSheets = game.playerSheets.map(sheet => {
+      const currentGame = gameRef.current;
+      if (currentGame) {
+        const updatedSheets = currentGame.playerSheets.map(sheet => {
         if (sheet.userId === updatedSheetSummary.userId) {
           // Merge the summary data (e.g., characterName) into the full PlayerSheet object
           return {
@@ -58,14 +56,16 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         }
         return sheet;
       });
-      setGame({ ...game, playerSheets: updatedSheets })
+      const updatedGame = ({ ...currentGame, playerSheets: updatedSheets })
+      setGame(updatedGame);
+      gameRef.current = updatedGame;
       }
     }, (err) => {
       console.error("Error subscribing to player sheet updates", err);
       toast.addToast(intl.formatMessage({ id: 'errorSubscribingToPlayerSheetUpdates' }), 'error');
     });
 
-  }, [id, intl, toast, fetchFailed]);
+  }, [id, intl, toast]);
 
   if (!game) {
     return <div><FormattedMessage id="loadingGameData" /></div>;
