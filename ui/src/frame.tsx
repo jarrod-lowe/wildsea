@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { FormattedMessage } from 'react-intl';
 
 function handleSignInClick() {
+    signOut(); // sometimes Cognito gets confused; and things you are both logged in, but can't retrieve your email address
     signInWithRedirect({});
 }
 
