@@ -41,6 +41,7 @@ terraform/environment/*/output.json
 graphql/node_modules
 graphql/mutation/*/appsync.js
 graphql/query/*/appsync.js
+graphql/subscription/*/appsync.js
 graphql/function/*/appsync.js
 graphql/coverage/
 graphql/environment.json

@@ -19,7 +19,7 @@ graphql/environment.json:
 graphql/node_modules: graphql/package.json
 	cd graphql && npm install && npm ci \
 
-GRAPHQL_TS := $(wildcard graphql/function/*/*.ts) $(wildcard graphql/mutation/*/*.ts) $(wildcard graphql/query/*/*.ts)
+GRAPHQL_TS := $(wildcard graphql/function/*/*.ts) $(wildcard graphql/mutation/*/*.ts) $(wildcard graphql/query/*/*.ts) $(wildcard graphql/subscription/*/*.ts)
 GRAPHQL_JS := $(foreach file,$(GRAPHQL_TS),$(dir $(file))appsync.js)
 GRAPHQL_DEV := graphql-eslint graphql-test
 

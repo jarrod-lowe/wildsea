@@ -6,6 +6,8 @@ import {
   TypeFirefly,
   DefaultFireflyCharacterName,
   TypeGame,
+  DDBPrefixGame,
+  DDBPrefixPlayer,
 } from "../../lib/constants";
 
 export function request(context: Context<{ input: CreateGameInput }>): unknown {
@@ -36,7 +38,10 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
   };
 
   const gameItem = {
-    key: util.dynamodb.toMapValues({ PK: "GAME#" + id, SK: "GAME" }),
+    key: util.dynamodb.toMapValues({
+      PK: DDBPrefixGame + "#" + id,
+      SK: DDBPrefixGame,
+    }),
     operation: "PutItem",
     table: "Wildsea-" + environment.name,
     attributeValues: util.dynamodb.toMapValues(
@@ -46,8 +51,8 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
 
   const fireflyItem = {
     key: util.dynamodb.toMapValues({
-      PK: "GAME#" + id,
-      SK: "PLAYER#" + identity.sub,
+      PK: DDBPrefixGame + "#" + id,
+      SK: DDBPrefixPlayer + "#" + identity.sub,
     }),
     operation: "PutItem",
     table: "Wildsea-" + environment.name,
