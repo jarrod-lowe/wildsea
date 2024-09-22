@@ -21,6 +21,7 @@ type Mutation {
     joinGame(input: JoinGameInput!): Game! @aws_cognito_user_pools
     createSection(input: CreateSectionInput!): SheetSection! @aws_cognito_user_pools
     updateSection(input: UpdateSectionInput!): SheetSection! @aws_cognito_user_pools
+    updatePlayerSheet(input: UpdatePlayerSheetInput!): PlayerSheetSummary @aws_cognito_user_pools
 }
 
 type Query {
@@ -64,10 +65,17 @@ type Game @aws_cognito_user_pools {
   type: String!
 }
 
+input UpdatePlayerSheetInput {
+  gameId: ID!
+  userId: ID!
+  characterName: String!
+}
+
 type PlayerSheetSummary @aws_cognito_user_pools {
   gameId: ID!
   gameName: String!
   gameDescription: String!
+  characterName: String!
   type: String!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!

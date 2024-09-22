@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useMemo, ReactNo
 import { v4 as uuidv4 } from 'uuid';
 
 const MaxToasts = 5;
+const DefaultToastTime = 5000;
 
 interface ToastContextType {
   addToast: (message: string, type: 'error' | 'success') => void;
@@ -83,7 +84,7 @@ interface NotificationToastProps {
   onClose?: () => void;
 }
 
-export const NotificationToast: React.FC<NotificationToastProps> = ({ message, type, duration = 5000, onClose }) => {
+export const NotificationToast: React.FC<NotificationToastProps> = ({ message, type, duration = DefaultToastTime, onClose }) => {
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
