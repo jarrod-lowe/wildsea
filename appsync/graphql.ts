@@ -56,6 +56,7 @@ export type Mutation = {
   createGame: Game;
   createSection: SheetSection;
   joinGame: Game;
+  updatePlayerSheet?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;
 };
 
@@ -72,6 +73,11 @@ export type MutationCreateSectionArgs = {
 
 export type MutationJoinGameArgs = {
   input: JoinGameInput;
+};
+
+
+export type MutationUpdatePlayerSheetArgs = {
+  input: UpdatePlayerSheetInput;
 };
 
 
@@ -92,6 +98,7 @@ export type PlayerSheet = {
 
 export type PlayerSheetSummary = {
   __typename?: 'PlayerSheetSummary';
+  characterName: Scalars['String']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
   gameDescription: Scalars['String']['output'];
   gameId: Scalars['ID']['output'];
@@ -122,6 +129,12 @@ export type SheetSection = {
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
   userId: Scalars['ID']['output'];
+};
+
+export type UpdatePlayerSheetInput = {
+  characterName: Scalars['String']['input'];
+  gameId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 export type UpdateSectionInput = {

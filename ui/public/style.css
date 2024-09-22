@@ -62,7 +62,7 @@
     padding: 20px;
     background-color: #f2f2f2;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0 0 0 0.1);
+    box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
 }
 
 .allgames {
@@ -77,7 +77,7 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0 0 0 0.1);
+    box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
 }
 
 h1 {
@@ -258,11 +258,11 @@ button:hover {
 }
 
 .notification-toast {
-  background-color: rgba(255 0 0 90%); /* For errors: red background */
+  background-color: rgb(255 0 0 / 80%); /* For errors: red background */
   color: white;
   padding: 15px 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0 0 0 10%);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
   animation: slide-in 0.3s ease-out;
   transition: transform 0.3s ease-out, opacity 0.3s ease-in;
   opacity: 1;
@@ -270,7 +270,7 @@ button:hover {
 }
 
 .notification-toast.success {
-  background-color: rgba(0 128 0 90%); /* For success: green background */
+  background-color: rgb(0 128 0 / 80%); /* For success: green background */
 }
 
 .notification-toast.fade-out {
@@ -353,4 +353,22 @@ button:hover {
   word-wrap: break-word; /* Ensure long words are broken if needed */
   text-align: left; /* Align text left for readability */
   padding: 10px; /* Optional: Adds padding around the text */
+}
+
+.own-ops {
+  margin-left: 1em;
+}
+
+.own-ops .own-sheet {
+  background-color: #add8e6; /* Light blue background */
+  color: #000; /* Black text */
+  padding: 2px 6px; /* Padding inside the box */
+  border-radius: 8px; /* Rounded corners */
+  text-transform: uppercase; /* Make the text uppercase */
+  font-weight: bold; /* Make the text bold */
+  display: inline-block; /* Ensure it behaves as a box */
+  margin-left: 10px; /* Add some space between the pencil icon and the span */
+  font-size: 50%;
+  vertical-align: middle;
+  line-height: 1;
 }

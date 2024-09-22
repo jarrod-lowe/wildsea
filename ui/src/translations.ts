@@ -31,6 +31,10 @@ export const messages = {
     'sectionName': 'Name',
     'save': 'Save Changes',
     'cancel': 'Cancel',
+    'characterName': 'Character Name',
+    'playerSheetTab.updateError': 'Failed to update the character name. Please try again.',
+    'playerSheetTab.createSection': 'Failed to create a new section. Please try again.',
+    'playerSheetTab.ownSheet': 'You',
 
     'sectionType.text': 'Text',
     'sectionText.sampleContent': 'Write your content here.',
@@ -48,5 +52,7 @@ export const messages = {
     'sectionTrackable.showZeros': 'Show empty trackable items?',
     'sectionTrackable.addItem': 'Add a new Item',
     'sectionTrackable.removeItem': '❌',
+    'sectionTrackable.increment': '+',
+    'sectionTrackable.decrement': '-',
   },
 };

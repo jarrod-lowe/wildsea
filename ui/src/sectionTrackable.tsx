@@ -235,9 +235,13 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
                 placeholder={intl.formatMessage({ id: "sectionTrackable.itemName" })}
               />
               <div className="item-length-controls">
-                <button onClick={() => handleItemLengthChange(index, -1)}>-</button>
+                <button onClick={() => handleItemLengthChange(index, -1)}>
+                  <FormattedMessage id="sectionTrackable.decrement" />
+                </button>
                 <span>{item.length}</span>
-                <button onClick={() => handleItemLengthChange(index, 1)}>+</button>
+                <button onClick={() => handleItemLengthChange(index, 1)}>
+                  <FormattedMessage id="sectionTrackable.increment" />
+                </button>
               </div>
               <textarea
                 value={item.description}
