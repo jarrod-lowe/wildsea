@@ -2,6 +2,7 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import type { DataGame } from "../../lib/dataTypes";
 import type { QueryGetGameArgs } from "../../../appsync/graphql";
+import { DDBPrefixGame } from "../../lib/constants";
 
 export function request(
   context: Context<QueryGetGameArgs>,
@@ -17,8 +18,8 @@ export function request(
 
   const id = context.arguments.id;
   const key = {
-    PK: "GAME#" + id,
-    SK: "GAME",
+    PK: DDBPrefixGame + "#" + id,
+    SK: DDBPrefixGame,
   };
 
   return {

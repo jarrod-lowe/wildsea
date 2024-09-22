@@ -11,7 +11,7 @@ import { getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
 
 // PlayerSheetTab component
-const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, userSubject, game, onUpdate }) => {
+export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, userSubject, game, onUpdate }) => {
   const [newSectionName, setNewSectionName] = useState('');
   const [newSectionType, setNewSectionType] = useState('TEXT');
   const [showNewSection, setShowNewSection] = useState(false);
@@ -164,5 +164,3 @@ const getJoinUrl = (joinToken: string): string => {
   currentUrl.searchParams.set('joinToken', joinToken);
   return currentUrl.toString();
 };
-
-export default PlayerSheetTab;

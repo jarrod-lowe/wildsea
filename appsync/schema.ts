@@ -11,7 +11,7 @@
       export const getGamesQuery = `
         query getGames {
           getGames {
-            gameId gameName gameDescription characterName type createdAt updatedAt
+            userId gameId gameName gameDescription characterName type createdAt updatedAt
           }
         }
       `;
@@ -53,7 +53,17 @@
       export const updatePlayerSheetMutation = `
         mutation updatePlayerSheet($input: UpdatePlayerSheetInput!) {
           updatePlayerSheet(input: $input) {
-            gameId gameName gameDescription characterName type createdAt updatedAt
+            userId gameId gameName gameDescription characterName type createdAt updatedAt
+          }
+        }
+      `;
+    
+
+    
+      export const updatedPlayerSheetSubscription = `
+        subscription updatedPlayerSheet($gameId: ID!) {
+          updatedPlayerSheet(gameId: $gameId) {
+            userId gameId gameName gameDescription characterName type createdAt updatedAt
           }
         }
       `;

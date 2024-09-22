@@ -2,6 +2,7 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import type { DataPlayerSheet } from "../../lib/dataTypes";
 import type { MutationCreateSectionArgs } from "../../../appsync/graphql";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
 
 export function request(
   context: Context<MutationCreateSectionArgs>,
@@ -17,8 +18,8 @@ export function request(
 
   const id = context.arguments.input.gameId;
   const key = {
-    PK: "GAME#" + id,
-    SK: "PLAYER#" + identity.sub,
+    PK: DDBPrefixGame + "#" + id,
+    SK: DDBPrefixPlayer + "#" + identity.sub,
   };
 
   return {

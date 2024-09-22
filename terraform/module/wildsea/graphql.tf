@@ -231,9 +231,10 @@ resource "aws_iam_role_policy_attachment" "graphql_datasource" {
 }
 
 locals {
-  mutations = distinct([for d in fileset("${path.module}/../../../graphql/mutation", "**") : dirname(d)])
-  queries   = distinct([for d in fileset("${path.module}/../../../graphql/query", "**") : dirname(d)])
-  functions = distinct([for d in fileset("${path.module}/../../../graphql/function", "**") : dirname(d)])
+  mutations     = distinct([for d in fileset("${path.module}/../../../graphql/mutation", "**") : dirname(d)])
+  queries       = distinct([for d in fileset("${path.module}/../../../graphql/query", "**") : dirname(d)])
+  subscriptions = distinct([for d in fileset("${path.module}/../../../graphql/subscription", "**") : dirname(d)])
+  functions     = distinct([for d in fileset("${path.module}/../../../graphql/function", "**") : dirname(d)])
 
   mutations_map = {
     for mutation in local.mutations : replace(mutation, "../../../graphql/mutation/", "") => {
@@ -253,6 +254,15 @@ locals {
     }
   }
 
+  subscriptions_map = {
+    for subscription in local.subscriptions : replace(subscription, "../../../graphql/subscription/", "") => {
+      "type" : "Subscription",
+      "path" : "../../../graphql/subscription/${subscription}/appsync.js",
+      "make" : "graphql/subscription/${subscription}/appsync.js",
+      "source" : "../../../graphql/subscription/${subscription}/appsync.ts"
+    }
+  }
+
   functions_map = {
     for function in local.functions : replace(function, "../../../graphql/function/", "") => {
       "type" : "Function",
@@ -262,8 +272,8 @@ locals {
     }
   }
 
-  all       = merge(local.mutations_map, local.queries_map, local.functions_map)
-  resolvers = merge(local.mutations_map, local.queries_map)
+  all       = merge(local.mutations_map, local.queries_map, local.subscriptions_map, local.functions_map)
+  resolvers = merge(local.mutations_map, local.queries_map, local.subscriptions_map)
 
   pipelines_map = {
     joinGame = {

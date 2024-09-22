@@ -1,7 +1,7 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBUpdateItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import { SheetSection, UpdateSectionInput } from "../../../appsync/graphql";
-import { DDBPrefixSection } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixSection } from "../../lib/constants";
 
 export function request(
   context: Context<{ input: UpdateSectionInput }>,
@@ -22,7 +22,7 @@ export function request(
   return {
     operation: "UpdateItem",
     key: util.dynamodb.toMapValues({
-      PK: "GAME#" + input.gameId,
+      PK: DDBPrefixGame + "#" + input.gameId,
       SK: sk,
     }),
     condition: {

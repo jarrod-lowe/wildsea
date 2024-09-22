@@ -20,6 +20,7 @@ import {
   TypeFirefly,
   TypeSection,
   TypeGame,
+  DDBPrefixGame,
 } from "../../lib/constants";
 
 export function request(
@@ -41,7 +42,7 @@ function validateIdentity(context: Context<QueryGetGameArgs>): void {
 }
 
 function buildDynamoDBQuery(id: string): DynamoDBQueryRequest {
-  const pk = "GAME#" + id;
+  const pk = DDBPrefixGame + "#" + id;
   const expr: DynamoDBExpression = {
     expression: "#pk = :pk",
     expressionNames: {

@@ -1,21 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game } from "../../appsync/graphql";
-import { getGameQuery } from "../../appsync/schema";
+import { Game, PlayerSheetSummary, Subscription as GQLSubscription } from "../../appsync/graphql";
+import { getGameQuery, updatedPlayerSheetSubscription } from "../../appsync/schema";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
-import { GraphQLResult } from "@aws-amplify/api-graphql";
+import { GraphQLResult, GraphQLSubscription } from "@aws-amplify/api-graphql";
 import { messages } from './translations';
 import { TopBar } from "./frame";
 import { fetchUserAttributes } from 'aws-amplify/auth';
-import PlayerSheetTab from './playerSheetTab';
+import { PlayerSheetTab } from './playerSheetTab';
+import { useToast } from './notificationToast';
 
 // Main Game component
 const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmail }) => {
   const [game, setGame] = useState<Game | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [userSubject, setUserSubject] = useState<string>("");
+  const [fetchFailed, setFetchFailed] = useState<boolean>(false);
+  const subscriptionFailed = useRef<boolean>(false);
   const intl = useIntl();
+  const toast = useToast();
 
   useEffect(() => {
     async function fetchGame() {
@@ -33,16 +36,38 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
           setActiveSheet(response.data.getGame.playerSheets[0].userId);
         }
       } catch (err) {
-        setError(intl.formatMessage({ id: 'errorFetchingGameData'}));
+        console.error("Error fetching game data", err);
+        toast.addToast(intl.formatMessage({ id: 'errorFetchingGameData' }), 'error');
+        setFetchFailed(true);
       }
     }
 
-    fetchGame();
-  }, [id, intl]);
+    if (!fetchFailed) {
+      fetchGame();
+    }
 
-  if (error) {
-    return <div><FormattedMessage id="error" />: {error}</div>;
-  }
+    if (!subscriptionFailed.current) {
+      subscribeToPlayerSheetUpdates(id, (updatedSheetSummary) => {
+        if (game) {
+          const updatedSheets = game.playerSheets.map(sheet => {
+          if (sheet.userId === updatedSheetSummary.userId) {
+            // Merge the summary data (e.g., characterName) into the full PlayerSheet object
+            return {
+              ...sheet,
+              characterName: updatedSheetSummary.characterName,
+            };
+          }
+          return sheet;
+        });
+        setGame({ ...game, playerSheets: updatedSheets })
+        }
+      }, (err) => {
+        console.error("Error subscribing to player sheet updates", err);
+        toast.addToast(intl.formatMessage({ id: 'errorSubscribingToPlayerSheetUpdates' }), 'error');
+        subscriptionFailed.current = true;
+      });
+    }
+  }, [id, intl, toast, fetchFailed]);
 
   if (!game) {
     return <div><FormattedMessage id="loadingGameData" /></div>;
@@ -91,6 +116,37 @@ async function fetchUserSubject(): Promise<string> {
     throw new Error("User subject not found");
   }
   return userAttributes.sub;
+}
+
+
+async function subscribeToPlayerSheetUpdates(
+  gameId: string, 
+  onUpdate: (updatedSheet: PlayerSheetSummary) => void, 
+  onError: (error: any) => void
+) {
+  try {
+    const client = generateClient();
+    /* const subscription = */ client.graphql<GraphQLSubscription<GQLSubscription>>({
+      query: updatedPlayerSheetSubscription,
+      variables: { gameId },
+    })
+    .subscribe({
+      next: ({ data }) => {
+        if (data?.updatedPlayerSheet) {
+          onUpdate(data.updatedPlayerSheet);
+        }
+      },
+      error: (error) => {
+        console.error('Subscription error:', error);
+        onError(error);
+      },
+    });
+  } catch (error) {
+    console.error('Error subscribing to player sheet updates:', error);
+    onError(error);
+  }
+
+  //return await subscription.unsubscribe;
 }
 
 export default AppGame;

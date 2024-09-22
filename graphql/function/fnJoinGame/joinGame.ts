@@ -2,7 +2,12 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
 import type { Game, JoinGameInput } from "../../../appsync/graphql";
-import { TypeCharacter, DefaultPlayerCharacterName } from "../../lib/constants";
+import {
+  TypeCharacter,
+  DefaultPlayerCharacterName,
+  DDBPrefixGame,
+  DDBPrefixPlayer,
+} from "../../lib/constants";
 
 export function request(context: Context<{ input: JoinGameInput }>): unknown {
   if (!context.identity) {
@@ -21,8 +26,8 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     operation: "UpdateItem",
     table: "Wildsea-" + environment.name,
     key: util.dynamodb.toMapValues({
-      PK: "GAME#" + id,
-      SK: "GAME",
+      PK: DDBPrefixGame + "#" + id,
+      SK: DDBPrefixGame,
     }),
     update: {
       expression: "ADD #players :player SET #updatedAt = :updatedAt",
@@ -41,8 +46,8 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     operation: "PutItem",
     table: "Wildsea-" + environment.name,
     key: util.dynamodb.toMapValues({
-      PK: "GAME#" + id,
-      SK: "PLAYER#" + identity.sub,
+      PK: DDBPrefixGame + "#" + id,
+      SK: DDBPrefixPlayer + "#" + identity.sub,
     }),
     attributeValues: util.dynamodb.toMapValues({
       gameId: id,

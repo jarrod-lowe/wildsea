@@ -4,7 +4,11 @@ import type {
   PutItemInputAttributeMap,
 } from "@aws-appsync/utils/lib/resolver-return-types";
 import { Game, CreateSectionInput } from "../../../appsync/graphql";
-import { DDBPrefixSection, TypeSection } from "../../lib/constants";
+import {
+  DDBPrefixGame,
+  DDBPrefixSection,
+  TypeSection,
+} from "../../lib/constants";
 
 export function request(
   context: Context<{ input: CreateSectionInput }>,
@@ -25,7 +29,7 @@ export function request(
   return {
     operation: "PutItem",
     key: util.dynamodb.toMapValues({
-      PK: "GAME#" + input.gameId,
+      PK: DDBPrefixGame + "#" + input.gameId,
       SK: DDBPrefixSection + "#" + sectionId,
     }),
     attributeValues: util.dynamodb.toMapValues({

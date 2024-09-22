@@ -29,6 +29,10 @@ type Query {
     getGames: [PlayerSheetSummary!] @aws_cognito_user_pools
 }
 
+type Subscription @aws_cognito_user_pools {
+  updatedPlayerSheet(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayerSheet"])
+}
+
 input CreateGameInput {
     name: String!
     description: String
@@ -72,6 +76,7 @@ input UpdatePlayerSheetInput {
 }
 
 type PlayerSheetSummary @aws_cognito_user_pools {
+  userId: ID!
   gameId: ID!
   gameName: String!
   gameDescription: String!

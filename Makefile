@@ -64,6 +64,7 @@ clean:
 	rm -f terraform/environment/*/plan.tfplan
 	rm -f graphql/mutation/*/appsync.js
 	rm -f graphql/query/*/appsync.js
+	rm -f graphql/subscription/*/appsync.js
 	rm -f graphql/functions/*/appsync.js
 	rm -rf graphql/node_modules
 	rm -rf graphql/coverage

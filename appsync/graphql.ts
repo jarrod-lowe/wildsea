@@ -105,6 +105,7 @@ export type PlayerSheetSummary = {
   gameName: Scalars['String']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
+  userId: Scalars['ID']['output'];
 };
 
 export type Query = {
@@ -129,6 +130,16 @@ export type SheetSection = {
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
   userId: Scalars['ID']['output'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  updatedPlayerSheet?: Maybe<PlayerSheetSummary>;
+};
+
+
+export type SubscriptionUpdatedPlayerSheetArgs = {
+  gameId: Scalars['ID']['input'];
 };
 
 export type UpdatePlayerSheetInput = {
