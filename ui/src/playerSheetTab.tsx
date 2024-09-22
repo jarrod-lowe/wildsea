@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerSheetInput } from "../../appsync/graphql";
 import { createSectionMutation, updatePlayerSheetMutation } from "../../appsync/schema";
@@ -97,6 +97,10 @@ const SheetHeader: React.FC<{ sheet: PlayerSheet; userSubject: string; game: Gam
   const [characterName, setCharacterName] = useState(sheet.characterName);
   const intl = useIntl();
   const toast = useToast();
+
+  useEffect(() => {
+    setCharacterName(sheet.characterName);
+  }, [sheet.characterName]);
 
   const handleSave = async () => {
     try {
