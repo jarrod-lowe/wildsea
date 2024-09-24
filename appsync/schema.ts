@@ -68,4 +68,12 @@
         }
       `;
     
+      export const updatedSectionSubscription = `
+        subscription updatedSection($gameId: ID!) {
+          updatedSection(gameId: $gameId) {
+            userId gameId sectionId type sectionName sectionType content createdAt updatedAt
+          }
+        }
+      `;
+    
   
