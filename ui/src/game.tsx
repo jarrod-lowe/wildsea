@@ -75,7 +75,10 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
     <div className="game-container">
       <TopBar title={game.gameName} userEmail={ userEmail } />
       <div className="tab-bar">
-        {game.playerSheets.map((sheet) => (
+        {game.playerSheets
+        .slice()  // Create a copy of the array to avoid mutating state
+        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())  // Sort by createdAt
+        .map((sheet) => (
           <button
             key={sheet.userId}
             className={activeSheet === sheet.userId ? 'active' : ''}
