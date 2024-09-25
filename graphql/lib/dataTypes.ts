@@ -1,4 +1,10 @@
-import type { Game, PlayerSheet, SheetSection } from "../../appsync/graphql";
+import type {
+  Game,
+  PlayerSheet,
+  SheetSection,
+  SubscriptionUpdatedPlayerSheetArgs,
+  SubscriptionUpdatedSectionArgs,
+} from "../../appsync/graphql";
 
 // define a type DataGame, like Game, except players -> playerSheets (PlayerSheet[]), and fireflyUserId -> fireflySheet (PlayerSheet)
 
@@ -13,3 +19,7 @@ export type DataPlayerSheet = Omit<PlayerSheet, "sections"> & {
 export type DataSheetSection = SheetSection;
 
 export type Data = DataGame | DataPlayerSheet | DataSheetSection;
+
+export type SubscriptionGenericArgs =
+  | SubscriptionUpdatedPlayerSheetArgs
+  | SubscriptionUpdatedSectionArgs;

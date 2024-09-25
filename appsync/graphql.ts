@@ -135,10 +135,16 @@ export type SheetSection = {
 export type Subscription = {
   __typename?: 'Subscription';
   updatedPlayerSheet?: Maybe<PlayerSheetSummary>;
+  updatedSection?: Maybe<SheetSection>;
 };
 
 
 export type SubscriptionUpdatedPlayerSheetArgs = {
+  gameId: Scalars['ID']['input'];
+};
+
+
+export type SubscriptionUpdatedSectionArgs = {
   gameId: Scalars['ID']['input'];
 };
 
