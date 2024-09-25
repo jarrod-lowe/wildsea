@@ -100,7 +100,6 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
         gameId: section.gameId,
         sectionId: section.sectionId,
         sectionName: sectionName,
-        sectionType: section.sectionType,
         content: JSON.stringify(content),
       };
       const client = generateClient();
@@ -141,7 +140,6 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
         gameId: section.gameId,
         sectionId: section.sectionId,
         sectionName: sectionName,
-        sectionType: section.sectionType,
         content: JSON.stringify({ ...content, items: newItems }),
       };
       

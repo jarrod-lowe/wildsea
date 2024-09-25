@@ -37,27 +37,28 @@ const usePlayerSheetUpdates = (gameId: string, setGame: (game: Game) => void, ga
   }, [gameId, setGame, gameRef, toast, intl]);
 };
 
-// Custom hook for subscribing to section updates
 const useSectionUpdates = (gameId: string, setGame: (game: Game) => void, gameRef: React.MutableRefObject<Game | null>) => {
-  const toast = useToast();
-  const intl = useIntl();
-
   useEffect(() => {
     subscribeToSectionUpdates(gameId, (updatedSection) => {
       const currentGame = gameRef.current;
       if (currentGame) {
         const updatedSheets = currentGame.playerSheets.map(sheet => {
           if (sheet.userId === updatedSection.userId) {
-            let sectionFound = false;
-            const updatedSections = sheet.sections.map(section =>
-              section.sectionId === updatedSection.sectionId
-                ? (sectionFound = true, updatedSection)
-                : section
-            );
-            if (!sectionFound) {
-              updatedSections.push(updatedSection);
-            }
-            return { ...sheet, sections: updatedSections };
+            // Check if section already exists
+            const sectionExists = sheet.sections.some(section => section.sectionId === updatedSection.sectionId);
+
+            const updatedSections = sectionExists
+              ? sheet.sections.map(section =>
+                  section.sectionId === updatedSection.sectionId
+                    ? updatedSection
+                    : section
+                )
+              : [...sheet.sections, updatedSection];  // Append new section if it doesn't exist
+
+            // Sort sections by position
+            const sortedSections = updatedSections.sort((a, b) => a.position - b.position);
+
+            return { ...sheet, sections: sortedSections };
           }
           return sheet;
         });
@@ -68,11 +69,8 @@ const useSectionUpdates = (gameId: string, setGame: (game: Game) => void, gameRe
       }
     }, (err) => {
       console.error("Error subscribing to section updates", err);
-      toast.addToast(intl.formatMessage({ id: 'errorSubscribingToSectionUpdates' }), 'error');
     });
-
-    // TODO: unsubscribe
-  }, [gameId, setGame, gameRef, toast, intl]);
+  }, [gameId, setGame, gameRef]);
 };
 
 // Main Game component

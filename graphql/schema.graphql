@@ -49,14 +49,15 @@ input CreateSectionInput {
   sectionName: String!
   sectionType: String!
   content: AWSJSON
+  position: Int!
 }
 
 input UpdateSectionInput {
   gameId: ID!
   sectionId: ID!
-  sectionName: String!
-  sectionType: String!
-  content: AWSJSON!
+  sectionName: String
+  content: AWSJSON
+  position: Int
 }
 
 type Game @aws_cognito_user_pools {
@@ -105,6 +106,7 @@ type SheetSection @aws_cognito_user_pools {
   sectionName: String!
   sectionType: String!
   content: AWSJSON!
+  position: Int!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
