@@ -97,9 +97,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         setGame(response.data.getGame);
         gameRef.current = response.data.getGame;
         setUserSubject(sub);
-        if (response.data.getGame.playerSheets.length > 0) {
-          setActiveSheet(response.data.getGame.playerSheets[0].userId);
-        }
+        setActiveSheet(sub);
       } catch (err) {
         console.error("Error fetching game data", err);
         toast.addToast(intl.formatMessage({ id: 'errorFetchingGameData' }), 'error');
