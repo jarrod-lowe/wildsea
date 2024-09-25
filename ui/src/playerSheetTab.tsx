@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerSheetInput } from "../../appsync/graphql";
-import { createSectionMutation, updatePlayerSheetMutation } from "../../appsync/schema";
+import { createSectionMutation, updatePlayerSheetMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPlus, FaPencilAlt } from 'react-icons/fa';
@@ -9,6 +9,17 @@ import { TypeFirefly } from "../../graphql/lib/constants";
 import { Section } from './section';
 import { getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
+import { DragDropContext, Droppable, Draggable, DroppableProvided, DraggableProvided } from 'react-beautiful-dnd';
+
+const reorderSections = (sections: SheetSection[], startIndex: number, endIndex: number) => {
+  const result = Array.from(sections);
+  const [movedSection] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, movedSection);
+
+  // After reordering, update positions based on their new index
+  return result.map((section, index) => ({ ...section, position: index }));
+};
+
 
 // PlayerSheetTab component
 export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, userSubject, game, onUpdate }) => {
@@ -19,13 +30,54 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const intl = useIntl();
   const toast = useToast();
 
+  const handleDragEnd = async (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+
+    // Reorder sections locally
+    const reorderedSections = reorderSections(sheet.sections, result.source.index, result.destination.index);
+    
+    // Update sections in the UI
+    onUpdate({ ...sheet, sections: reorderedSections });
+
+    // Send the updated order to GraphQL
+    try {
+      const client = generateClient();
+      
+      // Iterate over all reordered sections and update their position in the backend
+      const promises = reorderedSections.map((section, index) => {
+        return client.graphql({
+          query: updateSectionMutation,
+          variables: {
+            input: {
+              sectionId: section.sectionId,
+              gameId: sheet.gameId,
+              position: index,  // Update each section's position
+            },
+          },
+        });
+      });
+      
+      // Wait for all updates to complete
+      await Promise.all(promises);
+    } catch (error) {
+      console.error('Error updating section order:', error);
+      toast.addToast(intl.formatMessage({ id: "playerSheetTab.updateSectionOrderError" }), 'error');
+    }
+  };
+
   const handleCreateSection = async () => {
     try {
+      const newPosition = sheet.sections.length > 0
+        ? Math.max(...sheet.sections.map(section => section.position)) + 1
+        : 0;
       const input: CreateSectionInput = {
         gameId: sheet.gameId,
         sectionName: newSectionName,
         sectionType: newSectionType,
-        content: JSON.stringify({})
+        content: JSON.stringify({}),
+        position: newPosition,
       }
       const client = generateClient();
       const response = await client.graphql({
@@ -47,19 +99,43 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   return (
     <div className="player-sheet">
       <SheetHeader sheet={sheet} userSubject={userSubject} game={game} onUpdate={onUpdate} />
-      {sheet.sections.map((section) => (
-        <Section
-          key={section.sectionId}
-          section={section}
-          userSubject={userSubject}
-          onUpdate={(updatedSection) => {
-            const updatedSections = sheet.sections.map(s =>
-              s.sectionId === updatedSection.sectionId ? updatedSection : s
-            );
-            onUpdate({ ...sheet, sections: updatedSections });
-          }}
-        />
-      ))}
+      
+      {/* Drag and Drop Context for reordering */}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="sections">
+          {(provided: DroppableProvided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              {sheet.sections
+                .slice()
+                .sort((a, b) => a.position - b.position) // Sort sections by position
+                .map((section, index) => (
+                  <Draggable key={section.sectionId} draggableId={section.sectionId} index={index}>
+                    {(provided: DraggableProvided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <Section
+                          key={section.sectionId}
+                          section={section}
+                          userSubject={userSubject}
+                          onUpdate={(updatedSection) => {
+                            const updatedSections = sheet.sections.map(s =>
+                              s.sectionId === updatedSection.sectionId ? updatedSection : s
+                            );
+                            onUpdate({ ...sheet, sections: updatedSections });
+                          }}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
       {userSubject === sheet.userId && !showNewSection && (
         <button onClick={() => setShowNewSection(true)}>

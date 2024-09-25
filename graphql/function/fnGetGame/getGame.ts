@@ -170,6 +170,7 @@ export function makeSheetSection(data: DataSheetSection): SheetSection {
     sectionName: data.sectionName,
     sectionType: data.sectionType,
     content: data.content,
+    position: data.position,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     type: data.type,

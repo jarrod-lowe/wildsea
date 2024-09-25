@@ -35,7 +35,6 @@ export const SectionText: React.FC<{ section: SheetSection, userSubject: string,
             gameId: section.gameId,
             sectionId: section.sectionId,
             sectionName: sectionName,
-            sectionType: section.sectionType,
             content: JSON.stringify(content),
       }
       const client = generateClient();

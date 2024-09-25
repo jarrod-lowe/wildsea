@@ -39,6 +39,7 @@ export function request(
       sectionName: input.sectionName,
       sectionType: input.sectionType,
       content: input.content,
+      position: input.position,
       createdAt: timestamp,
       updatedAt: timestamp,
       type: TypeSection,

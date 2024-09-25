@@ -30,6 +30,7 @@ export type CreateGameInput = {
 export type CreateSectionInput = {
   content?: InputMaybe<Scalars['AWSJSON']['input']>;
   gameId: Scalars['ID']['input'];
+  position: Scalars['Int']['input'];
   sectionName: Scalars['String']['input'];
   sectionType: Scalars['String']['input'];
 };
@@ -124,6 +125,7 @@ export type SheetSection = {
   content: Scalars['AWSJSON']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
   gameId: Scalars['ID']['output'];
+  position: Scalars['Int']['output'];
   sectionId: Scalars['ID']['output'];
   sectionName: Scalars['String']['output'];
   sectionType: Scalars['String']['output'];
@@ -155,9 +157,9 @@ export type UpdatePlayerSheetInput = {
 };
 
 export type UpdateSectionInput = {
-  content: Scalars['AWSJSON']['input'];
+  content?: InputMaybe<Scalars['AWSJSON']['input']>;
   gameId: Scalars['ID']['input'];
+  position?: InputMaybe<Scalars['Int']['input']>;
   sectionId: Scalars['ID']['input'];
-  sectionName: Scalars['String']['input'];
-  sectionType: Scalars['String']['input'];
+  sectionName?: InputMaybe<Scalars['String']['input']>;
 };

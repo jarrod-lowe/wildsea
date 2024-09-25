@@ -37,6 +37,7 @@ export const messages = {
     'playerSheetTab.updateError': 'Failed to update the character name. Please try again.',
     'playerSheetTab.createSection': 'Failed to create a new section. Please try again.',
     'playerSheetTab.ownSheet': 'You',
+    'playerSheetTab.updateSectionOrderError': 'Failed to update the section order. Please try again.',
 
     'sectionType.text': 'Text',
     'sectionText.sampleContent': 'Write your content here.',
