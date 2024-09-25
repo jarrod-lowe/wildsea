@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
 import { updateSectionMutation } from "../../appsync/schema";
@@ -20,6 +20,14 @@ export const SectionText: React.FC<{ section: SheetSection, userSubject: string,
   const [originalSectionName, setOriginalSectionName] = useState(section.sectionName);
   const intl = useIntl(); // Get the intl object for translation
   const toast = useToast();
+
+  useEffect(() => {
+    setContent(JSON.parse(section.content) as SectionTypeText);
+  }, [section.content]);
+
+  useEffect(() => {
+    setSectionName(section.sectionName);
+  }, [section.sectionName]);
 
   const handleUpdate = async () => {
     try {

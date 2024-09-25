@@ -107,7 +107,7 @@ export function AppContent() {
                     await joinGame(id, token);
                 }
                 catch (error) {
-                    console.log(error);
+                    console.error(error);
                     alert(intl.formatMessage({ id: 'unableToJoin' }));
                 }
             }
