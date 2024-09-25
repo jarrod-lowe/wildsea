@@ -3,6 +3,13 @@ import type { DynamoDBUpdateItemRequest } from "@aws-appsync/utils/lib/resolver-
 import { SheetSection, UpdateSectionInput } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixSection } from "../../lib/constants";
 
+interface UpdateType {
+  updatedAt: string;
+  sectionName?: string;
+  content?: string;
+  position?: number;
+}
+
 export function request(
   context: Context<{ input: UpdateSectionInput }>,
 ): DynamoDBUpdateItemRequest {
@@ -18,6 +25,33 @@ export function request(
   const input = context.arguments.input;
   const timestamp = util.time.nowISO8601();
   const sk = DDBPrefixSection + "#" + input.sectionId;
+
+  const updates: UpdateType = {
+    updatedAt: timestamp,
+  };
+  if (input.sectionName !== undefined) {
+    updates.sectionName = input.sectionName as string;
+  }
+  if (input.content !== undefined) {
+    updates.content = input.content as string;
+  }
+  if (input.position !== undefined) {
+    updates.position = input.position as number;
+  }
+
+  const setExpressions: string[] = [];
+  const expressionAttributeNames: { [key: string]: string } = {};
+  const expressionAttributeValues: { [key: string]: string | number } = {};
+
+  Object.entries(updates).forEach(([key, value]) => {
+    const placeholderKey = `#${key}`;
+    const placeholderValue = `:${key}`;
+
+    setExpressions.push(`${placeholderKey} = ${placeholderValue}`);
+    expressionAttributeNames[placeholderKey] = key;
+    expressionAttributeValues[placeholderValue] = value;
+  });
+  const setExpressionString = `SET ${setExpressions.join(", ")}`;
 
   return {
     operation: "UpdateItem",
@@ -37,18 +71,9 @@ export function request(
       }),
     },
     update: {
-      expression:
-        "SET #sectionName = :sectionName, #content = :content, #updatedAt = :updatedAt",
-      expressionNames: {
-        "#updatedAt": "updatedAt",
-        "#content": "content",
-        "#sectionName": "sectionName",
-      },
-      expressionValues: util.dynamodb.toMapValues({
-        ":updatedAt": timestamp,
-        ":content": input.content,
-        ":sectionName": input.sectionName,
-      }),
+      expression: setExpressionString,
+      expressionNames: expressionAttributeNames,
+      expressionValues: util.dynamodb.toMapValues(expressionAttributeValues),
     },
   };
 }
