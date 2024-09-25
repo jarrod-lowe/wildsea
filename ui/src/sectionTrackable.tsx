@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
 import { updateSectionMutation } from "../../appsync/schema";
@@ -84,6 +84,15 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
   if (!content.items) {
     setContent({ ...content, items: [] });
   }
+
+  useEffect(() => {
+    setSectionName(section.sectionName);
+  }, [section.sectionName]);
+
+  useEffect(() => {
+    setContent(JSON.parse(section.content || '{}') || { showZeros: true, items: [] });
+    setOriginalContent(content);
+  }, [section.content])
 
   const handleUpdate = async () => {
     try {

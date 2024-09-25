@@ -22,6 +22,7 @@ export const messages = {
     'loadingGameData': 'Loading game data...',
     'gameTitle': 'Game',
     'errorSubscribingToPlayerSheetUpdates': 'Unable to subscribe to player sheet updates.',
+    'errorSubscribingToSectionUpdates': 'Unable to subscribe to section updates',
 
     'create': 'Add',
     'joinToken': 'Join Token',
