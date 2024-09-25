@@ -54,7 +54,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           userSubject={userSubject}
           onUpdate={(updatedSection) => {
             const updatedSections = sheet.sections.map(s =>
-              s.sectionName === updatedSection.sectionName ? updatedSection : s
+              s.sectionId === updatedSection.sectionId ? updatedSection : s
             );
             onUpdate({ ...sheet, sections: updatedSections });
           }}
