@@ -3,6 +3,7 @@ import { SheetSection } from "../../appsync/graphql";
 import { SectionText } from './sectionText';
 import { SectionNumber } from './sectionNumber';
 import { SectionTrackable } from './sectionTrackable';
+import { SectionBurnable } from './sectionBurnable';
 
 type SectionTypeConfig = {
   component: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }>;
@@ -13,7 +14,8 @@ type SectionTypeConfig = {
 const sectionRegistry: Record<string, SectionTypeConfig> = {
   'TEXT': { component: SectionText, label: 'sectionType.text' },
   'NUMBER': { component: SectionNumber, label: 'sectionType.number' },
-  'TRACKABLE': { component: SectionTrackable, label: 'sectionType.trackable' }
+  'TRACKABLE': { component: SectionTrackable, label: 'sectionType.trackable' },
+  'BURNABLE': { component: SectionBurnable, label: 'sectionType.burnable' },
 };
 
 // Function to get the component for a section type

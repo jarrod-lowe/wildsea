@@ -57,5 +57,17 @@ export const messages = {
     'sectionTrackable.removeItem': '❌',
     'sectionTrackable.increment': '+',
     'sectionTrackable.decrement': '-',
+
+    'sectionType.burnable': 'Burnable',
+    'sectionBurnable.itemName': 'Item Name',
+    'sectionBurnable.itemDescription': 'Item Description',
+    'sectionBurnable.updateError': 'Failed to update the burnable. Please try again.',
+    'sectionBurnable.showZeros': 'Show empty burnable items?',
+    'sectionBurnable.addItem': 'Add a new Item',
+    'sectionBurnable.removeItem': '❌',
+    'sectionBurnable.increment': '+',
+    'sectionBurnable.decrement': '-',
+    'sectionBurnable.burntEmoji': '🔥',
+    'sectionBurnable.tickedEmoji': '✘',
   },
 };
