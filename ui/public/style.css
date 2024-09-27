@@ -406,3 +406,41 @@ button:hover {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
 }
+
+.keyvalue-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.keyvalue-item span {
+  flex-grow: 1;
+  margin-right: 0.5rem;
+}
+
+.keyvalue-item input {
+  flex-grow: 2;
+  margin-right: 0.5rem;
+}
+
+.keyvalue-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.keyvalue-items-edit {
+  display: flex;
+  flex-direction: column;
+}
+
+.keyvalue-item-edit {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.keyvalue-item-edit input,
+.keyvalue-item-edit textarea {
+  margin-right: 0.5rem;
+}
