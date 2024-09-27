@@ -4,6 +4,7 @@ import { SectionText } from './sectionText';
 import { SectionNumber } from './sectionNumber';
 import { SectionTrackable } from './sectionTrackable';
 import { SectionBurnable } from './sectionBurnable';
+import { SectionKeyValue } from './sectionKeyValue';
 
 type SectionTypeConfig = {
   component: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }>;
@@ -16,6 +17,7 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'NUMBER': { component: SectionNumber, label: 'sectionType.number' },
   'TRACKABLE': { component: SectionTrackable, label: 'sectionType.trackable' },
   'BURNABLE': { component: SectionBurnable, label: 'sectionType.burnable' },
+  'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue' },
 };
 
 // Function to get the component for a section type

@@ -69,5 +69,14 @@ export const messages = {
     'sectionBurnable.decrement': '-',
     'sectionBurnable.burntEmoji': '🔥',
     'sectionBurnable.tickedEmoji': '✘',
+
+    'sectionType.keyvalue': 'Key/Value',
+    'sectionKeyValue.itemKey': 'Key',
+    'sectionKeyValue.itemValue': 'Value',
+    'sectionKeyValue.itemDescription': 'Description',
+    'sectionKeyValue.updateError': 'Failed to update the key/value. Please try again.',
+    'sectionKeyValue.showEmpty': 'Show empty key/value items?',
+    'sectionKeyValue.addItem': 'Add a new Item',
+    'sectionKeyValue.removeItem': '❌',
   },
 };
