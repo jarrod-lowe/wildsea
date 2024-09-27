@@ -372,3 +372,37 @@ button:hover {
   vertical-align: middle;
   line-height: 1;
 }
+
+.burnable-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.burn-checkbox {
+  width: 24px;
+  height: 24px;
+  margin-right: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
+.burn-checkbox.ticked {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.burn-checkbox.burnt {
+  background-color: #AA5722;
+  color: white;
+}
+
+.burnable-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
