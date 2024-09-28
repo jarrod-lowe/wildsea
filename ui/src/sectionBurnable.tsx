@@ -1,12 +1,8 @@
 import React from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
-import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
+import { SheetSection } from "../../appsync/graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
-import { generateClient } from "aws-amplify/api";
-import { updateSectionMutation } from "../../appsync/schema";
-import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { useToast } from './notificationToast';
 import { SectionItem } from './components/SectionItem';
 import { SectionEditForm } from './components/SectionEditForm';
 
@@ -50,10 +46,14 @@ const BurnCheckbox: React.FC<{
 
 export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = (props) => {
     const intl = useIntl();
-    const toast = useToast();
 
-
-    const handleStateChange = async (item: BurnableItem, sortedIndex: number, content: SectionTypeBurnable, setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>) => {
+    const handleStateChange = async (
+            item: BurnableItem,
+            sortedIndex: number,
+            content: SectionTypeBurnable,
+            setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>,
+            updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+        ) => {
         const newItems = [...content.items];
         const itemIndex = newItems.findIndex(i => i.id === item.id);
         const updatedItem = { ...item };
@@ -75,27 +75,18 @@ export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: str
         updatedItem.states[originalIndex] = newState;
 
         newItems[itemIndex] = updatedItem;
-        setContent({ ...content, items: newItems });
-        try {
-            const input: UpdateSectionInput = {
-                gameId: props.section.gameId,
-                sectionId: props.section.sectionId,
-                sectionName: props.section.sectionName,
-                content: JSON.stringify({ ...content, items: newItems }),
-            };
-            
-            const client = generateClient();
-            await client.graphql({
-            query: updateSectionMutation,
-            variables: { input },
-            }) as GraphQLResult<{ updateSection: SheetSection }>;
-        } catch (error) {
-            console.error("Error updating burnable states:", error);
-            toast.addToast(intl.formatMessage({ id: "sectionObject.updateError" }), 'error');
-        }
+        const newContent = { ...content, items: newItems };
+        setContent(newContent);
+        await updateSection({ content: JSON.stringify(newContent) })
     };
 
-    const renderItems = (content: SectionTypeBurnable, userSubject: string, sectionUserId: string, setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>) => {
+    const renderItems = (
+            content: SectionTypeBurnable,
+            userSubject: string,
+            sectionUserId: string,
+            setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>,
+            updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+        ) => {
         return content.items
         .filter(item => content.showEmpty || item.states.some(state => state !== 'unticked'))
         .map(item => {
@@ -112,10 +103,10 @@ export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: str
                     <>
                     {sortedStates.map((state, index) => (
                         <BurnCheckbox
-                        key={`${item.id}-${index}`}
-                        state={state}
-                        onClick={() => handleStateChange(item, index, content, setContent)}
-                        disabled={userSubject !== sectionUserId}
+                            key={`${item.id}-${index}`}
+                            state={state}
+                            onClick={() => handleStateChange(item, index, content, setContent, updateSection)}
+                            disabled={userSubject !== sectionUserId}
                         />
                     ))}
                     </>
