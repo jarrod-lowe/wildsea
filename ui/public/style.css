@@ -291,12 +291,6 @@ button:hover {
   }
 }
 
-.trackable-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
 .trackable-item span {
   flex-grow: 1;
 }
@@ -336,12 +330,6 @@ button:hover {
   margin-top: 1rem;
 }
 
-.trackable-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
 .trackable-items-edit {
   display: flex;
   flex-direction: column;
@@ -373,12 +361,6 @@ button:hover {
   line-height: 1;
 }
 
-.burnable-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
 .burn-checkbox {
   width: 24px;
   height: 24px;
@@ -401,18 +383,6 @@ button:hover {
   color: white;
 }
 
-.burnable-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.keyvalue-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
 .keyvalue-item span {
   flex-grow: 1;
   margin-right: 0.5rem;
@@ -421,12 +391,6 @@ button:hover {
 .keyvalue-item input {
   flex-grow: 2;
   margin-right: 0.5rem;
-}
-
-.keyvalue-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
 }
 
 .keyvalue-items-edit {
@@ -475,4 +439,18 @@ button:hover {
 .burn-checkbox:disabled {
   cursor: default;
   opacity: 0.6;
+}
+
+.section-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.burnable-item,
+.trackable-item,
+.keyvalue-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
