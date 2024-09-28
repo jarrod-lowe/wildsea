@@ -47,16 +47,28 @@ const useSectionUpdates = (gameId: string, setGame: (game: Game) => void, gameRe
             // Check if section already exists
             const sectionExists = sheet.sections.some(section => section.sectionId === updatedSection.sectionId);
 
-            const updatedSections = sectionExists
-              ? sheet.sections.map(section =>
-                  section.sectionId === updatedSection.sectionId
-                    ? updatedSection
-                    : section
-                )
-              : [...sheet.sections, updatedSection];  // Append new section if it doesn't exist
+            let updatedSections = [...sheet.sections];
+
+            if (sectionExists) {
+              // Update or mark as deleted
+              updatedSections = updatedSections.map(section => {
+                if (section.sectionId === updatedSection.sectionId) {
+                  return updatedSection.deleted
+                    ? { ...updatedSection, deleted: true }
+                    : updatedSection;
+                }
+                return section;
+              });
+
+              // Remove deleted sections
+              updatedSections = updatedSections.filter(section => !section.deleted);
+            } else {
+              // Add new section
+              updatedSections.push(updatedSection);
+            }
 
             // Sort sections by position
-            const sortedSections = updatedSections.sort((a, b) => a.position - b.position);
+            const sortedSections = updatedSections.toSorted((a, b) => a.position - b.position);
 
             return { ...sheet, sections: sortedSections };
           }

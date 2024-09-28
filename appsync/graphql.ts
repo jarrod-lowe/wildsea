@@ -35,6 +35,11 @@ export type CreateSectionInput = {
   sectionType: Scalars['String']['input'];
 };
 
+export type DeleteSectionInput = {
+  gameId: Scalars['ID']['input'];
+  sectionId: Scalars['ID']['input'];
+};
+
 export type Game = {
   __typename?: 'Game';
   createdAt: Scalars['AWSDateTime']['output'];
@@ -56,6 +61,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createGame: Game;
   createSection: SheetSection;
+  deleteSection: SheetSection;
   joinGame: Game;
   updatePlayerSheet?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;
@@ -69,6 +75,11 @@ export type MutationCreateGameArgs = {
 
 export type MutationCreateSectionArgs = {
   input: CreateSectionInput;
+};
+
+
+export type MutationDeleteSectionArgs = {
+  input: DeleteSectionInput;
 };
 
 
@@ -124,6 +135,7 @@ export type SheetSection = {
   __typename?: 'SheetSection';
   content: Scalars['AWSJSON']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
+  deleted?: Maybe<Scalars['Boolean']['output']>;
   gameId: Scalars['ID']['output'];
   position: Scalars['Int']['output'];
   sectionId: Scalars['ID']['output'];
