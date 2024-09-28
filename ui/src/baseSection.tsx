@@ -20,7 +20,6 @@ export interface BaseSectionContent<T extends BaseSectionItem> {
 interface BaseSectionProps<T extends BaseSectionItem> {
     section: SheetSection;
     userSubject: string;
-    onUpdate: (updatedSection: SheetSection) => void;
     renderItems: (
         content: BaseSectionContent<T>,
         userSubject: string,
@@ -37,7 +36,6 @@ interface BaseSectionProps<T extends BaseSectionItem> {
 export const BaseSection = <T extends BaseSectionItem>({
     section,
     userSubject,
-    onUpdate,
     renderItems,
     renderEditForm
 }: BaseSectionProps<T>) => {

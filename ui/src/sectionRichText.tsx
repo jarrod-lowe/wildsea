@@ -2,7 +2,8 @@ import React from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import ReactMarkdown from 'react-markdown';
-import MDEditor from "@uiw/react-md-editor";
+import { SectionItemDescription } from './components/SectionItem';
+import { useIntl } from 'react-intl';
 
 interface RichTextItem extends BaseSectionItem {
   markdown: string;
@@ -11,6 +12,7 @@ interface RichTextItem extends BaseSectionItem {
 type SectionTypeRichText = BaseSectionContent<RichTextItem>;
 
 export const SectionRichText: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = (props) => {
+  const intl = useIntl();
     
   const renderItems = (
     content: SectionTypeRichText,
@@ -33,10 +35,10 @@ export const SectionRichText: React.FC<{ section: SheetSection, userSubject: str
       <>
         {content.items.map((item, index) => (
           <div key={`${item.id}-${index}`} className="rich-text-edit">
-                <MDEditor
+                <SectionItemDescription
                     value={item.markdown}
                     onChange={(value) => handleItemChange(index, value ?? "")}
-                    preview="edit"
+                    placeholder={intl.formatMessage({ id: "sectionRichText.sampleContent" })}
                 />
           </div>
         ))}

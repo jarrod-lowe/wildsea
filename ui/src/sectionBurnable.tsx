@@ -3,7 +3,7 @@ import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection'
 import { SheetSection } from "../../appsync/graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
-import { SectionItem } from './components/SectionItem';
+import { SectionItem, SectionItemDescription } from './components/SectionItem';
 import { SectionEditForm } from './components/SectionEditForm';
 
 type BurnableState = 'unticked' | 'ticked' | 'burnt';
@@ -173,9 +173,9 @@ export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: str
                 <FormattedMessage id="sectionBurnable.increment" />
               </button>
             </div>
-            <textarea
+            <SectionItemDescription
               value={item.description}
-              onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+              onChange={(value) => handleItemChange(index, 'description', value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
           </>
