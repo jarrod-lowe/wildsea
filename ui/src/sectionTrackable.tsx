@@ -1,27 +1,21 @@
 import React from 'react';
-import { BaseSection } from './baseSection';
+import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
-import { FaInfoCircle } from 'react-icons/fa';
-import { Tooltip } from 'react-tooltip';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { generateClient } from "aws-amplify/api";
 import { updateSectionMutation } from "../../appsync/schema";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { useToast } from './notificationToast';
+import { SectionItem } from './components/SectionItem';
+import { SectionEditForm } from './components/SectionEditForm';
 
-type TrackableItem = {
-  id: string;
-  name: string;
+interface TrackableItem extends BaseSectionItem {
   length: number;
   ticked: number;
-  description: string;
-};
+}
 
-type SectionTypeTrackable = {
-  showZeros: boolean;
-  items: TrackableItem[];
-};
+type SectionTypeTrackable = BaseSectionContent<TrackableItem>;
 
 const TickCheckbox: React.FC<{
   state: 'unticked' | 'ticked';
@@ -29,7 +23,7 @@ const TickCheckbox: React.FC<{
   disabled: boolean;
 }> = ({ state, onClick, disabled }) => {
   const intl = useIntl();
-  let content = state === 'ticked' ? intl.formatMessage({ id: "sectionTrackable.tickedEmoji" }) : null;
+  let content = state === 'ticked' ? intl.formatMessage({ id: "sectionObject.tickedEmoji" }) : null;
 
   return (
     <button
@@ -75,31 +69,30 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
       }) as GraphQLResult<{ updateSection: SheetSection }>;
     } catch (error) {
       console.error("Error updating ticks:", error);
-      toast.addToast(intl.formatMessage({ id: "sectionTrackable.updateError" }), 'error');
+      toast.addToast(intl.formatMessage({ id: "sectionObject.updateError" }), 'error');
     }
   };
 
   const renderItems = (content: SectionTypeTrackable, userSubject: string, sectionUserId: string, setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>) => {
     return content.items
-      .filter(item => content.showZeros || item.ticked > 0)
+      .filter(item => content.showEmpty || item.ticked > 0)
       .map(item => (
-        <div key={item.id} className="trackable-item">
-          <span>{item.name}</span>
-          {[...Array(item.length)].map((_, index) => (
-            <TickCheckbox
-              key={`${item.id}-${index}`}
-              state={index < item.ticked ? 'ticked' : 'unticked'}
-              onClick={() => handleTickClick(item, index, content, setContent)}
-              disabled={userSubject !== sectionUserId}
-            />
-          ))}
-          <FaInfoCircle
-            className="info-icon"
-            data-tooltip-content={item.description}
-            data-tooltip-id={`description-tooltip-${item.id}`}
-          />
-          <Tooltip id={`description-tooltip-${item.id}`} place="top" />
-        </div>
+        <SectionItem
+          key={item.id}
+          item={item}
+          renderContent={(item) => (
+            <>
+              {[...Array(item.length)].map((_, index) => (
+                <TickCheckbox
+                  key={`${item.id}-${index}`}
+                  state={index < item.ticked ? 'ticked' : 'unticked'}
+                  onClick={() => handleTickClick(item, index, content, setContent)}
+                  disabled={userSubject !== sectionUserId}
+                />
+              ))}
+            </>
+          )}
+        />
       ));
   };
 
@@ -130,14 +123,16 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
     };
 
     return (
-      <div className="trackable-items-edit">
-        {content.items.map((item, index) => (
-          <div key={item.id} className="trackable-item-edit">
+      <SectionEditForm
+        content={content}
+        setContent={setContent}
+        renderItemEdit={(item, index) => (
+          <>
             <input
               type="text"
               value={item.name}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
-              placeholder={intl.formatMessage({ id: "sectionTrackable.itemName" })}
+              placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <div className="item-length-controls">
               <button onClick={() => handleItemChange(index, 'length', item.length - 1)}>
@@ -151,29 +146,15 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
             <textarea
               value={item.description}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-              placeholder={intl.formatMessage({ id: "sectionTrackable.itemDescription" })}
+              placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
-            <button onClick={() => handleRemoveItem(index)}>
-              <FormattedMessage id="sectionTrackable.removeItem" />
-            </button>
-          </div>
-        ))}
-        <button onClick={handleAddItem}>
-          <FormattedMessage id="sectionTrackable.addItem" />
-        </button>
-        <div className="show-zeros-toggle">
-          <label>
-            <input
-              type="checkbox"
-              checked={content.showZeros}
-              onChange={() => setContent({ ...content, showZeros: !content.showZeros })}
-            />
-            <FormattedMessage id="sectionTrackable.showZeros" />
-          </label>
-        </div>
-      </div>
+          </>
+        )}
+        addItem={handleAddItem}
+        removeItem={handleRemoveItem}
+      />
     );
   };
 
-  return <BaseSection<SectionTypeTrackable> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
+  return <BaseSection<TrackableItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
 };
