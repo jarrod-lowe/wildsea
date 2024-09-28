@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerSheetInput } from "../../appsync/graphql";
-import { createSectionMutation, updatePlayerSheetMutation, updateSectionMutation } from "../../appsync/schema";
+import { createSectionMutation, deleteSectionMutation, updatePlayerSheetMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { FaPlus, FaPencilAlt } from 'react-icons/fa';
+import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { TypeFirefly } from "../../graphql/lib/constants";
 import { Section } from './section';
 import { getSectionSeed, getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
 import { DragDropContext, Droppable, Draggable, DroppableProvided, DraggableProvided } from '@hello-pangea/dnd';
+import Modal from 'react-modal';
 
 const reorderSections = (sections: SheetSection[], startIndex: number, endIndex: number) => {
   const result = Array.from(sections);
@@ -26,6 +27,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const [newSectionName, setNewSectionName] = useState('');
   const [newSectionType, setNewSectionType] = useState('KEYVALUE');
   const [showNewSection, setShowNewSection] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const sectionTypes = getSectionTypes();
   const intl = useIntl();
   const toast = useToast();
@@ -96,6 +98,27 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
     }
   };
 
+  const handleCancelCreateSection = async () => {
+    setShowNewSection(false);
+    setNewSectionName('');
+    setNewSectionType('KEYVALUE');
+  }
+
+  const handleDeleteSection = async (sectionId: string) => {
+    try {
+      const client = generateClient();
+      await client.graphql({
+        query: deleteSectionMutation,
+        variables: { input: { sectionId, gameId: sheet.gameId } },
+      });
+      // Close the modal after successful deletion
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting section:", error);
+      toast.addToast(intl.formatMessage({ id: "playerSheetTab.deleteSectionError" }), 'error');
+    }
+  };
+
   return (
     <div className="player-sheet">
       <SheetHeader sheet={sheet} userSubject={userSubject} game={game} onUpdate={onUpdate} />
@@ -138,9 +161,14 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
       </DragDropContext>
 
       {userSubject === sheet.userId && !showNewSection && (
-        <button onClick={() => setShowNewSection(true)}>
-          <FaPlus /> <FormattedMessage id="addSection" />
-        </button>
+        <>
+          <button onClick={() => setShowNewSection(true)}>
+            <FaPlus /> <FormattedMessage id="playerSheetTab.addSection" />
+          </button>
+          <button onClick={() => setShowDeleteModal(true)}>
+            <FaTrash /> <FormattedMessage id="playerSheetTab.deleteSection" />
+          </button>
+        </>
       )}
 
       {userSubject === sheet.userId && showNewSection && (
@@ -161,8 +189,17 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           <button onClick={handleCreateSection}>
             <FormattedMessage id="create" />
           </button>
+          <button onClick={handleCancelCreateSection}>
+            <FormattedMessage id="cancel" />
+          </button>
         </div>
       )}
+      <DeleteSectionModal
+          isOpen={showDeleteModal}
+          onRequestClose={() => setShowDeleteModal(false)}
+          sections={sheet.sections}
+          onDeleteSection={handleDeleteSection}
+      />
     </div>
   );
 };
@@ -243,4 +280,50 @@ const getJoinUrl = (joinToken: string): string => {
   const currentUrl = new URL(window.location.href);
   currentUrl.searchParams.set('joinToken', joinToken);
   return currentUrl.toString();
+};
+
+interface DeleteSectionModalProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  sections: SheetSection[];
+  onDeleteSection: (sectionId: string) => void;
+}
+
+export const DeleteSectionModal: React.FC<DeleteSectionModalProps> = ({
+  isOpen,
+  onRequestClose,
+  sections,
+  onDeleteSection,
+}) => {
+  const intl = useIntl();
+  const sortedSections = [...sections].sort((a, b) => a.position - b.position);
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      contentLabel={intl.formatMessage({ id: "playerSheetTab.deleteSection" })}
+      className="delete-section-modal"
+      overlayClassName="modal-overlay"
+    >
+      <h2><FormattedMessage id="playerSheetTab.deleteSection" /></h2>
+      <p className="delete-section-warning"><FormattedMessage id="playerSheetTab.deleteSectionWarning" /></p>
+      <ul className="delete-section-list">
+        {sortedSections.map((section) => (
+          <li key={section.sectionId} className="delete-section-item">
+            <span className="delete-section-name">{section.sectionName}</span>
+            <button 
+              onClick={() => onDeleteSection(section.sectionId)}
+              className="delete-section-button"
+            >
+              <FaTrash />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <button onClick={onRequestClose} className="delete-modal-close">
+        <FormattedMessage id="close" />
+      </button>
+    </Modal>
+  );
 };

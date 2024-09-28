@@ -3,7 +3,7 @@
       export const getGameQuery = `
         query getGame($id: ID!) {
           getGame(id: $id) {
-            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt } joinToken createdAt updatedAt type
           }
         }
       `;
@@ -21,7 +21,7 @@
       export const createGameMutation = `
         mutation createGame($input: CreateGameInput!) {
           createGame(input: $input) {
-            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt } joinToken createdAt updatedAt type
           }
         }
       `;
@@ -29,7 +29,7 @@
       export const joinGameMutation = `
         mutation joinGame($input: JoinGameInput!) {
           joinGame(input: $input) {
-            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt } joinToken createdAt updatedAt type
           }
         }
       `;
@@ -37,7 +37,7 @@
       export const createSectionMutation = `
         mutation createSection($input: CreateSectionInput!) {
           createSection(input: $input) {
-            userId gameId sectionId type sectionName sectionType content position createdAt updatedAt
+            userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted
           }
         }
       `;
@@ -45,7 +45,15 @@
       export const updateSectionMutation = `
         mutation updateSection($input: UpdateSectionInput!) {
           updateSection(input: $input) {
-            userId gameId sectionId type sectionName sectionType content position createdAt updatedAt
+            userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted
+          }
+        }
+      `;
+    
+      export const deleteSectionMutation = `
+        mutation deleteSection($input: DeleteSectionInput!) {
+          deleteSection(input: $input) {
+            userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted
           }
         }
       `;
@@ -71,7 +79,7 @@
       export const updatedSectionSubscription = `
         subscription updatedSection($gameId: ID!) {
           updatedSection(gameId: $gameId) {
-            userId gameId sectionId type sectionName sectionType content position createdAt updatedAt
+            userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted
           }
         }
       `;

@@ -29,7 +29,6 @@ export const messages = {
 
     'error.retry': 'Retry',
 
-    'addSection': 'Add Section',
     'sectionName': 'Name',
     'save': 'Save Changes',
     'cancel': 'Cancel',
@@ -38,6 +37,9 @@ export const messages = {
     'playerSheetTab.createSection': 'Failed to create a new section. Please try again.',
     'playerSheetTab.ownSheet': 'You',
     'playerSheetTab.updateSectionOrderError': 'Failed to update the section order. Please try again.',
+    'playerSheetTab.addSection': 'Add a section',
+    'playerSheetTab.deleteSection': 'Delete a section',
+    'playerSheetTab.deleteSectionWarning': 'Deleting a section is permanent and cannot be undone. All data within the section will be lost.',
 
     'sectionType.trackable': 'Trackable',
     'sectionTrackable.increment': '+',
