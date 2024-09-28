@@ -50,6 +50,8 @@ export const messages = {
     'sectionType.keyvalue': 'Key/Value',
     'sectionKeyValue.itemValue': 'Value',
 
+    'sectionType.richtext': 'Text',
+
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
     'sectionObject.addItem': '➕',
