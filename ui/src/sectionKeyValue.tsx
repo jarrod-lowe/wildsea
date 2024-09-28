@@ -1,12 +1,8 @@
 import React from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
-import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
+import { SheetSection } from "../../appsync/graphql";
 import { useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
-import { generateClient } from "aws-amplify/api";
-import { updateSectionMutation } from "../../appsync/schema";
-import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { useToast } from './notificationToast';
 import { SectionItem } from './components/SectionItem';
 import { SectionEditForm } from './components/SectionEditForm';
 
@@ -18,35 +14,31 @@ type SectionTypeKeyValue = BaseSectionContent<KeyValueItem>;
 
 export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = (props) => {
   const intl = useIntl();
-  const toast = useToast();
 
-  const handleValueChange = async (item: KeyValueItem, newValue: string, content: SectionTypeKeyValue, setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>) => {
+  const handleValueChange = async (
+        item: KeyValueItem,
+        newValue: string,
+        content: SectionTypeKeyValue,
+        setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
+        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    ) => {
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
     const updatedItem = { ...item, value: newValue };
     newItems[itemIndex] = updatedItem;
-    setContent({ ...content, items: newItems });
+    const newContent = { ...content, items: newItems };
+    setContent(newContent);
+    await updateSection({ content: JSON.stringify(newContent) })
 
-    try {
-      const input: UpdateSectionInput = {
-        gameId: props.section.gameId,
-        sectionId: props.section.sectionId,
-        sectionName: props.section.sectionName,
-        content: JSON.stringify({ ...content, items: newItems }),
-      };
-      
-      const client = generateClient();
-      await client.graphql({
-        query: updateSectionMutation,
-        variables: { input },
-      }) as GraphQLResult<{ updateSection: SheetSection }>;
-    } catch (error) {
-      console.error("Error updating key/value:", error);
-      toast.addToast(intl.formatMessage({ id: "sectionObject.updateError" }), 'error');
-    }
   };
 
-  const renderItems = (content: SectionTypeKeyValue, userSubject: string, sectionUserId: string, setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>) => {
+  const renderItems = (
+        content: SectionTypeKeyValue,
+        userSubject: string,
+        sectionUserId: string,
+        setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
+        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    ) => {
     return content.items
       .filter(item => content.showEmpty || item.value !== '')
       .map(item => (
@@ -57,7 +49,7 @@ export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: str
             <input
               type="text"
               value={item.value}
-              onChange={(e) => handleValueChange(item, e.target.value, content, setContent)}
+              onChange={(e) => handleValueChange(item, e.target.value, content, setContent, updateSection)}
               disabled={userSubject !== sectionUserId}
             />
           )}
