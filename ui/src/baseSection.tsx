@@ -1,21 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
-import { updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useToast } from './notificationToast';
-import { generateClient } from "aws-amplify/api";
-import { GraphQLResult } from "@aws-amplify/api-graphql";
+import { generateClient, GraphQLResult } from 'aws-amplify/api';
+import { updateSectionMutation } from '../../appsync/schema';
 
-interface BaseSectionProps<T> {
+export interface BaseSectionItem {
+    id: string;
+    name: string;
+    description: string;
+}
+
+export interface BaseSectionContent<T extends BaseSectionItem> {
+    showEmpty: boolean;
+    items: T[];
+}
+
+interface BaseSectionProps<T extends BaseSectionItem> {
   section: SheetSection;
   userSubject: string;
   onUpdate: (updatedSection: SheetSection) => void;
-  renderItems: (content: T, userSubject: string, sectionUserId: string, setContent: React.Dispatch<React.SetStateAction<T>>) => React.ReactNode;
-  renderEditForm: (content: T, setContent: React.Dispatch<React.SetStateAction<T>>) => React.ReactNode;
+  renderItems: (content: BaseSectionContent<T>, userSubject: string, sectionUserId: string, setContent: React.Dispatch<React.SetStateAction<BaseSectionContent<T>>>) => React.ReactNode;
+  renderEditForm: (content: BaseSectionContent<T>, setContent: React.Dispatch<React.SetStateAction<BaseSectionContent<T>>>) => React.ReactNode;
 }
 
-export const BaseSection = <T extends Record<string, any>>({ 
+export const BaseSection = <T extends BaseSectionItem>({ 
   section, 
   userSubject, 
   onUpdate, 
@@ -23,7 +33,7 @@ export const BaseSection = <T extends Record<string, any>>({
   renderEditForm 
 }: BaseSectionProps<T>) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState<T>(JSON.parse(section.content || '{}') as T);
+  const [content, setContent] = useState<BaseSectionContent<T>>(JSON.parse(section.content || '{}'));
   const [sectionName, setSectionName] = useState(section.sectionName);
   const [originalContent, setOriginalContent] = useState(content);
   const [originalSectionName, setOriginalSectionName] = useState(section.sectionName);
@@ -32,28 +42,39 @@ export const BaseSection = <T extends Record<string, any>>({
 
   useEffect(() => {
     setSectionName(section.sectionName);
-    setContent(JSON.parse(section.content || '{}') as T);
+    setContent(JSON.parse(section.content || '{}'));
     setOriginalContent(content);
   }, [section]);
 
-  const handleUpdate = async () => {
-    try {
-      const input: UpdateSectionInput = {
-        gameId: section.gameId,
-        sectionId: section.sectionId,
-        sectionName: sectionName,
-        content: JSON.stringify(content),
-      };
-      const client = generateClient();
-      const response = await client.graphql({
+  const updateSection = async (updatedSection: SheetSection): Promise<SheetSection> => {
+    const input: UpdateSectionInput = {
+        gameId: updatedSection.gameId,
+        sectionId: updatedSection.sectionId,
+        sectionName: updatedSection.sectionName,
+        content: updatedSection.content,
+    };
+    
+    const client = generateClient();
+    const response = await client.graphql({
         query: updateSectionMutation,
         variables: { input },
-      }) as GraphQLResult<{ updateSection: SheetSection }>;
-      onUpdate(response.data.updateSection);
+    }) as GraphQLResult<{ updateSection: SheetSection }>;
+
+    return response.data.updateSection;
+    }
+
+  const handleUpdate = async () => {
+    try {
+      const updatedSection = await updateSection({
+        ...section,
+        sectionName: sectionName,
+        content: JSON.stringify(content),
+      });
+      onUpdate(updatedSection);
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating section:", error);
-      toast.addToast(intl.formatMessage({ id: "section.updateError" }), 'error');
+      toast.addToast(intl.formatMessage({ id: "sectionObject.updateError" }), 'error');
     }
   };
 

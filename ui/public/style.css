@@ -291,28 +291,9 @@ button:hover {
   }
 }
 
-.trackable-item span {
-  flex-grow: 1;
-}
-
-.trackable-item input[type="checkbox"] {
-  margin-right: 0.5rem;
-}
-
 .info-icon {
   margin-left: 0.5rem;
   cursor: pointer;
-}
-
-.trackable-item-edit {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.trackable-item-edit input[type="text"], 
-.trackable-item-edit textarea {
-  margin-right: 1rem;
 }
 
 .item-length-controls {
@@ -328,11 +309,6 @@ button:hover {
 
 .show-zeros-toggle {
   margin-top: 1rem;
-}
-
-.trackable-items-edit {
-  display: flex;
-  flex-direction: column;
 }
 
 .react-tooltip {
@@ -447,9 +423,7 @@ button:hover {
   gap: 1rem;
 }
 
-.burnable-item,
-.trackable-item,
-.keyvalue-item {
+.object-item {
   display: flex;
   align-items: center;
   margin-bottom: 0.5rem;

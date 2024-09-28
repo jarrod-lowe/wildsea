@@ -1,26 +1,20 @@
 import React from 'react';
-import { BaseSection } from './baseSection';
+import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
-import { FaInfoCircle } from 'react-icons/fa';
-import { Tooltip } from 'react-tooltip';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { generateClient } from "aws-amplify/api";
 import { updateSectionMutation } from "../../appsync/schema";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { useToast } from './notificationToast';
+import { SectionItem } from './components/SectionItem';
+import { SectionEditForm } from './components/SectionEditForm';
 
-type KeyValueItem = {
-  id: string;
-  key: string;
+interface KeyValueItem extends BaseSectionItem {
   value: string;
-  description: string;
 };
 
-type SectionTypeKeyValue = {
-  showEmpty: boolean;
-  items: KeyValueItem[];
-};
+type SectionTypeKeyValue = BaseSectionContent<KeyValueItem>;
 
 export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = (props) => {
   const intl = useIntl();
@@ -48,7 +42,7 @@ export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: str
       }) as GraphQLResult<{ updateSection: SheetSection }>;
     } catch (error) {
       console.error("Error updating key/value:", error);
-      toast.addToast(intl.formatMessage({ id: "sectionKeyValue.updateError" }), 'error');
+      toast.addToast(intl.formatMessage({ id: "sectionObject.updateError" }), 'error');
     }
   };
 
@@ -56,27 +50,24 @@ export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: str
     return content.items
       .filter(item => content.showEmpty || item.value !== '')
       .map(item => (
-        <div key={item.id} className="keyvalue-item">
-          <span>{item.key}</span>
-          <input
-            type="text"
-            value={item.value}
-            onChange={(e) => handleValueChange(item, e.target.value, content, setContent)}
-            disabled={userSubject !== sectionUserId}
-          />
-          <FaInfoCircle
-            className="info-icon"
-            data-tooltip-content={item.description}
-            data-tooltip-id={`description-tooltip-${item.id}`}
-          />
-          <Tooltip id={`description-tooltip-${item.id}`} place="top" />
-        </div>
+        <SectionItem
+          key={item.id}
+          item={item}
+          renderContent={(item) => (
+            <input
+              type="text"
+              value={item.value}
+              onChange={(e) => handleValueChange(item, e.target.value, content, setContent)}
+              disabled={userSubject !== sectionUserId}
+            />
+          )}
+        />
       ));
   };
 
   const renderEditForm = (content: SectionTypeKeyValue, setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>) => {
     const handleAddItem = () => {
-      const newItems = [...content.items, { id: uuidv4(), key: '', value: '', description: '' }];
+      const newItems = [...content.items, { id: uuidv4(), name: '', value: '', description: '' }];
       setContent({ ...content, items: newItems });
     };
 
@@ -92,14 +83,16 @@ export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: str
     };
 
     return (
-      <div className="keyvalue-items-edit">
-        {content.items.map((item, index) => (
-          <div key={item.id} className="keyvalue-item-edit">
+      <SectionEditForm
+        content={content}
+        setContent={setContent}
+        renderItemEdit={(item, index) => (
+          <>
             <input
               type="text"
-              value={item.key}
-              onChange={(e) => handleItemChange(index, 'key', e.target.value)}
-              placeholder={intl.formatMessage({ id: "sectionKeyValue.itemKey" })}
+              value={item.name}
+              onChange={(e) => handleItemChange(index, 'name', e.target.value)}
+              placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <input
               type="text"
@@ -110,29 +103,15 @@ export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: str
             <textarea
               value={item.description}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-              placeholder={intl.formatMessage({ id: "sectionKeyValue.itemDescription" })}
+              placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
-            <button onClick={() => handleRemoveItem(index)}>
-              <FormattedMessage id="sectionKeyValue.removeItem" />
-            </button>
-          </div>
-        ))}
-        <button onClick={handleAddItem}>
-          <FormattedMessage id="sectionKeyValue.addItem" />
-        </button>
-        <div className="show-empty-toggle">
-          <label>
-            <input
-              type="checkbox"
-              checked={content.showEmpty}
-              onChange={() => setContent({ ...content, showEmpty: !content.showEmpty })}
-            />
-            <FormattedMessage id="sectionKeyValue.showEmpty" />
-          </label>
-        </div>
-      </div>
+          </>
+        )}
+        addItem={handleAddItem}
+        removeItem={handleRemoveItem}
+      />
     );
   };
 
-  return <BaseSection<SectionTypeKeyValue> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
+  return <BaseSection<KeyValueItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
 };
