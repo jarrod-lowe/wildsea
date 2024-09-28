@@ -57,6 +57,7 @@ export const messages = {
     'sectionTrackable.removeItem': '❌',
     'sectionTrackable.increment': '+',
     'sectionTrackable.decrement': '-',
+    'sectionTrackable.tickedEmoji': '✘',
 
     'sectionType.burnable': 'Burnable',
     'sectionBurnable.itemName': 'Item Name',

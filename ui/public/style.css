@@ -444,3 +444,35 @@ button:hover {
 .keyvalue-item-edit textarea {
   margin-right: 0.5rem;
 }
+
+.tick-checkbox {
+  width: 24px;
+  height: 24px;
+  margin-right: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
+.tick-checkbox.ticked {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.tick-checkbox.unticked {
+  background-color: transparent;
+}
+
+.tick-checkbox:not(:disabled),
+.burn-checkbox:not(:disabled) {
+  cursor: pointer;
+}
+
+.tick-checkbox:disabled,
+.burn-checkbox:disabled {
+  cursor: default;
+  opacity: 0.6;
+}

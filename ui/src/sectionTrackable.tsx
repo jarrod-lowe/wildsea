@@ -22,40 +22,39 @@ type SectionTypeTrackable = {
   items: TrackableItem[];
 };
 
-// TickCheckbox Component
 const TickCheckbox: React.FC<{
-  item: TrackableItem;
-  tickIndex: number;
-  handleTickClick: (tickIndex: number) => void;
+  state: 'unticked' | 'ticked';
+  onClick: () => void;
   disabled: boolean;
-}> = ({ item, tickIndex, handleTickClick, disabled }) => {
+}> = ({ state, onClick, disabled }) => {
+  const intl = useIntl();
+  let content = state === 'ticked' ? intl.formatMessage({ id: "sectionTrackable.tickedEmoji" }) : null;
+
   return (
-    <input
-      key={`${item.id}-${tickIndex}`}
-      type="checkbox"
-      checked={tickIndex < item.ticked}
-      onChange={!disabled ? () => handleTickClick(tickIndex) : undefined}
+    <button
+      onClick={!disabled ? onClick : undefined}
       disabled={disabled}
-    />
+      className={`tick-checkbox ${state}`}
+    >
+      {content}
+    </button>
   );
 };
 
-// TrackableItem Component
 const TrackableItem: React.FC<{
   item: TrackableItem;
-  handleTickClick: (tickIndex: number) => void;
+  handleTickClick: (index: number) => void;
   userSubject: string;
   sectionUserId: string;
 }> = ({ item, handleTickClick, userSubject, sectionUserId }) => {
   return (
     <div key={item.id} className="trackable-item">
       <span>{item.name}</span>
-      {[...Array(item.length)].map((_, tickIndex) => (
+      {[...Array(item.length)].map((_, index) => (
         <TickCheckbox
-          key={`${item.id}-${tickIndex}`}
-          item={item}
-          tickIndex={tickIndex}
-          handleTickClick={() => handleTickClick(tickIndex)}
+          key={`${item.id}-${index}`}
+          state={index < item.ticked ? 'ticked' : 'unticked'}
+          onClick={() => handleTickClick(index)}
           disabled={userSubject !== sectionUserId}
         />
       ))}
@@ -127,9 +126,9 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
     const updatedItem = { ...item };
 
     if (tickIndex < updatedItem.ticked) {
-      updatedItem.ticked--;  // Decrement the tick count
+      updatedItem.ticked = Math.max(0, updatedItem.ticked - 1);
     } else if (tickIndex >= updatedItem.ticked && updatedItem.ticked < updatedItem.length) {
-      updatedItem.ticked++;  // Increment the tick count
+      updatedItem.ticked = Math.min(updatedItem.length, updatedItem.ticked + 1);
     }
 
     newItems[index] = updatedItem;
@@ -180,7 +179,7 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
         <TrackableItem
           key={item.id}
           item={item}
-          handleTickClick={(tickIndex: number) => handleTickClick(item, tickIndex)}
+          handleTickClick={(index: number) => handleTickClick(item, index)}
           userSubject={userSubject}
           sectionUserId={section.userId}
         />
