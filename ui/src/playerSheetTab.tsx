@@ -24,7 +24,7 @@ const reorderSections = (sections: SheetSection[], startIndex: number, endIndex:
 // PlayerSheetTab component
 export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, userSubject, game, onUpdate }) => {
   const [newSectionName, setNewSectionName] = useState('');
-  const [newSectionType, setNewSectionType] = useState('TEXT');
+  const [newSectionType, setNewSectionType] = useState('KEYVALUE');
   const [showNewSection, setShowNewSection] = useState(false);
   const sectionTypes = getSectionTypes();
   const intl = useIntl();

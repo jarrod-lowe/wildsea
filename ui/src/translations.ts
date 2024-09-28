@@ -39,15 +39,6 @@ export const messages = {
     'playerSheetTab.ownSheet': 'You',
     'playerSheetTab.updateSectionOrderError': 'Failed to update the section order. Please try again.',
 
-    'sectionType.text': 'Text',
-    'sectionText.sampleContent': 'Write your content here.',
-    'sectionText.updateError': 'Failed to update the text. Please try again.',
-
-    'sectionType.number': 'Number',
-    'sectionNumber.value': 'Number: {number}',
-    'sectionNumber.increment': 'Add 1',
-    'sectionNumber.updateError': 'Failed to update the number. Please try again.',
-
     'sectionType.trackable': 'Trackable',
     'sectionTrackable.itemName': 'Item Name',
     'sectionTrackable.itemDescription': 'Item Description',
