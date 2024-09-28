@@ -7,7 +7,7 @@ import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPlus, FaPencilAlt } from 'react-icons/fa';
 import { TypeFirefly } from "../../graphql/lib/constants";
 import { Section } from './section';
-import { getSectionTypes } from './sectionRegistry';
+import { getSectionSeed, getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
 import { DragDropContext, Droppable, Draggable, DroppableProvided, DraggableProvided } from 'react-beautiful-dnd';
 
@@ -76,7 +76,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         gameId: sheet.gameId,
         sectionName: newSectionName,
         sectionType: newSectionType,
-        content: JSON.stringify({}),
+        content: JSON.stringify(getSectionSeed(newSectionType)),
         position: newPosition,
       }
       const client = generateClient();
