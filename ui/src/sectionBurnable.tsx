@@ -10,11 +10,13 @@ import { updateSectionMutation } from "../../appsync/schema";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { useToast } from './notificationToast';
 
+type BurnableState = 'unticked' | 'ticked' | 'burnt';
+
 type BurnableItem = {
   id: string;
   name: string;
   length: number;
-  states: ('unticked' | 'ticked' | 'burnt')[];
+  states: BurnableState[];
   description: string;
 };
 
@@ -24,7 +26,7 @@ type SectionTypeBurnable = {
 };
 
 const BurnCheckbox: React.FC<{
-  state: 'unticked' | 'ticked' | 'burnt';
+  state: BurnableState;
   onClick: () => void;
   disabled: boolean;
 }> = ({ state, onClick, disabled }) => {
@@ -63,7 +65,7 @@ export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: str
     const updatedItem = { ...item };
 
     // Cycle through states: unticked -> ticked -> burnt -> unticked
-    const stateOrder: ('unticked' | 'ticked' | 'burnt')[] = ['unticked', 'ticked', 'burnt'];
+    const stateOrder: BurnableState[] = ['unticked', 'ticked', 'burnt'];
     const currentStateIndex = stateOrder.indexOf(updatedItem.states[index]);
     updatedItem.states[index] = stateOrder[(currentStateIndex + 1) % 3];
 
@@ -128,7 +130,7 @@ export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: str
             id: uuidv4(), 
             name: '', 
             length: 1, 
-            states: ['unticked'] as ('unticked' | 'ticked' | 'burnt')[], 
+            states: ['unticked' as BurnableState],
             description: '' 
             }];
             setContent({ ...content, items: newItems });
