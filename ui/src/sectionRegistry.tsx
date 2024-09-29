@@ -13,10 +13,10 @@ type SectionTypeConfig = {
 
 // Section type registry to map types to components and labels
 const sectionRegistry: Record<string, SectionTypeConfig> = {
-  'TRACKABLE': { component: SectionTrackable, label: 'sectionType.trackable' },
-  'BURNABLE': { component: SectionBurnable, label: 'sectionType.burnable' },
-  'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue' },
-  'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: {items: [{html: ""}]} }
+  'TRACKABLE': { component: SectionTrackable, label: 'sectionType.trackable', seed: {items: []} },
+  'BURNABLE': { component: SectionBurnable, label: 'sectionType.burnable', seed: {items: []} },
+  'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue', seed: {items: []} },
+  'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: {items: [{content: ""}]} }
 };
 
 // Function to get the component for a section type

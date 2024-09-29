@@ -1,5 +1,5 @@
 import { awsAppsyncUtilsMock } from "./mocks";
-import { request, response } from "../function/fnJoinGame/joinGame";
+import { request, response } from "../function/joinGame/joinGame";
 import { Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { JoinGameInput } from "../../appsync/graphql";
 
@@ -124,6 +124,7 @@ describe("fnJoinGame request function", () => {
         result: {
           gameName: "Test Game",
           gameDescription: "Test Description",
+          fireflyUserId: "firefly",
         },
       },
       request: {
@@ -175,6 +176,7 @@ describe("fnJoinGame request function", () => {
             gameName: { S: "Test Game" },
             gameDescription: { S: "Test Description" },
             characterName: { S: "Unnamed Character" },
+            fireflyUserId: { S: "firefly" },
             type: { S: "CHARACTER" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },

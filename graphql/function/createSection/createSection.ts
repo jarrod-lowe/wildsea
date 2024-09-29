@@ -7,6 +7,7 @@ import { Game, CreateSectionInput } from "../../../appsync/graphql";
 import {
   DDBPrefixGame,
   DDBPrefixSection,
+  DDBPrefixSectionUser,
   TypeSection,
 } from "../../lib/constants";
 
@@ -38,6 +39,7 @@ export function request(
       sectionId: sectionId,
       sectionName: input.sectionName,
       sectionType: input.sectionType,
+      GSI1PK: DDBPrefixSectionUser + "#" + identity.sub,
       content: input.content,
       position: input.position,
       createdAt: timestamp,

@@ -3,7 +3,7 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import {
   request,
   response,
-} from "../function/fnGetGameWithToken/getGameWithToken";
+} from "../function/getGameWithToken/getGameWithToken";
 
 jest.mock("@aws-appsync/utils", () => awsAppsyncUtilsMock);
 

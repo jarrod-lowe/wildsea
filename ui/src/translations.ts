@@ -23,6 +23,9 @@ export const messages = {
     'gameTitle': 'Game',
     'errorSubscribingToPlayerSheetUpdates': 'Unable to subscribe to player sheet updates.',
     'errorSubscribingToSectionUpdates': 'Unable to subscribe to section updates',
+    'getUserEmailError': 'Unable to get user details.',
+    'fetchGameToRetry': 'Failed to get game data, still trying...',
+    'noGame': 'This game does not exist, or you are not a player in it.',
 
     'create': 'Add',
     'joinToken': 'Join Token',
@@ -40,6 +43,16 @@ export const messages = {
     'playerSheetTab.addSection': 'Add a section',
     'playerSheetTab.deleteSection': 'Delete a section',
     'playerSheetTab.deleteSectionWarning': 'Deleting a section is permanent and cannot be undone. All data within the section will be lost.',
+    'playerSheetTab.quitGame': 'Quit Game',
+    'playerSheetTab.kickPlayer': 'Kick Player',
+    'playerSheetTab.quitGameConfirmation': 'Are you sure you want to quit this game?',
+    'playerSheetTab.kickPlayerConfirmation': 'Are you sure you want to kick this player?',
+    'playerSheetTab.deletePlayerWarning': 'Here be Terrapex\'s! This action cannot be undone. All player data for this game will be permanently deleted.',
+    'playerSheetTab.deletePlayerUnderstand': 'I understand that this action is permanent and cannot be undone.',
+    'playerSheetTab.confirmQuit': 'Confirm Quit',
+    'playerSheetTab.confirmKick': 'Confirm Kick',
+    'playerSheetTab.deletePlayerError': 'Failed to delete the player. Please try again.',
+    'playerSheetTab.playerLeft': 'Player {name} has left the game.',
 
     'sectionType.trackable': 'Trackable',
     'sectionTrackable.increment': '+',
@@ -53,6 +66,7 @@ export const messages = {
     'sectionKeyValue.itemValue': 'Value',
 
     'sectionType.richtext': 'Text',
+    'sectionRichText.sampleContent': 'Write your notes here.',
 
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',

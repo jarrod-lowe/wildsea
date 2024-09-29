@@ -23,6 +23,7 @@ type Mutation {
     updateSection(input: UpdateSectionInput!): SheetSection! @aws_cognito_user_pools
     deleteSection(input: DeleteSectionInput!): SheetSection! @aws_cognito_user_pools
     updatePlayerSheet(input: UpdatePlayerSheetInput!): PlayerSheetSummary @aws_cognito_user_pools
+    deletePlayer(input: DeletePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools
 }
 
 type Query {
@@ -31,7 +32,7 @@ type Query {
 }
 
 type Subscription @aws_cognito_user_pools {
-  updatedPlayerSheet(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayerSheet"])
+  updatedPlayerSheet(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayerSheet", "deletePlayer"])
   updatedSection(gameId: ID!): SheetSection @aws_subscribe(mutations: ["createSection", "updateSection", "deleteSection"])
 }
 
@@ -43,6 +44,11 @@ input CreateGameInput {
 input JoinGameInput {
   gameId: ID!
   joinToken: ID!
+}
+
+input DeletePlayerInput {
+  gameId: ID!
+  userId: ID!
 }
 
 input CreateSectionInput {
@@ -92,6 +98,7 @@ type PlayerSheetSummary @aws_cognito_user_pools {
   type: String!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
+  deleted: Boolean
 }
 
 type PlayerSheet @aws_cognito_user_pools {
@@ -102,6 +109,7 @@ type PlayerSheet @aws_cognito_user_pools {
   type: String!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
+  fireflyUserId: ID!
 }
 
 type SheetSection @aws_cognito_user_pools {

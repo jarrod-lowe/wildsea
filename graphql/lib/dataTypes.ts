@@ -15,6 +15,7 @@ export type DataGame = Omit<Game, "playerSheets"> & {
 export type DataPlayerSheet = Omit<PlayerSheet, "sections"> & {
   gameName: string;
   gameDescription: string;
+  fireflyUserId: string;
 };
 export type DataSheetSection = SheetSection;
 

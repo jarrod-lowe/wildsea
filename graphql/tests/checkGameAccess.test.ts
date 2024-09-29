@@ -7,7 +7,7 @@ import {
   request,
   response,
   permitted,
-} from "../function/fnCheckGameAccess/checkGameAccess";
+} from "../function/checkGameAccess/checkGameAccess";
 import type { DataGame } from "../lib/dataTypes";
 
 describe("request", () => {

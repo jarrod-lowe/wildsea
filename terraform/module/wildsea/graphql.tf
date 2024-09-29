@@ -279,15 +279,19 @@ locals {
   pipelines_map = {
     joinGame = {
       type : "Mutation",
-      functions = ["fnGetGameWithToken", "fnJoinGame"]
+      functions = ["getGameWithToken", "joinGame"]
     }
     getGame = {
       type : "Query",
-      functions = ["fnCheckGameAccess", "fnGetGame"]
+      functions = ["checkGameAccess", "getGame"]
     }
     createSection = {
       type : "Mutation",
-      functions = ["fnCheckPlayerSheetAccess", "fnCreateSection"]
+      functions = ["checkPlayerSheetAccess", "createSection"]
+    }
+    deletePlayer = {
+      type : "Mutation",
+      functions = ["checkPlayerSheetAccessWithFirefly", "findAllSections", "deletePlayer"]
     }
   }
 }
