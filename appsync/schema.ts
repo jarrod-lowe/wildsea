@@ -3,7 +3,7 @@
       export const getGameQuery = `
         query getGame($id: ID!) {
           getGame(id: $id) {
-            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId } joinToken createdAt updatedAt type
           }
         }
       `;
@@ -11,7 +11,7 @@
       export const getGamesQuery = `
         query getGames {
           getGames {
-            userId gameId gameName gameDescription characterName type createdAt updatedAt
+            userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
           }
         }
       `;
@@ -21,7 +21,7 @@
       export const createGameMutation = `
         mutation createGame($input: CreateGameInput!) {
           createGame(input: $input) {
-            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId } joinToken createdAt updatedAt type
           }
         }
       `;
@@ -29,7 +29,7 @@
       export const joinGameMutation = `
         mutation joinGame($input: JoinGameInput!) {
           joinGame(input: $input) {
-            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt } joinToken createdAt updatedAt type
+            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId } joinToken createdAt updatedAt type
           }
         }
       `;
@@ -61,7 +61,15 @@
       export const updatePlayerSheetMutation = `
         mutation updatePlayerSheet($input: UpdatePlayerSheetInput!) {
           updatePlayerSheet(input: $input) {
-            userId gameId gameName gameDescription characterName type createdAt updatedAt
+            userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
+          }
+        }
+      `;
+    
+      export const deletePlayerMutation = `
+        mutation deletePlayer($input: DeletePlayerInput!) {
+          deletePlayer(input: $input) {
+            userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
           }
         }
       `;
@@ -71,7 +79,7 @@
       export const updatedPlayerSheetSubscription = `
         subscription updatedPlayerSheet($gameId: ID!) {
           updatedPlayerSheet(gameId: $gameId) {
-            userId gameId gameName gameDescription characterName type createdAt updatedAt
+            userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
           }
         }
       `;

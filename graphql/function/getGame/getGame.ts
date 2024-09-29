@@ -159,6 +159,7 @@ export function makeCharacterSheetData(data: DataPlayerSheet): PlayerSheet {
     updatedAt: data.updatedAt,
     type: data.type,
     sections: [],
+    fireflyUserId: data.fireflyUserId,
   };
 }
 

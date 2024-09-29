@@ -8,6 +8,7 @@ import {
   DDBPrefixGame,
   DDBPrefixPlayer,
 } from "../../lib/constants";
+import { DataPlayerSheet } from "../../lib/dataTypes";
 
 export function request(context: Context<{ input: JoinGameInput }>): unknown {
   if (!context.identity) {
@@ -56,10 +57,11 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
       gameName: context.prev.result.gameName,
       gameDescription: context.prev.result.gameDescription,
       characterName: DefaultPlayerCharacterName,
+      fireflyUserId: context.prev.result.fireflyUserId,
       type: TypeCharacter,
       createdAt: timestamp,
       updatedAt: timestamp,
-    }),
+    } as DataPlayerSheet),
   } as PutItemInputAttributeMap;
 
   return {

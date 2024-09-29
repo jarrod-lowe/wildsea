@@ -7,4 +7,5 @@ exclude_paths:
   # The auto-formatter fights with Codacy PMD wanting to be compatiable with all browsers, but this is a local config file
   - "graphql/jest.config.js"
   - "ui/tests/*.tsx"
+  - "design/*.md"
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerSheetInput } from "../../appsync/graphql";
-import { createSectionMutation, deleteSectionMutation, updatePlayerSheetMutation, updateSectionMutation } from "../../appsync/schema";
+import { createSectionMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerSheetMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
@@ -11,6 +11,7 @@ import { getSectionSeed, getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
 import { DragDropContext, Droppable, Draggable, DroppableProvided, DraggableProvided } from '@hello-pangea/dnd';
 import Modal from 'react-modal';
+import { DeletePlayerModal } from './deletePlayer';
 
 const reorderSections = (sections: SheetSection[], startIndex: number, endIndex: number) => {
   const result = Array.from(sections);
@@ -27,6 +28,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const [newSectionName, setNewSectionName] = useState('');
   const [newSectionType, setNewSectionType] = useState('KEYVALUE');
   const [showNewSection, setShowNewSection] = useState(false);
+  const [showDeleteSectionModal, setShowDeleteSectionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const sectionTypes = getSectionTypes();
   const intl = useIntl();
@@ -112,10 +114,24 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         variables: { input: { sectionId, gameId: sheet.gameId } },
       });
       // Close the modal after successful deletion
-      setShowDeleteModal(false);
+      setShowDeleteSectionModal(false);
     } catch (error) {
       console.error("Error deleting section:", error);
       toast.addToast(intl.formatMessage({ id: "playerSheetTab.deleteSectionError" }), 'error');
+    }
+  };
+
+  const handleDeletePlayer = async () => {
+    try {
+      const client = generateClient();
+      await client.graphql({
+        query: deletePlayerMutation,
+        variables: { input: { gameId: game.gameId, userId: sheet.userId } },
+      });
+      // Handle successful deletion (e.g., redirect to games list)
+    } catch (error) {
+      console.error("Error deleting player:", error);
+      toast.addToast(intl.formatMessage({ id: "playerSheetTab.deletePlayerError" }), 'error');
     }
   };
 
@@ -165,7 +181,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           <button onClick={() => setShowNewSection(true)}>
             <FaPlus /> <FormattedMessage id="playerSheetTab.addSection" />
           </button>
-          <button onClick={() => setShowDeleteModal(true)}>
+          <button onClick={() => setShowDeleteSectionModal(true)}>
             <FaTrash /> <FormattedMessage id="playerSheetTab.deleteSection" />
           </button>
         </>
@@ -195,10 +211,23 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         </div>
       )}
       <DeleteSectionModal
-          isOpen={showDeleteModal}
-          onRequestClose={() => setShowDeleteModal(false)}
+          isOpen={showDeleteSectionModal}
+          onRequestClose={() => setShowDeleteSectionModal(false)}
           sections={sheet.sections}
           onDeleteSection={handleDeleteSection}
+      />
+
+      {(userSubject === sheet.userId || userSubject === sheet.fireflyUserId ) && (sheet.userId != sheet.fireflyUserId) && (
+        <button onClick={() => setShowDeleteModal(true)} className="delete-player-button">
+          <FormattedMessage id={userSubject === sheet.userId ? "playerSheetTab.quitGame" : "playerSheetTab.kickPlayer"} />
+        </button>
+      )}
+
+      <DeletePlayerModal
+        isOpen={showDeleteModal}
+        onRequestClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeletePlayer}
+        isOwnSheet={userSubject === sheet.userId}
       />
     </div>
   );

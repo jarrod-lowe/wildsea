@@ -564,3 +564,72 @@ button:hover {
   background-color: rgb(0 0 0 / 50%);
   z-index: 999;
 }
+
+.delete-player-button {
+  margin-top: 20px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-player-button:hover {
+  background-color: #d32f2f;
+}
+
+.delete-player-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgb(0 0 0 20%);
+  max-width: 400px;
+  width: 90%;
+}
+
+.delete-player-warning {
+  color: #f44336;
+  margin-bottom: 20px;
+}
+
+.confirm-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.confirm-checkbox input {
+  margin-right: 10px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancel-button,
+.confirm-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #ccc;
+}
+
+.confirm-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.confirm-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

@@ -9,6 +9,7 @@ import {
   DDBPrefixGame,
   DDBPrefixPlayer,
 } from "../../lib/constants";
+import { DataPlayerSheet } from "../../lib/dataTypes";
 
 export function request(context: Context<{ input: CreateGameInput }>): unknown {
   if (!context.identity) {
@@ -63,10 +64,11 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
       gameDescription: input.description,
       characterName: DefaultFireflyCharacterName,
       GSI1PK: "USER#" + identity.sub,
+      fireflyUserId: identity.sub,
       createdAt: timestamp,
       updatedAt: timestamp,
       type: TypeFirefly,
-    }) as PutItemInputAttributeMap,
+    } as DataPlayerSheet) as PutItemInputAttributeMap,
   };
 
   return {
@@ -93,6 +95,7 @@ export function response(context: Context): Game | null {
         sections: [],
         createdAt: context.stash.record.createdAt,
         updatedAt: context.stash.record.updatedAt,
+        fireflyUserId: context.stash.record.fireflyUserId,
       },
     ],
     createdAt: context.stash.record.createdAt,

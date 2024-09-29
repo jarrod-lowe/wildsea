@@ -9,7 +9,7 @@ import { TopBar } from "./frame";
 import { generateClient, GraphQLResult } from "aws-amplify/api";
 import { joinGameMutation } from "../../appsync/schema";
 import type { Game } from "../../appsync/graphql";
-import { ToastProvider } from "./notificationToast";
+import { ToastProvider, useToast } from "./notificationToast";
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const AppGame = React.lazy(() => import("./game"))
@@ -90,14 +90,23 @@ export function AppContent() {
     const [gameId, setGameId] = useState<string | null>(null);
     const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
     const [userEmail, setUserEmail] = useState<string | undefined | null>(null);
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+    const toast = useToast();
     const intl = useIntl();
 
     useEffect(() => {
         async function setup() {
             await amplifySetup();
             setIsAmplifyConfigured(true);
-            const email = await getUserEmail();
-            setUserEmail(email);
+            try {
+                const email = await getUserEmail();
+                setUserEmail(email);
+            } catch (error) {
+                console.error(error);
+                toast.addToast(intl.formatMessage({ id: "getUserEmailError" }), 'error')
+            } finally {
+                setIsCheckingAuth(false);
+            }
             const id = getGameId();
             setGameId(id);
             const token = getJoinToken();
@@ -108,14 +117,14 @@ export function AppContent() {
                 }
                 catch (error) {
                     console.error(error);
-                    alert(intl.formatMessage({ id: 'unableToJoin' }));
+                    toast.addToast(intl.formatMessage({ id: 'unableToJoin' }), 'error');
                 }
             }
         }
         setup();
     }, []);
 
-    if (!isAmplifyConfigured || userEmail === null) {
+    if (!isAmplifyConfigured || isCheckingAuth ) {
         return <div data-testid="loading"><FormattedMessage id="loading" /></div>;
     }
 

@@ -9,7 +9,7 @@ import {
   makeCharacterSheetData,
   makeSheetSection,
   makeGameData,
-} from "../function/fnGetGame/getGame";
+} from "../function/getGame/getGame";
 import {
   TypeCharacter,
   TypeFirefly,
@@ -411,6 +411,7 @@ describe("makeCharacterSheetData", () => {
       characterName: "Character 1",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
+      fireflyUserId: "XXXXX",
       type: TypeCharacter,
       gameName: "Test Game",
       gameDescription: "A test game",
@@ -424,6 +425,7 @@ describe("makeCharacterSheetData", () => {
       characterName: "Character 1",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
+      fireflyUserId: "XXXXX",
       type: TypeCharacter,
       sections: [],
     });
