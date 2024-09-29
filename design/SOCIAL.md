@@ -424,5 +424,3 @@ When deciding which providers to support, consider:
 7. Compliance requirements: Ensure you can meet any regulatory requirements (like GDPR) when using these providers.
 
 Remember, while offering multiple options can be beneficial, it's often better to start with a few key providers that are most relevant to your users and gradually expand if needed. This approach helps manage complexity and ensures you can properly support and maintain each integration.
-
-
