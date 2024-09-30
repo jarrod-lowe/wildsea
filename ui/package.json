@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@aws-amplify/api-graphql": "4.3.2",
+    "@aws-amplify/api-graphql": "4.3.3",
     "@hello-pangea/dnd": "17.0.0",
     "@tippyjs/react": "4.2.6",
     "@uiw/react-md-editor": "4.0.4",
