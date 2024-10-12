@@ -694,9 +694,3 @@ button:hover {
   width: 100%;
   margin-bottom: 10px;
 }
-
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
