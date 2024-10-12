@@ -1,23 +1,11 @@
-import {
-  util,
-  Context,
-  AppSyncIdentityCognito,
-  DynamoDBQueryRequest,
-} from "@aws-appsync/utils";
+import { util, Context, DynamoDBQueryRequest } from "@aws-appsync/utils";
 import type { DeletePlayerInput } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixSectionUser } from "../../lib/constants";
 
 export function request(
   context: Context<{ input: DeletePlayerInput }>,
 ): DynamoDBQueryRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing.");
-  }
-
-  const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing.");
-  }
+  // auth has already been done
 
   const input = context.arguments.input;
   const { gameId, userId } = input;

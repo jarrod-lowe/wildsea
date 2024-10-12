@@ -1,0 +1,42 @@
+Comment: "Get DynamoDB entries and send DeletePlayer events"
+StartAt: ProcessInputList
+States:
+  ProcessInputList:
+    Type: Map
+    Iterator:
+      StartAt: QueryDynamoDB
+      States:
+        QueryDynamoDB:
+          Type: Task
+          Resource: arn:aws:states:::aws-sdk:dynamodb:query
+          Parameters:
+            TableName: ${table_name}
+            KeyConditionExpression: "begins_with(SK, :sk_prefix) AND PK = :pk_value"
+            ExpressionAttributeValues:
+              ":sk_prefix": 
+                S: "PLAYER#"
+              ":pk_value":
+                S.$: "States.Format('GAME#{}', $.dynamodb.OldImage.gameId.S)"
+            ProjectionExpression: "gameId, userId"
+          OutputPath: $.Items
+          Next: ProcessDynamoDBItems
+
+        ProcessDynamoDBItems:
+          Type: Map
+          Iterator:
+            StartAt: SendDeletePlayerEvent
+            States:
+              SendDeletePlayerEvent:
+                Type: Task
+                Resource: arn:aws:states:::events:putEvents
+                Parameters:
+                  Entries:
+                    - DetailType: ${detail_type}
+                      Source: ${source}
+                      EventBusName: ${bus_arn}
+                      Detail:
+                        gameId.$: "$.gameId.S"
+                        userId.$: "$.userId.S"
+                End: true
+          End: true
+    End: true
