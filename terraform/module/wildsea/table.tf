@@ -6,6 +6,8 @@ resource "aws_dynamodb_table" "table" {
   deletion_protection_enabled = true
   hash_key                    = "PK"
   range_key                   = "SK"
+  stream_enabled              = true
+  stream_view_type            = "OLD_IMAGE"
 
   attribute {
     name = "PK"

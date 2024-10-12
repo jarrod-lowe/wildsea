@@ -1,4 +1,4 @@
-import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
+import { util, Context } from "@aws-appsync/utils";
 import type {
   DeletePlayerInput,
   PlayerSheetSummary,
@@ -11,21 +11,17 @@ import {
   TypeCharacter,
 } from "../../lib/constants";
 import { DataSheetSection } from "../../lib/dataTypes";
+import { authIsIam } from "../../lib/auth";
 
 export function request(
   context: Context<{ input: DeletePlayerInput }>,
 ): unknown {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing.");
-  }
+  // Auth has already been checked
 
-  const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing.");
-  }
-
-  if (context.stash.userId == context.stash.fireflyUserId) {
-    util.error("Cannot delete firefly sheet");
+  if (!authIsIam(context.identity)) {
+    if (context.stash.userId == context.stash.fireflyUserId) {
+      util.error("Cannot delete firefly sheet");
+    }
   }
 
   const sections = context.prev.result.items as DataSheetSection[];

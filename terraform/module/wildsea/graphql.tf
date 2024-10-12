@@ -22,18 +22,6 @@ resource "aws_appsync_graphql_api" "graphql" {
   }
 }
 
-# nosemgrep: aws-cloudwatch-log-group-unencrypted // AWS Key is fine
-resource "aws_cloudwatch_log_group" "graphql_log" {
-  # checkov:skip=CKV_AWS_338:Two weeks is enough, we don't need a year
-  # checkov:skip=CKV_AWS_158:AWS Key is fine
-  name              = "/aws/appsync/${var.prefix}"
-  retention_in_days = 14
-
-  tags = {
-    Name = var.prefix
-  }
-}
-
 resource "aws_iam_role" "graphql_log" {
   name               = "${var.prefix}-graphql-log"
   assume_role_policy = data.aws_iam_policy_document.graphql_log_assume.json
@@ -351,4 +339,12 @@ data "local_file" "graphql_code" {
   # For dev, the makefile will rebuild this before calling terraform
   # In pipelines, a previous step will do the build
   filename = each.value.path
+}
+
+# nosemgrep: aws-cloudwatch-log-group-unencrypted // AWS Key is fine
+resource "aws_cloudwatch_log_group" "api" {
+  # checkov:skip=CKV_AWS_338:Two weeks is enough, we don't need a year
+  # checkov:skip=CKV_AWS_158:AWS Key is fine
+  name              = "/aws/appsync/apis/${aws_appsync_graphql_api.graphql.id}"
+  retention_in_days = 14
 }

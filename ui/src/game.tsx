@@ -166,6 +166,11 @@ const useGameUpdates = (
       subscribeToGameUpdates(gameId, (updatedGame: GameSummary) => {
         const currentGame = gameRef.current;
         if (currentGame != null) {
+          if (updatedGame.deleted) {
+            const currentUrl = new URL(window.location.href);
+            const newUrl = `${window.location.origin}${currentUrl.pathname}`;
+            window.location.href = newUrl;
+          }
           const updatedGameData: Game = {
             ...currentGame,
             gameName: updatedGame.gameName,

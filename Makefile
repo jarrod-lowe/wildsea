@@ -14,6 +14,7 @@ all: $(TERRAFOM_VALIDATE)
 include graphql/graphql.mk
 include appsync/appsync.mk
 include ui/ui.mk
+include design/for-claude.mk
 
 .PHONY: terraform-format
 terraform-format: $(addprefix terraform-format-environment-,$(TERRAFORM_ENVIRONMENTS)) $(addprefix terraform-format-module-,$(TERRAFORM_MODULES))
