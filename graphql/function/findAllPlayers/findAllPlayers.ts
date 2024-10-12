@@ -5,7 +5,7 @@ import {
   DynamoDBQueryRequest,
 } from "@aws-appsync/utils";
 import type { DeletePlayerInput } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixSectionUser } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
 
 export function request(
   context: Context<{ input: DeletePlayerInput }>,
@@ -20,26 +20,24 @@ export function request(
   }
 
   const input = context.arguments.input;
-  const { gameId, userId } = input;
 
-  // Query for all sections belonging to the player in this game
+  // Query for all players in this game
   return {
     operation: "Query",
-    index: "GSI1",
     query: {
-      expression: "#GSI1PK = :gsi1pk AND #PK = :pk",
+      expression: "#PK = :pk AND begins_with(#SK, :player)",
       expressionNames: {
-        "#GSI1PK": "GSI1PK",
         "#PK": "PK",
+        "#SK": "SK",
       },
       expressionValues: util.dynamodb.toMapValues({
-        ":gsi1pk": DDBPrefixSectionUser + "#" + userId,
-        ":pk": DDBPrefixGame + "#" + gameId,
+        ":pk": DDBPrefixGame + "#" + input.gameId,
+        ":player": DDBPrefixPlayer + "#",
       }),
     },
     projection: {
-      expression: "#sectionId",
-      expressionNames: { "#sectionId": "sectionId" },
+      expression: "#userId",
+      expressionNames: { "#userId": "userId" },
     },
   };
 }

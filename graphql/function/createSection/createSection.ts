@@ -19,7 +19,7 @@ export function request(
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
 
@@ -51,8 +51,7 @@ export function request(
 
 export function response(context: Context): Game | null {
   if (context.error) {
-    util.appendError(context.error.message, context.error.type, context.result);
-    return null;
+    util.error(context.error.message, context.error.type, context.result);
   }
   return context.result;
 }

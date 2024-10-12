@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildsea Tree Background</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2c3e50;
+        }
+        #backgroundContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div id="backgroundContainer"></div>
+
+    <script>
+        const height = 800;
+        const width = 1200;
+        const rowCount = 20;
+        const baseSeed = "abcd";
+
+        // tree sizes
+        const xStepMin = 25;
+        const xStepMax = 35;
+        const widthMin = 60;
+        const widthMax = 90;
+        const heightMin = 100;
+        const heightMax = 120;
+
+
+        class Cyrb128Random {
+            constructor(seed) {
+                this.seed = this.cyrb128(seed);
+                this.random = this.sfc32(this.seed[0], this.seed[1], this.seed[2], this.seed[3])
+            }
+            cyrb128(str) {
+                let h1 = 1779033703, h2 = 3144134277,
+                    h3 = 1013904242, h4 = 2773480762;
+                for (let i = 0, k; i < str.length; i++) {
+                    k = str.charCodeAt(i);
+                    h1 = h2 ^ Math.imul(h1 ^ k, 597399067);
+                    h2 = h3 ^ Math.imul(h2 ^ k, 2869860233);
+                    h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
+                    h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
+                }
+                h1 = Math.imul(h3 ^ (h1 >>> 18), 597399067);
+                h2 = Math.imul(h4 ^ (h2 >>> 22), 2869860233);
+                h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213);
+                h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
+                h1 ^= (h2 ^ h3 ^ h4), h2 ^= h1, h3 ^= h1, h4 ^= h1;
+                return [h1>>>0, h2>>>0, h3>>>0, h4>>>0];
+            }
+
+            sfc32(a, b, c, d) {
+                return function() {
+                    a |= 0; b |= 0; c |= 0; d |= 0;
+                    let t = (a + b | 0) + d | 0;
+                    d = d + 1 | 0;
+                    a = b ^ b >>> 9;
+                    b = c + (c << 3) | 0;
+                    c = (c << 21 | c >>> 11);
+                    c = c + t | 0;
+                    return (t >>> 0) / 4294967296;
+                }
+            }
+            randInt(min, max) {
+                return Math.floor(this.random() * (max - min) + min);
+            }
+            choice(array) {
+                return array[Math.floor(this.random() * array.length)];
+            }
+        }
+
+        class SeededRandom {
+            constructor(seed) {
+                this.seed = seed;
+            }
+
+            // Random number between 0 and 1
+            random() {
+                const x = Math.sin(this.seed++) * 10000;
+                return x - Math.floor(x);
+            }
+
+            // Random integer between min (inclusive) and max (exclusive)
+            randInt(min, max) {
+                return Math.floor(this.random() * (max - min) + min);
+            }
+
+            // Random item from an array
+            choice(array) {
+                return array[Math.floor(this.random() * array.length)];
+            }
+        }
+
+        function generateTreeRow(y, width, height, rng) {
+            const trees = [];
+            //const colors = ['#cd5c5c', '#8fbc8f', '#228b22', '#b22222', '#3cb371', '#556b2f', '#a0522d', '#006400', '#2e8b57'];
+            const summerColors = [
+                '#1a4314', // Dark forest green
+                '#2e6930', // Medium forest green
+                '#3a8f3d', // Bright forest green
+                '#50a150', // Light forest green
+                '#76b349', // Yellow-green
+                '#98c379', // Olive green
+                '#a9d18e', // Light olive
+                '#68a357', // Sage green
+                '#29AB87', // Jungle green
+                '#4E9258', // Forest pine
+            ];
+
+            const autumnColors = [
+                '#8B4513', // Saddle brown
+                '#D2691E', // Chocolate
+                '#CD853F', // Peru
+                //'#DEB887', // Burlywood
+                '#D2691E', // Chocolate
+                '#FF8C00', // Dark orange
+                //'#FF4500', // Orange red
+                '#B8860B', // Dark goldenrod
+                '#DAA520', // Goldenrod
+                //'#FFFF00', // Yellow
+            ];
+
+            const winterColors = [
+                '#2f4f4f', // Dark slate gray
+                '#708090', // Slate gray
+                '#778899', // Light slate gray
+                '#465945', // Gray-green
+                '#4a5d23', // Dark olive green
+                '#6b8e23', // Olive drab
+                '#556b2f', // Dark olive green
+            ];
+
+            const colors = [
+                ...summerColors, ...summerColors, ...summerColors, ...summerColors,
+                ...autumnColors, ...autumnColors,
+                ...winterColors];
+            
+            let x = 0
+            
+            while (x < width) {
+                const treeWidth = rng.randInt(widthMin, widthMax);
+                const treeHeight = rng.randInt(heightMin, heightMax);
+                const color = rng.choice(colors);
+                
+                const tree = {
+                    x1: x,
+                    y1: y,
+                    x2: x + treeWidth / 2,
+                    y2: y - treeHeight,
+                    x3: x + treeWidth,
+                    y3: y,
+                    color: color
+                };
+                
+                trees.push(tree);
+                
+                x += rng.randInt(xStepMin, xStepMax); // Random spacing between trees
+            }
+            
+            return trees;
+        }
+
+        function generateTileableTreeData(width, height, rowCount, baseSeed) {
+            let allTrees = [];
+            //const rng = new SeededRandom(baseSeed);
+            const rng = new Cyrb128Random(baseSeed);
+            
+            for (let i = 0; i < rowCount; i++) {
+                const rowY = Math.floor(height * (i + 1) / rowCount);
+                const rowTrees = generateTreeRow(rowY, width, height, rng);
+                allTrees = allTrees.concat(rowTrees);
+            }
+            
+            return allTrees;
+        }
+
+        function createSVG(width, height) {
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", width);
+            svg.setAttribute("height", height);
+            svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            return svg;
+        }
+
+        function drawTileableTree(svg, x1, y1, x2, y2, x3, y3, color, tileWidth) {
+            const drawSingleTree = (x1, y1, x2, y2, x3, y3, color) => {
+                const treeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                
+                // Main tree polygon
+                const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                polygon.setAttribute("points", `${x1},${y1} ${x2},${y2} ${x3},${y3}`);
+                polygon.setAttribute("fill", color);
+                treeGroup.appendChild(polygon);
+                
+                // Brighter left stroke
+                const leftStroke = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                leftStroke.setAttribute("x1", x1);
+                leftStroke.setAttribute("y1", y1);
+                leftStroke.setAttribute("x2", x2);
+                leftStroke.setAttribute("y2", y2);
+                leftStroke.setAttribute("stroke", lightenColor(color, 10));
+                leftStroke.setAttribute("stroke-width", "1");
+                treeGroup.appendChild(leftStroke);
+                
+                // Darker right stroke
+                const rightStroke = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                rightStroke.setAttribute("x1", x2);
+                rightStroke.setAttribute("y1", y2);
+                rightStroke.setAttribute("x2", x3);
+                rightStroke.setAttribute("y2", y3);
+                rightStroke.setAttribute("stroke", darkenColor(color, 10));
+                rightStroke.setAttribute("stroke-width", "1");
+                treeGroup.appendChild(rightStroke);
+                
+                svg.appendChild(treeGroup);
+            };
+
+            // Draw the main tree
+            drawSingleTree(x1, y1, x2, y2, x3, y3, color);
+
+            // If the tree is partially off the left side, draw it again on the right
+            if (x1 < 0 || x2 < 0 || x3 < 0) {
+                drawSingleTree(x1 + tileWidth, y1, x2 + tileWidth, y2, x3 + tileWidth, y3, color);
+            }
+
+            // If the tree is partially off the right side, draw it again on the left
+            if (x1 > tileWidth || x2 > tileWidth || x3 > tileWidth) {
+                drawSingleTree(x1 - tileWidth, y1, x2 - tileWidth, y2, x3 - tileWidth, y3, color);
+            }
+        }
+
+        function lightenColor(color, percent) {
+            const num = parseInt(color.replace("#",""), 16),
+                  amt = Math.round(2.55 * percent),
+                  R = (num >> 16) + amt,
+                  G = (num >> 8 & 0x00FF) + amt,
+                  B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+        }
+
+        function darkenColor(color, percent) {
+            const num = parseInt(color.replace("#",""), 16),
+                  amt = Math.round(2.55 * percent),
+                  R = (num >> 16) - amt,
+                  G = (num >> 8 & 0x00FF) - amt,
+                  B = (num & 0x0000FF) - amt;
+            return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+        }
+
+        const randomTreeData = generateTileableTreeData(width, height, rowCount, baseSeed);
+
+        function createTileableTreeData(treeData, tileHeight) {
+            const tileableTreeData = [...treeData];
+            
+            treeData.forEach(tree => {
+                // Check if any part of the tree is above the top of the tile
+                if (tree.y1 < 0 || tree.y2 < 0 || tree.y3 < 0) {
+                    // Create a new tree shifted down by tileHeight
+                    const shiftedTree = {
+                        x1: tree.x1,
+                        y1: tree.y1 + tileHeight,
+                        x2: tree.x2,
+                        y2: tree.y2 + tileHeight,
+                        x3: tree.x3,
+                        y3: tree.y3 + tileHeight,
+                        color: tree.color
+                    };
+                    tileableTreeData.push(shiftedTree);
+                }
+            });
+
+            return tileableTreeData;
+        }
+
+        //allTrees = createTileableTreeData(treeData, height)
+        allTrees = createTileableTreeData(randomTreeData, height)
+
+        function createBackgroundTile() {
+            const svg = createSVG(width, height);
+            allTrees.forEach(tree => {
+                drawTileableTree(svg, tree.x1, tree.y1, tree.x2, tree.y2, tree.x3, tree.y3, tree.color, width);
+            });
+            return svg;
+        }
+
+        function tileBackground() {
+            const container = document.getElementById('backgroundContainer');
+            const tile = createBackgroundTile();
+
+            const cols = Math.ceil(window.innerWidth / width) + 1;
+            const rows = Math.ceil(window.innerHeight / height) + 1;
+
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    const tileClone = tile.cloneNode(true);
+                    tileClone.style.position = 'absolute';
+                    tileClone.style.left = `${x * width}px`;
+                    tileClone.style.top = `${y * height}px`;
+                    container.appendChild(tileClone);
+                }
+            }
+        }
+
+        window.addEventListener('load', tileBackground);
+        window.addEventListener('resize', () => {
+            document.getElementById('backgroundContainer').innerHTML = '';
+            tileBackground();
+        });
+    </script>
+</body>
+</html>

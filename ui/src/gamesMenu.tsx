@@ -6,7 +6,8 @@ import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
 import { messages } from './translations';
 import { TopBar } from "./frame";
-
+import ReactMarkdown from 'react-markdown';
+import { SectionItemDescription } from './components/SectionItem';
 
 export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) => {
     const client = generateClient();
@@ -58,15 +59,17 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
 
     return (
         <div className="gameslist">
-            <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={ userEmail } />
+            <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={ userEmail } gameDescription="" isFirefly={false}/>
             <div className="allgames">
                 <div className="joingame">
                     <h1><FormattedMessage id="availableGames" /></h1>
                     <ul>
                         {games?.map((game) => (
-                            <li key={game.gameId}>
-                                <a href={`/?gameId=${game.gameId}`} aria-label={intl.formatMessage({ id: "playGame"}) + game.gameName}>
-                                    {game.gameName} - {game.gameDescription}
+                            <li key={game.gameId} className="game-panel">
+                                <a href={`/?gameId=${game.gameId}`} className="game-link" aria-label={intl.formatMessage({ id: "playGame"}) + game.gameName}>
+                                    <h3>{game.gameName}</h3>
+                                    <span>{game.characterName}</span>
+                                    <ReactMarkdown>{game.gameDescription}</ReactMarkdown>
                                 </a>
                             </li>
                         ))}
@@ -83,15 +86,15 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                             required 
                             value={gameName}
                             onChange={(e) => setGameName(e.target.value)}
+                            placeholder={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
                         />
                         <label htmlFor="gameDescription">Game Description:</label>
-                        <textarea 
-                            id="gameDescription" 
-                            name="gameDescription" 
-                            required
+                        <SectionItemDescription 
+                            id="gameDescription"
                             value={gameDescription}
-                            onChange={(e) => setGameDescription(e.target.value)}
-                        ></textarea>
+                            onChange={(d) => setGameDescription(d)}
+                            placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
+                        />
                         <button type="submit">Create Game</button>
                     </form>
                     {error && (

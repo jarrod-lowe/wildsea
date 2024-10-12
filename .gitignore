@@ -33,6 +33,8 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+design/scratch/*
+
 .validate
 .apply
 plan.tfplan

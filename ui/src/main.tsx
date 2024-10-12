@@ -10,6 +10,7 @@ import { generateClient, GraphQLResult } from "aws-amplify/api";
 import { joinGameMutation } from "../../appsync/schema";
 import type { Game } from "../../appsync/graphql";
 import { ToastProvider, useToast } from "./notificationToast";
+import Modal from 'react-modal';
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const AppGame = React.lazy(() => import("./game"))
@@ -84,6 +85,7 @@ export async function amplifySetup() {
 
     const config = await mergeConfig(configUpdates, pageUrl);
     Amplify.configure(config);
+    console.log("Configured", config);
 }
 
 export function AppContent() {
@@ -131,7 +133,7 @@ export function AppContent() {
     if (!userEmail) {
         return (
             <div>
-                <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} />
+                <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} gameDescription="" isFirefly={false}/>
                 <div><FormattedMessage id="pleaseLogin" /></div>
             </div>
         )
@@ -198,13 +200,16 @@ export function App() {
 async function getUserEmail(): Promise<string | undefined> {
   try {
     const userAttributes = await fetchUserAttributes();
+    console.log("User", userAttributes);
     return userAttributes.email;
   } catch (error) {
+    console.log("No user identified");
     return undefined;
   }
 }
 
 if (process.env.NODE_ENV !== "test") {
+    Modal.setAppElement('#root');
     const root = createRoot(document.getElementById("root") as HTMLElement);
     root.render(<App />);
 }

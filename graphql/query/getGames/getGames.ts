@@ -8,7 +8,7 @@ export function request(context: Context): DynamoDBQueryRequest {
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
 
@@ -29,8 +29,7 @@ export function request(context: Context): DynamoDBQueryRequest {
 
 export function response(context: Context): PlayerSheetSummary[] {
   if (context.error) {
-    util.appendError(context.error.message, context.error.type, context.result);
-    return [];
+    util.error(context.error.message, context.error.type, context.result);
   }
   return context.result.items as PlayerSheetSummary[];
 }

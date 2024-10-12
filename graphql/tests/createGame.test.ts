@@ -203,45 +203,6 @@ describe("request function", () => {
 });
 
 describe("response function", () => {
-  it("should append an error if context has an error", () => {
-    // Arrange
-    const mockContext: Context = {
-      env: {},
-      arguments: {},
-      args: {},
-      identity: {} as AppSyncIdentityCognito,
-      source: undefined,
-      error: {
-        message: "Some error",
-        type: "SomeErrorType",
-      },
-      info: {
-        fieldName: "createGame",
-        parentTypeName: "Mutation",
-        variables: {},
-        selectionSetList: [],
-        selectionSetGraphQL: "",
-      } as Info,
-      result: {},
-      stash: {},
-      prev: undefined,
-      request: {
-        headers: {},
-        domainName: null,
-      },
-    };
-
-    // Act
-    response(mockContext);
-
-    // Assert
-    expect(util.appendError).toHaveBeenCalledWith(
-      "Some error",
-      "SomeErrorType",
-      {},
-    );
-  });
-
   it("should return context result if no error is present", () => {
     // Arrange
     const mockContext: Context = {
@@ -296,18 +257,7 @@ describe("response function", () => {
       gameName: "testGameName",
       gameDescription: "testGameDescription",
       gameId: "testGameId",
-      playerSheets: [
-        {
-          characterName: "Firefly",
-          userId: "testFireflyUserId",
-          gameId: "testGameId",
-          type: "FIREFLY",
-          sections: [],
-          createdAt: "testCreatedAt",
-          updatedAt: "testUpdatedAt",
-          fireflyUserId: "testFireflyUserId",
-        },
-      ],
+      fireflyUserId: "testFireflyUserId",
       createdAt: "testCreatedAt",
       updatedAt: "testUpdatedAt",
       type: "testType",

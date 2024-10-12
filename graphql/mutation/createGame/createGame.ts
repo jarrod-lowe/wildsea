@@ -1,7 +1,7 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
-import { Game, CreateGameInput } from "../../../appsync/graphql";
+import { GameSummary, CreateGameInput } from "../../../appsync/graphql";
 import {
   TypeFirefly,
   DefaultFireflyCharacterName,
@@ -17,7 +17,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
 
@@ -77,27 +77,16 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
   };
 }
 
-export function response(context: Context): Game | null {
+export function response(context: Context): GameSummary | null {
   if (context.error) {
-    util.appendError(context.error.message, context.error.type, context.result);
-    return null;
+    util.error(context.error.message, context.error.type, context.result);
   }
+
   return {
     gameName: context.stash.record.gameName,
     gameDescription: context.stash.record.gameDescription,
     gameId: context.stash.record.gameId,
-    playerSheets: [
-      {
-        gameId: context.stash.record.gameId,
-        userId: context.stash.record.fireflyUserId,
-        characterName: DefaultFireflyCharacterName,
-        type: TypeFirefly,
-        sections: [],
-        createdAt: context.stash.record.createdAt,
-        updatedAt: context.stash.record.updatedAt,
-        fireflyUserId: context.stash.record.fireflyUserId,
-      },
-    ],
+    fireflyUserId: context.stash.record.fireflyUserId,
     createdAt: context.stash.record.createdAt,
     updatedAt: context.stash.record.updatedAt,
     type: context.stash.record.type,

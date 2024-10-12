@@ -230,7 +230,7 @@ describe("fnJoinGame response function", () => {
     expect(() => response(mockContext)).toThrow("Some error");
   });
 
-  it("should return the game data with joinToken set to null", () => {
+  it("should return the game data", () => {
     const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
@@ -278,10 +278,7 @@ describe("fnJoinGame response function", () => {
     const result = response(mockContext);
 
     expect(result).toEqual({
-      joinToken: null,
       fireflyUserId: "user456",
-      playerSheets: [],
-      players: [],
       gameId: "game123",
       gameName: "Test Game",
       gameDescription: "Test Description",

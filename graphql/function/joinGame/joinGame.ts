@@ -1,7 +1,7 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
-import type { Game, JoinGameInput } from "../../../appsync/graphql";
+import type { GameSummary, JoinGameInput } from "../../../appsync/graphql";
 import {
   TypeCharacter,
   DefaultPlayerCharacterName,
@@ -16,7 +16,7 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
 
@@ -72,12 +72,13 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
 
 export function response(
   context: Context<{ input: JoinGameInput }>,
-): Game | undefined {
+): GameSummary | undefined {
   if (context.error) {
     util.error(context.error.message, context.error.type, context.result);
   }
 
-  context.prev.result.joinToken = null;
-  context.prev.result.playerSheets = [];
+  delete context.prev.result.joinToken;
+  delete context.prev.result.playerSheets;
+  delete context.prev.result.players;
   return context.prev.result;
 }

@@ -20,7 +20,7 @@ export function request(
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing.");
   }
 

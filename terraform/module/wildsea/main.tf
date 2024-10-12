@@ -17,3 +17,9 @@ variable "enable_waf" {
   type        = bool
   default     = false
 }
+
+variable "log_level" {
+  description = "Appsync log level"
+  type        = string
+  default     = "ERROR"
+}

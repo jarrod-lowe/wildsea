@@ -37,6 +37,7 @@ type ResponseContext = Context<
 >;
 
 export function response(context: ResponseContext): DataGame | undefined {
+  console.error(context);
   if (context.error) {
     util.error(context.error.message, context.error.type, context.result);
   }
@@ -52,8 +53,6 @@ export function response(context: ResponseContext): DataGame | undefined {
     );
   }
 
-  context.stash.isFirefly = context.result.fireflyUserId === identity.sub;
-
   return context.result;
 }
 
@@ -65,16 +64,10 @@ export function permitted(
     return false;
   }
 
+  console.error(data.fireflyUserId);
+  console.error(identity.sub);
   if (data.fireflyUserId === identity.sub) {
     return true;
-  }
-
-  if (data.players) {
-    for (const player of data.players) {
-      if (player === identity.sub) {
-        return true;
-      }
-    }
   }
 
   return false;

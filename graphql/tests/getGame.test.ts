@@ -22,6 +22,7 @@ import type {
   DataPlayerSheet,
   DataSheetSection,
 } from "../lib/dataTypes";
+import { GetGameInput } from "../../appsync/graphql";
 
 describe("request", () => {
   beforeEach(() => {
@@ -29,10 +30,10 @@ describe("request", () => {
   });
 
   it("should return a DynamoDBQueryRequest when identity and id are present", () => {
-    const context: Context<{ id: string }> = {
-      arguments: { id: "test-id" },
+    const context = {
+      arguments: { input: { gameId: "test-id" } },
       identity: { sub: "test-sub" } as AppSyncIdentityCognito,
-    } as Context<{ id: string }>;
+    } as unknown as Context<{ input: GetGameInput }>;
 
     const result = request(context);
 
@@ -51,9 +52,9 @@ describe("request", () => {
   });
 
   it("should throw an error when identity is missing", () => {
-    const context: Context<{ id: string }> = {
-      arguments: { id: "test-id" },
-    } as Context<{ id: string }>;
+    const context = {
+      arguments: { input: { gameId: "test-id" } },
+    } as unknown as Context<{ input: GetGameInput }>;
 
     expect(() => request(context)).toThrow(
       "Unauthorized: Identity information is missing.",
@@ -61,10 +62,10 @@ describe("request", () => {
   });
 
   it("should throw an error when identity sub is missing", () => {
-    const context: Context<{ id: string }> = {
+    const context: Context<{ input: GetGameInput }> = {
       arguments: { id: "test-id" },
       identity: {} as AppSyncIdentityCognito,
-    } as Context<{ id: string }>;
+    } as unknown as Context<{ input: GetGameInput }>;
 
     expect(() => request(context)).toThrow("Unauthorized: User ID is missing.");
   });
@@ -80,7 +81,7 @@ describe("response", () => {
       error: { message: "Some error", type: "SomeType" },
       result: [],
     } as unknown as Context<
-      { id: string },
+      { input: GetGameInput },
       Record<string, never>,
       undefined,
       undefined,
@@ -95,7 +96,7 @@ describe("response", () => {
     const context = {
       result: [],
     } as unknown as Context<
-      { id: string },
+      { input: GetGameInput },
       Record<string, never>,
       undefined,
       undefined,
@@ -116,7 +117,7 @@ describe("response", () => {
             gameDescription: "A test game",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
-            fireflyUserId: "user1",
+            fireflyUserId: "user2",
             players: [],
             joinToken: "token",
             type: TypeGame,
@@ -125,6 +126,7 @@ describe("response", () => {
             userId: "user1",
             gameId: "game1",
             characterName: "Character 1",
+            fireflyUserId: "user2",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeCharacter,
@@ -136,11 +138,16 @@ describe("response", () => {
             updatedAt: "2023-01-02",
             position: 0,
             type: TypeSection,
+            content: "content",
+            sectionId: "sectionId",
+            sectionName: "sectionName",
+            sectionType: "sectionType",
           } as DataSheetSection,
           {
             userId: "user2",
             gameId: "game1",
             characterName: "Character 2",
+            fireflyUserId: "user2",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeFirefly,
@@ -148,7 +155,7 @@ describe("response", () => {
         ],
       },
     } as unknown as Context<
-      { id: string },
+      { input: GetGameInput },
       Record<string, never>,
       undefined,
       undefined,
@@ -166,6 +173,7 @@ describe("response", () => {
           userId: "user1",
           gameId: "game1",
           characterName: "Character 1",
+          fireflyUserId: "user2",
           createdAt: "2023-01-01",
           updatedAt: "2023-01-02",
           type: TypeCharacter,
@@ -177,6 +185,10 @@ describe("response", () => {
               updatedAt: "2023-01-02",
               position: 0,
               type: TypeSection,
+              content: "content",
+              sectionId: "sectionId",
+              sectionName: "sectionName",
+              sectionType: "sectionType",
             },
           ],
         },
@@ -184,12 +196,14 @@ describe("response", () => {
           userId: "user2",
           gameId: "game1",
           characterName: "Character 2",
+          fireflyUserId: "user2",
           createdAt: "2023-01-01",
           updatedAt: "2023-01-02",
           type: TypeFirefly,
           sections: [],
         },
       ],
+      fireflyUserId: "user2",
       joinToken: null,
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
@@ -199,14 +213,14 @@ describe("response", () => {
 
   it("should return a game object with playerSheets and joinToken when data is valid and user is firefly", () => {
     const context = {
-      identity: { sub: "user1" } as AppSyncIdentityCognito,
+      identity: { sub: "user2" } as AppSyncIdentityCognito,
       result: {
         items: [
           {
             gameId: "game1",
             gameName: "Test Game",
             gameDescription: "A test game",
-            fireflyUserId: "user1",
+            fireflyUserId: "user2",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             players: [],
@@ -217,6 +231,7 @@ describe("response", () => {
             userId: "user1",
             gameId: "game1",
             characterName: "Character 1",
+            fireflyUserId: "user2",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeCharacter,
@@ -228,11 +243,16 @@ describe("response", () => {
             updatedAt: "2023-01-02",
             position: 0,
             type: TypeSection,
+            content: "content",
+            sectionId: "sectionId",
+            sectionName: "sectionName",
+            sectionType: "sectionType",
           } as DataSheetSection,
           {
             userId: "user2",
             gameId: "game1",
             characterName: "Character 2",
+            fireflyUserId: "user2",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeFirefly,
@@ -240,7 +260,7 @@ describe("response", () => {
         ],
       },
     } as unknown as Context<
-      { id: string },
+      { input: GetGameInput },
       Record<string, never>,
       undefined,
       undefined,
@@ -258,6 +278,7 @@ describe("response", () => {
           userId: "user1",
           gameId: "game1",
           characterName: "Character 1",
+          fireflyUserId: "user2",
           createdAt: "2023-01-01",
           updatedAt: "2023-01-02",
           type: TypeCharacter,
@@ -265,6 +286,10 @@ describe("response", () => {
             {
               userId: "user1",
               gameId: "game1",
+              content: "content",
+              sectionId: "sectionId",
+              sectionName: "sectionName",
+              sectionType: "sectionType",
               createdAt: "2023-01-01",
               updatedAt: "2023-01-02",
               position: 0,
@@ -276,12 +301,14 @@ describe("response", () => {
           userId: "user2",
           gameId: "game1",
           characterName: "Character 2",
+          fireflyUserId: "user2",
           createdAt: "2023-01-01",
           updatedAt: "2023-01-02",
           type: TypeFirefly,
           sections: [],
         },
       ],
+      fireflyUserId: "user2",
       joinToken: "token",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
@@ -305,7 +332,7 @@ describe("response", () => {
         ],
       },
     } as unknown as Context<
-      { id: string },
+      { input: GetGameInput },
       Record<string, never>,
       undefined,
       undefined,
@@ -336,7 +363,7 @@ describe("response", () => {
         ],
       },
     } as unknown as Context<
-      { id: string },
+      { input: GetGameInput },
       Record<string, never>,
       undefined,
       undefined,
@@ -369,6 +396,7 @@ describe("makeGameData", () => {
       gameDescription: "A test game",
       joinToken: null,
       playerSheets: [],
+      fireflyUserId: "user1",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       type: TypeGame,
@@ -395,6 +423,7 @@ describe("makeGameData", () => {
       gameName: "Test Game",
       gameDescription: "A test game",
       playerSheets: [],
+      fireflyUserId: "user1",
       joinToken: "token",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
