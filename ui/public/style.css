@@ -694,3 +694,17 @@ button:hover {
   width: 100%;
   margin-bottom: 10px;
 }
+
+.delete-game-button {
+  margin-top: 20px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-game-button:hover {
+  background-color: #c82333;
+}

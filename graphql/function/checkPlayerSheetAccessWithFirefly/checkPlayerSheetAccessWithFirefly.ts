@@ -6,6 +6,7 @@ import type {
   MutationCreateSectionArgs,
 } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
+import { authIsIam } from "../../lib/auth";
 
 export function request(
   context: Context<{ input: DeletePlayerInput }>,
@@ -14,9 +15,11 @@ export function request(
     util.error("Unauthorized: Identity information is missing." as string);
   }
 
-  const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
+  if (!authIsIam(context.identity)) {
+    const identity = context.identity as AppSyncIdentityCognito;
+    if (!identity?.sub) {
+      util.error("Unauthorized: User ID is missing." as string);
+    }
   }
 
   const gameId = context.arguments.input.gameId;
@@ -48,21 +51,22 @@ export function response(
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
+  if (!authIsIam(context.identity)) {
+    if (!identity?.sub) {
+      util.error("Unauthorized: User ID is missing." as string);
+    }
+
+    if (
+      context.result === undefined ||
+      (identity.sub != context.result.userId &&
+        identity.sub != context.result.fireflyUserId)
+    ) {
+      util.error(
+        "Unauthorized: User does not have access to the player sheet." as string,
+      );
+    }
   }
 
-  if (
-    !context.result ||
-    (identity.sub != context.result.userId &&
-      identity.sub != context.result.fireflyUserId)
-  ) {
-    util.error(
-      "Unauthorized: User does not have access to the player sheet." as string,
-    );
-  }
-
-  console.log(context.result);
   context.stash.userId = context.result.userId;
   context.stash.gameId = context.result.gameId;
   context.stash.fireflyUserId = context.result.fireflyUserId;

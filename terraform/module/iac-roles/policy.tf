@@ -90,6 +90,7 @@ data "aws_iam_policy_document" "ro" {
   statement {
     actions = [
       "appsync:GetGraphqlApi",
+      "appsync:GraphQL",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
@@ -133,6 +134,29 @@ data "aws_iam_policy_document" "ro" {
       values   = [local.prefix]
     }
   }
+
+  statement {
+    actions = [
+      "states:DescribeStateMachine",
+      "states:ListStateMachineVersions",
+      "states:ListTagsForResource",
+      "events:DescribeEventBus",
+      "events:ListTagsForResource",
+      "events:DescribeRule",
+      "cloudformation:DescribeStacks",
+      "cloudformation:GetTemplate",
+      "pipes:DescribePipe",
+      "pipes:ListTagsForResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
+      "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
+      "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
+      "arn:${data.aws_partition.current.id}:cloudformation:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stack/*",
+      "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
+    ]
+  }
+
 }
 
 data "aws_iam_policy_document" "rw" {
@@ -364,6 +388,36 @@ data "aws_iam_policy_document" "rw" {
     }
   }
 
+  statement {
+    actions = [
+      "states:CreateStateMachine",
+      "states:UpdateStateMachine",
+      "states:DeleteStateMachine",
+      "states:TagResource",
+      "events:TagResource",
+      "events:CreateEventBus",
+      "events:DeleteEventBus",
+      "events:PutPermission",
+      "events:PutRule",
+      "events:DeleteRule",
+      "events:PutTargets",
+      "events:RemoveTargets",
+      "cloudformation:CreateStack",
+      "cloudformation:DeleteStack",
+      "cloudformation:UpdateStack",
+      "pipes:TagResource",
+      "pipes:CreatePipe",
+      "pipes:DeletePipe",
+      "pipes:UpdatePipe",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
+      "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
+      "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
+      "arn:${data.aws_partition.current.id}:cloudformation:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stack/*",
+      "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
+    ]
+  }
 }
 
 data "aws_iam_policy_document" "rw_boundary" {
@@ -466,6 +520,9 @@ data "aws_iam_policy_document" "rw_boundary" {
       "cloudfront:TagResource",
       "cloudfront:GetDistribution",
       "iam:SimulatePrincipalPolicy",
+      "cloudwatch:CreateLogStream",
+      "cloudwatch:PutLogEvents",
+      "cloudwatch:CreateLogGroup",
     ]
     resources = [
       "*"
@@ -585,6 +642,49 @@ data "aws_iam_policy_document" "rw_boundary" {
     resources = [
       "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*",
       "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "states:StartExecution",
+      "states:CreateStateMachine",
+      "states:UpdateStateMachine",
+      "states:DeleteStateMachine",
+      "states:DescribeStateMachine",
+      "states:ListStateMachineVersions",
+      "states:ListTagsForResource",
+      "states:TagResource",
+      "events:PutEvents",
+      "events:TagResource",
+      "events:CreateEventBus",
+      "events:DeleteEventBus",
+      "events:PutPermission",
+      "events:PutRule",
+      "events:DeleteRule",
+      "events:PutTargets",
+      "events:RemoveTargets",
+      "events:DescribeEventBus",
+      "events:ListTagsForResource",
+      "events:DescribeRule",
+      "cloudformation:CreateStack",
+      "cloudformation:DeleteStack",
+      "cloudformation:UpdateStack",
+      "cloudformation:DescribeStacks",
+      "cloudformation:GetTemplate",
+      "pipes:TagResource",
+      "pipes:CreatePipe",
+      "pipes:DeletePipe",
+      "pipes:UpdatePipe",
+      "pipes:DescribePipe",
+      "pipes:ListTagsForResource",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
+      "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
+      "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
+      "arn:${data.aws_partition.current.id}:cloudformation:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stack/*",
+      "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
     ]
   }
 

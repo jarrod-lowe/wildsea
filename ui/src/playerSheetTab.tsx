@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerSheetInput } from "../../appsync/graphql";
-import { createSectionMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerSheetMutation, updateSectionMutation } from "../../appsync/schema";
+import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerSheetInput, DeleteGameInput } from "../../appsync/graphql";
+import { createSectionMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerSheetMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
@@ -12,6 +12,7 @@ import { useToast } from './notificationToast';
 import { DragDropContext, Droppable, Draggable, DroppableProvided, DraggableProvided } from '@hello-pangea/dnd';
 import Modal from 'react-modal';
 import { DeletePlayerModal } from './deletePlayer';
+import { DeleteGameModal } from './deleteGame';
 
 const reorderSections = (sections: SheetSection[], startIndex: number, endIndex: number) => {
   const result = Array.from(sections);
@@ -30,6 +31,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const [showNewSection, setShowNewSection] = useState(false);
   const [showDeleteSectionModal, setShowDeleteSectionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
   const sectionTypes = getSectionTypes();
   const intl = useIntl();
   const toast = useToast();
@@ -135,6 +137,25 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
     }
   };
 
+  const handleDeleteGame = async () => {
+    try {
+      const client = generateClient();
+      const input: DeleteGameInput = { gameId: game.gameId };
+      await client.graphql({
+        query: deleteGameMutation,
+        variables: { input },
+      });
+      toast.addToast(intl.formatMessage({ id: "gameDeleted" }), 'success');
+      // Redirect to games list
+      const currentUrl = new URL(window.location.href);
+      const newUrl = `${window.location.origin}${currentUrl.pathname}`;
+      window.location.href = newUrl;
+    } catch (error) {
+      console.error("Error deleting game:", error);
+      toast.addToast(intl.formatMessage({ id: "error" }), 'error');
+    }
+  };
+
   return (
     <div className="player-sheet">
       <SheetHeader sheet={sheet} userSubject={userSubject} game={game} onUpdate={onUpdate} />
@@ -210,6 +231,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           </button>
         </div>
       )}
+
       <DeleteSectionModal
           isOpen={showDeleteSectionModal}
           onRequestClose={() => setShowDeleteSectionModal(false)}
@@ -223,11 +245,23 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         </button>
       )}
 
+      {(userSubject === sheet.fireflyUserId) && (
+        <button onClick={() => setShowDeleteGameModal(true)} className="delete-game-button">
+          <FormattedMessage id="deleteGameModal.deleteGame" />
+        </button>
+      )}
+
       <DeletePlayerModal
         isOpen={showDeleteModal}
         onRequestClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeletePlayer}
         isOwnSheet={userSubject === sheet.userId}
+      />
+
+      <DeleteGameModal
+        isOpen={showDeleteGameModal}
+        onRequestClose={() => setShowDeleteGameModal(false)}
+        onConfirm={handleDeleteGame}
       />
     </div>
   );

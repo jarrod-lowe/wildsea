@@ -25,7 +25,7 @@ type Mutation {
     updateSection(input: UpdateSectionInput!): SheetSection! @aws_cognito_user_pools
     deleteSection(input: DeleteSectionInput!): SheetSection! @aws_cognito_user_pools
     updatePlayerSheet(input: UpdatePlayerSheetInput!): PlayerSheetSummary @aws_cognito_user_pools
-    deletePlayer(input: DeletePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools
+    deletePlayer(input: DeletePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools @aws_iam
 }
 
 type Query {
@@ -119,7 +119,7 @@ input UpdatePlayerSheetInput {
   characterName: String!
 }
 
-type PlayerSheetSummary @aws_cognito_user_pools {
+type PlayerSheetSummary @aws_cognito_user_pools @aws_iam {
   userId: ID!
   gameId: ID!
   gameName: String!
