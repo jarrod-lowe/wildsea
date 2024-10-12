@@ -6,7 +6,7 @@ resource "aws_appsync_graphql_api" "graphql" {
 
   log_config {
     cloudwatch_logs_role_arn = aws_iam_role.graphql_log.arn
-    field_log_level          = "ERROR"
+    field_log_level          = var.log_level
   }
 
   additional_authentication_provider {
@@ -292,6 +292,10 @@ locals {
     deletePlayer = {
       type : "Mutation",
       functions = ["checkPlayerSheetAccessWithFirefly", "findAllSections", "deletePlayer"]
+    }
+    updateGame = {
+      type : "Mutation",
+      functions = ["checkGameFireflyAccess", "findAllPlayers", "updateGameOnPlayers", "updateGame"]
     }
   }
 }

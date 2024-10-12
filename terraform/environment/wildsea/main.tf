@@ -34,4 +34,5 @@ module "wildsea" {
 
   saml_metadata_url = var.saml_metadata_url
   prefix            = local.prefix
+  log_level         = "ERROR"
 }

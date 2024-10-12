@@ -24,7 +24,7 @@ export function subscriptionRequest(
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
 
@@ -50,7 +50,7 @@ export function subscriptionResponse(
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
 

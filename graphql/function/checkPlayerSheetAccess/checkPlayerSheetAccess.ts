@@ -12,7 +12,7 @@ export function request(
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
 
@@ -40,21 +40,18 @@ export function response(
   context: ResponseContext,
 ): DataPlayerSheet | undefined {
   if (context.error) {
-    util.appendError(context.error.message, context.error.type, context.result);
-    return;
+    util.error(context.error.message, context.error.type, context.result);
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
-    util.appendError("Unauthorized: User ID is missing." as string);
-    return;
+  if (!identity?.sub) {
+    util.error("Unauthorized: User ID is missing." as string);
   }
 
   if (identity.sub != context.result.userId) {
-    util.appendError(
+    util.error(
       "Unauthorized: User does not have access to the player sheet." as string,
     );
-    return;
   }
 
   return context.result;

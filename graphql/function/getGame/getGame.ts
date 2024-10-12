@@ -8,6 +8,7 @@ import type {
   PlayerSheet,
   SheetSection,
   QueryGetGameArgs,
+  GetGameInput,
 } from "../../../appsync/graphql";
 import type {
   DataPlayerSheet,
@@ -24,10 +25,10 @@ import {
 } from "../../lib/constants";
 
 export function request(
-  context: Context<QueryGetGameArgs>,
+  context: Context<{ input: GetGameInput }>,
 ): DynamoDBQueryRequest {
   validateIdentity(context);
-  return buildDynamoDBQuery(context.arguments.id);
+  return buildDynamoDBQuery(context.arguments.input.gameId);
 }
 
 function validateIdentity(context: Context<QueryGetGameArgs>): void {
@@ -36,7 +37,7 @@ function validateIdentity(context: Context<QueryGetGameArgs>): void {
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity.sub) {
+  if (!identity?.sub) {
     util.error("Unauthorized: User ID is missing." as string);
   }
 }
@@ -144,6 +145,7 @@ export function makeGameData(data: DataGame, sub: string): Game {
     gameDescription: data.gameDescription,
     playerSheets: [],
     joinToken: joinToken,
+    fireflyUserId: data.fireflyUserId,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     type: data.type,

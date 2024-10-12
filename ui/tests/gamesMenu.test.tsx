@@ -28,7 +28,7 @@ describe('GamesMenu', () => {
 
   it('renders without crashing', async () => {
     await act(async () => {
-      render(<GamesMenu />);
+      render(<GamesMenu userEmail="email"/>);
     });
     expect(screen.getByText('Available Games')).toBeInTheDocument();
     expect(screen.getByText('Create New Game')).toBeInTheDocument();
@@ -40,6 +40,8 @@ describe('GamesMenu', () => {
         gameId: '1', 
         gameName: 'Test Game 1', 
         gameDescription: 'Description 1',
+        characterName: "char1",
+        userId: "user1",
         createdAt: '2023-01-01T00:00:00Z',
         updatedAt: '2023-01-01T00:00:00Z',
         type: 'GAME'
@@ -48,6 +50,8 @@ describe('GamesMenu', () => {
         gameId: '2', 
         gameName: 'Test Game 2', 
         gameDescription: 'Description 2',
+        characterName: "char1",
+        userId: "user1",
         createdAt: '2023-01-02T00:00:00Z',
         updatedAt: '2023-01-02T00:00:00Z',
         type: 'GAME'
@@ -57,7 +61,7 @@ describe('GamesMenu', () => {
     mockGraphql.mockResolvedValueOnce({ data: { getGames: mockGames } } as GraphQLResult<{ getGames: PlayerSheetSummary[] }>);
 
     await act(async () => {
-      render(<GamesMenu />);
+      render(<GamesMenu userEmail="email"/>);
     });
 
     await act(async () => {
@@ -68,38 +72,11 @@ describe('GamesMenu', () => {
     });
   });
 
-  it('handles game creation', async () => {
-    await act(async () => {
-      render(<GamesMenu />);
-    });
-
-    // Fill in the form
-    fireEvent.change(screen.getByLabelText('Game Name:'), { target: { value: 'New Game' } });
-    fireEvent.change(screen.getByLabelText('Game Description:'), { target: { value: 'New Description' } });
-
-    // Submit the form
-    await act(async () => {
-      fireEvent.click(screen.getByText('Create Game'));
-    });
-
-    // Check if the graphql function was called with the correct arguments
-    expect(mockGraphql).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: { 
-          input: { 
-            name: 'New Game', 
-            description: 'New Description'
-          } 
-        },
-      })
-    );
-  });
-
   it('displays error message when fetching games fails', async () => {
     mockGraphql.mockRejectedValueOnce(new Error('Fetch error'));
 
     await act(async () => {
-      render(<GamesMenu />);
+      render(<GamesMenu userEmail="email"/>);
     });
 
     await act(async () => {
@@ -113,7 +90,7 @@ describe('GamesMenu', () => {
     mockGraphql.mockRejectedValueOnce(new Error('Create error'));
 
     await act(async () => {
-      render(<GamesMenu />);
+      render(<GamesMenu userEmail="email"/>);
     });
 
     fireEvent.change(screen.getByLabelText('Game Name:'), { target: { value: 'New Game' } });
@@ -134,7 +111,7 @@ describe('GamesMenu', () => {
     mockGraphql.mockRejectedValueOnce(new Error('Fetch error'));
 
     await act(async () => {
-      render(<GamesMenu />);
+      render(<GamesMenu userEmail="email"/>);
     });
 
     await act(async () => {

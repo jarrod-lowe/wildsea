@@ -32,6 +32,11 @@ export const messages = {
 
     'error.retry': 'Retry',
 
+    'editGameModal.title': 'Edit Game',
+    'editGameModal.namePlaceholder': 'Game Name',
+    'editGameModal.descriptionPlaceholder': 'Game Description',
+    'editGameModal.updateError': 'Failed to update the game. Please try again.',
+
     'sectionName': 'Name',
     'save': 'Save Changes',
     'cancel': 'Cancel',

@@ -38,9 +38,10 @@ interface MarkdownEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  id?: string;
 }
 
-export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, onChange, placeholder }) => {
+export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, onChange, placeholder, id }) => {
   // Filter out the preview command to protect against XSS issues
   const customCommands = getCommands().filter((cmd: ICommand) => 
     cmd.name !== 'preview' && cmd.name !== 'live'
@@ -48,6 +49,7 @@ export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, o
 
   return (
     <MDEditor
+      id={id}
       value={value}
       onChange={(value) => onChange(value ?? "")}
       preview="edit"

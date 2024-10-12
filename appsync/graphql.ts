@@ -35,6 +35,10 @@ export type CreateSectionInput = {
   sectionType: Scalars['String']['input'];
 };
 
+export type DeleteGameInput = {
+  gameId: Scalars['ID']['input'];
+};
+
 export type DeletePlayerInput = {
   gameId: Scalars['ID']['input'];
   userId: Scalars['ID']['input'];
@@ -48,6 +52,8 @@ export type DeleteSectionInput = {
 export type Game = {
   __typename?: 'Game';
   createdAt: Scalars['AWSDateTime']['output'];
+  deleted?: Maybe<Scalars['Boolean']['output']>;
+  fireflyUserId: Scalars['String']['output'];
   gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
@@ -57,6 +63,22 @@ export type Game = {
   updatedAt: Scalars['AWSDateTime']['output'];
 };
 
+export type GameSummary = {
+  __typename?: 'GameSummary';
+  createdAt: Scalars['AWSDateTime']['output'];
+  deleted?: Maybe<Scalars['Boolean']['output']>;
+  fireflyUserId: Scalars['String']['output'];
+  gameDescription?: Maybe<Scalars['String']['output']>;
+  gameId: Scalars['ID']['output'];
+  gameName: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
+};
+
+export type GetGameInput = {
+  gameId: Scalars['ID']['input'];
+};
+
 export type JoinGameInput = {
   gameId: Scalars['ID']['input'];
   joinToken: Scalars['ID']['input'];
@@ -64,11 +86,13 @@ export type JoinGameInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createGame: Game;
+  createGame: GameSummary;
   createSection: SheetSection;
+  deleteGame: GameSummary;
   deletePlayer?: Maybe<PlayerSheetSummary>;
   deleteSection: SheetSection;
-  joinGame: Game;
+  joinGame: GameSummary;
+  updateGame: GameSummary;
   updatePlayerSheet?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;
 };
@@ -84,6 +108,11 @@ export type MutationCreateSectionArgs = {
 };
 
 
+export type MutationDeleteGameArgs = {
+  input: DeleteGameInput;
+};
+
+
 export type MutationDeletePlayerArgs = {
   input: DeletePlayerInput;
 };
@@ -96,6 +125,11 @@ export type MutationDeleteSectionArgs = {
 
 export type MutationJoinGameArgs = {
   input: JoinGameInput;
+};
+
+
+export type MutationUpdateGameArgs = {
+  input: UpdateGameInput;
 };
 
 
@@ -141,7 +175,7 @@ export type Query = {
 
 
 export type QueryGetGameArgs = {
-  id: Scalars['ID']['input'];
+  input?: InputMaybe<GetGameInput>;
 };
 
 export type SheetSection = {
@@ -161,8 +195,14 @@ export type SheetSection = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  updatedGame?: Maybe<GameSummary>;
   updatedPlayerSheet?: Maybe<PlayerSheetSummary>;
   updatedSection?: Maybe<SheetSection>;
+};
+
+
+export type SubscriptionUpdatedGameArgs = {
+  gameId: Scalars['ID']['input'];
 };
 
 
@@ -173,6 +213,12 @@ export type SubscriptionUpdatedPlayerSheetArgs = {
 
 export type SubscriptionUpdatedSectionArgs = {
   gameId: Scalars['ID']['input'];
+};
+
+export type UpdateGameInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  gameId: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type UpdatePlayerSheetInput = {

@@ -17,8 +17,10 @@ directive @aws_cognito_user_pools(
 ) on FIELD_DEFINITION | OBJECT
 
 type Mutation {
-    createGame(input: CreateGameInput!): Game! @aws_cognito_user_pools
-    joinGame(input: JoinGameInput!): Game! @aws_cognito_user_pools
+    createGame(input: CreateGameInput!): GameSummary! @aws_cognito_user_pools
+    joinGame(input: JoinGameInput!): GameSummary! @aws_cognito_user_pools
+    updateGame(input: UpdateGameInput!): GameSummary! @aws_cognito_user_pools
+    deleteGame(input: DeleteGameInput!): GameSummary! @aws_cognito_user_pools
     createSection(input: CreateSectionInput!): SheetSection! @aws_cognito_user_pools
     updateSection(input: UpdateSectionInput!): SheetSection! @aws_cognito_user_pools
     deleteSection(input: DeleteSectionInput!): SheetSection! @aws_cognito_user_pools
@@ -27,13 +29,18 @@ type Mutation {
 }
 
 type Query {
-    getGame(id: ID!): Game! @aws_cognito_user_pools
+    getGame(input: GetGameInput): Game! @aws_cognito_user_pools
     getGames: [PlayerSheetSummary!] @aws_cognito_user_pools
 }
 
 type Subscription @aws_cognito_user_pools {
   updatedPlayerSheet(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayerSheet", "deletePlayer"])
   updatedSection(gameId: ID!): SheetSection @aws_subscribe(mutations: ["createSection", "updateSection", "deleteSection"])
+  updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "joinGame", "deleteGame"])
+}
+
+input GetGameInput {
+  gameId: ID!
 }
 
 input CreateGameInput {
@@ -44,6 +51,16 @@ input CreateGameInput {
 input JoinGameInput {
   gameId: ID!
   joinToken: ID!
+}
+
+input DeleteGameInput {
+  gameId: ID!
+}
+
+input UpdateGameInput {
+  gameId: ID!
+  name: String!
+  description: String
 }
 
 input DeletePlayerInput {
@@ -72,15 +89,28 @@ input DeleteSectionInput {
   sectionId: ID!
 }
 
+type GameSummary @aws_cognito_user_pools {
+  gameId: ID!
+  gameName: String!
+  gameDescription: String
+  fireflyUserId: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  type: String!
+  deleted: Boolean
+}
+
 type Game @aws_cognito_user_pools {
   gameId: ID!
   gameName: String!
   gameDescription: String
   playerSheets: [PlayerSheet!]!
   joinToken: String
+  fireflyUserId: String!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   type: String!
+  deleted: Boolean
 }
 
 input UpdatePlayerSheetInput {

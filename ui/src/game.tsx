@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game, PlayerSheetSummary, Subscription as GQLSubscription, SheetSection } from "../../appsync/graphql";
-import { getGameQuery, updatedPlayerSheetSubscription, updatedSectionSubscription } from "../../appsync/schema";
+import { Game, PlayerSheetSummary, Subscription as GQLSubscription, SheetSection, GameSummary } from "../../appsync/graphql";
+import { getGameQuery, updatedPlayerSheetSubscription, updatedSectionSubscription, updatedGameSubscription } from "../../appsync/schema";
 import { IntlProvider, FormattedMessage, useIntl, IntlShape } from 'react-intl';
 import { GraphQLResult, GraphQLSubscription } from "@aws-amplify/api-graphql";
 import { messages } from './translations';
@@ -9,6 +9,7 @@ import { TopBar } from "./frame";
 import { fetchUserAttributes } from 'aws-amplify/auth';
 import { PlayerSheetTab } from './playerSheetTab';
 import { useToast } from './notificationToast';
+import { EditGameModal } from './editGame';
 
 const MAX_RETRIES = 5;
 const INITIAL_BACKOFF_TIME = 1000; // 1 second
@@ -154,6 +155,32 @@ const useSectionUpdates = (
   }, [gameId, setGame, gameRef, isGameFetched]);
 };
 
+const useGameUpdates = (
+    gameId: string,
+    setGame: (game: Game) => void,
+    gameRef: React.MutableRefObject<Game | null>,
+    isGameFetched: boolean,
+  ) => {
+  useEffect(() => {
+    if (isGameFetched) {
+      subscribeToGameUpdates(gameId, (updatedGame: GameSummary) => {
+        const currentGame = gameRef.current;
+        if (currentGame != null) {
+          const updatedGameData: Game = {
+            ...currentGame,
+            gameName: updatedGame.gameName,
+            gameDescription: updatedGame.gameDescription,
+          }
+          setGame(updatedGameData);
+          gameRef.current = updatedGameData;
+        }
+      }, (err) => {
+        console.error("Error subscribing to game updates", err)
+      });
+    }
+  }, [gameId, setGame, gameRef, isGameFetched]);
+};
+
 // Main Game component
 const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmail }) => {
   const [game, setGame] = useState<Game | null>(null);
@@ -161,6 +188,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
   const [userSubject, setUserSubject] = useState<string>("");
   const [forceBackToList, setForceBackToList] = useState<boolean>(false);
   const [isGameFetched, setIsGameFetched] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const gameRef = useRef<Game | null>(null);
   const toast = useToast();
   const intl = useIntl();
@@ -173,7 +201,11 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         const response = await fetchWithBackoff(() =>
           client.graphql({
             query: getGameQuery,
-            variables: { id }
+            variables: {
+              input: {
+                gameId: id,
+              },
+            }
           }) as Promise<GraphQLResult<{ getGame: Game }>>,
           0,
           intl,
@@ -202,6 +234,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
 
   usePlayerSheetUpdates(id, setGame, gameRef, userSubject, setActiveSheet, isGameFetched);
   useSectionUpdates(id, setGame, gameRef, isGameFetched);
+  useGameUpdates(id, setGame, gameRef, isGameFetched);
 
   if (forceBackToList) {
     const currentUrl = new URL(window.location.href);
@@ -215,7 +248,13 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
 
   return (
     <div className="game-container">
-      <TopBar title={game.gameName} userEmail={userEmail} />
+      <TopBar
+        title={game.gameName}
+        userEmail={userEmail}
+        gameDescription={game.gameDescription}
+        isFirefly={userSubject === game.fireflyUserId}
+        onEditGame={() => setShowEditModal(true)}
+      />
       <div className="tab-bar">
         {game.playerSheets
           .slice() 
@@ -243,6 +282,12 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
           }}
         />
       )}
+      <EditGameModal
+        isOpen={showEditModal}
+        onRequestClose={() => setShowEditModal(false)}
+        game={game}
+        onUpdate={(updatedGame => setGame({ ...game, ...updatedGame }))}
+      />
     </div>
   );
 };
@@ -269,7 +314,7 @@ async function subscribeToPlayerSheetUpdates(
 ) {
   try {
     const client = generateClient();
-    /* const subscription = */ client.graphql<GraphQLSubscription<GQLSubscription>>({
+    const subscription = client.graphql<GraphQLSubscription<GQLSubscription>>({
       query: updatedPlayerSheetSubscription,
       variables: { gameId },
     })
@@ -284,12 +329,13 @@ async function subscribeToPlayerSheetUpdates(
         onError(error);
       },
     });
+
+    return () => subscription.unsubscribe();
   } catch (error) {
     console.error('Error subscribing to player sheet updates:', error);
     onError(error);
   }
 
-  //return await subscription.unsubscribe;
 }
 
 async function subscribeToSectionUpdates(
@@ -306,6 +352,37 @@ async function subscribeToSectionUpdates(
       next: ({ data }) => {
         if (data?.updatedSection) {
           onUpdate(data.updatedSection);
+        }
+      },
+      error: (error) => {
+        console.error('Subscription error:', error);
+        onError(error);
+      },
+    });
+
+    // Return the unsubscribe function
+    return () => subscription.unsubscribe();
+  } catch (error) {
+    console.error('Error subscribing to section updates:', error);
+    onError(error);
+    return () => null;
+  }
+}
+
+async function subscribeToGameUpdates(
+  gameId: string,
+  onUpdate: (updatedGame: GameSummary) => void,
+  onError: (error: any) => void
+): Promise<() => void | null> {
+  try {
+    const client = generateClient();
+    const subscription = client.graphql<GraphQLSubscription<GQLSubscription>>({
+      query: updatedGameSubscription,
+      variables: { gameId },
+    }).subscribe({
+      next: ({ data }) => {
+        if (data?.updatedGame) {
+          onUpdate(data.updatedGame);
         }
       },
       error: (error) => {

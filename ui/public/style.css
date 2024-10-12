@@ -209,6 +209,29 @@ button:hover {
   padding: 10px;
 }
 
+.top-bar h1 {
+  display: flex;
+  align-items: center;
+}
+
+.top-bar .info-icon-button,
+.top-bar .edit-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 0.8em;
+  margin-left: 10px;
+}
+
+.top-bar .info-icon-button {
+  color: #007bff;
+}
+
+.top-bar .edit-icon-button {
+  color: #28a745;
+}
+
 .tab-bar {
   display: flex;
   margin-bottom: 20px;
@@ -632,4 +655,48 @@ button:hover {
 .confirm-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.game-panel {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.game-panel a span {
+  font-style: italic;
+}
+
+.edit-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  color: #007bff;
+}
+
+.edit-game-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgb(0 0 0 10%);
+  max-width: 500px;
+  width: 90%;
+}
+
+.edit-game-modal input,
+.edit-game-modal .w-md-editor {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
