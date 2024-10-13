@@ -69,6 +69,7 @@ input DeletePlayerInput {
 }
 
 input CreateSectionInput {
+  userId: ID
   gameId: ID!
   sectionName: String!
   sectionType: String!

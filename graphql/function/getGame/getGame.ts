@@ -22,6 +22,7 @@ import {
   TypeSection,
   TypeGame,
   DDBPrefixGame,
+  TypeShip,
 } from "../../lib/constants";
 
 export function request(
@@ -92,7 +93,11 @@ function validateResponse(context: ResponseContext): void {
 function buildPlayerSheets(items: Data[]): Record<string, PlayerSheet> {
   const sheets: Record<string, PlayerSheet> = {};
   items.forEach((data) => {
-    if (data.type === TypeCharacter || data.type === TypeFirefly) {
+    if (
+      data.type === TypeCharacter ||
+      data.type === TypeFirefly ||
+      data.type === TypeShip
+    ) {
       const sheet = makeCharacterSheetData(data as DataPlayerSheet);
       sheets[sheet.userId] = sheet;
     } else if (data.type === TypeSection) {

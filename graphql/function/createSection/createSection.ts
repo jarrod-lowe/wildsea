@@ -1,4 +1,4 @@
-import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
+import { util, Context } from "@aws-appsync/utils";
 import type {
   DynamoDBPutItemRequest,
   PutItemInputAttributeMap,
@@ -11,18 +11,11 @@ import {
   TypeSection,
 } from "../../lib/constants";
 
+/* The pipeline has already oerformed the auth checks needed */
+
 export function request(
   context: Context<{ input: CreateSectionInput }>,
 ): DynamoDBPutItemRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
-  const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
-
   const input = context.arguments.input;
   const sectionId = util.autoId();
   const timestamp = util.time.nowISO8601();
@@ -35,11 +28,11 @@ export function request(
     }),
     attributeValues: util.dynamodb.toMapValues({
       gameId: input.gameId,
-      userId: identity.sub,
+      userId: input.userId,
       sectionId: sectionId,
       sectionName: input.sectionName,
       sectionType: input.sectionType,
-      GSI1PK: DDBPrefixSectionUser + "#" + identity.sub,
+      GSI1PK: DDBPrefixSectionUser + "#" + input.userId,
       content: input.content,
       position: input.position,
       createdAt: timestamp,

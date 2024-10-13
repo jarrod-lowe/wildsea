@@ -5,7 +5,7 @@ import { createSectionMutation, deleteGameMutation, deletePlayerMutation, delete
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
-import { TypeFirefly } from "../../graphql/lib/constants";
+import { TypeFirefly, TypeShip } from "../../graphql/lib/constants";
 import { Section } from './section';
 import { getSectionSeed, getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
@@ -79,6 +79,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         ? Math.max(...sheet.sections.map(section => section.position)) + 1
         : 0;
       const input: CreateSectionInput = {
+        userId: sheet.userId,
         gameId: sheet.gameId,
         sectionName: newSectionName,
         sectionType: newSectionType,
@@ -156,48 +157,74 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
     }
   };
 
+  let deleteButtonId = "playerSheetTab.quitGameLabel";
+  if (userSubject === sheet.fireflyUserId) deleteButtonId = "playerSheetTab.kickPlayerLabel";
+  if (sheet.type === TypeShip) deleteButtonId = "playerSheetTab.kickShipLabel";
+
+  let mayEditSheet = false;
+  if (userSubject === sheet.userId) mayEditSheet = true;
+  if (sheet.type === TypeShip) mayEditSheet = true;
+
+  const renderSections = (sections: SheetSection[], isDraggable: boolean) => {
+    const sortedSections = sections.slice().sort((a, b) => a.position - b.position);
+
+    return sortedSections.map((section, index) => {
+      const sectionComponent = (
+        <Section
+          key={section.sectionId}
+          section={section}
+          userSubject={userSubject}
+          onUpdate={(updatedSection) => {
+            const updatedSections = sheet.sections.map(s =>
+              s.sectionId === updatedSection.sectionId ? updatedSection : s
+            );
+            onUpdate({ ...sheet, sections: updatedSections });
+          }}
+        />
+      );
+
+      if (isDraggable) {
+        return (
+          <Draggable key={section.sectionId} draggableId={section.sectionId} index={index}>
+            {(provided: DraggableProvided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+              >
+                {sectionComponent}
+              </div>
+            )}
+          </Draggable>
+        );
+      }
+
+      return sectionComponent;
+    });
+  };
+
   return (
     <div className="player-sheet">
       <SheetHeader sheet={sheet} userSubject={userSubject} game={game} onUpdate={onUpdate} />
       
-      {/* Drag and Drop Context for reordering */}
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="sections">
-          {(provided: DroppableProvided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {sheet.sections
-                .slice()
-                .sort((a, b) => a.position - b.position) // Sort sections by position
-                .map((section, index) => (
-                  <Draggable key={section.sectionId} draggableId={section.sectionId} index={index}>
-                    {(provided: DraggableProvided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <Section
-                          key={section.sectionId}
-                          section={section}
-                          userSubject={userSubject}
-                          onUpdate={(updatedSection) => {
-                            const updatedSections = sheet.sections.map(s =>
-                              s.sectionId === updatedSection.sectionId ? updatedSection : s
-                            );
-                            onUpdate({ ...sheet, sections: updatedSections });
-                          }}
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      {mayEditSheet ? (
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="sections">
+            {(provided: DroppableProvided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {renderSections(sheet.sections, true)}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      ) : (
+        <div className="read-only-sections">
+          {renderSections(sheet.sections, false)}
+        </div>
+      )}
 
-      {userSubject === sheet.userId && !showNewSection && (
+      {mayEditSheet && !showNewSection && (
         <>
           <button onClick={() => setShowNewSection(true)}>
             <FaPlus /> <FormattedMessage id="playerSheetTab.addSection" />
@@ -208,7 +235,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         </>
       )}
 
-      {userSubject === sheet.userId && showNewSection && (
+      {mayEditSheet && showNewSection && (
         <div className="new-section">
           <input
             type="text"
@@ -241,11 +268,11 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
       {(userSubject === sheet.userId || userSubject === sheet.fireflyUserId ) && (sheet.userId != sheet.fireflyUserId) && (
         <button onClick={() => setShowDeleteModal(true)} className="delete-player-button">
-          <FormattedMessage id={userSubject === sheet.userId ? "playerSheetTab.quitGame" : "playerSheetTab.kickPlayer"} />
+          <FormattedMessage id={deleteButtonId} />
         </button>
       )}
 
-      {(userSubject === sheet.fireflyUserId) && (
+      {(userSubject === sheet.fireflyUserId) && (sheet.userId == sheet.fireflyUserId) && (
         <button onClick={() => setShowDeleteGameModal(true)} className="delete-game-button">
           <FormattedMessage id="deleteGameModal.deleteGame" />
         </button>
@@ -256,6 +283,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         onRequestClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeletePlayer}
         isOwnSheet={userSubject === sheet.userId}
+        sheetType={sheet.type}
       />
 
       <DeleteGameModal

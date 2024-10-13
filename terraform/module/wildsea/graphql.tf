@@ -275,7 +275,7 @@ locals {
     }
     createSection = {
       type : "Mutation",
-      functions = ["checkPlayerSheetAccess", "createSection"]
+      functions = ["checkPlayerSheetAccess", "checkShipSheetAccess", "createSection"]
     }
     deletePlayer = {
       type : "Mutation",

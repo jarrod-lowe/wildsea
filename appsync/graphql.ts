@@ -33,6 +33,7 @@ export type CreateSectionInput = {
   position: Scalars['Int']['input'];
   sectionName: Scalars['String']['input'];
   sectionType: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type DeleteGameInput = {
