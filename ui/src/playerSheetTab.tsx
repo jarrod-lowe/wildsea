@@ -32,9 +32,16 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const [showDeleteSectionModal, setShowDeleteSectionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
+  const [editingSheetId, setEditingSheetId] = useState<string | null>(null);
   const sectionTypes = getSectionTypes();
   const intl = useIntl();
   const toast = useToast();
+
+  // Reset editing state when the active sheet changes
+  useEffect(() => {
+    setEditingSheetId(null);
+    setShowNewSection(false);
+  }, [sheet.userId]);
 
   const handleDragEnd = async (result: any) => {
     if (!result.destination) {
@@ -205,7 +212,14 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
   return (
     <div className="player-sheet">
-      <SheetHeader sheet={sheet} mayEditSheet={mayEditSheet} game={game} onUpdate={onUpdate} />
+      <SheetHeader
+        sheet={sheet}
+        mayEditSheet={mayEditSheet}
+        game={game}
+        onUpdate={onUpdate}
+        isEditing={editingSheetId === sheet.userId}
+        setIsEditing={(editing) => setEditingSheetId(editing ? sheet.userId : null)}
+      />
       
       {mayEditSheet ? (
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -226,7 +240,10 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
       {mayEditSheet && !showNewSection && (
         <>
-          <button onClick={() => setShowNewSection(true)}>
+          <button onClick={() => {
+            setShowNewSection(true);
+            setEditingSheetId(sheet.userId);
+          }}>
             <FaPlus /> <FormattedMessage id="playerSheetTab.addSection" />
           </button>
           <button onClick={() => setShowDeleteSectionModal(true)}>
@@ -235,7 +252,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         </>
       )}
 
-      {mayEditSheet && showNewSection && (
+      {mayEditSheet && showNewSection && editingSheetId === sheet.userId && (
         <div className="new-section">
           <input
             type="text"
@@ -296,8 +313,14 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 };
 
 // SheetHeader component with editable character name
-const SheetHeader: React.FC<{ sheet: PlayerSheet; mayEditSheet: boolean; game: Game; onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, mayEditSheet, game, onUpdate }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const SheetHeader: React.FC<{
+    sheet: PlayerSheet;
+    mayEditSheet: boolean;
+    game: Game;
+    onUpdate: (updatedSheet: PlayerSheet) => void;
+    isEditing: boolean;
+    setIsEditing: (editing: boolean) => void;
+  }> = ({ sheet, mayEditSheet, game, onUpdate, isEditing, setIsEditing }) => {
   const [characterName, setCharacterName] = useState(sheet.characterName);
   const intl = useIntl();
   const toast = useToast();
