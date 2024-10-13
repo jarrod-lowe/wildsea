@@ -273,6 +273,18 @@ locals {
       type : "Query",
       functions = ["checkGameAccess", "getGame"]
     }
+    updateGame = {
+      type : "Mutation",
+      functions = ["checkGameFireflyAccess", "findAllPlayers", "updateGameOnPlayers", "updateGame"]
+    }
+    deletePlayer = {
+      type : "Mutation",
+      functions = ["checkPlayerSheetAccessWithFirefly", "findAllSections", "deletePlayer"]
+    }
+    updatePlayer = {
+      type : "Mutation",
+      functions = ["checkGameAccess", "updatePlayer"]
+    }
     createSection = {
       type : "Mutation",
       functions = ["checkPlayerSheetAccess", "checkShipSheetAccess", "createSection"]
@@ -284,14 +296,6 @@ locals {
     deleteSection = {
       type : "Mutation",
       functions = ["checkGameAccess", "deleteSection"]
-    }
-    deletePlayer = {
-      type : "Mutation",
-      functions = ["checkPlayerSheetAccessWithFirefly", "findAllSections", "deletePlayer"]
-    }
-    updateGame = {
-      type : "Mutation",
-      functions = ["checkGameFireflyAccess", "findAllPlayers", "updateGameOnPlayers", "updateGame"]
     }
   }
 }

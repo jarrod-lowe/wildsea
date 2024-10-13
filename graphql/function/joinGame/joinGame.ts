@@ -11,14 +11,9 @@ import {
 import { DataPlayerSheet } from "../../lib/dataTypes";
 
 export function request(context: Context<{ input: JoinGameInput }>): unknown {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
+  if (!identity?.sub) util.unauthorized();
 
   const id = context.arguments.input.gameId;
   const timestamp = util.time.nowISO8601();

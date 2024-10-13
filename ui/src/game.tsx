@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { Game, PlayerSheetSummary, Subscription as GQLSubscription, SheetSection, GameSummary } from "../../appsync/graphql";
-import { getGameQuery, updatedPlayerSheetSubscription, updatedSectionSubscription, updatedGameSubscription } from "../../appsync/schema";
+import { getGameQuery, updatedPlayerSubscription, updatedSectionSubscription, updatedGameSubscription } from "../../appsync/schema";
 import { IntlProvider, FormattedMessage, useIntl, IntlShape } from 'react-intl';
 import { GraphQLResult, GraphQLSubscription } from "@aws-amplify/api-graphql";
 import { messages } from './translations';
@@ -320,13 +320,13 @@ async function subscribeToPlayerSheetUpdates(
   try {
     const client = generateClient();
     const subscription = client.graphql<GraphQLSubscription<GQLSubscription>>({
-      query: updatedPlayerSheetSubscription,
+      query: updatedPlayerSubscription,
       variables: { gameId },
     })
     .subscribe({
       next: ({ data }) => {
-        if (data?.updatedPlayerSheet) {
-          onUpdate(data.updatedPlayerSheet);
+        if (data?.updatedPlayer) {
+          onUpdate(data.updatedPlayer);
         }
       },
       error: (error) => {

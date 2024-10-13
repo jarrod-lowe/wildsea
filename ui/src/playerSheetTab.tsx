@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerSheetInput, DeleteGameInput } from "../../appsync/graphql";
-import { createSectionMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerSheetMutation, updateSectionMutation } from "../../appsync/schema";
+import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput } from "../../appsync/graphql";
+import { createSectionMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
@@ -205,7 +205,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
   return (
     <div className="player-sheet">
-      <SheetHeader sheet={sheet} userSubject={userSubject} game={game} onUpdate={onUpdate} />
+      <SheetHeader sheet={sheet} mayEditSheet={mayEditSheet} game={game} onUpdate={onUpdate} />
       
       {mayEditSheet ? (
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -296,7 +296,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 };
 
 // SheetHeader component with editable character name
-const SheetHeader: React.FC<{ sheet: PlayerSheet; userSubject: string; game: Game; onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, userSubject, game, onUpdate }) => {
+const SheetHeader: React.FC<{ sheet: PlayerSheet; mayEditSheet: boolean; game: Game; onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, mayEditSheet, game, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [characterName, setCharacterName] = useState(sheet.characterName);
   const intl = useIntl();
@@ -308,19 +308,19 @@ const SheetHeader: React.FC<{ sheet: PlayerSheet; userSubject: string; game: Gam
 
   const handleSave = async () => {
     try {
-      const input: UpdatePlayerSheetInput = {
+      const input: UpdatePlayerInput = {
         gameId: sheet.gameId,
         userId: sheet.userId,
         characterName: characterName,
       };
       const client = generateClient();
       const response = await client.graphql({
-        query: updatePlayerSheetMutation,
+        query: updatePlayerMutation,
         variables: { input },
-      }) as GraphQLResult<{ updatePlayerSheet: PlayerSheet }>;
+      }) as GraphQLResult<{ updatePlayer: PlayerSheet }>;
       onUpdate({
         ...sheet,
-        characterName: response.data.updatePlayerSheet.characterName,
+        characterName: response.data.updatePlayer.characterName,
       });
       setIsEditing(false);
     } catch (error) {
@@ -330,7 +330,6 @@ const SheetHeader: React.FC<{ sheet: PlayerSheet; userSubject: string; game: Gam
   };
 
   const joinUrl = game.joinToken ? getJoinUrl(game.joinToken) : null;
-  const owner = sheet.userId === userSubject;
 
   return (
     <div className="sheet-header">
@@ -348,7 +347,7 @@ const SheetHeader: React.FC<{ sheet: PlayerSheet; userSubject: string; game: Gam
       ) : (
         <div className="view-character-name">
           <h2>{sheet.characterName}
-            {owner && (
+            {mayEditSheet && (
               <span className="own-ops">
                 <FaPencilAlt onClick={() => setIsEditing(true)} />
                 <span className="own-sheet"><FormattedMessage id="playerSheetTab.ownSheet" /></span>

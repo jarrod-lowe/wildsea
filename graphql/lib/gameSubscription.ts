@@ -19,18 +19,10 @@ export type ContextType = Context<
 export function subscriptionRequest(
   context: ContextType,
 ): DynamoDBGetItemRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
-
-  if (context.args.gameId == "") {
-    util.error("Unauthorized: Game ID is missing." as string);
-  }
+  if (!identity?.sub) util.unauthorized();
+  if (context.args.gameId == "") util.unauthorized();
 
   return {
     operation: "GetItem",
@@ -45,14 +37,9 @@ export function subscriptionResponse(
   context: ContextType,
   objectTypes: string[],
 ) {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
+  if (!identity?.sub) util.unauthorized();
 
   // if the user is not a player or GM in this game, or the game does not exist, refuse
   if (
@@ -60,7 +47,7 @@ export function subscriptionResponse(
     (context.result.fireflyUserId !== identity.sub &&
       !context.result.players?.includes(identity.sub))
   ) {
-    util.error("Unauthorized: User is not a player in this game." as string);
+    util.unauthorized();
   }
 
   const filter = {

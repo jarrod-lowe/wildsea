@@ -95,12 +95,8 @@ data "aws_iam_policy_document" "ro" {
     resources = [
       "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*"
     ]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceTag/Name"
-      values   = [local.prefix]
-    }
   }
+
   statement {
     actions = [
       "appsync:GetSchemaCreationStatus",
@@ -615,7 +611,6 @@ data "aws_iam_policy_document" "rw_boundary" {
       "appsync:DeleteGraphqlApi",
       "appsync:TagResource",
       "appsync:UntagResource",
-      "appsync:GetGraphqlApi",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*",
@@ -625,6 +620,15 @@ data "aws_iam_policy_document" "rw_boundary" {
       variable = "aws:ResourceTag/Name"
       values   = [local.prefix]
     }
+  }
+
+  statement {
+    actions = [
+      "appsync:GetGraphqlApi",
+    ]
+    resources = [
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*",
+    ]
   }
 
   statement {

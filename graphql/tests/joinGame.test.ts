@@ -47,9 +47,7 @@ describe("fnJoinGame request function", () => {
       },
     };
 
-    expect(() => request(mockContext)).toThrow(
-      "Unauthorized: Identity information is missing.",
-    );
+    expect(() => request(mockContext)).toThrow("Unauthorized");
   });
 
   it("should throw an error if user ID is missing", () => {
@@ -86,9 +84,7 @@ describe("fnJoinGame request function", () => {
       },
     };
 
-    expect(() => request(mockContext)).toThrow(
-      "Unauthorized: User ID is missing.",
-    );
+    expect(() => request(mockContext)).toThrow("Unauthorized");
   });
 
   it("should return a valid TransactWriteItems request when context is valid", () => {

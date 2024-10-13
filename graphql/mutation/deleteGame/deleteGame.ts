@@ -6,14 +6,9 @@ import { TypeGame, DDBPrefixGame } from "../../lib/constants";
 export function request(
   context: Context<{ input: DeleteGameInput }>,
 ): DynamoDBDeleteItemRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
+  if (!identity?.sub) util.unauthorized();
 
   const input = context.arguments.input;
 
@@ -38,17 +33,14 @@ export function request(
 export function response(context: Context): GameSummary {
   if (context.error) {
     if (context.error.type === "ConditionalCheckFailedException") {
-      util.error(
-        "Unauthorized: Only the firefly can delete the game",
-        "NotAuthorized",
-      );
+      util.unauthorized();
     } else {
       util.error(context.error.message, context.error.type, context.result);
     }
   }
 
   if (!context.result) {
-    util.error("Game not found", "NotFound");
+    util.unauthorized();
   }
 
   // Return the game details with deleted flag

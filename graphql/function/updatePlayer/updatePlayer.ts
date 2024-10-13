@@ -1,27 +1,18 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBUpdateItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
-import { PlayerSheet, UpdatePlayerSheetInput } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
+import { PlayerSheet, UpdatePlayerInput } from "../../../appsync/graphql";
+import { DDBPrefixGame, DDBPrefixPlayer, TypeShip } from "../../lib/constants";
 
 export function request(
-  context: Context<{ input: UpdatePlayerSheetInput }>,
+  context: Context<{ input: UpdatePlayerInput }>,
 ): DynamoDBUpdateItemRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
-
-  if (context.arguments.input.userId != identity.sub) {
-    util.error("Unauthorized: User ID does not match." as string);
-  }
+  if (!identity?.sub) util.unauthorized();
 
   const input = context.arguments.input;
   const timestamp = util.time.nowISO8601();
-  const sk = DDBPrefixPlayer + "#" + identity.sub;
+  const sk = DDBPrefixPlayer + "#" + input.userId;
 
   return {
     operation: "UpdateItem",
@@ -30,12 +21,14 @@ export function request(
       SK: sk,
     }),
     condition: {
-      expression: "#SK = :SK",
+      expression: "#userId = :userId OR #type = :type",
       expressionNames: {
-        "#SK": "SK",
+        "#userId": "userId",
+        "#type": "type",
       },
       expressionValues: util.dynamodb.toMapValues({
-        ":SK": sk,
+        ":userId": identity.sub,
+        ":type": TypeShip,
       }),
     },
     update: {
@@ -55,6 +48,8 @@ export function request(
 
 export function response(context: Context): PlayerSheet | null {
   if (context.error) {
+    if (context.error.type === "DynamoDB:ConditionalCheckFailedException")
+      util.unauthorized();
     util.error(context.error.message, context.error.type, context.result);
   }
   return context.result;

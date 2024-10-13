@@ -1,4 +1,4 @@
-import { TypeCharacter, TypeFirefly } from "../../lib/constants";
+import { TypeCharacter, TypeFirefly, TypeShip } from "../../lib/constants";
 import {
   ContextType,
   subscriptionRequest,
@@ -10,6 +10,6 @@ export function request(context: ContextType) {
 }
 
 export function response(context: ContextType) {
-  const objectTypes = [TypeCharacter, TypeFirefly];
+  const objectTypes = [TypeCharacter, TypeFirefly, TypeShip];
   return subscriptionResponse(context, objectTypes);
 }

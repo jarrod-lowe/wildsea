@@ -7,10 +7,7 @@ import { DDBPrefixGame } from "../../lib/constants";
 export function request(
   context: Context<{ input: GetGameInput }>,
 ): DynamoDBGetItemRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
 

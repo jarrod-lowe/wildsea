@@ -9,14 +9,9 @@ type UserIdItem = {
 };
 
 export function request(context: Context<{ input: UpdateGameInput }>): unknown {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing.");
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing.");
-  }
+  if (!identity?.sub) util.unauthorized();
 
   const timestamp = util.time.nowISO8601();
   context.stash.updatedAt = timestamp;

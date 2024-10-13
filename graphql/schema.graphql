@@ -24,7 +24,7 @@ type Mutation {
     createSection(input: CreateSectionInput!): SheetSection! @aws_cognito_user_pools
     updateSection(input: UpdateSectionInput!): SheetSection! @aws_cognito_user_pools
     deleteSection(input: DeleteSectionInput!): SheetSection! @aws_cognito_user_pools
-    updatePlayerSheet(input: UpdatePlayerSheetInput!): PlayerSheetSummary @aws_cognito_user_pools
+    updatePlayer(input: UpdatePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools
     deletePlayer(input: DeletePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools @aws_iam
 }
 
@@ -34,7 +34,7 @@ type Query {
 }
 
 type Subscription @aws_cognito_user_pools {
-  updatedPlayerSheet(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayerSheet", "deletePlayer"])
+  updatedPlayer(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayer", "deletePlayer"])
   updatedSection(gameId: ID!): SheetSection @aws_subscribe(mutations: ["createSection", "updateSection", "deleteSection"])
   updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "joinGame", "deleteGame"])
 }
@@ -114,7 +114,7 @@ type Game @aws_cognito_user_pools {
   deleted: Boolean
 }
 
-input UpdatePlayerSheetInput {
+input UpdatePlayerInput {
   gameId: ID!
   userId: ID!
   characterName: String!
