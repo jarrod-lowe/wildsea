@@ -2,7 +2,7 @@ import type {
   Game,
   PlayerSheet,
   SheetSection,
-  SubscriptionUpdatedPlayerSheetArgs,
+  SubscriptionUpdatedPlayerArgs,
   SubscriptionUpdatedSectionArgs,
 } from "../../appsync/graphql";
 
@@ -18,7 +18,7 @@ export type DataSheetSection = SheetSection;
 export type Data = DataGame | DataPlayerSheet | DataSheetSection;
 
 export type SubscriptionGenericArgs =
-  | SubscriptionUpdatedPlayerSheetArgs
+  | SubscriptionUpdatedPlayerArgs
   | SubscriptionUpdatedSectionArgs;
 
 export type Empty = Record<string, never>;

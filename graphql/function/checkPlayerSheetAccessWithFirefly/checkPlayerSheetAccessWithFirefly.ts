@@ -11,15 +11,10 @@ import { authIsIam } from "../../lib/auth";
 export function request(
   context: Context<{ input: DeletePlayerInput }>,
 ): DynamoDBGetItemRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   if (!authIsIam(context.identity)) {
     const identity = context.identity as AppSyncIdentityCognito;
-    if (!identity?.sub) {
-      util.error("Unauthorized: User ID is missing." as string);
-    }
+    if (!identity?.sub) util.unauthorized();
   }
 
   const gameId = context.arguments.input.gameId;
@@ -52,18 +47,14 @@ export function response(
 
   const identity = context.identity as AppSyncIdentityCognito;
   if (!authIsIam(context.identity)) {
-    if (!identity?.sub) {
-      util.error("Unauthorized: User ID is missing." as string);
-    }
+    if (!identity?.sub) util.unauthorized();
 
     if (
       context.result === undefined ||
       (identity.sub != context.result.userId &&
         identity.sub != context.result.fireflyUserId)
     ) {
-      util.error(
-        "Unauthorized: User does not have access to the player sheet." as string,
-      );
+      util.unauthorized();
     }
   }
 

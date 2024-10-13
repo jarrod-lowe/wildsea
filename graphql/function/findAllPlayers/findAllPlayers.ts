@@ -10,14 +10,9 @@ import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
 export function request(
   context: Context<{ input: DeletePlayerInput }>,
 ): DynamoDBQueryRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing.");
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing.");
-  }
+  if (!identity?.sub) util.unauthorized();
 
   const input = context.arguments.input;
 

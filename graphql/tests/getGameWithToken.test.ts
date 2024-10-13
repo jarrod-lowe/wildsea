@@ -44,9 +44,7 @@ describe("joinGame request function", () => {
       },
     };
 
-    expect(() => request(mockContext)).toThrow(
-      "Unauthorized: Identity information is missing.",
-    );
+    expect(() => request(mockContext)).toThrow("Unauthorized");
   });
 
   it("should throw an error if user ID is missing", () => {
@@ -85,9 +83,7 @@ describe("joinGame request function", () => {
       },
     };
 
-    expect(() => request(mockContext)).toThrow(
-      "Unauthorized: User ID is missing.",
-    );
+    expect(() => request(mockContext)).toThrow("Unauthorized");
   });
 
   it("should return a valid DynamoDBGetItemRequest when context is valid", () => {
@@ -224,13 +220,7 @@ describe("joinGame response function", () => {
       },
     };
 
-    expect(() => response(mockContext)).toThrow(
-      "Game not found or invalid token",
-    );
-    expect(util.error).toHaveBeenCalledWith(
-      "Game not found or invalid token",
-      "AccessDeniedException",
-    );
+    expect(() => response(mockContext)).toThrow("Unauthorized");
   });
 
   it("should throw an error if user is trying to join their own game", () => {

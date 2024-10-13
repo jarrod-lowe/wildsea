@@ -10,6 +10,9 @@ export const awsAppsyncUtilsMock = {
     error: jest.fn().mockImplementation((message: unknown) => {
       throw new Error(message as string);
     }),
+    unauthorized: jest.fn().mockImplementation(() => {
+      throw new Error("Unauthorized");
+    }),
     appendError: jest.fn(),
     dynamodb: {
       toMapValues: jest.fn((val) => mockMarshall(val)),

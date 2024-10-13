@@ -487,7 +487,7 @@ input CreatePlayerSheetInput {
   fireflyNotes: String
 }
 
-input UpdatePlayerSheetInput {
+input updatePlayerInput {
   characterName: String
   pronouns: String
   bloodline: String
@@ -775,7 +775,7 @@ type Mutation {
   createGame(input: CreateGameInput!): Game!
   updateGame(id: ID!, input: UpdateGameInput!): Game!
   createPlayerSheet(input: CreatePlayerSheetInput!): PlayerSheet!
-  updatePlayerSheet(id: ID!, input: UpdatePlayerSheetInput!): PlayerSheet!
+  updatePlayer(id: ID!, input: updatePlayerInput!): PlayerSheet!
   createShipSheet(input: CreateShipSheetInput!): ShipSheet!
   updateShipSheet(id: ID!, input: UpdateShipSheetInput!): ShipSheet!
   createClock(input: CreateClockInput!): Clock!
@@ -790,8 +790,8 @@ type Subscription {
     @aws_subscribe(mutations: ["updateUser"])
   onCreatePlayerSheet(gameId: ID!): PlayerSheet
     @aws_subscribe(mutations: ["createPlayerSheet"])
-  onUpdatePlayerSheet(id: ID!): PlayerSheet
-    @aws_subscribe(mutations: ["updatePlayerSheet"])
+  onupdatePlayer(id: ID!): PlayerSheet
+    @aws_subscribe(mutations: ["updatePlayer"])
   onCreateShipSheet(gameId: ID!): ShipSheet
     @aws_subscribe(mutations: ["createShipSheet"])
   onUpdateShipSheet(id: ID!): ShipSheet

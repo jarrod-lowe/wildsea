@@ -94,7 +94,7 @@ export type Mutation = {
   deleteSection: SheetSection;
   joinGame: GameSummary;
   updateGame: GameSummary;
-  updatePlayerSheet?: Maybe<PlayerSheetSummary>;
+  updatePlayer?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;
 };
 
@@ -134,8 +134,8 @@ export type MutationUpdateGameArgs = {
 };
 
 
-export type MutationUpdatePlayerSheetArgs = {
-  input: UpdatePlayerSheetInput;
+export type MutationUpdatePlayerArgs = {
+  input: UpdatePlayerInput;
 };
 
 
@@ -197,7 +197,7 @@ export type SheetSection = {
 export type Subscription = {
   __typename?: 'Subscription';
   updatedGame?: Maybe<GameSummary>;
-  updatedPlayerSheet?: Maybe<PlayerSheetSummary>;
+  updatedPlayer?: Maybe<PlayerSheetSummary>;
   updatedSection?: Maybe<SheetSection>;
 };
 
@@ -207,7 +207,7 @@ export type SubscriptionUpdatedGameArgs = {
 };
 
 
-export type SubscriptionUpdatedPlayerSheetArgs = {
+export type SubscriptionUpdatedPlayerArgs = {
   gameId: Scalars['ID']['input'];
 };
 
@@ -222,7 +222,7 @@ export type UpdateGameInput = {
   name: Scalars['String']['input'];
 };
 
-export type UpdatePlayerSheetInput = {
+export type UpdatePlayerInput = {
   characterName: Scalars['String']['input'];
   gameId: Scalars['ID']['input'];
   userId: Scalars['ID']['input'];

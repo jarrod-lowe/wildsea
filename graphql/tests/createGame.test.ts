@@ -174,9 +174,7 @@ describe("request function", () => {
     };
 
     // Act & Assert
-    expect(() => request(mockContext)).toThrow(
-      "Unauthorized: Identity information is missing.",
-    );
+    expect(() => request(mockContext)).toThrow("Unauthorized");
   });
 
   it("should throw an error if user ID is missing", () => {
@@ -217,9 +215,7 @@ describe("request function", () => {
     };
 
     // Act & Assert
-    expect(() => request(mockContext)).toThrow(
-      "Unauthorized: User ID is missing.",
-    );
+    expect(() => request(mockContext)).toThrow("Unauthorized");
   });
 });
 

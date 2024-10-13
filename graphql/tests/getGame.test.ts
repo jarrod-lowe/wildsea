@@ -56,9 +56,7 @@ describe("request", () => {
       arguments: { input: { gameId: "test-id" } },
     } as unknown as Context<{ input: GetGameInput }>;
 
-    expect(() => request(context)).toThrow(
-      "Unauthorized: Identity information is missing.",
-    );
+    expect(() => request(context)).toThrow("Unauthorized");
   });
 
   it("should throw an error when identity sub is missing", () => {
@@ -67,7 +65,7 @@ describe("request", () => {
       identity: {} as AppSyncIdentityCognito,
     } as unknown as Context<{ input: GetGameInput }>;
 
-    expect(() => request(context)).toThrow("Unauthorized: User ID is missing.");
+    expect(() => request(context)).toThrow("Unauthorized");
   });
 });
 

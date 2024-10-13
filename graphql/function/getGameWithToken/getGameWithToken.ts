@@ -6,14 +6,9 @@ import { DDBPrefixGame } from "../../lib/constants";
 export function request(
   context: Context<{ input: JoinGameInput }>,
 ): DynamoDBGetItemRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
+  if (!identity?.sub) util.unauthorized();
 
   const id = context.arguments.input.gameId;
   const key = {
@@ -38,10 +33,7 @@ export function response(
     context.result === null ||
     context.result.joinToken !== context.arguments.input.joinToken
   ) {
-    util.error(
-      "Game not found or invalid token" as string,
-      "AccessDeniedException",
-    );
+    util.unauthorized();
   }
 
   const identity = context.identity as AppSyncIdentityCognito;

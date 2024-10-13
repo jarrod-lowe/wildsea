@@ -74,9 +74,9 @@
         }
       `;
     
-      export const updatePlayerSheetMutation = `
-        mutation updatePlayerSheet($input: UpdatePlayerSheetInput!) {
-          updatePlayerSheet(input: $input) {
+      export const updatePlayerMutation = `
+        mutation updatePlayer($input: UpdatePlayerInput!) {
+          updatePlayer(input: $input) {
             userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
           }
         }
@@ -92,9 +92,9 @@
     
 
     
-      export const updatedPlayerSheetSubscription = `
-        subscription updatedPlayerSheet($gameId: ID!) {
-          updatedPlayerSheet(gameId: $gameId) {
+      export const updatedPlayerSubscription = `
+        subscription updatedPlayer($gameId: ID!) {
+          updatedPlayer(gameId: $gameId) {
             userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
           }
         }
