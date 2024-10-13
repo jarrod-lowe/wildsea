@@ -1,5 +1,5 @@
 import React from 'react';
-import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
+import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
@@ -44,7 +44,7 @@ const BurnCheckbox: React.FC<{
   );
 };
 
-export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = (props) => {
+export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
     const intl = useIntl();
 
     const handleStateChange = async (
@@ -82,8 +82,7 @@ export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: str
 
     const renderItems = (
             content: SectionTypeBurnable,
-            userSubject: string,
-            sectionUserId: string,
+            mayEditSheet: boolean,
             setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>,
             updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
         ) => {
@@ -106,7 +105,7 @@ export const SectionBurnable: React.FC<{ section: SheetSection, userSubject: str
                             key={`${item.id}-${index}`}
                             state={state}
                             onClick={() => handleStateChange(item, index, content, setContent, updateSection)}
-                            disabled={userSubject !== sectionUserId}
+                            disabled={!mayEditSheet}
                         />
                     ))}
                     </>

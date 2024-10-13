@@ -55,8 +55,8 @@ export function response(
 
   if (!context.result) util.unauthorized();
   if (context.result.type !== TypeShip) util.unauthorized();
-  console.error("HIT!");
-  console.error(context);
+
+  context.stash.playerType = context.result.type;
 
   return context.result;
 }

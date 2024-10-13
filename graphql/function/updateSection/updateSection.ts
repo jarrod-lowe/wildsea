@@ -1,7 +1,7 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBUpdateItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import { SheetSection, UpdateSectionInput } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixSection } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixSection, TypeShip } from "../../lib/constants";
 
 interface UpdateType {
   updatedAt: string;
@@ -60,14 +60,14 @@ export function request(
       SK: sk,
     }),
     condition: {
-      expression: "#SK = :SK AND #userId = :userId",
+      expression: "#userId = :userId OR #playerType = :playerType",
       expressionNames: {
-        "#SK": "SK",
         "#userId": "userId",
+        "#playerType": "playerType",
       },
       expressionValues: util.dynamodb.toMapValues({
-        ":SK": sk,
         ":userId": identity.sub,
+        ":playerType": TypeShip,
       }),
     },
     update: {
@@ -80,6 +80,8 @@ export function request(
 
 export function response(context: Context): SheetSection | null {
   if (context.error) {
+    if (context.error.type === "DynamoDB:ConditionalCheckFailedException")
+      util.unauthorized();
     util.error(context.error.message, context.error.type, context.result);
   }
   return context.result;

@@ -1,6 +1,5 @@
 import React from 'react';
-import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
-import { SheetSection } from "../../appsync/graphql";
+import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
 import { useIntl } from 'react-intl';
@@ -11,7 +10,7 @@ interface RichTextItem extends BaseSectionItem {
 
 type SectionTypeRichText = BaseSectionContent<RichTextItem>;
 
-export const SectionRichText: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = (props) => {
+export const SectionRichText: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
     
   const renderItems = (

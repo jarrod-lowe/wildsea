@@ -54,7 +54,7 @@ export const messages = {
     'playerSheetTab.addSection': 'Add a section',
     'playerSheetTab.deleteSection': 'Delete a section',
     'playerSheetTab.deleteSectionWarning': 'Deleting a section is permanent and cannot be undone. All data within the section will be lost.',
-    'playerSheetTab.quitGameLabel': 'Quit Game',
+    'playerSheetTab.quitLabel': 'Quit Game',
     'playerSheetTab.kickShipLabel': 'Delete Ship',
     'playerSheetTab.kickPlayerLabel': 'Kick Player',
     'playerSheetTab.quitConfirmation': 'Are you sure you want to quit this game?',

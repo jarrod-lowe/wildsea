@@ -44,5 +44,7 @@ export function response(
   if (!context.result) util.unauthorized();
   if (identity.sub != context.result.userId) util.unauthorized();
 
+  context.stash.playerType = context.result.type;
+
   return context.result;
 }

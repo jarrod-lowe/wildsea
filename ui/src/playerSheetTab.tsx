@@ -9,7 +9,7 @@ import { TypeFirefly, TypeShip } from "../../graphql/lib/constants";
 import { Section } from './section';
 import { getSectionSeed, getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
-import { DragDropContext, Droppable, Draggable, DroppableProvided, DraggableProvided } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable, Draggable, DroppableProvided, DraggableProvided } from "@hello-pangea/dnd";
 import Modal from 'react-modal';
 import { DeletePlayerModal } from './deletePlayer';
 import { DeleteGameModal } from './deleteGame';
@@ -157,7 +157,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
     }
   };
 
-  let deleteButtonId = "playerSheetTab.quitGameLabel";
+  let deleteButtonId = "playerSheetTab.quitLabel";
   if (userSubject === sheet.fireflyUserId) deleteButtonId = "playerSheetTab.kickPlayerLabel";
   if (sheet.type === TypeShip) deleteButtonId = "playerSheetTab.kickShipLabel";
 
@@ -173,7 +173,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         <Section
           key={section.sectionId}
           section={section}
-          userSubject={userSubject}
+          mayEditSheet={mayEditSheet}
           onUpdate={(updatedSection) => {
             const updatedSections = sheet.sections.map(s =>
               s.sectionId === updatedSection.sectionId ? updatedSection : s
