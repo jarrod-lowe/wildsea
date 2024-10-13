@@ -12,9 +12,7 @@ export function request(
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
+  if (!identity?.sub) util.unauthorized();
 
   const id = context.args.input.gameId;
   const key = {
@@ -42,15 +40,8 @@ export function response(context: ResponseContext): DataGame | undefined {
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
-
-  if (!permitted(identity, context.result)) {
-    util.error(
-      "Unauthorized: User does not have access to the game." as string,
-    );
-  }
+  if (!identity?.sub) util.unauthorized();
+  if (!permitted(identity, context.result)) util.unauthorized();
 
   context.stash.isFirefly = context.result.fireflyUserId === identity.sub;
 

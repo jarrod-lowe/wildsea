@@ -1,5 +1,5 @@
 import React from 'react';
-import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
+import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
@@ -32,7 +32,7 @@ const TickCheckbox: React.FC<{
   );
 };
 
-export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = (props) => {
+export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
 
   const handleTickClick = async (
@@ -60,8 +60,7 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
 
   const renderItems = (
       content: SectionTypeTrackable,
-      userSubject: string,
-      sectionUserId: string,
+      mayEditSheet: boolean,
       setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>,
       updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     ) => {
@@ -78,7 +77,7 @@ export const SectionTrackable: React.FC<{ section: SheetSection, userSubject: st
                   key={`${item.id}-${index}`}
                   state={index < item.ticked ? 'ticked' : 'unticked'}
                   onClick={() => handleTickClick(item, index, content, setContent, updateSection)}
-                  disabled={userSubject !== sectionUserId}
+                  disabled={!mayEditSheet}
                 />
               ))}
             </>

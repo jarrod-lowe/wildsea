@@ -6,7 +6,7 @@ import { SectionKeyValue } from './sectionKeyValue';
 import { SectionRichText } from './sectionRichText';
 
 type SectionTypeConfig = {
-  component: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }>;
+  component: React.FC<{ section: SheetSection, mayEditSheet: boolean, onUpdate: (updatedSection: SheetSection) => void }>;
   label: string; // i18n key for translation
   seed?: any;
 };

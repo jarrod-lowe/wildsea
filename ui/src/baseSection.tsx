@@ -19,11 +19,10 @@ export interface BaseSectionContent<T extends BaseSectionItem> {
 
 interface BaseSectionProps<T extends BaseSectionItem> {
     section: SheetSection;
-    userSubject: string;
+    mayEditSheet: boolean;
     renderItems: (
         content: BaseSectionContent<T>,
-        userSubject: string,
-        sectionUserId: string,
+        mayEditSheet: boolean,
         setContent: React.Dispatch<React.SetStateAction<BaseSectionContent<T>>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     ) => React.ReactNode;
@@ -33,11 +32,17 @@ interface BaseSectionProps<T extends BaseSectionItem> {
     ) => React.ReactNode;
 }
 
+export type SectionDefinition = {
+  section: SheetSection
+  mayEditSheet: boolean
+  onUpdate: (updatedSection: SheetSection) => void
+}
+
 export const BaseSection = <T extends BaseSectionItem>({
     section,
-    userSubject,
+    mayEditSheet,
     renderItems,
-    renderEditForm
+    renderEditForm,
 }: BaseSectionProps<T>) => {
     const [isEditing, setIsEditing] = useState(false);
     const [content, setContent] = useState<BaseSectionContent<T>>(JSON.parse(section.content || '{}'));
@@ -92,12 +97,12 @@ export const BaseSection = <T extends BaseSectionItem>({
         setIsEditing(false);
     };
 
-    if (userSubject !== section.userId) {
+    if (!mayEditSheet) {
         return (
             <div className="section">
                 <h3>{sectionName}</h3>
                 <div className="section-items">
-                    {renderItems(content, userSubject, section.userId, setContent, updateSection)}
+                    {renderItems(content, mayEditSheet, setContent, updateSection)}
                 </div>
             </div>
         );
@@ -131,7 +136,7 @@ export const BaseSection = <T extends BaseSectionItem>({
                 setIsEditing(true);
             }} /></h3>
             <div className="section-items">
-                {renderItems(content, userSubject, section.userId, setContent, updateSection)}
+                {renderItems(content, mayEditSheet, setContent, updateSection)}
             </div>
         </div>
     );

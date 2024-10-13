@@ -1,5 +1,5 @@
 import React from 'react';
-import { BaseSection, BaseSectionContent, BaseSectionItem } from './baseSection';
+import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,7 +12,7 @@ interface KeyValueItem extends BaseSectionItem {
 
 type SectionTypeKeyValue = BaseSectionContent<KeyValueItem>;
 
-export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: string, onUpdate: (updatedSection: SheetSection) => void }> = (props) => {
+export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
 
   const handleValueChange = async (
@@ -34,8 +34,7 @@ export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: str
 
   const renderItems = (
         content: SectionTypeKeyValue,
-        userSubject: string,
-        sectionUserId: string,
+        mayEditSheet: boolean,
         setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     ) => {
@@ -50,7 +49,7 @@ export const SectionKeyValue: React.FC<{ section: SheetSection, userSubject: str
               type="text"
               value={item.value}
               onChange={(e) => handleValueChange(item, e.target.value, content, setContent, updateSection)}
-              disabled={userSubject !== sectionUserId}
+              disabled={!mayEditSheet}
             />
           )}
         />

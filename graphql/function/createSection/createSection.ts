@@ -38,6 +38,7 @@ export function request(
       createdAt: timestamp,
       updatedAt: timestamp,
       type: TypeSection,
+      playerType: context.stash.playerType,
     }) as PutItemInputAttributeMap,
   };
 }
