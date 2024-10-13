@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { TypeShip } from '../../graphql/lib/constants';
 
 interface DeletePlayerModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   onConfirm: () => void;
   isOwnSheet: boolean;
+  sheetType: string;
 }
 
 export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
@@ -14,6 +16,7 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
   onRequestClose,
   onConfirm,
   isOwnSheet,
+  sheetType,
 }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const intl = useIntl();
@@ -28,19 +31,28 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
     }
   };
 
+  let translationInset = "quit";
+  if (!isOwnSheet) translationInset = "kickPlayer";
+  if (sheetType === TypeShip) translationInset = "kickShip"
+
+  const labelId = `playerSheetTab.${translationInset}Label`;
+  const confirmId = `playerSheetTab.${translationInset}Confirmation`;
+  const warningId = `playerSheetTab.${translationInset}Warning`;
+  const buttonId = `playerSheetTab.${translationInset}Confirm`;
+
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      contentLabel={intl.formatMessage({ id: isOwnSheet ? "playerSheetTab.quitGame" : "playerSheetTab.kickPlayer" })}
+      contentLabel={intl.formatMessage({ id: labelId })}
       className="delete-player-modal"
       overlayClassName="modal-overlay"
     >
       <h2>
-        <FormattedMessage id={isOwnSheet ? "playerSheetTab.quitGameConfirmation" : "playerSheetTab.kickPlayerConfirmation"} />
+        <FormattedMessage id={confirmId} />
       </h2>
       <p className="delete-player-warning">
-        <FormattedMessage id="playerSheetTab.deletePlayerWarning" />
+        <FormattedMessage id={warningId} />
       </p>
       <label className="confirm-checkbox">
         <input
@@ -59,7 +71,7 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
           disabled={!isConfirmed}
           className="confirm-button"
         >
-          <FormattedMessage id={isOwnSheet ? "playerSheetTab.confirmQuit" : "playerSheetTab.confirmKick"} />
+          <FormattedMessage id={buttonId} />
         </button>
       </div>
     </Modal>

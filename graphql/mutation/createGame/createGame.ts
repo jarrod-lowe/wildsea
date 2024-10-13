@@ -8,6 +8,8 @@ import {
   TypeGame,
   DDBPrefixGame,
   DDBPrefixPlayer,
+  TypeShip,
+  DefaultShipCharacterName,
 } from "../../lib/constants";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 
@@ -71,9 +73,30 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
     } as DataPlayerSheet) as PutItemInputAttributeMap,
   };
 
+  const shipId = util.autoId();
+  const shipItem = {
+    key: util.dynamodb.toMapValues({
+      PK: DDBPrefixGame + "#" + id,
+      SK: DDBPrefixPlayer + "#" + shipId,
+    }),
+    operation: "PutItem",
+    table: "Wildsea-" + environment.name,
+    attributeValues: util.dynamodb.toMapValues({
+      userId: shipId,
+      gameId: id,
+      gameName: input.name,
+      gameDescription: input.description,
+      characterName: DefaultShipCharacterName,
+      fireflyUserId: identity.sub,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      type: TypeShip,
+    } as DataPlayerSheet) as PutItemInputAttributeMap,
+  };
+
   return {
     operation: "TransactWriteItems",
-    transactItems: [gameItem, fireflyItem],
+    transactItems: [gameItem, fireflyItem, shipItem],
   };
 }
 

@@ -1,10 +1,16 @@
-import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
+import {
+  util,
+  runtime,
+  Context,
+  AppSyncIdentityCognito,
+} from "@aws-appsync/utils";
 import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import type { DataPlayerSheet } from "../../lib/dataTypes";
 import type { MutationCreateSectionArgs } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer, TypeShip } from "../../lib/constants";
 
-/* Checks that there is a player sheet for the subject in the game. */
+/* If the request is for a different userId than the subject, check that it is a
+ * ship sheet in the current game */
 
 export function request(
   context: Context<MutationCreateSectionArgs>,
@@ -13,10 +19,17 @@ export function request(
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
 
-  const id = context.arguments.input.gameId;
+  const gameId = context.arguments.input.gameId;
+  const userId = context.arguments.input.userId;
+
+  if (userId == identity.sub) {
+    // No need to do a check
+    runtime.earlyReturn(context.prev.result);
+  }
+
   const key = {
-    PK: DDBPrefixGame + "#" + id,
-    SK: DDBPrefixPlayer + "#" + identity.sub,
+    PK: DDBPrefixGame + "#" + gameId,
+    SK: DDBPrefixPlayer + "#" + userId,
   };
 
   return {
@@ -40,9 +53,10 @@ export function response(
     util.error(context.error.message, context.error.type, context.result);
   }
 
-  const identity = context.identity as AppSyncIdentityCognito;
   if (!context.result) util.unauthorized();
-  if (identity.sub != context.result.userId) util.unauthorized();
+  if (context.result.type !== TypeShip) util.unauthorized();
+  console.error("HIT!");
+  console.error(context);
 
   return context.result;
 }

@@ -60,10 +60,12 @@ describe("request function", () => {
     const mockId = "unique-id";
     const mockJoinToken = "unique-join-token";
     const mockTimestamp = "2024-08-17T00:00:00Z";
+    const mockShipId = "unique-ship-id";
 
     (util.autoId as jest.Mock)
       .mockReturnValueOnce(mockId)
-      .mockReturnValueOnce(mockJoinToken);
+      .mockReturnValueOnce(mockJoinToken)
+      .mockReturnValueOnce(mockShipId);
     (util.time.nowISO8601 as jest.Mock).mockReturnValue(mockTimestamp);
 
     // Act
@@ -109,6 +111,25 @@ describe("request function", () => {
             updatedAt: { S: mockTimestamp },
             type: { S: "FIREFLY" },
             characterName: { S: "Firefly" },
+          },
+        },
+        {
+          operation: "PutItem",
+          key: {
+            PK: { S: `GAME#${mockId}` },
+            SK: { S: `PLAYER#${mockShipId}` },
+          },
+          table: "Wildsea-MOCK",
+          attributeValues: {
+            userId: { S: mockShipId },
+            gameId: { S: mockId },
+            gameName: { S: "Test Game" },
+            gameDescription: { S: "Test Description" },
+            fireflyUserId: { S: "1234-5678-91011" },
+            createdAt: { S: mockTimestamp },
+            updatedAt: { S: mockTimestamp },
+            type: { S: "SHIP" },
+            characterName: { S: "Unnamed Ship" },
           },
         },
       ],
