@@ -13,14 +13,9 @@ interface UpdateType {
 export function request(
   context: Context<{ input: UpdateSectionInput }>,
 ): DynamoDBUpdateItemRequest {
-  if (!context.identity) {
-    util.error("Unauthorized: Identity information is missing." as string);
-  }
-
+  if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity?.sub) {
-    util.error("Unauthorized: User ID is missing." as string);
-  }
+  if (!identity?.sub) util.unauthorized();
 
   const input = context.arguments.input;
   const timestamp = util.time.nowISO8601();
