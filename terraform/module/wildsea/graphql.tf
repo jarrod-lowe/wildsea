@@ -281,6 +281,10 @@ locals {
       type : "Mutation",
       functions = ["checkGameAccess", "updateSection"]
     }
+    deleteSection = {
+      type : "Mutation",
+      functions = ["checkGameAccess", "deleteSection"]
+    }
     deletePlayer = {
       type : "Mutation",
       functions = ["checkPlayerSheetAccessWithFirefly", "findAllSections", "deletePlayer"]
