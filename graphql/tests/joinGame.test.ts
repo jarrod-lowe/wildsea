@@ -229,6 +229,7 @@ describe("fnJoinGame response function", () => {
   it("should return the game data", () => {
     const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
+      result: {},
       arguments: {
         input: {
           gameId: "game123",
@@ -253,17 +254,13 @@ describe("fnJoinGame response function", () => {
         selectionSetList: [],
         selectionSetGraphQL: "",
       },
-      result: {},
-      stash: {},
-      prev: {
-        result: {
-          joinToken: "token123",
-          fireflyUserId: "user456",
-          players: [],
-          gameId: "game123",
-          gameName: "Test Game",
-          gameDescription: "Test Description",
+      stash: {
+        playerData: {
+          field1: "value1",
         },
+      },
+      prev: {
+        result: {},
       },
       request: {
         headers: {},
@@ -274,10 +271,7 @@ describe("fnJoinGame response function", () => {
     const result = response(mockContext);
 
     expect(result).toEqual({
-      fireflyUserId: "user456",
-      gameId: "game123",
-      gameName: "Test Game",
-      gameDescription: "Test Description",
+      field1: "value1",
     });
   });
 });

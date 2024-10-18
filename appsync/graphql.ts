@@ -98,7 +98,7 @@ export type Mutation = {
   deleteGame: GameSummary;
   deletePlayer?: Maybe<PlayerSheetSummary>;
   deleteSection: SheetSection;
-  joinGame: GameSummary;
+  joinGame: PlayerSheetSummary;
   updateGame: GameSummary;
   updatePlayer?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;

@@ -53,7 +53,7 @@ const usePlayerSheetUpdates = (
 
   useEffect(() => {
     if (isGameFetched) {
-      subscribeToPlayerSheetUpdates(gameId, (updatedSheetSummary) => {
+      subscribeToPlayerSheetUpdates(gameId, async (updatedSheetSummary) => {
         const currentGame = gameRef.current;
         if (currentGame) {
           if (updatedSheetSummary.deleted) {
@@ -80,15 +80,43 @@ const usePlayerSheetUpdates = (
               { name: updatedSheetSummary.characterName }
             ), 'success');
           } else {
-            const updatedSheets = currentGame.playerSheets.map(sheet =>
-            sheet.userId === updatedSheetSummary.userId
-              ? { ...sheet, characterName: updatedSheetSummary.characterName }
-              : sheet
-          );
-          const updatedGame = { ...currentGame, playerSheets: updatedSheets };
-          setGame(updatedGame);
-          gameRef.current = updatedGame;
-        }
+            const existingPlayerIndex = currentGame.playerSheets.findIndex(sheet => sheet.userId === updatedSheetSummary.userId);
+
+            if (existingPlayerIndex == -1) {
+              try {
+                const client = generateClient();
+                const response = await client.graphql({
+                  query: getGameQuery,
+                  variables: {
+                    input: {
+                      gameId: gameId,
+                    },
+                  }
+                }) as GraphQLResult<{ getGame: Game }>;
+
+                if (response.data?.getGame) {
+                  setGame(response.data.getGame);
+                  gameRef.current = response.data.getGame;
+                  toast.addToast(intl.formatMessage(
+                    { id: 'playerSheetTab.playerJoined' },
+                    { name: updatedSheetSummary.characterName }
+                  ), 'success');
+                }
+              } catch (error) {
+                console.error("Error fetching updated game data", error);
+                toast.addToast(intl.formatMessage({ id: 'errorFetchingGameData' }), 'error');
+              }
+            } else {
+              const updatedSheets = currentGame.playerSheets.map(sheet =>
+              sheet.userId === updatedSheetSummary.userId
+                ? { ...sheet, characterName: updatedSheetSummary.characterName }
+                : sheet
+              );
+              const updatedGame = { ...currentGame, playerSheets: updatedSheets };
+              setGame(updatedGame);
+              gameRef.current = updatedGame;
+            }
+          }
         }
       }, (err) => {
         console.error("Error subscribing to player sheet updates", err);
