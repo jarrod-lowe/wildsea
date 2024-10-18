@@ -18,7 +18,7 @@ directive @aws_cognito_user_pools(
 
 type Mutation {
     createGame(input: CreateGameInput!): GameSummary! @aws_cognito_user_pools
-    joinGame(input: JoinGameInput!): GameSummary! @aws_cognito_user_pools
+    joinGame(input: JoinGameInput!): PlayerSheetSummary! @aws_cognito_user_pools
     updateGame(input: UpdateGameInput!): GameSummary! @aws_cognito_user_pools
     deleteGame(input: DeleteGameInput!): GameSummary! @aws_cognito_user_pools
     createSection(input: CreateSectionInput!): SheetSection! @aws_cognito_user_pools
@@ -26,6 +26,7 @@ type Mutation {
     deleteSection(input: DeleteSectionInput!): SheetSection! @aws_cognito_user_pools
     updatePlayer(input: UpdatePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools
     deletePlayer(input: DeletePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools @aws_iam
+    createShip(input: CreateShipInput!): PlayerSheetSummary! @aws_cognito_user_pools
 }
 
 type Query {
@@ -34,9 +35,9 @@ type Query {
 }
 
 type Subscription @aws_cognito_user_pools {
-  updatedPlayer(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayer", "deletePlayer"])
+  updatedPlayer(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayer", "deletePlayer", "createShip", "joinGame"])
   updatedSection(gameId: ID!): SheetSection @aws_subscribe(mutations: ["createSection", "updateSection", "deleteSection"])
-  updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "joinGame", "deleteGame"])
+  updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "deleteGame"])
 }
 
 input GetGameInput {
@@ -117,6 +118,11 @@ type Game @aws_cognito_user_pools {
 input UpdatePlayerInput {
   gameId: ID!
   userId: ID!
+  characterName: String!
+}
+
+input CreateShipInput {
+  gameId: ID!
   characterName: String!
 }
 

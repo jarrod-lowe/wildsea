@@ -1,7 +1,10 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
-import type { GameSummary, JoinGameInput } from "../../../appsync/graphql";
+import type {
+  PlayerSheetSummary,
+  JoinGameInput,
+} from "../../../appsync/graphql";
 import {
   TypeCharacter,
   DefaultPlayerCharacterName,
@@ -38,6 +41,18 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     },
   } as PutItemInputAttributeMap;
 
+  const playerData = {
+    gameId: id,
+    userId: identity.sub,
+    GSI1PK: "USER#" + identity.sub,
+    gameName: context.prev.result.gameName,
+    gameDescription: context.prev.result.gameDescription,
+    characterName: DefaultPlayerCharacterName,
+    fireflyUserId: context.prev.result.fireflyUserId,
+    type: TypeCharacter,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  } as DataPlayerSheet;
   const playerItem = {
     operation: "PutItem",
     table: "Wildsea-" + environment.name,
@@ -45,19 +60,10 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
       PK: DDBPrefixGame + "#" + id,
       SK: DDBPrefixPlayer + "#" + identity.sub,
     }),
-    attributeValues: util.dynamodb.toMapValues({
-      gameId: id,
-      userId: identity.sub,
-      GSI1PK: "USER#" + identity.sub,
-      gameName: context.prev.result.gameName,
-      gameDescription: context.prev.result.gameDescription,
-      characterName: DefaultPlayerCharacterName,
-      fireflyUserId: context.prev.result.fireflyUserId,
-      type: TypeCharacter,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    } as DataPlayerSheet),
+    attributeValues: util.dynamodb.toMapValues(playerData),
   } as PutItemInputAttributeMap;
+
+  context.stash.playerData = playerData;
 
   return {
     operation: "TransactWriteItems",
@@ -67,13 +73,10 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
 
 export function response(
   context: Context<{ input: JoinGameInput }>,
-): GameSummary | undefined {
+): PlayerSheetSummary | undefined {
   if (context.error) {
     util.error(context.error.message, context.error.type, context.result);
   }
 
-  delete context.prev.result.joinToken;
-  delete context.prev.result.playerSheets;
-  delete context.prev.result.players;
-  return context.prev.result;
+  return context.stash.playerData;
 }

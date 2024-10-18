@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput } from "../../appsync/graphql";
-import { createSectionMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
+import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateShipInput } from "../../appsync/graphql";
+import { createSectionMutation, createShipMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
@@ -33,6 +33,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
   const [editingSheetId, setEditingSheetId] = useState<string | null>(null);
+  const [showCreateShipModal, setShowCreateShipModal] = useState(false);
   const sectionTypes = getSectionTypes();
   const intl = useIntl();
   const toast = useToast();
@@ -145,6 +146,23 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
     }
   };
 
+  const handleCreateShip = async (shipName: string) => {
+    try {
+      const input: CreateShipInput = {
+        gameId: game.gameId,
+        characterName: shipName,
+      };
+      const client = generateClient();
+      await client.graphql({
+        query: createShipMutation,
+        variables: { input },
+      });
+    } catch (error) {
+      console.error("Error creating ship:", error);
+      toast.addToast(intl.formatMessage({ id: "createShipModal.error" }), 'error');
+    }
+  };
+
   const handleDeleteGame = async () => {
     try {
       const client = generateClient();
@@ -169,7 +187,9 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   if (sheet.type === TypeShip) deleteButtonId = "playerSheetTab.kickShipLabel";
 
   let mayEditSheet = false;
+  let ownSheet = false;
   if (userSubject === sheet.userId) mayEditSheet = true;
+  if (userSubject === sheet.userId) ownSheet = true;
   if (sheet.type === TypeShip) mayEditSheet = true;
 
   const renderSections = (sections: SheetSection[], isDraggable: boolean) => {
@@ -215,6 +235,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
       <SheetHeader
         sheet={sheet}
         mayEditSheet={mayEditSheet}
+        ownSheet={ownSheet}
         game={game}
         onUpdate={onUpdate}
         isEditing={editingSheetId === sheet.userId}
@@ -283,6 +304,12 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           onDeleteSection={handleDeleteSection}
       />
 
+      {sheet.type === TypeFirefly && (
+        <button onClick={() => setShowCreateShipModal(true)} className="create-ship-button">
+          <FormattedMessage id="createShipModal.buttonLabel" />
+        </button>
+      )}
+
       {(userSubject === sheet.userId || userSubject === sheet.fireflyUserId ) && (sheet.userId != sheet.fireflyUserId) && (
         <button onClick={() => setShowDeleteModal(true)} className="delete-player-button">
           <FormattedMessage id={deleteButtonId} />
@@ -308,6 +335,12 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         onRequestClose={() => setShowDeleteGameModal(false)}
         onConfirm={handleDeleteGame}
       />
+
+      <CreateShipModal
+        isOpen={showCreateShipModal}
+        onRequestClose={() => setShowCreateShipModal(false)}
+        onConfirm={handleCreateShip}
+      />
     </div>
   );
 };
@@ -316,11 +349,12 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 const SheetHeader: React.FC<{
     sheet: PlayerSheet;
     mayEditSheet: boolean;
+    ownSheet: boolean;
     game: Game;
     onUpdate: (updatedSheet: PlayerSheet) => void;
     isEditing: boolean;
     setIsEditing: (editing: boolean) => void;
-  }> = ({ sheet, mayEditSheet, game, onUpdate, isEditing, setIsEditing }) => {
+  }> = ({ sheet, mayEditSheet, ownSheet, game, onUpdate, isEditing, setIsEditing }) => {
   const [characterName, setCharacterName] = useState(sheet.characterName);
   const intl = useIntl();
   const toast = useToast();
@@ -373,7 +407,7 @@ const SheetHeader: React.FC<{
             {mayEditSheet && (
               <span className="own-ops">
                 <FaPencilAlt onClick={() => setIsEditing(true)} />
-                <span className="own-sheet"><FormattedMessage id="playerSheetTab.ownSheet" /></span>
+                {ownSheet && (<span className="own-sheet"><FormattedMessage id="playerSheetTab.ownSheet" /></span>)}
               </span>
             )}
           </h2>
@@ -437,6 +471,52 @@ export const DeleteSectionModal: React.FC<DeleteSectionModalProps> = ({
       <button onClick={onRequestClose} className="delete-modal-close">
         <FormattedMessage id="close" />
       </button>
+    </Modal>
+  );
+};
+
+// Add this new component
+const CreateShipModal: React.FC<{
+  isOpen: boolean;
+  onRequestClose: () => void;
+  onConfirm: (shipName: string) => void;
+}> = ({ isOpen, onRequestClose, onConfirm }) => {
+  const [shipName, setShipName] = useState('');
+  const intl = useIntl();
+
+  const handleConfirm = () => {
+    onConfirm(shipName);
+    setShipName('');
+    onRequestClose();
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      contentLabel={intl.formatMessage({ id: "createShipModal.title" })}
+      className="create-ship-modal"
+      overlayClassName="modal-overlay"
+    >
+      <h2><FormattedMessage id="createShipModal.title" /></h2>
+      <input
+        type="text"
+        value={shipName}
+        onChange={(e) => setShipName(e.target.value)}
+        placeholder={intl.formatMessage({ id: "createShipModal.namePlaceholder" })}
+      />
+      <div className="modal-buttons">
+        <button onClick={onRequestClose} className="cancel-button">
+          <FormattedMessage id="cancel" />
+        </button>
+        <button
+          onClick={handleConfirm}
+          disabled={!shipName.trim()}
+          className="confirm-button"
+        >
+          <FormattedMessage id="create" />
+        </button>
+      </div>
     </Modal>
   );
 };

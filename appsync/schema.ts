@@ -29,7 +29,7 @@
       export const joinGameMutation = `
         mutation joinGame($input: JoinGameInput!) {
           joinGame(input: $input) {
-            gameId gameName gameDescription fireflyUserId createdAt updatedAt type deleted
+            userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
           }
         }
       `;
@@ -90,7 +90,13 @@
         }
       `;
     
-
+      export const createShipMutation = `
+        mutation createShip($input: CreateShipInput!) {
+          createShip(input: $input) {
+            userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
+          }
+        }
+      `;
     
       export const updatedPlayerSubscription = `
         subscription updatedPlayer($gameId: ID!) {

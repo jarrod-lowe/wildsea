@@ -8,7 +8,7 @@ import { messages } from './translations';
 import { TopBar } from "./frame";
 import { generateClient, GraphQLResult } from "aws-amplify/api";
 import { joinGameMutation } from "../../appsync/schema";
-import type { Game } from "../../appsync/graphql";
+import type { PlayerSheetSummary } from "../../appsync/graphql";
 import { ToastProvider, useToast } from "./notificationToast";
 import Modal from 'react-modal';
 
@@ -169,7 +169,7 @@ async function joinGame(gameId: string, joinToken: string) {
                     joinToken: joinToken,
                 }
             }
-        }) as GraphQLResult<{ joinGame: Game }>;
+        }) as GraphQLResult<{ joinGame: PlayerSheetSummary }>;
         if (response.errors) {
             throw new Error(response.errors[0].message);
         }
