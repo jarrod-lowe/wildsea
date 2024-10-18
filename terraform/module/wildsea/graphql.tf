@@ -297,6 +297,10 @@ locals {
       type : "Mutation",
       functions = ["checkGameAccess", "deleteSection"]
     }
+    createShip = {
+      type : "Mutation",
+      functions = ["checkGameFireflyAccess", "createShip"]
+    }
   }
 }
 

@@ -36,6 +36,11 @@ export type CreateSectionInput = {
   userId?: InputMaybe<Scalars['ID']['input']>;
 };
 
+export type CreateShipInput = {
+  characterName: Scalars['String']['input'];
+  gameId: Scalars['ID']['input'];
+};
+
 export type DeleteGameInput = {
   gameId: Scalars['ID']['input'];
 };
@@ -89,6 +94,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createGame: GameSummary;
   createSection: SheetSection;
+  createShip: PlayerSheetSummary;
   deleteGame: GameSummary;
   deletePlayer?: Maybe<PlayerSheetSummary>;
   deleteSection: SheetSection;
@@ -106,6 +112,11 @@ export type MutationCreateGameArgs = {
 
 export type MutationCreateSectionArgs = {
   input: CreateSectionInput;
+};
+
+
+export type MutationCreateShipArgs = {
+  input: CreateShipInput;
 };
 
 

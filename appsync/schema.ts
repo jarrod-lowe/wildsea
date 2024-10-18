@@ -90,6 +90,14 @@
         }
       `;
     
+      export const createShipMutation = `
+        mutation createShip($input: CreateShipInput!) {
+          createShip(input: $input) {
+            userId gameId gameName gameDescription characterName type createdAt updatedAt deleted
+          }
+        }
+      `;
+    
 
     
       export const updatedPlayerSubscription = `

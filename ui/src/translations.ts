@@ -72,6 +72,11 @@ export const messages = {
     'playerSheetTab.deletePlayerError': 'Failed to delete the player. Please try again.',
     'playerSheetTab.playerLeft': 'Player {name} has left the game.',
 
+    'createShipModal.title': 'Create New Ship',
+    'createShipModal.namePlaceholder': 'Enter ship name',
+    'createShipModal.buttonLabel': 'Create Ship',
+    'createShipModal.error': 'Failed to create ship. Please try again.',
+
     'sectionType.trackable': 'Trackable',
     'sectionTrackable.increment': '+',
     'sectionTrackable.decrement': '-',
