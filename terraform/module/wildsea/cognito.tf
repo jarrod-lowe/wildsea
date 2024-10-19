@@ -30,8 +30,8 @@ resource "aws_cognito_user_pool_client" "cognito" {
   generate_secret                      = false
   explicit_auth_flows                  = ["ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_USER_SRP_AUTH"]
   allowed_oauth_flows_user_pool_client = true
-  callback_urls                        = ["http://localhost:5173/", "https://${aws_cloudfront_distribution.cdn.domain_name}/"]
-  logout_urls                          = ["http://localhost:5173/", "https://${aws_cloudfront_distribution.cdn.domain_name}/"]
+  callback_urls                        = ["http://localhost:5173/", "https://${local.cdn_domain_name}/"]
+  logout_urls                          = ["http://localhost:5173/", "https://${local.cdn_domain_name}/"]
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["openid", "aws.cognito.signin.user.admin"]
   supported_identity_providers         = [var.saml_metadata_url == "" ? "COGNITO" : aws_cognito_identity_provider.idp[0].provider_name]

@@ -52,11 +52,14 @@ data "aws_iam_policy_document" "ro" {
       "wafv2:GetWebACLForResource",
       "wafv2:GetWebAcl",
       "appsync:GetResolver",
+      "appsync:GetDomainName",
+      "appsync:GetApiAssociation",
       "cloudfront:List*",
       "cloudfront:Get*Policy",
       "cloudfront:GetDistribution",
       "cloudfront:GetOriginAccessControl",
       "iam:SimulatePrincipalPolicy",
+      "route53:ListHostedZones",
     ]
     resources = [
       "*"
@@ -142,12 +145,21 @@ data "aws_iam_policy_document" "ro" {
       "events:ListTargetsByRule",
       "pipes:DescribePipe",
       "pipes:ListTagsForResource",
+      "acm:DescribeCertificate",
+      "acm:ListTagsForCertificate",
+      "route53:GetHostedZone",
+      "route53:ListTagsForResource",
+      "route53:GetChange",
+      "route53:ListResourceRecordSets",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
       "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
+      "arn:${data.aws_partition.current.id}:acm:us-east-1:${data.aws_caller_identity.current.account_id}:certificate/*",
+      "arn:aws:route53:::hostedzone/*",
+      "arn:aws:route53:::change/*",
     ]
   }
 
@@ -242,6 +254,10 @@ data "aws_iam_policy_document" "rw" {
       "appsync:DeleteResolver",
       "appsync:UpdateResolver",
       "appsync:SetWebACL",
+      "appsync:CreateDomainName",
+      "appsync:DeleteDomainName",
+      "appsync:AssociateApi",
+      "appsync:DisassociateApi",
       "s3:CreateBucket",
       "cloudfront:CreateOriginAccessControl",
       "cloudfront:DeleteOriginAccessControl",
@@ -249,6 +265,12 @@ data "aws_iam_policy_document" "rw" {
       "cloudfront:UpdateDistribution",
       "cloudfront:DeleteDistribution",
       "cloudfront:TagResource",
+      "cloudfront:CreateOriginRequestPolicy",
+      "cloudfront:CreateCachePolicy",
+      "cloudfront:UpdateOriginRequestPolicy",
+      "cloudfront:CreateResponseHeadersPolicy",
+      "cloudfront:DeleteOriginRequestPolicy",
+      "cloudfront:DeleteResponseHeadersPolicy",
     ]
     resources = [
       "*"
@@ -384,6 +406,22 @@ data "aws_iam_policy_document" "rw" {
 
   statement {
     actions = [
+      "dynamodb:Describe*",
+      "dynamodb:Create*",
+      "dynamodb:Delete*",
+      "dynamodb:Batch*",
+      "dynamodb:Get*",
+      "dynamodb:Query",
+      "dynamodb:Delete*",
+      "dynamodb:Update*",
+      "dynamodb:Put*",
+      "dynamodb:TagResource",
+      "dynamodb:UntagResource",
+      "dynamodb:List*",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "cloudfront:CreateInvalidation",
       "states:CreateStateMachine",
       "states:UpdateStateMachine",
       "states:DeleteStateMachine",
@@ -400,12 +438,21 @@ data "aws_iam_policy_document" "rw" {
       "pipes:CreatePipe",
       "pipes:DeletePipe",
       "pipes:UpdatePipe",
+      "acm:RequestCertificate",
+      "acm:AddTagsToCertificate",
+      "route53:ChangeResourceRecordSets",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
       "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
+      "arn:${data.aws_partition.current.id}:acm:us-east-1:${data.aws_caller_identity.current.account_id}:certificate/*",
+      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui/*",
+      "arn:${data.aws_partition.current.id}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
+      "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}",
+      "arn:aws:route53:::hostedzone/*",
+      "arn:aws:route53:::change/*",
     ]
   }
 }
@@ -422,19 +469,6 @@ data "aws_iam_policy_document" "rw_boundary" {
     ]
   }
 
-  statement {
-    sid = "s3ui"
-    actions = [
-      "s3:GetObject",
-      "s3:PutObject",
-      "s3:DeleteObject",
-      "cloudfront:CreateInvalidation",
-    ]
-    resources = [
-      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui/*",
-      "arn:${data.aws_partition.current.id}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
-    ]
-  }
 
   statement {
     sid = "ListState"
@@ -447,27 +481,6 @@ data "aws_iam_policy_document" "rw_boundary" {
     resources = [
       "${var.state_bucket_arn}/${var.environment}/terraform.tfstate",
       "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-*",
-    ]
-  }
-
-  statement {
-    sid = "Dynamodb"
-    actions = [
-      "dynamodb:Describe*",
-      "dynamodb:Create*",
-      "dynamodb:Delete*",
-      "dynamodb:Batch*",
-      "dynamodb:Get*",
-      "dynamodb:Query",
-      "dynamodb:Delete*",
-      "dynamodb:Update*",
-      "dynamodb:Put*",
-      "dynamodb:TagResource",
-      "dynamodb:UntagResource",
-      "dynamodb:List*",
-    ]
-    resources = [
-      "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
     ]
   }
 
@@ -498,6 +511,12 @@ data "aws_iam_policy_document" "rw_boundary" {
       "appsync:DeleteResolver",
       "appsync:UpdateResolver",
       "appsync:GetResolver",
+      "appsync:CreateDomainName",
+      "appsync:GetDomainName",
+      "appsync:DeleteDomainName",
+      "appsync:AssociateApi",
+      "appsync:DisassociateApi",
+      "appsync:GetApiAssociation",
       "s3:CreateBucket",
       "cloudfront:List*",
       "cloudfront:Get*Policy",
@@ -509,10 +528,17 @@ data "aws_iam_policy_document" "rw_boundary" {
       "cloudfront:DeleteDistribution",
       "cloudfront:TagResource",
       "cloudfront:GetDistribution",
+      "cloudfront:CreateOriginRequestPolicy",
+      "cloudfront:CreateCachePolicy",
+      "cloudfront:UpdateOriginRequestPolicy",
+      "cloudfront:CreateResponseHeadersPolicy",
+      "cloudfront:DeleteOriginRequestPolicy",
+      "cloudfront:DeleteResponseHeadersPolicy",
       "iam:SimulatePrincipalPolicy",
       "cloudwatch:CreateLogStream",
       "cloudwatch:PutLogEvents",
       "cloudwatch:CreateLogGroup",
+      "route53:ListHostedZones",
     ]
     resources = [
       "*"
@@ -672,12 +698,24 @@ data "aws_iam_policy_document" "rw_boundary" {
       "pipes:UpdatePipe",
       "pipes:DescribePipe",
       "pipes:ListTagsForResource",
+      "acm:RequestCertificate",
+      "acm:AddTagsToCertificate",
+      "acm:DescribeCertificate",
+      "acm:ListTagsForCertificate",
+      "route53:GetHostedZone",
+      "route53:ListTagsForResource",
+      "route53:ChangeResourceRecordSets",
+      "route53:GetChange",
+      "route53:ListResourceRecordSets",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
       "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
+      "arn:${data.aws_partition.current.id}:acm:us-east-1:${data.aws_caller_identity.current.account_id}:certificate/*",
+      "arn:aws:route53:::hostedzone/*",
+      "arn:aws:route53:::change/*",
     ]
   }
 

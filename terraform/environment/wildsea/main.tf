@@ -10,6 +10,11 @@ variable "saml_metadata_url" {
   default     = "TODO"
 }
 
+variable "domain_name" {
+  description = "DNS Domain to put records into"
+  type        = string
+}
+
 locals {
   app_name = "Wildsea"
   prefix   = "${local.app_name}-${var.environment}"
@@ -29,10 +34,26 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  alias  = "us-east-1"
+  region = "us-east-1"
+  default_tags {
+    tags = {
+      Application = local.prefix
+    }
+  }
+}
+
 module "wildsea" {
   source = "../../module/wildsea"
 
   saml_metadata_url = var.saml_metadata_url
   prefix            = local.prefix
-  log_level         = "ERROR"
+  domain_name       = var.domain_name
+  log_level         = "ALL"
+
+  providers = {
+    aws           = aws
+    aws.us-east-1 = aws.us-east-1
+  }
 }

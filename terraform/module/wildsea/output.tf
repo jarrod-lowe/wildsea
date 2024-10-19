@@ -11,7 +11,10 @@ output "cognito_web_client_id" {
 }
 
 output "graphql_uri" {
-  value = aws_appsync_graphql_api.graphql.uris["GRAPHQL"]
+  //value = aws_appsync_graphql_api.graphql.uris["GRAPHQL"]
+  value = "https://${local.appsync_domain_name}/graphql"
+  //value = "https://${aws_cloudfront_distribution.cdn.domain_name}/graphql"
+  //value = "https://${local.cdn_domain_name}/graphql"
 }
 
 output "region" {

@@ -56,6 +56,7 @@ jobs:
         variables: |
           environment="${{ vars.ENVIRONMENT }}"
           saml_metadata_url="${{ secrets.SAML_METADATA_URL }}"
+          domain_name="${{ vars.DOMAIN_NAME }}"
         backend_config:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate

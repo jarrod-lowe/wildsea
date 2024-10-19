@@ -18,9 +18,12 @@ Wildsea companion app
 
 * Create an AWS Account for deployment
   * Define a profile in your `~/.aws/config` to access it as admin for the initial setup deploys
+* Create a route53 hosted zone, enable DNSSEC, and perform the necessary delegations
 * Create an S3 bucket `terraform-state-<accountid>`
 * Create `terraform/environment/aws/terraform.tfvars`
   * Add `workspace = "<your github org>"` to the vars file
+* Create `terraform/environment/wildsea-dev/terraform.tfvars`
+  * Add `domain = "<domain>"` to the route53 zone domain name
 * Run `.AWS_PROFILE=<profile> ./terraform/environment/github/aws.sh <aws account id>`
 * Log into Codacy, and connect the repo
   * Configure the rule to maximum
@@ -40,6 +43,7 @@ Wildsea companion app
 * Run `.AWS_PROFILE=<profile> ./terraform/environment/github/deploy.sh <aws account id>`
 * Install <https://github.com/apps/renovate> into the repo
 * Go into the two environments, and set a secret called `SAML_METADATA_URL` with the metadata URL for you SAML (See Jumpcloud for an example)
+* Go into the two environments, and set a variable `DOMAIN_NAME` with the DNS zone set up earlier
 
 To automate:
 
