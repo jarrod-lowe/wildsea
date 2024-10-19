@@ -406,10 +406,6 @@ data "aws_iam_policy_document" "rw" {
 
   statement {
     actions = [
-      "s3:GetObject",
-      "s3:PutObject",
-      "s3:DeleteObject",
-      "cloudfront:CreateInvalidation",
       "states:CreateStateMachine",
       "states:UpdateStateMachine",
       "states:DeleteStateMachine",
@@ -436,8 +432,6 @@ data "aws_iam_policy_document" "rw" {
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
       "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
       "arn:${data.aws_partition.current.id}:acm:us-east-1:${data.aws_caller_identity.current.account_id}:certificate/*",
-      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui/*",
-      "arn:${data.aws_partition.current.id}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
       "arn:aws:route53:::hostedzone/*",
       "arn:aws:route53:::change/*",
     ]
@@ -613,33 +607,11 @@ data "aws_iam_policy_document" "rw_boundary" {
 
   statement {
     actions = [
-      "appsync:StartSchemaCreation",
-      "appsync:UpdateGraphqlApi",
-      "appsync:DeleteGraphqlApi",
-      "appsync:TagResource",
-      "appsync:UntagResource",
-    ]
-    resources = [
-      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*",
-    ]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceTag/Name"
-      values   = [local.prefix]
-    }
-  }
-
-  statement {
-    actions = [
       "appsync:GetGraphqlApi",
-    ]
-    resources = [
-      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*",
-    ]
-  }
-
-  statement {
-    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "cloudfront:CreateInvalidation",
       "logs:CreateLogGroup",
       "logs:DeleteLogGroup",
       "logs:TagResource",
@@ -713,6 +685,9 @@ data "aws_iam_policy_document" "rw_boundary" {
       "arn:aws:wafv2:ap-southeast-2:021891603679:regional/webacl/*/*",
       "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*",
       "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
+      "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui/*",
+      "arn:${data.aws_partition.current.id}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
+      "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*",
     ]
   }
 
@@ -747,6 +722,11 @@ data "aws_iam_policy_document" "rw_boundary" {
       "wafv2:AssociateWebACL",
       "wafv2:ListWebACLs",
       "wafv2:ListTagsForResource",
+      "appsync:StartSchemaCreation",
+      "appsync:UpdateGraphqlApi",
+      "appsync:DeleteGraphqlApi",
+      "appsync:TagResource",
+      "appsync:UntagResource",
     ]
     resources = ["*"]
     condition {
