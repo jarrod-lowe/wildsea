@@ -98,6 +98,8 @@
         }
       `;
     
+
+    
       export const updatedPlayerSubscription = `
         subscription updatedPlayer($gameId: ID!) {
           updatedPlayer(gameId: $gameId) {
