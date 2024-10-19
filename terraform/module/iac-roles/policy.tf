@@ -406,18 +406,6 @@ data "aws_iam_policy_document" "rw" {
 
   statement {
     actions = [
-      "dynamodb:Describe*",
-      "dynamodb:Create*",
-      "dynamodb:Delete*",
-      "dynamodb:Batch*",
-      "dynamodb:Get*",
-      "dynamodb:Query",
-      "dynamodb:Delete*",
-      "dynamodb:Update*",
-      "dynamodb:Put*",
-      "dynamodb:TagResource",
-      "dynamodb:UntagResource",
-      "dynamodb:List*",
       "s3:GetObject",
       "s3:PutObject",
       "s3:DeleteObject",
@@ -450,7 +438,6 @@ data "aws_iam_policy_document" "rw" {
       "arn:${data.aws_partition.current.id}:acm:us-east-1:${data.aws_caller_identity.current.account_id}:certificate/*",
       "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui/*",
       "arn:${data.aws_partition.current.id}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
-      "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}",
       "arn:aws:route53:::hostedzone/*",
       "arn:aws:route53:::change/*",
     ]
@@ -662,15 +649,6 @@ data "aws_iam_policy_document" "rw_boundary" {
       "logs:ListTagsForResource",
       "s3:DeleteBucket",
       "s3:PutBucket*",
-    ]
-    resources = [
-      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*",
-      "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
-    ]
-  }
-
-  statement {
-    actions = [
       "states:StartExecution",
       "states:CreateStateMachine",
       "states:UpdateStateMachine",
@@ -707,6 +685,20 @@ data "aws_iam_policy_document" "rw_boundary" {
       "route53:ChangeResourceRecordSets",
       "route53:GetChange",
       "route53:ListResourceRecordSets",
+      "dynamodb:Describe*",
+      "dynamodb:Create*",
+      "dynamodb:Delete*",
+      "dynamodb:Batch*",
+      "dynamodb:Get*",
+      "dynamodb:Query",
+      "dynamodb:Delete*",
+      "dynamodb:Update*",
+      "dynamodb:Put*",
+      "dynamodb:TagResource",
+      "dynamodb:UntagResource",
+      "dynamodb:List*",
+      "wafv2:CreateWebACL",
+      "wafv2:UpdateWebACL",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
@@ -714,8 +706,13 @@ data "aws_iam_policy_document" "rw_boundary" {
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
       "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
       "arn:${data.aws_partition.current.id}:acm:us-east-1:${data.aws_caller_identity.current.account_id}:certificate/*",
+      "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}",
       "arn:aws:route53:::hostedzone/*",
       "arn:aws:route53:::change/*",
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*",
+      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/webacl/*/*",
+      "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*",
+      "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
     ]
   }
 
@@ -744,32 +741,10 @@ data "aws_iam_policy_document" "rw_boundary" {
 
   statement {
     actions = [
-      "wafv2:CreateWebACL",
-      "wafv2:UpdateWebACL",
-    ]
-    resources = [
-      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/managedruleset/*/*",
-      "arn:aws:wafv2:ap-southeast-2:021891603679:regional/webacl/*/*",
-    ]
-  }
-
-  statement {
-    actions = [
       "wafv2:DeleteWebACL",
       "wafv2:UpdatebACL",
       "wafv2:ListTagsForResource",
       "wafv2:AssociateWebACL",
-    ]
-    resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceTag/Name"
-      values   = [local.prefix]
-    }
-  }
-
-  statement {
-    actions = [
       "wafv2:ListWebACLs",
       "wafv2:ListTagsForResource",
     ]
