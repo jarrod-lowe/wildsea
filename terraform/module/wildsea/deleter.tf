@@ -218,47 +218,40 @@ resource "aws_iam_role_policy_attachment" "deleter_bus" {
   policy_arn = aws_iam_policy.deleter_bus.arn
 }
 
-resource "aws_cloudformation_stack" "delete_action" {
-  # checkov:skip=CKV_AWS_124: Do not want a SNS notification
-  name = "${var.prefix}-delete-actions"
-  template_body = jsonencode({
-    AWSTemplateFormatVersion = "2010-09-09"
-    Resources = {
-      "DeletePlayerRule" = {
-        Type = "AWS::Events::Rule"
-        Properties = {
-          Name         = "${var.prefix}-delete-player"
-          Description  = "Delete players on deleted game"
-          EventBusName = aws_cloudwatch_event_bus.bus.name
-          State        = "ENABLED"
-          EventPattern = jsonencode({
-            "source"      = [local.delete_source]
-            "detail-type" = [local.delete_player_detail_type]
-          })
-          Targets = [{
-            Arn     = local.graphql_ep_arn
-            Id      = "DeletePlayer"
-            RoleArn = aws_iam_role.deleter_bus.arn
-            InputTransformer = {
-              InputPathsMap = {
-                gameId = "$.detail.gameId"
-                userId = "$.detail.userId"
-              }
-              InputTemplate = <<-EOT
-                {
-                    "input": {
-                        "gameId": "<gameId>",
-                        "userId": "<userId>"
-                    }
-                }
-              EOT
-            }
-            AppSyncParameters = {
-              GraphQLOperation = local.graphql_delete_player_mutation
-            }
-          }]
-        }
-      }
-    }
+resource "aws_cloudwatch_event_rule" "delete_rule" {
+  name           = "${var.prefix}-delete-player"
+  description    = "Delete players on deleted game"
+  event_bus_name = aws_cloudwatch_event_bus.bus.name
+  state          = "ENABLED"
+  event_pattern = jsonencode({
+    "source"      = [local.delete_source]
+    "detail-type" = [local.delete_player_detail_type]
   })
+}
+
+resource "aws_cloudwatch_event_target" "delete_target" {
+  target_id      = "appsync-delete-player"
+  rule           = aws_cloudwatch_event_rule.delete_rule.name
+  arn            = local.graphql_ep_arn
+  role_arn       = aws_iam_role.deleter_bus.arn
+  event_bus_name = aws_cloudwatch_event_bus.bus.name
+
+  input_transformer {
+    input_paths = {
+      gameId = "$.detail.gameId"
+      userId = "$.detail.userId"
+    }
+    input_template = <<-EOT
+      {
+          "input": {
+              "gameId": "<gameId>",
+              "userId": "<userId>"
+          }
+      }
+    EOT
+  }
+
+  appsync_target {
+    graphql_operation = local.graphql_delete_player_mutation
+  }
 }
