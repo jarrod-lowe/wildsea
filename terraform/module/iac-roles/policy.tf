@@ -140,8 +140,6 @@ data "aws_iam_policy_document" "ro" {
       "events:ListTagsForResource",
       "events:DescribeRule",
       "events:ListTargetsByRule",
-      "cloudformation:DescribeStacks",
-      "cloudformation:GetTemplate",
       "pipes:DescribePipe",
       "pipes:ListTagsForResource",
     ]
@@ -149,7 +147,6 @@ data "aws_iam_policy_document" "ro" {
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
-      "arn:${data.aws_partition.current.id}:cloudformation:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stack/*",
       "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
     ]
   }
@@ -399,9 +396,6 @@ data "aws_iam_policy_document" "rw" {
       "events:DeleteRule",
       "events:PutTargets",
       "events:RemoveTargets",
-      "cloudformation:CreateStack",
-      "cloudformation:DeleteStack",
-      "cloudformation:UpdateStack",
       "pipes:TagResource",
       "pipes:CreatePipe",
       "pipes:DeletePipe",
@@ -411,7 +405,6 @@ data "aws_iam_policy_document" "rw" {
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
-      "arn:${data.aws_partition.current.id}:cloudformation:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stack/*",
       "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
     ]
   }
@@ -673,11 +666,6 @@ data "aws_iam_policy_document" "rw_boundary" {
       "events:ListTagsForResource",
       "events:DescribeRule",
       "events:ListTargetsByRule",
-      "cloudformation:CreateStack",
-      "cloudformation:DeleteStack",
-      "cloudformation:UpdateStack",
-      "cloudformation:DescribeStacks",
-      "cloudformation:GetTemplate",
       "pipes:TagResource",
       "pipes:CreatePipe",
       "pipes:DeletePipe",
@@ -689,7 +677,6 @@ data "aws_iam_policy_document" "rw_boundary" {
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:event-bus/*",
       "arn:${data.aws_partition.current.id}:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/*",
-      "arn:${data.aws_partition.current.id}:cloudformation:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stack/*",
       "arn:${data.aws_partition.current.id}:pipes:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:pipe/*",
     ]
   }
