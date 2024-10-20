@@ -8,6 +8,7 @@ import { messages } from './translations';
 import { TopBar } from "./frame";
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) => {
     const client = generateClient();
@@ -15,10 +16,12 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
     const [error, setError] = useState<string | null>(null);
     const [gameName, setGameName] = useState('');
     const [gameDescription, setGameDescription] = useState('');
+    const [canCreateGame, setCanCreateGame] = useState(false);
     const intl = useIntl();
 
     useEffect(() => {
         fetchGames();
+        checkCreateGamePermission();
     }, []);
 
     const fetchGames = async () => {
@@ -29,6 +32,17 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
             setGames(response.data.getGames);
         } catch (error) {
             setError(intl.formatMessage({ id: 'errorFetchingGames' }) + JSON.stringify(error));
+        }
+    };
+
+    const checkCreateGamePermission = async () => {
+        try {
+            const authSession = await fetchAuthSession();
+            const userGroups = authSession?.tokens?.accessToken.payload["cognito:groups"] as string[] | undefined;
+            setCanCreateGame(userGroups?.includes('CreateGame') || false);
+        } catch (error) {
+            console.error("Error checking user permissions:", error);
+            setError(intl.formatMessage({ id: 'errorCheckingPermissions' }));
         }
     };
 
@@ -76,27 +90,31 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                     </ul>
                 </div>
                 <div className="newgame">
-                    <h1>Create New Game</h1>
-                    <form onSubmit={handleCreateGame} aria-label="Create New Game">
-                        <label htmlFor="gameName">Game Name:</label>
-                        <input 
-                            type="text" 
-                            id="gameName" 
-                            name="gameName" 
-                            required 
-                            value={gameName}
-                            onChange={(e) => setGameName(e.target.value)}
-                            placeholder={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
-                        />
-                        <label htmlFor="gameDescription">Game Description:</label>
-                        <SectionItemDescription 
-                            id="gameDescription"
-                            value={gameDescription}
-                            onChange={(d) => setGameDescription(d)}
-                            placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
-                        />
-                        <button type="submit">Create Game</button>
-                    </form>
+                    <h1><FormattedMessage id="createNewGame" /></h1>
+                    {canCreateGame ? (
+                        <form onSubmit={handleCreateGame} aria-label={intl.formatMessage({ id: "createNewGame" })}>
+                            <label htmlFor="gameName"><FormattedMessage id="gameName" /></label>
+                            <input 
+                                type="text" 
+                                id="gameName" 
+                                name="gameName" 
+                                required 
+                                value={gameName}
+                                onChange={(e) => setGameName(e.target.value)}
+                                placeholder={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
+                            />
+                            <label htmlFor="gameDescription">Game Description:</label>
+                            <SectionItemDescription 
+                                id="gameDescription"
+                                value={gameDescription}
+                                onChange={(d) => setGameDescription(d)}
+                                placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
+                            />
+                            <button type="submit"><FormattedMessage id="createGame" /></button>
+                        </form>
+                    ) : (
+                        <p><FormattedMessage id="createGamePermissionDenied" /></p>
+                    )}
                     {error && (
                         <div role="alert" className="error-container">
                             <p className="error-message">{error}</p>

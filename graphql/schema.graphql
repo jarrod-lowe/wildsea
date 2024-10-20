@@ -17,7 +17,7 @@ directive @aws_cognito_user_pools(
 ) on FIELD_DEFINITION | OBJECT
 
 type Mutation {
-    createGame(input: CreateGameInput!): GameSummary! @aws_cognito_user_pools
+    createGame(input: CreateGameInput!): GameSummary! @aws_cognito_user_pools(cognito_groups: ["CreateGame"])
     joinGame(input: JoinGameInput!): PlayerSheetSummary! @aws_cognito_user_pools
     updateGame(input: UpdateGameInput!): GameSummary! @aws_cognito_user_pools
     deleteGame(input: DeleteGameInput!): GameSummary! @aws_cognito_user_pools

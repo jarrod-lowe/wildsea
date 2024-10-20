@@ -26,6 +26,8 @@ export const messages = {
     'getUserEmailError': 'Unable to get user details.',
     'fetchGameToRetry': 'Failed to get game data, still trying...',
     'noGame': 'This game does not exist, or you are not a player in it.',
+    'createGamePermissionDenied': 'You cannot create new games.',
+    'errorCheckingPermissions': 'Failed to get permissions information.',
 
     'create': 'Add',
     'joinToken': 'Join Token',
