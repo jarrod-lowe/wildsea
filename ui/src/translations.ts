@@ -4,6 +4,11 @@ export const messages = {
     'pleaseLogin': 'Please Log In',
     'unableToJoin': 'Unable to join game',
 
+    'footer.privacyPolicy': 'Privacy Policy and Terms of Service',
+    'footer.github': 'GitHub Repository',
+    'footer.wildseaOfficial': 'Official Wildsea Site',
+    'footer.disclaimer': 'This app is not affiliated with or endorsed by the owners of Wildsea.',
+
     'availableGames': 'Available Games',
     'createNewGame': 'Create New Game',
     'gameName': 'Game Name:',
