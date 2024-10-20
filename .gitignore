@@ -58,6 +58,7 @@ ui/public/*
 !ui/public/.emptyDir
 !ui/public/style.css
 !ui/public/favicon.webp
+!ui/public/tos.html
 ui/dist/*
 !ui/dist/.emptyDir
 ui/.push

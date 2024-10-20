@@ -104,7 +104,7 @@ If you do not set the secret, then Cognito will be used as the identity source.
   * User support email = yourself
   * App Logo: TODO
   * App domain homepage = <https://YOURDOMAIN> or <https://wildsea-dev.YOURDOMAIN>
-  * Set the privacy policy link and terms of service link to the same page
+  * Set the privacy policy link and terms of service link to the same url + '/tos.html'
   * Add an authorised domain of the top level of YOURDOMAIN
   * Add an authorised domain of the top level of "amazoncognito.com"
   * Add an appropriate email for contact info
