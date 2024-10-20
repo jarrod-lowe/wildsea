@@ -3,9 +3,14 @@ import { GamesMenu } from '../src/gamesMenu';
 import { generateClient } from "aws-amplify/api";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { PlayerSheetSummary } from "../../appsync/graphql";
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 jest.mock("aws-amplify/api", () => ({
   generateClient: jest.fn(),
+}));
+
+jest.mock('aws-amplify/auth', () => ({
+  fetchAuthSession: jest.fn(),
 }));
 
 jest.mock("../src/gamesMenu", () => {
@@ -24,6 +29,7 @@ describe('GamesMenu', () => {
   beforeEach(() => {
     mockGraphql = jest.fn();
     (generateClient as jest.Mock).mockReturnValue({ graphql: mockGraphql });
+    (fetchAuthSession as jest.Mock).mockResolvedValue({ tokens: { accessToken: { payload: { "cognito:groups": ["CreateGame"] } } } });
   });
 
   it('renders without crashing', async () => {

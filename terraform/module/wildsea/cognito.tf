@@ -133,6 +133,12 @@ resource "aws_cognito_identity_provider" "google-oauth" {
   }
 }
 
+resource "aws_cognito_user_group" "group_CreateGame" {
+  name         = "CreateGame"
+  user_pool_id = aws_cognito_user_pool.cognito.id
+  description  = "Users who may create new games"
+}
+
 output "user_pool_id" {
   description = "Cognito User Pool ID"
   value       = aws_cognito_user_pool.cognito.id
