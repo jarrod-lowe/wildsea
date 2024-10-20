@@ -24,6 +24,14 @@ resource "aws_cognito_identity_provider" "idp" {
   }
 }
 
+locals {
+  providers = compact([
+    "COGNITO",
+    var.saml_metadata_url == "" ? "" : aws_cognito_identity_provider.idp[0].provider_name,
+    local.enable_google_auth ? aws_cognito_identity_provider.google-oauth[0].provider_name : "",
+  ])
+}
+
 resource "aws_cognito_user_pool_client" "cognito" {
   name                                 = var.prefix
   user_pool_id                         = aws_cognito_user_pool.cognito.id
@@ -34,7 +42,7 @@ resource "aws_cognito_user_pool_client" "cognito" {
   logout_urls                          = ["http://localhost:5173/", "https://${local.cdn_domain_name}/"]
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["openid", "aws.cognito.signin.user.admin"]
-  supported_identity_providers         = [var.saml_metadata_url == "" ? "COGNITO" : aws_cognito_identity_provider.idp[0].provider_name]
+  supported_identity_providers         = local.providers
 }
 
 resource "aws_cognito_identity_pool" "cognito" {
@@ -104,6 +112,25 @@ resource "aws_iam_role_policy_attachment" "cognito" {
 resource "aws_cognito_user_pool_domain" "cognito" {
   domain       = lower(var.prefix)
   user_pool_id = aws_cognito_user_pool.cognito.id
+}
+
+resource "aws_cognito_identity_provider" "google-oauth" {
+  count = local.enable_google_auth ? 1 : 0
+
+  user_pool_id  = aws_cognito_user_pool.cognito.id
+  provider_name = "Google"
+  provider_type = "Google"
+
+  provider_details = {
+    authorize_scopes = "profile openid email"
+    client_id        = var.google_client_id
+    client_secret    = var.google_client_secret
+  }
+
+  attribute_mapping = {
+    email    = "email"
+    username = "sub"
+  }
 }
 
 output "user_pool_id" {

@@ -54,6 +54,8 @@ jobs:
           environment="${{ vars.ENVIRONMENT }}"
           saml_metadata_url="${{ secrets.SAML_METADATA_URL }}"
           domain_name="${{ vars.DOMAIN_NAME }}"
+          google_client_id="${{ secrets.GOOGLE_CLIENT_ID }}"
+          google_client_secret="${{ secrets.GOOGLE_CLIENT_SECRET }}"
         backend_config:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate

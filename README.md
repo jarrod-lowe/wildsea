@@ -93,6 +93,34 @@ setup, you will need to re-run the deployment after adding the secrets.
 
 If you do not set the secret, then Cognito will be used as the identity source.
 
+## Google OAUTH2 Integration
+
+* Go to <https://console.developers.google.com>
+* Create a new projects "wildsea-dev" and "wildsea"
+* Go to each new project and:
+  * Go rto "OAuth consent screen"
+  * Select "External" and "Create"
+  * App Name = "Wildsea" (or "Wildsea (dev)")
+  * User support email = yourself
+  * App Logo: TODO
+  * App domain homepage = <https://YOURDOMAIN> or <https://wildsea-dev.YOURDOMAIN>
+  * Set the privacy policy link and terms of service link to the same page
+  * Add an authorised domain of the top level of YOURDOMAIN
+  * Add an authorised domain of the top level of "amazoncognito.com"
+  * Add an appropriate email for contact info
+  * Save
+  * Add the scope "openid", Update and Save & Continue
+  * Add your test users and Save and Continue
+  * Back to dashboard
+  * Go to "Credentials", and "Create Credentials", then "OAuth Client ID"
+  * Name it "wildsea" or "wildsea-dev"
+  * For the autorised javascript origins, add your cognito url available from the app integration page of the user pool - e.g. <https://yourDomainPrefix.auth.region.amazoncognito.com> (If it is not set up yet, add a dummy value and come back and change this later)
+  * Set the authorised redirect URIs to the same URL, with `/oauth2/idpresponse` added onto the end
+  * Create
+  * For dev: Add the client ID and client secret to `terraform/environment/wildsea-dev/terraform.tfvars` as `google_client_id` and `google_client_secret`
+  * For primary: Add the client ID and client secret as secrets in the github environments, as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+  * TODO: Publish App
+
 ## Development Environment
 
 Install esbuild with `sudo npm install -g --save-exact --save-dev esbuild`

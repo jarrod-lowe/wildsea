@@ -39,9 +39,24 @@ variable "domain_name" {
   type        = string
 }
 
+variable "google_client_id" {
+  description = "Google client ID"
+  sensitive   = true
+  type        = string
+  nullable    = true
+}
+
+variable "google_client_secret" {
+  description = "Google client secret"
+  sensitive   = true
+  type        = string
+  nullable    = true
+}
+
 locals {
   appsync_domain_name = "api-${lower(var.prefix)}.${var.domain_name}"
   cdn_domain_name     = var.prefix == "Wildsea-primary" ? var.domain_name : "${lower(var.prefix)}.${var.domain_name}"
+  enable_google_auth  = var.google_client_id != null && var.google_client_secret != null
 }
 
 data "aws_route53_zone" "zone" {
