@@ -11,6 +11,7 @@ import { joinGameMutation } from "../../appsync/schema";
 import type { PlayerSheetSummary } from "../../appsync/graphql";
 import { ToastProvider, useToast } from "./notificationToast";
 import Modal from 'react-modal';
+import FooterBar from './footerBar';
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const AppGame = React.lazy(() => import("./game"))
@@ -135,6 +136,7 @@ export function AppContent() {
             <div>
                 <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} gameDescription="" isFirefly={false}/>
                 <div><FormattedMessage id="pleaseLogin" /></div>
+                <FooterBar />
             </div>
         )
     }
@@ -144,6 +146,7 @@ export function AppContent() {
             <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
                 {gameId ? <AppGame id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
             </Suspense>
+            <FooterBar />
         </div>
     );
 }

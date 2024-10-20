@@ -747,3 +747,35 @@ button:hover {
 .create-ship-button:hover {
   background-color: #45a049;
 }
+
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f8f9fa;
+  padding: 10px;
+  text-align: center;
+  border-top: 1px solid #dee2e6;
+}
+
+.footer-bar a {
+  margin: 0 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.footer-bar a:hover {
+  text-decoration: underline;
+}
+
+.footer-bar p {
+  margin-top: 5px;
+  font-size: 0.8em;
+  color: #6c757d;
+}
+
+.game-container,
+.gameslist {
+  margin-bottom: 5em;
+}
