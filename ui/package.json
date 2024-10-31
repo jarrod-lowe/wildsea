@@ -22,7 +22,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "6.6.2",
+    "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.0.1",
     "@types/jest": "29.5.14",
     "@types/md5": "2.3.5",
