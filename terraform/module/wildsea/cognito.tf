@@ -7,7 +7,7 @@ resource "aws_cognito_user_pool" "cognito" {
 }
 
 resource "aws_cognito_identity_provider" "idp" {
-  for_each      = var.saml_metadata_url == "" ? toset([]) : toset([1])
+  for_each      = nonsensitive(var.saml_metadata_url) == "" ? toset([]) : toset([1])
   user_pool_id  = aws_cognito_user_pool.cognito.id
   provider_name = "SAML"
   provider_type = "SAML"
