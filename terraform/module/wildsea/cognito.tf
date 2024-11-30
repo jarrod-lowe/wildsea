@@ -7,7 +7,7 @@ resource "aws_cognito_user_pool" "cognito" {
 }
 
 resource "aws_cognito_identity_provider" "idp" {
-  for_each      = var.saml_metadata_url == "" ? toset([]) : toset([1])
+  for_each      = nonsensitive(var.saml_metadata_url) == "" ? toset([]) : toset([1])
   user_pool_id  = aws_cognito_user_pool.cognito.id
   provider_name = "SAML"
   provider_type = "SAML"
@@ -122,9 +122,15 @@ resource "aws_cognito_identity_provider" "google-oauth" {
   provider_type = "Google"
 
   provider_details = {
-    authorize_scopes = "profile openid email"
-    client_id        = var.google_client_id
-    client_secret    = var.google_client_secret
+    authorize_scopes              = "profile openid email"
+    client_id                     = var.google_client_id
+    client_secret                 = var.google_client_secret
+    attributes_url                = "https://people.googleapis.com/v1/people/me?personFields="
+    attributes_url_add_attributes = true
+    authorize_url                 = "https://accounts.google.com/o/oauth2/v2/auth"
+    oidc_issuer                   = "https://accounts.google.com"
+    token_request_method          = "POST"
+    token_url                     = "https://www.googleapis.com/oauth2/v4/token"
   }
 
   attribute_mapping = {
