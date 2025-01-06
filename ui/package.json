@@ -14,7 +14,7 @@
     "react-markdown": "9.0.1",
     "react-modal": "3.16.3",
     "react-router-dom": "7.1.1",
-    "uuid": "11.0.3"
+    "uuid": "11.0.4"
   },
   "scripts": {
     "dev": "vite",
