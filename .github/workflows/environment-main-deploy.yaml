@@ -42,7 +42,7 @@ jobs:
         coverage-reports: graphql/coverage/lcov.info
 
     - name: Configure AWS Access
-      uses: aws-actions/configure-aws-credentials@16fec6080fdb89d4b237dee411b7bf8f3658ec97
+      uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722
       with:
         role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE }}
         role-session-name: GitHubDeploy-${{ vars.ENVIRONMENT }}
