@@ -36,6 +36,6 @@
     "node-fetch": "3.3.2",
     "ts-jest": "29.2.6",
     "typescript": "5.8.2",
-    "vite": "6.2.1"
+    "vite": "6.2.2"
   }
 }
