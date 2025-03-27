@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.5",
-    "@types/node": "22.13.13",
+    "@types/node": "22.13.14",
     "fs": "0.0.1-security",
     "path": "0.12.7",
     "typescript": "5.8.2"
