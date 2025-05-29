@@ -47,7 +47,7 @@ jobs:
         aws-region: ${{ vars.AWS_REGION }}
 
     - name: terraform plan
-      uses: dflook/terraform-plan@2c1e6cc4d10cb56cf366d99b01fbf15307df65b5
+      uses: dflook/terraform-plan@2ec7b1cfea872f089d039e9b6e7ebb3fd7717799
       with:
         path: terraform/environment/wildsea
         variables: |
