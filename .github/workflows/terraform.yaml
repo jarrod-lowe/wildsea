@@ -17,7 +17,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
     - name: Validate Terraform
-      uses: dflook/terraform-validate@cfdea12135be7eb8960fbb272fb2f99c63a872f1
+      uses: dflook/terraform-validate@bdf9c8d868e835f27e59ded7d6a9139bddbbabc6
       with:
         path: terraform/environment/wildsea
       
