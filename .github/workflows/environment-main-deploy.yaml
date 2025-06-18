@@ -42,14 +42,14 @@ jobs:
         coverage-reports: graphql/coverage/lcov.info
 
     - name: Configure AWS Access
-      uses: aws-actions/configure-aws-credentials@a95656fcd9ec16a226c7099657b9fc91cc777601
+      uses: aws-actions/configure-aws-credentials@3bb878b6ab43ba8717918141cd07a0ea68cfe7ea
       with:
         role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE }}
         role-session-name: GitHubDeploy-${{ vars.ENVIRONMENT }}
         aws-region: ${{ vars.AWS_REGION }}
 
     - name: terraform apply
-      uses: dflook/terraform-apply@70dfc63e60eb6a958c5673b004acce250432ecdc
+      uses: dflook/terraform-apply@d62f3b833781560bf16193fd56940796a44f70ec
       id: terraform
       with:
         path: terraform/environment/wildsea
