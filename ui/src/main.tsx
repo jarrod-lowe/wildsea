@@ -16,8 +16,8 @@ import FooterBar from './footerBar';
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const AppGame = React.lazy(() => import("./game"))
 
-export function getPageURL() {
-    const url = new URL(window.location.href);
+export function getPageURL(location: Location = window.location) {
+    const url = new URL(location.href);
     return url.origin + url.pathname;
 }
 
@@ -151,8 +151,8 @@ export function AppContent() {
     );
 }
 
-export function getGameId(): string | null {
-    const urlParams = new URLSearchParams(window.location.search);
+export function getGameId(location: Location = window.location): string | null {
+    const urlParams = new URLSearchParams(location.search);
     return urlParams.get('gameId');
 }
 
