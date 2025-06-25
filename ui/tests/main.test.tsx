@@ -41,21 +41,12 @@ jest.mock('../src/main', () => {
 
 describe('main.tsx', () => {
   beforeEach(() => {
-      // Create a root element for each test
+    // Create a root element for each test
     const root = document.createElement('div');
     root.id = 'root';
     document.body.appendChild(root);
 
     jest.clearAllMocks();
-    Object.defineProperty(window, 'location', {
-      value: {
-        href: 'http://localhost:3000',
-        origin: 'http://localhost:3000',
-        pathname: '/',
-        search: '',
-      },
-      writable: true,
-    });
   });
 
   test('mergeConfig updates amplifyconfig correctly', async () => {
@@ -84,16 +75,16 @@ describe('main.tsx', () => {
   });
 
   test('getPageURL returns correct URL', () => {
-    expect(getPageURL()).toBe('http://localhost:3000/');
+    const fakeLocation = {
+      href: 'http://localhost:3000/',
+    } as Location;
+    expect(getPageURL(fakeLocation)).toBe('http://localhost:3000/');
   });
 
   test('getGameId returns correct gameId from URL', () => {
-    Object.defineProperty(window, 'location', {
-      value: {
-        search: '?gameId=123',
-      },
-      writable: true,
-    });
-    expect(getGameId()).toBe('123');
+    const fakeLocation = {
+      search: '?gameId=123',
+    } as Location;
+    expect(getGameId(fakeLocation)).toBe('123');
   });
 });
