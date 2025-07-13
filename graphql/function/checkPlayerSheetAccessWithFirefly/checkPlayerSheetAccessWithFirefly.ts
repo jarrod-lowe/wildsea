@@ -5,7 +5,7 @@ import type {
   DeletePlayerInput,
   MutationCreateSectionArgs,
 } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
 import { authIsIam } from "../../lib/auth";
 
 export function request(

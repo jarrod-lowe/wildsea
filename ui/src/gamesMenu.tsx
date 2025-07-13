@@ -9,6 +9,7 @@ import { TopBar } from "./frame";
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
 import { fetchAuthSession } from 'aws-amplify/auth';
+import { GameTypes, DefaultNewGameType } from "../../graphql/lib/constants/gameTypes";
 
 export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) => {
     const client = generateClient();
@@ -17,6 +18,7 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
     const [gameName, setGameName] = useState('');
     const [gameDescription, setGameDescription] = useState('');
     const [canCreateGame, setCanCreateGame] = useState(false);
+    const [gameType, setGameType] = useState(DefaultNewGameType);
     const intl = useIntl();
 
     useEffect(() => {
@@ -51,6 +53,7 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
 
         const createGameInput: CreateGameInput = {
             name: gameName,
+            gameType: gameType,
             description: gameDescription,
         };
 
@@ -71,6 +74,11 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
         }
     };
 
+    const getGameTypeName = (gameType: string): string => {
+        const gameTypeRecord = GameTypes.find(gt => gt.id === gameType);
+        return intl.formatMessage({ id: gameTypeRecord?.name || 'gameType.unknown.name' }); 
+    }
+
     return (
         <div className="gameslist">
             <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={ userEmail } gameDescription="" isFirefly={false}/>
@@ -82,6 +90,7 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                             <li key={game.gameId} className="game-panel">
                                 <a href={`/?gameId=${game.gameId}`} className="game-link" aria-label={intl.formatMessage({ id: "playGame"}) + game.gameName}>
                                     <h3>{game.gameName}</h3>
+                                    <h4>{getGameTypeName(game.gameType)}</h4>
                                     <span>{game.characterName}</span>
                                     <ReactMarkdown>{game.gameDescription}</ReactMarkdown>
                                 </a>
@@ -103,6 +112,20 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                                 onChange={(e) => setGameName(e.target.value)}
                                 placeholder={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
                             />
+                            <label htmlFor="gameType"><FormattedMessage id="gameType" /></label>
+                            <select
+                                id="gameType"
+                                name="gameType"
+                                value={gameType}
+                                onChange={(e) => setGameType(e.target.value)}
+                                required
+                                >
+                                    {GameTypes.filter(gt => gt.enabled).map(gameType => (
+                                        <option key={gameType.id} value={gameType.id}>
+                                            {intl.formatMessage({ id: gameType.name })}
+                                        </option>
+                                    ))}
+                                </select>
                             <label htmlFor="gameDescription">Game Description:</label>
                             <SectionItemDescription 
                                 id="gameDescription"

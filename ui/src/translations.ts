@@ -7,13 +7,16 @@ export const messages = {
     'footer.privacyPolicy': 'Privacy Policy and Terms of Service',
     'footer.github': 'GitHub Repository',
     'footer.wildseaOfficial': 'Official Wildsea Site',
-    'footer.disclaimer': 'This app is not affiliated with or endorsed by the owners of Wildsea.',
+    'footer.deltaGreenOfficial': 'Official Delta Green Site',
+    'footer.disclaimer': 'This app is not affiliated with or endorsed by the owners of Wildsea or Delta Green.',
 
     'availableGames': 'Available Games',
     'createNewGame': 'Create New Game',
     'gameName': 'Game Name:',
+    'gameType': 'Game Type',
     'gameDescription': 'Game Description:',
     'createGame': 'Create Game',
+
     'errorFetchingGames': 'Error fetching games:',
     'errorCreatingGame': 'Error creating game:',
     'dismiss': 'Dismiss',
@@ -33,6 +36,10 @@ export const messages = {
     'noGame': 'This game does not exist, or you are not a player in it.',
     'createGamePermissionDenied': 'You cannot create new games.',
     'errorCheckingPermissions': 'Failed to get permissions information.',
+
+    'gameType.wildsea.name': 'Wildsea',
+    'gameType.deltaGreen.name': 'Delta Green',
+    'gameType.unknown.name': 'Unknown Game Type',
 
     'create': 'Add',
     'joinToken': 'Join Token',

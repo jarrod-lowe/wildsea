@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { TypeShip } from '../../graphql/lib/constants';
+import { TypeShip } from '../../graphql/lib/constants/entityTypes';
 
 interface DeletePlayerModalProps {
   isOpen: boolean;

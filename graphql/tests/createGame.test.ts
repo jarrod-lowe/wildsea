@@ -21,19 +21,21 @@ describe("request function", () => {
   it("should return a valid DynamoDBTransactWriteItem when context is valid", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string };
+      input: { name: string; description?: string; gameType: string };
     }> = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
+          gameType: "wildsea",
         },
       },
       args: {
         input: {
           name: "Test Game",
           description: "Test Description",
+          gameType: "wildsea",
         },
       },
       identity: {
@@ -85,6 +87,7 @@ describe("request function", () => {
           attributeValues: {
             gameName: { S: "Test Game" },
             gameDescription: { S: "Test Description" },
+            gameType: { S: "wildsea" },
             gameId: { S: mockId },
             fireflyUserId: { S: "1234-5678-91011" },
             joinToken: { S: mockJoinToken },
@@ -104,6 +107,7 @@ describe("request function", () => {
             userId: { S: "1234-5678-91011" },
             gameId: { S: mockId },
             gameName: { S: "Test Game" },
+            gameType: { S: "wildsea" },
             gameDescription: { S: "Test Description" },
             fireflyUserId: { S: "1234-5678-91011" },
             GSI1PK: { S: "USER#1234-5678-91011" },
@@ -124,6 +128,7 @@ describe("request function", () => {
             userId: { S: mockShipId },
             gameId: { S: mockId },
             gameName: { S: "Test Game" },
+            gameType: { S: "wildsea" },
             gameDescription: { S: "Test Description" },
             fireflyUserId: { S: "1234-5678-91011" },
             createdAt: { S: mockTimestamp },
@@ -139,19 +144,21 @@ describe("request function", () => {
   it("should throw an error if context identity is missing", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string };
+      input: { name: string; description?: string; gameType: string };
     }> = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
+          gameType: "wildsea",
         },
       },
       args: {
         input: {
           name: "Test Game",
           description: "Test Description",
+          gameType: "wildsea",
         },
       },
       identity: undefined,
@@ -180,19 +187,21 @@ describe("request function", () => {
   it("should throw an error if user ID is missing", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string };
+      input: { name: string; description?: string; gameType: string };
     }> = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
+          gameType: "wildsea",
         },
       },
       args: {
         input: {
           name: "Test Game",
           description: "Test Description",
+          gameType: "wildsea",
         },
       },
       identity: {} as AppSyncIdentityCognito,
@@ -252,6 +261,7 @@ describe("response function", () => {
         record: {
           gameName: "testGameName",
           gameDescription: "testGameDescription",
+          gameType: "wildsea",
           gameId: "testGameId",
           fireflyUserId: "testFireflyUserId",
           createdAt: "testCreatedAt",
@@ -273,6 +283,7 @@ describe("response function", () => {
     expect(result).toEqual({
       gameName: "testGameName",
       gameDescription: "testGameDescription",
+      gameType: "wildsea",
       gameId: "testGameId",
       fireflyUserId: "testFireflyUserId",
       createdAt: "testCreatedAt",

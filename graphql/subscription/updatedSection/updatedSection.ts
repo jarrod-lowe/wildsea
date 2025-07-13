@@ -1,4 +1,4 @@
-import { TypeSection } from "../../lib/constants";
+import { TypeSection } from "../../lib/constants/entityTypes";
 import {
   ContextType,
   subscriptionRequest,

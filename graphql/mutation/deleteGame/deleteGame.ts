@@ -1,7 +1,8 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBDeleteItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import { GameSummary, DeleteGameInput } from "../../../appsync/graphql";
-import { TypeGame, DDBPrefixGame } from "../../lib/constants";
+import { TypeGame } from "../../lib/constants/entityTypes";
+import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
 
 export function request(
   context: Context<{ input: DeleteGameInput }>,
@@ -47,6 +48,7 @@ export function response(context: Context): GameSummary {
   return {
     gameId: context.result.gameId,
     gameName: context.result.gameName,
+    gameType: context.result.gameType,
     gameDescription: context.result.gameDescription,
     fireflyUserId: context.result.fireflyUserId,
     createdAt: context.result.createdAt,

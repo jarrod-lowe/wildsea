@@ -7,7 +7,8 @@ import {
 import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import type { DataPlayerSheet } from "../../lib/dataTypes";
 import type { MutationCreateSectionArgs } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixPlayer, TypeShip } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
+import { TypeShip } from "../../lib/constants/entityTypes";
 
 /* If the request is for a different userId than the subject, check that it is a
  * ship sheet in the current game */

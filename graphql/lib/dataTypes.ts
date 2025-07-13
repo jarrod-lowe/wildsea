@@ -12,6 +12,7 @@ export type DataGame = Omit<Game, "playerSheets"> & {
 export type DataPlayerSheet = Omit<PlayerSheet, "sections"> & {
   gameName: string;
   gameDescription: string;
+  gameType: string;
 };
 export type DataSheetSection = SheetSection;
 
@@ -22,3 +23,17 @@ export type SubscriptionGenericArgs =
   | SubscriptionUpdatedSectionArgs;
 
 export type Empty = Record<string, never>;
+
+export type GameType = string;
+
+// Type for NPC configuration
+export interface NPCConfig {
+  type: string;
+  characterName: string;
+}
+
+// Type for game type configuration
+export interface GameTypeConfigType {
+  fireflyCharacterName: string;
+  defaultNPCs: NPCConfig[];
+}

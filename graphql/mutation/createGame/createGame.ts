@@ -2,15 +2,12 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
 import { GameSummary, CreateGameInput } from "../../../appsync/graphql";
+import { TypeFirefly, TypeGame } from "../../lib/constants/entityTypes";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
 import {
-  TypeFirefly,
-  DefaultFireflyCharacterName,
-  TypeGame,
-  DDBPrefixGame,
-  DDBPrefixPlayer,
-  TypeShip,
-  DefaultShipCharacterName,
-} from "../../lib/constants";
+  GameTypeConfig,
+  DefaultGameConfig,
+} from "../../lib/constants/gameTypes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 
 export function request(context: Context<{ input: CreateGameInput }>): unknown {
@@ -23,9 +20,12 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
   const joinToken = util.autoId();
   const timestamp = util.time.nowISO8601();
 
+  const config = GameTypeConfig[input.gameType] || DefaultGameConfig;
+
   context.stash.record = {
     gameName: input.name,
     gameDescription: input.description,
+    gameType: input.gameType,
     gameId: id,
     fireflyUserId: identity.sub,
     // players: no value yet
@@ -58,8 +58,9 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
       userId: identity.sub,
       gameId: id,
       gameName: input.name,
+      gameType: input.gameType,
       gameDescription: input.description,
-      characterName: DefaultFireflyCharacterName,
+      characterName: config.fireflyCharacterName,
       GSI1PK: "USER#" + identity.sub,
       fireflyUserId: identity.sub,
       createdAt: timestamp,
@@ -68,30 +69,38 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
     } as DataPlayerSheet) as PutItemInputAttributeMap,
   };
 
-  const shipId = util.autoId();
-  const shipItem = {
-    key: util.dynamodb.toMapValues({
-      PK: DDBPrefixGame + "#" + id,
-      SK: DDBPrefixPlayer + "#" + shipId,
-    }),
-    operation: "PutItem",
-    table: "Wildsea-" + environment.name,
-    attributeValues: util.dynamodb.toMapValues({
-      userId: shipId,
-      gameId: id,
-      gameName: input.name,
-      gameDescription: input.description,
-      characterName: DefaultShipCharacterName,
-      fireflyUserId: identity.sub,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      type: TypeShip,
-    } as DataPlayerSheet) as PutItemInputAttributeMap,
-  };
+  const transactItems = [gameItem, fireflyItem];
+
+  // Create all configured default NPCs for this game type
+  config.defaultNPCs.forEach((npcConfig) => {
+    const npcId = util.autoId();
+    const npcItem = {
+      key: util.dynamodb.toMapValues({
+        PK: DDBPrefixGame + "#" + id,
+        SK: DDBPrefixPlayer + "#" + npcId,
+      }),
+      operation: "PutItem",
+      table: "Wildsea-" + environment.name,
+      attributeValues: util.dynamodb.toMapValues({
+        userId: npcId,
+        gameId: id,
+        gameName: input.name,
+        gameDescription: input.description,
+        gameType: input.gameType,
+        characterName: npcConfig.characterName,
+        fireflyUserId: identity.sub,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        type: npcConfig.type,
+      } as DataPlayerSheet) as PutItemInputAttributeMap,
+    };
+
+    transactItems.push(npcItem);
+  });
 
   return {
     operation: "TransactWriteItems",
-    transactItems: [gameItem, fireflyItem, shipItem],
+    transactItems,
   };
 }
 
@@ -103,6 +112,7 @@ export function response(context: Context): GameSummary | null {
   return {
     gameName: context.stash.record.gameName,
     gameDescription: context.stash.record.gameDescription,
+    gameType: context.stash.record.gameType,
     gameId: context.stash.record.gameId,
     fireflyUserId: context.stash.record.fireflyUserId,
     createdAt: context.stash.record.createdAt,

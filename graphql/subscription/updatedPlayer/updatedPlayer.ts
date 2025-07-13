@@ -1,4 +1,8 @@
-import { TypeCharacter, TypeFirefly, TypeShip } from "../../lib/constants";
+import {
+  TypeCharacter,
+  TypeFirefly,
+  TypeShip,
+} from "../../lib/constants/entityTypes";
 import {
   ContextType,
   subscriptionRequest,

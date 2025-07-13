@@ -1,7 +1,8 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBUpdateItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import { PlayerSheet, UpdatePlayerInput } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixPlayer, TypeShip } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
+import { TypeShip } from "../../lib/constants/entityTypes";
 
 export function request(
   context: Context<{ input: UpdatePlayerInput }>,

@@ -24,6 +24,7 @@ export type Scalars = {
 
 export type CreateGameInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  gameType: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
 
@@ -77,6 +78,7 @@ export type GameSummary = {
   gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
+  gameType: Scalars['String']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
 };
@@ -174,6 +176,7 @@ export type PlayerSheetSummary = {
   gameDescription: Scalars['String']['output'];
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
+  gameType: Scalars['String']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
   userId: Scalars['ID']['output'];

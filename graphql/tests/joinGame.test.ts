@@ -119,6 +119,7 @@ describe("fnJoinGame request function", () => {
       prev: {
         result: {
           gameName: "Test Game",
+          gameType: "wildsea",
           gameDescription: "Test Description",
           fireflyUserId: "firefly",
         },
@@ -170,6 +171,7 @@ describe("fnJoinGame request function", () => {
             userId: { S: "user123" },
             GSI1PK: { S: "USER#user123" },
             gameName: { S: "Test Game" },
+            gameType: { S: "wildsea" },
             gameDescription: { S: "Test Description" },
             characterName: { S: "Unnamed Character" },
             fireflyUserId: { S: "firefly" },

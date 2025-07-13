@@ -1,7 +1,11 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBDeleteItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import { SheetSection, DeleteSectionInput } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixSection, TypeShip } from "../../lib/constants";
+import {
+  DDBPrefixGame,
+  DDBPrefixSection,
+} from "../../lib/constants/dbPrefixes";
+import { TypeShip } from "../../lib/constants/entityTypes";
 
 export function request(
   context: Context<{ input: DeleteSectionInput }>,

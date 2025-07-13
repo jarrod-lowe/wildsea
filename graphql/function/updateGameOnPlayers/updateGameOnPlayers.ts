@@ -1,7 +1,7 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { UpdateGameInput } from "../../../appsync/graphql";
 import environment from "../../environment.json";
-import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
 import { Empty } from "../../lib/dataTypes";
 
 type UserIdItem = {

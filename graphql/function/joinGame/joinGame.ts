@@ -5,12 +5,9 @@ import type {
   PlayerSheetSummary,
   JoinGameInput,
 } from "../../../appsync/graphql";
-import {
-  TypeCharacter,
-  DefaultPlayerCharacterName,
-  DDBPrefixGame,
-  DDBPrefixPlayer,
-} from "../../lib/constants";
+import { TypeCharacter } from "../../lib/constants/entityTypes";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
+import { DefaultPlayerCharacterName } from "../../lib/constants/defaults";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 
 export function request(context: Context<{ input: JoinGameInput }>): unknown {
@@ -46,6 +43,7 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     userId: identity.sub,
     GSI1PK: "USER#" + identity.sub,
     gameName: context.prev.result.gameName,
+    gameType: context.prev.result.gameType,
     gameDescription: context.prev.result.gameDescription,
     characterName: DefaultPlayerCharacterName,
     fireflyUserId: context.prev.result.fireflyUserId,
