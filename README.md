@@ -137,5 +137,6 @@ as you did for the real deployment.
 
 Development environments will not use Jumpcloud, but instead use Cognito.
 
-You can run the UI without pushing to the S3 bucket by running `make ui-local`.
-This may still perform a terraform apply.
+You can run the UI without pushing to the S3 bucket by running
+`AWS_PROFILE=<profile> make ui-local`. This may still perform a terraform
+apply.

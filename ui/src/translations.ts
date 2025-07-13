@@ -7,7 +7,8 @@ export const messages = {
     'footer.privacyPolicy': 'Privacy Policy and Terms of Service',
     'footer.github': 'GitHub Repository',
     'footer.wildseaOfficial': 'Official Wildsea Site',
-    'footer.disclaimer': 'This app is not affiliated with or endorsed by the owners of Wildsea.',
+    'footer.deltaGreenOfficial': 'Official Delta Green Site',
+    'footer.disclaimer': 'This app is not affiliated with or endorsed by the owners of Wildsea or Delta Green.',
 
     'availableGames': 'Available Games',
     'createNewGame': 'Create New Game',

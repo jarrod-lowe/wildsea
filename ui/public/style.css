@@ -757,15 +757,22 @@ button:hover {
   padding: 10px;
   text-align: center;
   border-top: 1px solid #dee2e6;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
-.footer-bar a {
+.footer-bar-links {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.footer-bar-links a {
   margin: 0 10px;
   color: #007bff;
   text-decoration: none;
 }
 
-.footer-bar a:hover {
+.footer-bar-links a:hover {
   text-decoration: underline;
 }
 

@@ -86,7 +86,6 @@ export async function amplifySetup() {
 
     const config = await mergeConfig(configUpdates, pageUrl);
     Amplify.configure(config);
-    console.log("Configured", config);
 }
 
 export function AppContent() {
@@ -203,7 +202,6 @@ export function App() {
 async function getUserEmail(): Promise<string | undefined> {
   try {
     const userAttributes = await fetchUserAttributes();
-    console.log("User", userAttributes);
     return userAttributes.email;
   } catch (error) {
     console.log("No user identified");
