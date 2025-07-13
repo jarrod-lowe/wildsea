@@ -52,6 +52,7 @@ appsync/node_modules
 appsync/.graphqlconfig.yml
 
 ui/node_modules
+ui/.npm-cache
 ui/config/*
 !ui/config/.emptyDir
 ui/public/*

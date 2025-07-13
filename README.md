@@ -125,6 +125,11 @@ If you do not set the secret, then Cognito will be used as the identity source.
 
 Install esbuild with `sudo npm install -g --save-exact --save-dev esbuild`
 
+Create `terraform/environment/wildsea-dev/terraform.tfvars`, and add to it:
+
+* `domain_name = "<domain name>"` - the DNS zone for the test site
+* If you want to use Google for logins, set `google_client_id` and `google_client_secret`
+
 After having set up the AWS Account, use `AWS_PROFILE=<profile> make dev` to
 deploy a development version. If this is a different AWS Account from the real
 deployment, you will need to create an S3 bucket for the state, in the same way

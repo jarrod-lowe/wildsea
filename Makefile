@@ -75,3 +75,4 @@ clean:
 	rm -f ui/public/config.json
 	rm -rf ui/dist/*
 	rm -rf ui/coverage
+	rm -rf ui/.npm-cache
