@@ -21,9 +21,9 @@ import {
   TypeFirefly,
   TypeSection,
   TypeGame,
-  DDBPrefixGame,
   TypeShip,
-} from "../../lib/constants";
+} from "../../lib/constants/entityTypes";
+import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
 
 export function request(
   context: Context<{ input: GetGameInput }>,

@@ -5,7 +5,7 @@ import {
   DynamoDBGetItemRequest,
   AppSyncIdentityCognito,
 } from "@aws-appsync/utils";
-import { DDBPrefixGame } from "./constants";
+import { DDBPrefixGame } from "./constants/dbPrefixes";
 import { DataGame, SubscriptionGenericArgs } from "./dataTypes";
 
 export type ContextType = Context<

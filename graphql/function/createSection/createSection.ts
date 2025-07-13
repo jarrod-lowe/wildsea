@@ -8,8 +8,8 @@ import {
   DDBPrefixGame,
   DDBPrefixSection,
   DDBPrefixSectionUser,
-  TypeSection,
-} from "../../lib/constants";
+} from "../../lib/constants/dbPrefixes";
+import { TypeSection } from "../../lib/constants/entityTypes";
 
 /* The pipeline has already oerformed the auth checks needed */
 

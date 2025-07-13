@@ -12,8 +12,10 @@ export const messages = {
     'availableGames': 'Available Games',
     'createNewGame': 'Create New Game',
     'gameName': 'Game Name:',
+    'gameType': 'Game Type',
     'gameDescription': 'Game Description:',
     'createGame': 'Create Game',
+
     'errorFetchingGames': 'Error fetching games:',
     'errorCreatingGame': 'Error creating game:',
     'dismiss': 'Dismiss',
@@ -33,6 +35,10 @@ export const messages = {
     'noGame': 'This game does not exist, or you are not a player in it.',
     'createGamePermissionDenied': 'You cannot create new games.',
     'errorCheckingPermissions': 'Failed to get permissions information.',
+
+    'gameType.wildsea.name': 'Wildsea',
+    'gameType.deltaGreen.name': 'Delta Green',
+    'gameType.unknown.name': 'Unknown Game Type',
 
     'create': 'Add',
     'joinToken': 'Join Token',

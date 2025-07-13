@@ -15,7 +15,7 @@ import {
   TypeFirefly,
   TypeGame,
   TypeSection,
-} from "../lib/constants";
+} from "../lib/constants/entityTypes";
 import type {
   Data,
   DataGame,
@@ -435,6 +435,7 @@ describe("makeCharacterSheetData", () => {
     const data: DataPlayerSheet = {
       userId: "user1",
       gameId: "game1",
+      gameType: "wildsea",
       characterName: "Character 1",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",

@@ -1,4 +1,4 @@
-import { TypeGame } from "../../lib/constants";
+import { TypeGame } from "../../lib/constants/entityTypes";
 import {
   ContextType,
   subscriptionRequest,

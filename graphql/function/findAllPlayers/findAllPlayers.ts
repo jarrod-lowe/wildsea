@@ -5,7 +5,7 @@ import {
   DynamoDBQueryRequest,
 } from "@aws-appsync/utils";
 import type { DeletePlayerInput } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
 
 export function request(
   context: Context<{ input: DeletePlayerInput }>,

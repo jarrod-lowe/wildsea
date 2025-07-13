@@ -5,7 +5,8 @@ import {
   PutItemInputAttributeMap,
 } from "@aws-appsync/utils";
 import { CreateShipInput, PlayerSheetSummary } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixPlayer, TypeShip } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
+import { TypeShip } from "../../lib/constants/entityTypes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 
 // CheckGameFireflyAccess has already confirmed we are the firefly for this game

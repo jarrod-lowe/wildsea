@@ -5,7 +5,7 @@ import {
   AppSyncIdentityCognito,
 } from "@aws-appsync/utils";
 import { GameSummary, UpdateGameInput } from "../../../appsync/graphql";
-import { DDBPrefixGame } from "../../lib/constants";
+import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
 
 export function request(
   context: Context<{ input: UpdateGameInput }>,
@@ -61,6 +61,7 @@ export function response(context: Context): GameSummary | undefined {
   return {
     gameId: context.result.gameId,
     gameName: context.result.gameName,
+    gameType: context.result.gameType,
     gameDescription: context.result.gameDescription,
     createdAt: context.result.createdAt,
     updatedAt: context.result.updatedAt,

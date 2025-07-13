@@ -5,7 +5,7 @@ import { createSectionMutation, createShipMutation, deleteGameMutation, deletePl
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
-import { TypeFirefly, TypeShip } from "../../graphql/lib/constants";
+import { TypeFirefly, TypeShip } from "../../graphql/lib/constants/entityTypes";
 import { Section } from './section';
 import { getSectionSeed, getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';

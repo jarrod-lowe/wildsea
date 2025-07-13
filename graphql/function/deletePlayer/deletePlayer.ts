@@ -8,8 +8,8 @@ import {
   DDBPrefixGame,
   DDBPrefixPlayer,
   DDBPrefixSection,
-  TypeCharacter,
-} from "../../lib/constants";
+} from "../../lib/constants/dbPrefixes";
+import { TypeCharacter } from "../../lib/constants/entityTypes";
 import { DataSheetSection } from "../../lib/dataTypes";
 import { authIsIam } from "../../lib/auth";
 

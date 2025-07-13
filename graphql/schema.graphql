@@ -46,6 +46,7 @@ input GetGameInput {
 
 input CreateGameInput {
     name: String!
+    gameType: String!
     description: String
 }
 
@@ -94,6 +95,7 @@ input DeleteSectionInput {
 type GameSummary @aws_cognito_user_pools {
   gameId: ID!
   gameName: String!
+  gameType: String!
   gameDescription: String
   fireflyUserId: String!
   createdAt: AWSDateTime!
@@ -130,6 +132,7 @@ type PlayerSheetSummary @aws_cognito_user_pools @aws_iam {
   userId: ID!
   gameId: ID!
   gameName: String!
+  gameType: String!
   gameDescription: String!
   characterName: String!
   type: String!

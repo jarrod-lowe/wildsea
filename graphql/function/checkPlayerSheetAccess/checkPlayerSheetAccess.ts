@@ -2,7 +2,7 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import type { DataPlayerSheet } from "../../lib/dataTypes";
 import type { MutationCreateSectionArgs } from "../../../appsync/graphql";
-import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
 
 /* Checks that there is a player sheet for the subject in the game. */
 
