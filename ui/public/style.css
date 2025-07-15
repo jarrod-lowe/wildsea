@@ -445,6 +445,11 @@ button:hover {
   gap: 1rem;
 }
 
+/* Override section-items grid for delta green stats to take full width */
+.section-items .delta-green-stats-grid {
+  grid-column: 1 / -1;
+}
+
 .object-item {
   display: flex;
   align-items: center;
@@ -785,4 +790,123 @@ button:hover {
 .game-container,
 .gameslist {
   margin-bottom: 5em;
+}
+
+/* Delta Green Statistics grid styling */
+.delta-green-stats-grid {
+  margin-top: 10px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.stats-header {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) 80px 80px minmax(200px, 2fr);
+  gap: 0;
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+  font-weight: bold;
+  align-items: center;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) 80px 80px minmax(200px, 2fr);
+  gap: 0;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+}
+
+.stats-row:last-child {
+  border-bottom: none;
+}
+
+.stats-row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.stats-col-statistic,
+.stats-col-score,
+.stats-col-x5,
+.stats-col-features {
+  padding: 12px 8px;
+  border-right: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+}
+
+.stats-col-features {
+  border-right: none;
+}
+
+.stats-col-statistic {
+  font-weight: 500;
+}
+
+.stats-col-score,
+.stats-col-x5 {
+  justify-content: center;
+}
+
+.stats-col-x5 {
+  font-weight: 500;
+}
+
+.delta-green-stats-grid input[type="number"] {
+  width: 50px;
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 6px;
+  margin: 0;
+  border-radius: 3px;
+}
+
+.delta-green-stats-grid input[type="text"] {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 6px;
+  margin: 0;
+  border-radius: 3px;
+}
+
+.delta-green-stats-grid input:disabled {
+  border: none;
+  background: transparent;
+  color: inherit;
+}
+
+.delta-green-stats-grid input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+@media screen and (max-width: 768px) {
+  .stats-header,
+  .stats-row {
+    grid-template-columns: minmax(120px, 1fr) 60px 60px minmax(150px, 1.5fr);
+    font-size: 14px;
+  }
+  
+  .stats-col-statistic,
+  .stats-col-score,
+  .stats-col-x5,
+  .stats-col-features {
+    padding: 8px 4px;
+  }
+  
+  .delta-green-stats-grid input[type="number"] {
+    width: 40px;
+    padding: 4px;
+  }
+  
+  .delta-green-stats-grid input[type="text"] {
+    padding: 4px;
+    font-size: 13px;
+  }
 }

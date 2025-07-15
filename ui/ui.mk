@@ -30,7 +30,7 @@ ui/node_modules: ui/package.json
 ui/.build-%: appsync/schema.ts appsync/graphql.ts ui/src/*.ts ui/src/amplifyconfiguration.json ui/index.html ui/node_modules
 	cp ui/config/config-$*.json ui/public/config.json
 	if [ -z "$(IN_PIPELINE)" ] ; then \
-		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --network host node:20 npm run build ; \
+		docker run --rm --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --network host node:20 npm run build ; \
 	else \
 		cd ui ; npm run build ; \
 	fi
@@ -49,7 +49,7 @@ ui/.push-%: ui/config/output-%.json ui/config/config-%.json ui/.build-%
 .PHONY: ui-test
 ui-test: ui/node_modules
 	if [ -z "$(IN_PIPELINE)" ] ; then \
-		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --entrypoint ./node_modules/.bin/jest node:20 --coverage ; \
+		docker run --rm --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --entrypoint ./node_modules/.bin/jest node:20 --coverage ; \
 	else \
 		cd ui && ./node_modules/.bin/jest --coverage ; \
 	fi

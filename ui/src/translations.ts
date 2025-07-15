@@ -106,6 +106,13 @@ export const messages = {
     'sectionType.richtext': 'Text',
     'sectionRichText.sampleContent': 'Write your notes here.',
 
+    'sectionType.deltagreenstats': 'Delta Green Statistics',
+    'deltaGreenStats.statistic': 'Statistics',
+    'deltaGreenStats.score': 'Score',
+    'deltaGreenStats.x5': 'x5',
+    'deltaGreenStats.distinguishingFeatures': 'Distinguishing Features',
+    'deltaGreenStats.distinguishingFeaturesPlaceholder': 'Enter features (max 40 chars)',
+
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
     'sectionObject.addItem': '➕',

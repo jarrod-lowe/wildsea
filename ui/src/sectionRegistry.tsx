@@ -4,6 +4,7 @@ import { SectionTrackable } from './sectionTrackable';
 import { SectionBurnable } from './sectionBurnable';
 import { SectionKeyValue } from './sectionKeyValue';
 import { SectionRichText } from './sectionRichText';
+import { SectionDeltaGreenStats, createDefaultDeltaGreenStatsContent } from './sectionDeltaGreenStats';
 
 type SectionTypeConfig = {
   component: React.FC<{ section: SheetSection, mayEditSheet: boolean, onUpdate: (updatedSection: SheetSection) => void }>;
@@ -16,7 +17,8 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'TRACKABLE': { component: SectionTrackable, label: 'sectionType.trackable', seed: {items: []} },
   'BURNABLE': { component: SectionBurnable, label: 'sectionType.burnable', seed: {items: []} },
   'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue', seed: {items: []} },
-  'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: {items: [{content: ""}]} }
+  'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: {items: [{content: ""}]} },
+  'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: createDefaultDeltaGreenStatsContent() }
 };
 
 // Function to get the component for a section type
