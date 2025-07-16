@@ -30,7 +30,7 @@ graphql: $(GRAPHQL_JS) appsync/graphql.ts appsync/schema.ts graphql-test
 .PHONY: graphql-test
 graphql-test: graphql/node_modules appsync/graphql.ts appsync/schema.ts graphql/environment.json
 	if [ -z "$(IN_PIPELINE)" ] ; then \
-		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/graphql --entrypoint ./node_modules/jest/bin/jest.js node:20 --coverage ; \
+		docker run --rm --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/graphql --entrypoint ./node_modules/jest/bin/jest.js node:20 --coverage ; \
 	else \
 		cd graphql && ./node_modules/jest/bin/jest.js --coverage ; \
 	fi
