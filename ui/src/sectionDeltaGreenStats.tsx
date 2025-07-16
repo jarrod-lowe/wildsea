@@ -64,8 +64,17 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
         setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     ) => {
+    // Create data attributes from current stats for derived attributes to read
+    const statsDataAttributes: { [key: string]: number } = {};
+    content.items.forEach(item => {
+      const abbrev = item.name.match(/\(([^)]+)\)/)?.[1];
+      if (abbrev) {
+        statsDataAttributes[`data-stat-${abbrev.toLowerCase()}`] = item.score;
+      }
+    });
+
     return (
-      <div className="delta-green-stats-grid">
+      <div className="delta-green-stats-grid" {...statsDataAttributes}>
         <div className="stats-header">
           <div className="stats-col-statistic">{intl.formatMessage({ id: "deltaGreenStats.statistic" })}</div>
           <div className="stats-col-score">{intl.formatMessage({ id: "deltaGreenStats.score" })}</div>

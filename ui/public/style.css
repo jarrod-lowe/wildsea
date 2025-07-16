@@ -450,6 +450,11 @@ button:hover {
   grid-column: 1 / -1;
 }
 
+/* Override section-items grid for delta green derived attributes to take full width */
+.section-items .delta-green-derived-grid {
+  grid-column: 1 / -1;
+}
+
 .object-item {
   display: flex;
   align-items: center;
@@ -925,7 +930,7 @@ button:hover {
 
 .derived-header {
   display: grid;
-  grid-template-columns: minmax(200px, 2fr) 100px 120px;
+  grid-template-columns: minmax(200px, 2fr) 80px minmax(140px, 1fr);
   gap: 0;
   background-color: #f5f5f5;
   border-bottom: 2px solid #ddd;
@@ -935,7 +940,7 @@ button:hover {
 
 .derived-row {
   display: grid;
-  grid-template-columns: minmax(200px, 2fr) 100px 120px;
+  grid-template-columns: minmax(200px, 2fr) 80px minmax(140px, 1fr);
   gap: 0;
   border-bottom: 1px solid #ddd;
   align-items: center;
@@ -951,7 +956,7 @@ button:hover {
 
 .derived-row.disorder-warning {
   background-color: #ffe6e6;
-  border-left: 4px solid #ff4444;
+  box-shadow: inset 4px 0 0 #ff4444;
 }
 
 .derived-row.disorder-warning:nth-child(even) {
@@ -1038,19 +1043,35 @@ button:hover {
 
 .disorder-notice {
   grid-column: 1 / -1;
-  background-color: #fff3cd;
-  border: 1px solid #ffeaa7;
-  color: #856404;
   padding: 10px;
   text-align: center;
   font-weight: bold;
   margin: 0;
+  min-height: 20px;
+  height: 44px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.disorder-notice.disorder {
+  background-color: #fff3cd;
+  border-color: #ffeaa7;
+  color: #856404;
+}
+
+.disorder-notice.sane {
+  background-color: #d1edff;
+  border-color: #a7d8f0;
+  color: #155724;
 }
 
 @media screen and (max-width: 768px) {
   .derived-header,
   .derived-row {
-    grid-template-columns: minmax(150px, 2fr) 80px 100px;
+    grid-template-columns: minmax(150px, 2fr) 60px minmax(100px, 1fr);
     font-size: 14px;
   }
   

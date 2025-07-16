@@ -22,6 +22,11 @@ API via AWS AppSync, and DynamoDB backend using single-table design.
 All make commands must be run from the root of the repository. Usually, the AWS
 profile will be "wildsea".
 
+Make sure to git checkout `main`, sync it, and create a new branch before
+beginning any new work. You MUST never commit changes to `main` directly.  Do
+not commit anything until after it has been tested by running `ui-local` or
+pushing to the development deployment.
+
 ### Local Development
 
 ```bash
@@ -151,10 +156,12 @@ update this configuration file.
 ## Development Notes
 
 ### Docker Commands
+
 - All Docker commands in Makefiles should use `--rm` and `--user $(id -u):$(id -g)` flags
 - Avoid `-it` flags in automated environments as they require interactive terminals
 
 ### Section Development
+
 - Section components extend `BaseSectionItem` interface
 - Use `FormattedMessage` and `useIntl` for internationalization
 - Custom edit forms should be created for specialized section types rather than using generic `SectionEditForm`

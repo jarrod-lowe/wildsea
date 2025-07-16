@@ -118,6 +118,7 @@ export const messages = {
     'deltaGreenDerived.maximum': 'Maximum',
     'deltaGreenDerived.current': 'Current',
     'deltaGreenDerived.disorderWarning': '⚠️ Mental disorder acquired (SAN ≤ BP)',
+    'deltaGreenDerived.saneStatus': '✓ Mentally stable (SAN > BP)',
     'deltaGreenDerived.editNote': 'Derived attributes are calculated automatically from your statistics.',
 
     // Common section translations
