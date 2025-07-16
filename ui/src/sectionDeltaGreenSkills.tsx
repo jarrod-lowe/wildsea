@@ -61,7 +61,6 @@ const DEFAULT_SKILLS = [
 export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
 
-
   const handleUsedToggle = async (
     item: DeltaGreenSkillItem,
     content: SectionTypeDeltaGreenSkills,
