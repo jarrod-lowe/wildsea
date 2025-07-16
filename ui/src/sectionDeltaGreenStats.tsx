@@ -67,9 +67,10 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
     // Create data attributes from current stats for derived attributes to read
     const statsDataAttributes: { [key: string]: number } = {};
     content.items.forEach(item => {
-      const abbrev = item.name.match(/\(([^)]+)\)/)?.[1];
-      if (abbrev) {
-        statsDataAttributes[`data-stat-${abbrev.toLowerCase()}`] = item.score;
+      // Find the corresponding stat definition to get the abbreviation
+      const statDef = DEFAULT_STATS.find(stat => stat.name === item.name);
+      if (statDef) {
+        statsDataAttributes[`data-stat-${statDef.abbreviation.toLowerCase()}`] = item.score;
       }
     });
 
