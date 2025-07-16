@@ -23,39 +23,6 @@ const DEFAULT_STATS = [
 export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
 
-  const handleScoreChange = async (
-        item: DeltaGreenStatItem,
-        newScore: number,
-        content: SectionTypeDeltaGreenStats,
-        setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
-        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    ) => {
-    const clampedScore = Math.max(0, Math.min(18, newScore));
-    const newItems = [...content.items];
-    const itemIndex = newItems.findIndex(i => i.id === item.id);
-    const updatedItem = { ...item, score: clampedScore };
-    newItems[itemIndex] = updatedItem;
-    const newContent = { ...content, items: newItems };
-    setContent(newContent);
-    await updateSection({ content: JSON.stringify(newContent) });
-  };
-
-  const handleDistinguishingFeaturesChange = async (
-        item: DeltaGreenStatItem,
-        newFeatures: string,
-        content: SectionTypeDeltaGreenStats,
-        setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
-        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    ) => {
-    const truncatedFeatures = newFeatures.slice(0, 40);
-    const newItems = [...content.items];
-    const itemIndex = newItems.findIndex(i => i.id === item.id);
-    const updatedItem = { ...item, distinguishingFeatures: truncatedFeatures };
-    newItems[itemIndex] = updatedItem;
-    const newContent = { ...content, items: newItems };
-    setContent(newContent);
-    await updateSection({ content: JSON.stringify(newContent) });
-  };
 
   const renderItems = (
         content: SectionTypeDeltaGreenStats,
@@ -86,28 +53,11 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
           <div key={item.id} className="stats-row">
             <div className="stats-col-statistic">{item.name}</div>
             <div className="stats-col-score">
-              <input
-                type="number"
-                min="0"
-                max="18"
-                value={item.score}
-                onChange={(e) => handleScoreChange(item, parseInt(e.target.value) || 0, content, setContent, updateSection)}
-                disabled={!mayEditSheet}
-              />
+              <span>{item.score}</span>
             </div>
             <div className="stats-col-x5">{item.score * 5}</div>
             <div className="stats-col-features">
-              {mayEditSheet ? (
-                <input
-                  type="text"
-                  value={item.distinguishingFeatures}
-                  onChange={(e) => handleDistinguishingFeaturesChange(item, e.target.value, content, setContent, updateSection)}
-                  maxLength={40}
-                  placeholder={intl.formatMessage({ id: "deltaGreenStats.distinguishingFeaturesPlaceholder" })}
-                />
-              ) : (
-                <span>{item.distinguishingFeatures}</span>
-              )}
+              <span>{item.distinguishingFeatures}</span>
             </div>
           </div>
         ))}
