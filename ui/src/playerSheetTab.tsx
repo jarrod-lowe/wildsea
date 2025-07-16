@@ -91,7 +91,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         gameId: sheet.gameId,
         sectionName: newSectionName,
         sectionType: newSectionType,
-        content: JSON.stringify(getSectionSeed(newSectionType)),
+        content: JSON.stringify(getSectionSeed(newSectionType, sheet)),
         position: newPosition,
       }
       const client = generateClient();

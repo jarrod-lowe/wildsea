@@ -106,6 +106,21 @@ export const messages = {
     'sectionType.richtext': 'Text',
     'sectionRichText.sampleContent': 'Write your notes here.',
 
+    'sectionType.deltagreenstats': 'Delta Green Statistics',
+    'deltaGreenStats.statistic': 'Statistics',
+    'deltaGreenStats.score': 'Score',
+    'deltaGreenStats.x5': 'x5',
+    'deltaGreenStats.distinguishingFeatures': 'Distinguishing Features',
+    'deltaGreenStats.distinguishingFeaturesPlaceholder': 'Enter features (max 40 chars)',
+
+    'sectionType.deltagreendered': 'Delta Green Derived Attributes',
+    'deltaGreenDerived.derivedAttribute': 'Derived Attribute',
+    'deltaGreenDerived.maximum': 'Maximum',
+    'deltaGreenDerived.current': 'Current',
+    'deltaGreenDerived.disorderWarning': '⚠️ Mental disorder acquired (SAN ≤ BP)',
+    'deltaGreenDerived.saneStatus': '✓ Mentally stable (SAN > BP)',
+    'deltaGreenDerived.editNote': 'Derived attributes are calculated automatically from your statistics.',
+
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
     'sectionObject.addItem': '➕',
