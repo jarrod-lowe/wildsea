@@ -27,6 +27,7 @@ type Mutation {
     updatePlayer(input: UpdatePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools
     deletePlayer(input: DeletePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools @aws_iam
     createShip(input: CreateShipInput!): PlayerSheetSummary! @aws_cognito_user_pools
+    rollDice(input: RollDiceInput!): DiceRoll! @aws_cognito_user_pools
 }
 
 type Query {
@@ -38,6 +39,7 @@ type Subscription @aws_cognito_user_pools {
   updatedPlayer(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayer", "deletePlayer", "createShip", "joinGame"])
   updatedSection(gameId: ID!): SheetSection @aws_subscribe(mutations: ["createSection", "updateSection", "deleteSection"])
   updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "deleteGame"])
+  diceRolled(gameId: ID!): DiceRoll @aws_subscribe(mutations: ["rollDice"])
 }
 
 input GetGameInput {
@@ -164,4 +166,31 @@ type SheetSection @aws_cognito_user_pools {
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   deleted: Boolean
+}
+
+input RollDiceInput {
+  gameId: ID!
+  dice: String!
+  action: String
+  rollType: String!
+  target: Int!
+}
+
+type DiceRoll @aws_cognito_user_pools {
+  gameId: ID!
+  playerId: ID!
+  dice: String!
+  rollType: String!
+  target: Int!
+  grade: String!
+  action: String
+  diceList: [SingleDie!]!
+  rolledAt: AWSDateTime!
+  type: String!
+}
+
+type SingleDie @aws_cognito_user_pools {
+  type: String!
+  size: Int!
+  value: Int!
 }

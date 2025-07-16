@@ -56,6 +56,20 @@ export type DeleteSectionInput = {
   sectionId: Scalars['ID']['input'];
 };
 
+export type DiceRoll = {
+  __typename?: 'DiceRoll';
+  action?: Maybe<Scalars['String']['output']>;
+  dice: Scalars['String']['output'];
+  diceList: Array<SingleDie>;
+  gameId: Scalars['ID']['output'];
+  grade: Scalars['String']['output'];
+  playerId: Scalars['ID']['output'];
+  rollType: Scalars['String']['output'];
+  rolledAt: Scalars['AWSDateTime']['output'];
+  target: Scalars['Int']['output'];
+  type: Scalars['String']['output'];
+};
+
 export type Game = {
   __typename?: 'Game';
   createdAt: Scalars['AWSDateTime']['output'];
@@ -101,6 +115,7 @@ export type Mutation = {
   deletePlayer?: Maybe<PlayerSheetSummary>;
   deleteSection: SheetSection;
   joinGame: PlayerSheetSummary;
+  rollDice: DiceRoll;
   updateGame: GameSummary;
   updatePlayer?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;
@@ -139,6 +154,11 @@ export type MutationDeleteSectionArgs = {
 
 export type MutationJoinGameArgs = {
   input: JoinGameInput;
+};
+
+
+export type MutationRollDiceArgs = {
+  input: RollDiceInput;
 };
 
 
@@ -193,6 +213,14 @@ export type QueryGetGameArgs = {
   input?: InputMaybe<GetGameInput>;
 };
 
+export type RollDiceInput = {
+  action?: InputMaybe<Scalars['String']['input']>;
+  dice: Scalars['String']['input'];
+  gameId: Scalars['ID']['input'];
+  rollType: Scalars['String']['input'];
+  target: Scalars['Int']['input'];
+};
+
 export type SheetSection = {
   __typename?: 'SheetSection';
   content: Scalars['AWSJSON']['output'];
@@ -208,11 +236,24 @@ export type SheetSection = {
   userId: Scalars['ID']['output'];
 };
 
+export type SingleDie = {
+  __typename?: 'SingleDie';
+  size: Scalars['Int']['output'];
+  type: Scalars['String']['output'];
+  value: Scalars['Int']['output'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
+  diceRolled?: Maybe<DiceRoll>;
   updatedGame?: Maybe<GameSummary>;
   updatedPlayer?: Maybe<PlayerSheetSummary>;
   updatedSection?: Maybe<SheetSection>;
+};
+
+
+export type SubscriptionDiceRolledArgs = {
+  gameId: Scalars['ID']['input'];
 };
 
 
