@@ -82,6 +82,7 @@ export function response(context: Context): PlayerSheetSummary {
   return {
     gameId: context.arguments.input.gameId,
     userId: context.arguments.input.userId,
+    gameType: context.stash.gameType,
     characterName: context.stash.characterName,
     gameDescription: context.stash.gameDescription,
     gameName: context.stash.gameName,

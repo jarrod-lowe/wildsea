@@ -164,5 +164,7 @@ update this configuration file.
 
 - Section components extend `BaseSectionItem` interface
 - Use `FormattedMessage` and `useIntl` for internationalization
-- Custom edit forms should be created for specialized section types rather than using generic `SectionEditForm`
+- Custom edit forms should be created if the generic `SectionEditForm` will not do
 - Default section content should be created with appropriate `showEmpty` settings
+- Things in a section that will change regularly during gameplay (e.g. HP or usages) should be able to be changed in the normal form (`renderItems`)
+- Things in a section that will not change regularly during gameplay (e.g. STR, CON, ...) should only be able to be changed in the edit form (`renderEditForm`)

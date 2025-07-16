@@ -98,6 +98,14 @@
         }
       `;
     
+      export const rollDiceMutation = `
+        mutation rollDice($input: RollDiceInput!) {
+          rollDice(input: $input) {
+            gameId playerId dice rollType target grade action diceList { type size value } rolledAt type
+          }
+        }
+      `;
+    
 
     
       export const updatedPlayerSubscription = `
@@ -120,6 +128,14 @@
         subscription updatedGame($gameId: ID!) {
           updatedGame(gameId: $gameId) {
             gameId gameName gameType gameDescription fireflyUserId createdAt updatedAt type deleted
+          }
+        }
+      `;
+    
+      export const diceRolledSubscription = `
+        subscription diceRolled($gameId: ID!) {
+          diceRolled(gameId: $gameId) {
+            gameId playerId dice rollType target grade action diceList { type size value } rolledAt type
           }
         }
       `;
