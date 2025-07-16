@@ -3,7 +3,6 @@ import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } f
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
-import { SectionItem } from './components/SectionItem';
 
 interface DeltaGreenStatItem extends BaseSectionItem {
   score: number;
