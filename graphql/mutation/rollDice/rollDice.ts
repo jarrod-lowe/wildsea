@@ -14,7 +14,7 @@ export function request(
 ): DynamoDBGetItemRequest {
   if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity || !identity.sub) util.unauthorized();
+  if (!identity?.sub) util.unauthorized();
 
   const input = context.arguments.input;
 
@@ -40,7 +40,7 @@ export function response(context: Context): DiceRoll {
   }
 
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity || !identity.sub) util.unauthorized();
+  if (!identity?.sub) util.unauthorized();
 
   const game = context.result as DataGame;
   if (!game) {
@@ -148,32 +148,26 @@ function calculateGrade(
 
     case "d100":
     case "percentile":
-      if (rolledValue <= target) {
-        if (rolledValue <= Math.floor(target / 5)) {
-          return "extreme_success";
-        } else if (rolledValue <= Math.floor(target / 2)) {
-          return "hard_success";
-        } else {
-          return "regular_success";
-        }
-      } else {
-        if (rolledValue >= 96) {
-          return "fumble";
-        } else {
-          return "failure";
-        }
-      }
-
-    case "opposed":
-      return rolledValue >= target ? "success" : "failure";
-
-    case "advantage":
-      return rolledValue >= target ? "success" : "failure";
-
-    case "disadvantage":
-      return rolledValue >= target ? "success" : "failure";
+      return calculateD100Grade(rolledValue, target);
 
     default:
       return rolledValue >= target ? "success" : "failure";
   }
+}
+
+function calculateD100Grade(rolledValue: number, target: number): string {
+  if (rolledValue <= target) {
+    if (rolledValue <= Math.floor(target / 5)) {
+      return "extreme_success";
+    }
+    if (rolledValue <= Math.floor(target / 2)) {
+      return "hard_success";
+    }
+    return "regular_success";
+  }
+
+  if (rolledValue >= 96) {
+    return "fumble";
+  }
+  return "failure";
 }
