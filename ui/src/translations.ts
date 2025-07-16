@@ -121,6 +121,12 @@ export const messages = {
     'deltaGreenDerived.saneStatus': '✓ Mentally stable (SAN > BP)',
     'deltaGreenDerived.editNote': 'Derived attributes are calculated automatically from your statistics.',
 
+    'sectionType.deltagreenskills': 'Delta Green Skills',
+    'deltaGreenSkills.used': 'Used',
+    'deltaGreenSkills.skill': 'Skill',
+    'deltaGreenSkills.roll': 'Roll %',
+    'deltaGreenSkills.hasUsedFlag': 'Has used flag',
+
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
     'sectionObject.addItem': '➕',

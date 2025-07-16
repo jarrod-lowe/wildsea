@@ -21,6 +21,7 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
         content: SectionTypeKeyValue,
         setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    isEditing: boolean,
     ) => {
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
@@ -37,6 +38,7 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
         mayEditSheet: boolean,
         setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    isEditing: boolean,
     ) => {
     return content.items
       .filter(item => content.showEmpty || item.value !== '')

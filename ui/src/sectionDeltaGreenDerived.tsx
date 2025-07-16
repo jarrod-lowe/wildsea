@@ -67,6 +67,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     mayEditSheet: boolean,
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    isEditing: boolean,
   ) => {
     const stats = getStatsFromDataAttributes();
     const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;

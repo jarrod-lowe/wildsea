@@ -25,6 +25,7 @@ interface BaseSectionProps<T extends BaseSectionItem> {
         mayEditSheet: boolean,
         setContent: React.Dispatch<React.SetStateAction<BaseSectionContent<T>>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+        isEditing: boolean,
     ) => React.ReactNode;
     renderEditForm: (
         content: BaseSectionContent<T>,
@@ -102,7 +103,7 @@ export const BaseSection = <T extends BaseSectionItem>({
             <div className="section">
                 <h3>{sectionName}</h3>
                 <div className="section-items">
-                    {renderItems(content, mayEditSheet, setContent, updateSection)}
+                    {renderItems(content, mayEditSheet, setContent, updateSection, false)}
                 </div>
             </div>
         );
@@ -136,7 +137,7 @@ export const BaseSection = <T extends BaseSectionItem>({
                 setIsEditing(true);
             }} /></h3>
             <div className="section-items">
-                {renderItems(content, mayEditSheet, setContent, updateSection)}
+                {renderItems(content, mayEditSheet, setContent, updateSection, false)}
             </div>
         </div>
     );

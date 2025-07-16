@@ -62,6 +62,7 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
         mayEditSheet: boolean,
         setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+        isEditing: boolean,
     ) => {
     // Create data attributes from current stats for derived attributes to read
     const statsDataAttributes: { [key: string]: number } = {};
