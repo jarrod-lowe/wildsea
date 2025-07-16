@@ -6,6 +6,7 @@ import { SectionKeyValue } from './sectionKeyValue';
 import { SectionRichText } from './sectionRichText';
 import { SectionDeltaGreenStats, createDefaultDeltaGreenStatsContent } from './sectionDeltaGreenStats';
 import { SectionDeltaGreenDerived, createDefaultDeltaGreenDerivedContent } from './sectionDeltaGreenDerived';
+import { SectionDeltaGreenSkills, createDefaultDeltaGreenSkillsContent } from './sectionDeltaGreenSkills';
 
 type SectionTypeConfig = {
   component: React.FC<{ section: SheetSection, mayEditSheet: boolean, onUpdate: (updatedSection: SheetSection) => void }>;
@@ -20,7 +21,8 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue', seed: () => ({items: []}) },
   'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: () => ({items: [{content: ""}]}) },
   'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: () => createDefaultDeltaGreenStatsContent() },
-  'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet) => createDefaultDeltaGreenDerivedContent(sheet) }
+  'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet) => createDefaultDeltaGreenDerivedContent(sheet) },
+  'DELTAGREENSKILLS': { component: SectionDeltaGreenSkills, label: 'sectionType.deltagreenskills', seed: () => createDefaultDeltaGreenSkillsContent() }
 };
 
 // Function to get the component for a section type

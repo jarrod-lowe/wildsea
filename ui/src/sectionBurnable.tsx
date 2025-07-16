@@ -53,6 +53,7 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
             content: SectionTypeBurnable,
             setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>,
             updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    isEditing: boolean,
         ) => {
         const newItems = [...content.items];
         const itemIndex = newItems.findIndex(i => i.id === item.id);
@@ -85,6 +86,7 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
             mayEditSheet: boolean,
             setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>,
             updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    isEditing: boolean,
         ) => {
         return content.items
         .filter(item => content.showEmpty || item.states.some(state => state !== 'unticked'))

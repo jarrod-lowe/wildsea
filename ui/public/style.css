@@ -1092,3 +1092,205 @@ button:hover {
     font-size: 12px;
   }
 }
+
+/* Delta Green Skills grid styling */
+.section-items .delta-green-skills-grid {
+  grid-column: 1 / -1;
+}
+
+.delta-green-skills-grid {
+  margin-top: 10px;
+  width: 100%;
+  columns: 320px;
+  column-gap: 20px;
+  column-fill: balance;
+}
+
+.delta-green-skills-grid.no-used-column {
+  columns: 280px;
+}
+
+.skills-item {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px;
+  gap: 0;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  padding: 0;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.delta-green-skills-grid.no-used-column .skills-item {
+  grid-template-columns: 1fr 80px;
+}
+
+.skills-item:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.skills-item:last-child {
+  border-bottom: 1px solid #ddd;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.skills-col-used,
+.skills-col-name,
+.skills-col-roll,
+.skills-col-controls {
+  padding: 8px 6px;
+  display: flex;
+  align-items: center;
+}
+
+.skills-col-used {
+  justify-content: center;
+  border-right: 1px solid #eee;
+}
+
+.skills-col-name {
+  justify-content: flex-start;
+  border-right: 1px solid #eee;
+  font-weight: normal;
+}
+
+.skills-col-roll {
+  justify-content: center;
+  border-right: 1px solid #eee;
+}
+
+.skills-col-controls {
+  justify-content: center;
+  gap: 2px;
+}
+
+.skills-col-used input[type="checkbox"] {
+  margin: 0;
+  transform: scale(1.1);
+}
+
+.roll-display {
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.adjust-btn.small {
+  width: 28px;
+  height: 20px;
+  font-size: 10px;
+  margin: 0 1px;
+  padding: 0;
+}
+
+.delta-green-skills-items-edit {
+  margin-top: 10px;
+}
+
+.delta-green-skills-item-edit {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.roll-input-with-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.roll-controls {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+}
+
+.delta-green-skills-item-edit input[type="text"] {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.delta-green-skills-item-edit input[type="number"] {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.delta-green-skills-item-edit label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.delta-green-skills-item-edit button {
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.delta-green-skills-item-edit button:hover {
+  background-color: #c82333;
+}
+
+.show-empty-toggle {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.show-empty-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .delta-green-skills-grid {
+    columns: 1;
+    column-gap: 0;
+  }
+  
+  .skills-item {
+    grid-template-columns: 30px 1fr 60px;
+    font-size: 14px;
+  }
+  
+  .delta-green-skills-grid.no-used-column .skills-item {
+    grid-template-columns: 1fr 60px;
+  }
+  
+  .skills-col-used,
+  .skills-col-name,
+  .skills-col-roll,
+  .skills-col-controls {
+    padding: 6px 4px;
+  }
+  
+  .adjust-btn.small {
+    width: 24px;
+    height: 18px;
+    font-size: 9px;
+  }
+  
+  .delta-green-skills-item-edit {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}

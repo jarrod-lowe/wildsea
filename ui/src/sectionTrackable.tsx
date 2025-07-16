@@ -41,6 +41,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
       content: SectionTypeTrackable,
       setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>,
       updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    isEditing: boolean,
     ) => {
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
@@ -63,6 +64,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
       mayEditSheet: boolean,
       setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>,
       updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    isEditing: boolean,
     ) => {
     return content.items
       .filter(item => content.showEmpty || item.ticked > 0)
