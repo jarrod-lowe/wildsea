@@ -61,22 +61,6 @@ const DEFAULT_SKILLS = [
 export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
 
-  const handleRollChange = async (
-    item: DeltaGreenSkillItem,
-    newRoll: number,
-    content: SectionTypeDeltaGreenSkills,
-    setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
-    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-  ) => {
-    const clampedRoll = Math.max(0, Math.min(99, newRoll));
-    const newItems = [...content.items];
-    const itemIndex = newItems.findIndex(i => i.id === item.id);
-    const updatedItem = { ...item, roll: clampedRoll };
-    newItems[itemIndex] = updatedItem;
-    const newContent = { ...content, items: newItems };
-    setContent(newContent);
-    await updateSection({ content: JSON.stringify(newContent) });
-  };
 
   const handleUsedToggle = async (
     item: DeltaGreenSkillItem,
