@@ -23,39 +23,6 @@ const DEFAULT_STATS = [
 export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
 
-  const handleScoreChange = async (
-        item: DeltaGreenStatItem,
-        newScore: number,
-        content: SectionTypeDeltaGreenStats,
-        setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
-        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    ) => {
-    const clampedScore = Math.max(0, Math.min(18, newScore));
-    const newItems = [...content.items];
-    const itemIndex = newItems.findIndex(i => i.id === item.id);
-    const updatedItem = { ...item, score: clampedScore };
-    newItems[itemIndex] = updatedItem;
-    const newContent = { ...content, items: newItems };
-    setContent(newContent);
-    await updateSection({ content: JSON.stringify(newContent) });
-  };
-
-  const handleDistinguishingFeaturesChange = async (
-        item: DeltaGreenStatItem,
-        newFeatures: string,
-        content: SectionTypeDeltaGreenStats,
-        setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
-        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    ) => {
-    const truncatedFeatures = newFeatures.slice(0, 40);
-    const newItems = [...content.items];
-    const itemIndex = newItems.findIndex(i => i.id === item.id);
-    const updatedItem = { ...item, distinguishingFeatures: truncatedFeatures };
-    newItems[itemIndex] = updatedItem;
-    const newContent = { ...content, items: newItems };
-    setContent(newContent);
-    await updateSection({ content: JSON.stringify(newContent) });
-  };
 
   const renderItems = (
         content: SectionTypeDeltaGreenStats,
