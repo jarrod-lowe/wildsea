@@ -1301,7 +1301,7 @@ button:hover {
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 15%);
   z-index: 1000;
   max-width: 400px;
   max-height: 500px;
@@ -1392,7 +1392,7 @@ button:hover {
   height: 56px;
   font-size: 24px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 20%);
   z-index: 999;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   will-change: transform;
@@ -1400,7 +1400,7 @@ button:hover {
 
 .dice-roll-toggle:hover {
   background: #0056b3;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 30%);
 }
 
 .dice-roll-toggle.shake {
@@ -1414,7 +1414,7 @@ button:hover {
 }
 
 /* Desktop layout - panel slides from right */
-@media screen and (min-width: 769px) {
+@media screen and (width >= 769px) {
   .dice-roll-panel {
     right: 0;
     top: 50vh;
@@ -1445,7 +1445,7 @@ button:hover {
 }
 
 /* Mobile layout - panel slides from bottom */
-@media screen and (max-width: 768px) {
+@media screen and (width <= 768px) {
   .dice-roll-panel {
     bottom: 0;
     left: 0;

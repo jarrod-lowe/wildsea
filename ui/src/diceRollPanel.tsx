@@ -3,6 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { GraphQLSubscription } from "@aws-amplify/api-graphql";
 import { DiceRoll, Subscription as GQLSubscription } from "../../appsync/graphql";
 import { diceRolledSubscription } from "../../appsync/schema";
+import { FormattedMessage } from 'react-intl';
 
 interface DiceRollPanelProps {
   gameId: string;
@@ -74,7 +75,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
         aria-hidden={!isVisible}
       >
         <div className="dice-roll-header">
-          <h3 id="dice-rolls-title">Dice Rolls</h3>
+          <h3 id="dice-rolls-title"><FormattedMessage id="diceRollPanel.title" /></h3>
           <button 
             className="panel-close-button"
             onClick={togglePanel}
@@ -90,7 +91,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
           aria-live="polite"
         >
           {diceRolls.length === 0 ? (
-            <p className="no-rolls">No dice rolls yet</p>
+            <p className="no-rolls"><FormattedMessage id="diceRollPanel.noRolls" /></p>
           ) : (
             diceRolls.map((roll, index) => (
               <div 
