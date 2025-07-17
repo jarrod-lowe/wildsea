@@ -127,6 +127,12 @@ export const messages = {
     'deltaGreenSkills.roll': 'Roll %',
     'deltaGreenSkills.hasUsedFlag': 'Has used flag',
 
+    // Dice roll panel translations
+    'diceRollPanel.title': 'Dice Rolls',
+    'diceRollPanel.noRolls': 'No dice rolls yet',
+    'diceRollPanel.showPanel': 'Show dice rolls panel',
+    'diceRollPanel.hidePanel': 'Hide dice rolls panel',
+
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
     'sectionObject.addItem': '➕',
