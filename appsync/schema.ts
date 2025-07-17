@@ -101,7 +101,7 @@
       export const rollDiceMutation = `
         mutation rollDice($input: RollDiceInput!) {
           rollDice(input: $input) {
-            gameId playerId dice rollType target grade action diceList { type size value } rolledAt type
+            gameId playerId dice rollType target grade action diceList value rolledAt type
           }
         }
       `;
@@ -135,7 +135,7 @@
       export const diceRolledSubscription = `
         subscription diceRolled($gameId: ID!) {
           diceRolled(gameId: $gameId) {
-            gameId playerId dice rollType target grade action diceList { type size value } rolledAt type
+            gameId playerId dice rollType target grade action diceList value rolledAt type
           }
         }
       `;

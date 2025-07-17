@@ -5,9 +5,11 @@ import type {
   RollDiceInput,
   DiceRoll,
   SingleDie,
+  Dice,
 } from "../../../appsync/graphql";
 import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
 import { TypeDiceRoll } from "../../lib/constants/entityTypes";
+import { RollTypes, Grades } from "../../lib/constants/rollTypes";
 
 export function request(
   context: Context<{ input: RollDiceInput }>,
@@ -55,33 +57,48 @@ export function response(context: Context): DiceRoll {
   const input = context.stash.input as RollDiceInput;
   const playerId = context.stash.playerId as string;
 
-  // Parse and validate dice notation
-  const diceSize = parseDiceNotation(input.dice);
+  // Roll each die in the input array
+  const rolledDice: Dice[] = [];
+  let totalValue = 0;
 
-  // Roll the dice
-  const rolledValue = Math.floor(Math.random() * diceSize) + 1;
+  for (const diceInput of input.dice) {
+    const rolledValue = Math.floor(Math.random() * diceInput.size) + 1;
+    totalValue += rolledValue;
 
-  // Calculate grade based on roll type
-  const grade = calculateGrade(input.rollType, rolledValue, input.target);
-
-  // Create dice list
-  const diceList: SingleDie[] = [
-    {
-      type: "single",
-      size: diceSize,
+    // Convert DiceInput to SingleDie (the only type in Dice union currently)
+    const rolledDie: SingleDie = {
+      __typename: "SingleDie",
+      type: diceInput.type,
+      size: diceInput.size,
       value: rolledValue,
-    },
-  ];
+    };
+
+    rolledDice.push(rolledDie);
+  }
+
+  // Calculate grade based on roll type using total value
+  const grade = calculateGrade(input.rollType, totalValue, input.target);
+
+  // Convert input dice to output dice format
+  const outputDice: Dice[] = input.dice.map(
+    (diceInput): SingleDie => ({
+      __typename: "SingleDie",
+      type: diceInput.type,
+      size: diceInput.size,
+      value: 0, // Original dice spec has no rolled value
+    }),
+  );
 
   const result: DiceRoll = {
     gameId: input.gameId,
     playerId: playerId,
-    dice: input.dice,
+    dice: outputDice,
     rollType: input.rollType,
     target: input.target,
     grade: grade,
     action: input.action || null,
-    diceList: diceList,
+    diceList: rolledDice,
+    value: totalValue,
     rolledAt: util.time.nowISO8601(),
     type: TypeDiceRoll,
   };
@@ -109,65 +126,50 @@ function permitted(identity: AppSyncIdentityCognito, data: DataGame): boolean {
   return false;
 }
 
-function parseDiceNotation(dice: string): number {
-  if (!dice.startsWith("1d")) {
-    util.error(
-      "Invalid dice format. Must be in format '1dXX'",
-      "INVALID_DICE_FORMAT",
-    );
-  }
-
-  const diceSizeStr = dice.substring(2);
-  if (!diceSizeStr || diceSizeStr.length === 0) {
-    util.error(
-      "Invalid dice format. Must be in format '1dXX'",
-      "INVALID_DICE_FORMAT",
-    );
-  }
-
-  // Convert string to number using arithmetic coercion
-  const diceSize = diceSizeStr * 1;
-  if (diceSize < 2 || diceSize > 1000) {
-    util.error(
-      "Invalid dice format. Must be in format '1dXX' where XX is a number between 2 and 1000",
-      "INVALID_DICE_FORMAT",
-    );
-  }
-
-  return diceSize;
-}
-
 function calculateGrade(
   rollType: string,
   rolledValue: number,
   target: number,
 ): string {
-  switch (rollType.toLowerCase()) {
-    case "simple":
-      return rolledValue >= target ? "success" : "failure";
+  switch (rollType) {
+    case RollTypes.SUM:
+      return Grades.NEUTRAL;
 
-    case "d100":
-    case "percentile":
-      return calculateD100Grade(rolledValue, target);
+    case RollTypes.DELTA_GREEN:
+      return calculateDeltaGreenGrade(rolledValue, target);
 
     default:
-      return rolledValue >= target ? "success" : "failure";
+      return Grades.NEUTRAL;
   }
 }
 
-function calculateD100Grade(rolledValue: number, target: number): string {
-  if (rolledValue <= target) {
-    if (rolledValue <= Math.floor(target / 5)) {
-      return "extreme_success";
-    }
-    if (rolledValue <= Math.floor(target / 2)) {
-      return "hard_success";
-    }
-    return "regular_success";
+function calculateDeltaGreenGrade(rolledValue: number, target: number): string {
+  // Handle special cases for 01 and 00
+  if (rolledValue === 1) {
+    return Grades.CRITICAL_SUCCESS;
+  }
+  if (rolledValue === 100) {
+    return Grades.FUMBLE;
   }
 
-  if (rolledValue >= 96) {
-    return "fumble";
+  // Check if all digits are the same (for 2-digit numbers)
+  // Extract tens and units digits
+  const tens = Math.floor(rolledValue / 10);
+  const units = rolledValue % 10;
+  const allDigitsSame = tens === units;
+
+  if (allDigitsSame) {
+    if (rolledValue <= target) {
+      return Grades.CRITICAL_SUCCESS;
+    } else {
+      return Grades.FUMBLE;
+    }
   }
-  return "failure";
+
+  // Standard success/failure check
+  if (rolledValue <= target) {
+    return Grades.SUCCESS;
+  } else {
+    return Grades.FAILURE;
+  }
 }

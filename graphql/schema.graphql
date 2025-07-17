@@ -168,9 +168,16 @@ type SheetSection @aws_cognito_user_pools {
   deleted: Boolean
 }
 
+union Dice = SingleDie
+
+input DiceInput {
+  type: String!
+  size: Int!
+}
+
 input RollDiceInput {
   gameId: ID!
-  dice: String!
+  dice: [DiceInput!]!
   action: String
   rollType: String!
   target: Int!
@@ -179,12 +186,13 @@ input RollDiceInput {
 type DiceRoll @aws_cognito_user_pools {
   gameId: ID!
   playerId: ID!
-  dice: String!
+  dice: [Dice!]!
   rollType: String!
   target: Int!
   grade: String!
   action: String
-  diceList: [SingleDie!]!
+  diceList: [Dice!]!
+  value: Int!
   rolledAt: AWSDateTime!
   type: String!
 }
