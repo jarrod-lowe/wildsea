@@ -56,11 +56,18 @@ export type DeleteSectionInput = {
   sectionId: Scalars['ID']['input'];
 };
 
+export type Dice = SingleDie;
+
+export type DiceInput = {
+  size: Scalars['Int']['input'];
+  type: Scalars['String']['input'];
+};
+
 export type DiceRoll = {
   __typename?: 'DiceRoll';
   action?: Maybe<Scalars['String']['output']>;
-  dice: Scalars['String']['output'];
-  diceList: Array<SingleDie>;
+  dice: Array<Dice>;
+  diceList: Array<Dice>;
   gameId: Scalars['ID']['output'];
   grade: Scalars['String']['output'];
   playerId: Scalars['ID']['output'];
@@ -68,6 +75,7 @@ export type DiceRoll = {
   rolledAt: Scalars['AWSDateTime']['output'];
   target: Scalars['Int']['output'];
   type: Scalars['String']['output'];
+  value: Scalars['Int']['output'];
 };
 
 export type Game = {
@@ -215,7 +223,7 @@ export type QueryGetGameArgs = {
 
 export type RollDiceInput = {
   action?: InputMaybe<Scalars['String']['input']>;
-  dice: Scalars['String']['input'];
+  dice: Array<DiceInput>;
   gameId: Scalars['ID']['input'];
   rollType: Scalars['String']['input'];
   target: Scalars['Int']['input'];
