@@ -10,6 +10,7 @@ import { fetchUserAttributes } from 'aws-amplify/auth';
 import { PlayerSheetTab } from './playerSheetTab';
 import { useToast } from './notificationToast';
 import { EditGameModal } from './editGame';
+import { DiceRollPanel } from './diceRollPanel';
 
 const MAX_RETRIES = 5;
 const INITIAL_BACKOFF_TIME = 1000; // 1 second
@@ -321,6 +322,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         game={game}
         onUpdate={(updatedGame => setGame({ ...game, ...updatedGame }))}
       />
+      <DiceRollPanel gameId={id} />
     </div>
   );
 };
