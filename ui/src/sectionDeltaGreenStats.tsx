@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
+import { DiceRollModal } from './components/DiceRollModal';
 
 interface DeltaGreenStatItem extends BaseSectionItem {
   score: number;
@@ -22,7 +23,14 @@ const DEFAULT_STATS = [
 
 export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
+  const [diceModalOpen, setDiceModalOpen] = useState(false);
+  const [selectedStat, setSelectedStat] = useState<{ name: string; value: number; actionText: string } | null>(null);
 
+  const handleDiceClick = (statName: string, statValue: number) => {
+    const actionText = intl.formatMessage({ id: 'deltaGreenStats.actionWith' }, { statName });
+    setSelectedStat({ name: statName, value: statValue, actionText });
+    setDiceModalOpen(true);
+  };
 
   const renderItems = (
         content: SectionTypeDeltaGreenStats,
@@ -55,7 +63,19 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
             <div className="stats-col-score">
               <span>{item.score}</span>
             </div>
-            <div className="stats-col-x5">{item.score * 5}</div>
+            <div className="stats-col-x5">
+              <span className="x5-display">{item.score * 5}</span>
+              {item.score > 0 && (
+                <button
+                  className="dice-button"
+                  onClick={() => handleDiceClick(item.name, item.score * 5)}
+                  aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
+                  title={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
+                >
+                  {intl.formatMessage({ id: 'dice.icon' })}
+                </button>
+              )}
+            </div>
             <div className="stats-col-features">
               <span>{item.distinguishingFeatures}</span>
             </div>
@@ -125,7 +145,20 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
     );
   };
 
-  return <BaseSection<DeltaGreenStatItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
+  return (
+    <>
+      <BaseSection<DeltaGreenStatItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />
+      {selectedStat && (
+        <DiceRollModal
+          isOpen={diceModalOpen}
+          onRequestClose={() => setDiceModalOpen(false)}
+          gameId={props.section.gameId}
+          skillValue={selectedStat.value}
+          initialAction={selectedStat.actionText}
+        />
+      )}
+    </>
+  );
 };
 
 export const createDefaultDeltaGreenStatsContent = (): SectionTypeDeltaGreenStats => ({
