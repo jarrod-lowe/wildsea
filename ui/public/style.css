@@ -455,6 +455,11 @@ button:hover {
   grid-column: 1 / -1;
 }
 
+/* Override section-items grid for rich text content to take full width */
+.section-items .rich-text-content {
+  grid-column: 1 / -1;
+}
+
 .object-item {
   display: flex;
   align-items: center;
