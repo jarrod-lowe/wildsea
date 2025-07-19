@@ -3,28 +3,28 @@ import { generateClient } from "aws-amplify/api";
 import { GraphQLSubscription } from "@aws-amplify/api-graphql";
 import { DiceRoll, Subscription as GQLSubscription } from "../../appsync/graphql";
 import { diceRolledSubscription } from "../../appsync/schema";
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 interface DiceRollPanelProps {
   gameId: string;
 }
 
-const formatGrade = (grade: string, rollType: string) => {
+const formatGrade = (grade: string, rollType: string, intl: any) => {
   if (rollType === 'sum') {
-    return { emoji: '🎲', text: '', className: 'grade-neutral' };
+    return { emoji: '🎲', text: '', className: 'grade-neutral', borderClassName: 'border-neutral' };
   }
   
   switch (grade) {
     case 'CRITICAL_SUCCESS':
-      return { emoji: '🔥', text: 'CRITICAL SUCCESS', className: 'grade-critical-success' };
+      return { emoji: '🔥', text: intl.formatMessage({ id: 'diceRoll.grade.CRITICAL_SUCCESS' }), className: 'grade-critical-success', borderClassName: 'border-critical-success' };
     case 'SUCCESS':
-      return { emoji: '✅', text: 'SUCCESS', className: 'grade-success' };
+      return { emoji: '✅', text: intl.formatMessage({ id: 'diceRoll.grade.SUCCESS' }), className: 'grade-success', borderClassName: 'border-success' };
     case 'FAILURE':
-      return { emoji: '❌', text: 'FAILURE', className: 'grade-failure' };
+      return { emoji: '❌', text: intl.formatMessage({ id: 'diceRoll.grade.FAILURE' }), className: 'grade-failure', borderClassName: 'border-failure' };
     case 'FUMBLE':
-      return { emoji: '💀', text: 'FUMBLE', className: 'grade-fumble' };
+      return { emoji: '💀', text: intl.formatMessage({ id: 'diceRoll.grade.FUMBLE' }), className: 'grade-fumble', borderClassName: 'border-fumble' };
     default:
-      return { emoji: '🎲', text: '', className: 'grade-neutral' };
+      return { emoji: '🎲', text: '', className: 'grade-neutral', borderClassName: 'border-neutral' };
   }
 };
 
@@ -38,23 +38,23 @@ const formatDiceDetails = (diceList: any[]) => {
   return `${values.join(' + ')} = ${sum}`;
 };
 
-const formatDiceRoll = (roll: DiceRoll) => {
-  const gradeInfo = formatGrade(roll.grade, roll.rollType);
+const formatDiceRoll = (roll: DiceRoll, intl: any) => {
+  const gradeInfo = formatGrade(roll.grade, roll.rollType, intl);
   const playerName = roll.playerName;
   
   return (
     <div className="dice-roll-formatted">
       <div className="roll-header">
-        {playerName} rolled{roll.action ? ` ${roll.action}` : ''}
+        {playerName} {intl.formatMessage({ id: 'diceRoll.rolled' })}{roll.action ? ` ${roll.action}` : ''}
       </div>
       
       {roll.rollType === 'sum' ? (
         <div className="roll-result">
-          {gradeInfo.emoji} Total: {roll.value}
+          {gradeInfo.emoji} {intl.formatMessage({ id: 'diceRoll.total' }, { value: roll.value })}
         </div>
       ) : (
         <div className="roll-result">
-          🎯 Target: {roll.target} → Rolled: {roll.value} → <span className={gradeInfo.className}>{gradeInfo.emoji} {gradeInfo.text}</span>
+          🎯 {intl.formatMessage({ id: 'diceRoll.target' }, { target: roll.target })} → {intl.formatMessage({ id: 'diceRoll.result' }, { value: roll.value })} → <span className={gradeInfo.className}>{gradeInfo.emoji} {gradeInfo.text}</span>
         </div>
       )}
       
@@ -72,6 +72,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
   const [newRollIds, setNewRollIds] = useState<Set<string>>(new Set());
   const [unreadCount, setUnreadCount] = useState(0);
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
+  const intl = useIntl();
 
   useEffect(() => {
     if (gameId) {
@@ -150,9 +151,9 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
           <button 
             className="panel-close-button"
             onClick={togglePanel}
-            aria-label="Hide dice rolls panel"
+            aria-label={intl.formatMessage({ id: 'diceRollPanel.hidePanel' })}
           >
-            ×
+            <FormattedMessage id="diceRollPanel.closeButton" />
           </button>
         </div>
         <div 
@@ -165,18 +166,19 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
           {diceRolls.length === 0 ? (
             <p className="no-rolls" role="status"><FormattedMessage id="diceRollPanel.noRolls" /></p>
           ) : (
-            <ul className="dice-roll-list" role="list" aria-label="Recent dice rolls">
+            <ul className="dice-roll-list" role="list" aria-label={intl.formatMessage({ id: 'diceRollPanel.recentRolls' })}>
               {diceRolls.map((roll) => {
                 const rollId = `${roll.gameId}-${roll.playerId}-${roll.rolledAt}`;
                 const isNew = newRollIds.has(rollId);
+                const gradeInfo = formatGrade(roll.grade, roll.rollType, intl);
                 return (
                   <li 
                     key={rollId} 
-                    className={`dice-roll-item ${isNew ? 'slide-in' : ''}`}
+                    className={`dice-roll-item ${gradeInfo.borderClassName} ${isNew ? 'slide-in' : ''}`}
                     role="listitem"
-                    aria-label={`Dice roll by ${roll.playerName}`}
+                    aria-label={intl.formatMessage({ id: 'diceRollPanel.rollBy' }, { playerName: roll.playerName })}
                   >
-                    {formatDiceRoll(roll)}
+                    {formatDiceRoll(roll, intl)}
                   </li>
                 );
               })}
@@ -189,7 +191,10 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
         <button 
           className={`dice-roll-toggle ${shouldShake ? 'shake' : ''}`}
           onClick={togglePanel}
-          aria-label={`Show dice rolls panel${unreadCount > 0 ? ` (${unreadCount} new rolls)` : ''}`}
+          aria-label={unreadCount > 0 
+            ? `${intl.formatMessage({ id: 'diceRollPanel.showPanel' })} (${intl.formatMessage({ id: 'diceRollPanel.newRolls' }, { count: unreadCount })})`
+            : intl.formatMessage({ id: 'diceRollPanel.showPanel' })
+          }
           aria-expanded="false"
           aria-controls="dice-rolls-panel"
           aria-describedby={unreadCount > 0 ? "dice-roll-count" : undefined}

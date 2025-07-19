@@ -1374,11 +1374,31 @@ button:hover {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.dice-roll-item.slide-in {
-  animation: slideInFromTop 0.4s ease-out;
+.dice-roll-item.border-critical-success {
+  border-left-color: #d97706;
 }
 
-@keyframes slideInFromTop {
+.dice-roll-item.border-success {
+  border-left-color: #16a34a;
+}
+
+.dice-roll-item.border-failure {
+  border-left-color: #dc2626;
+}
+
+.dice-roll-item.border-fumble {
+  border-left-color: #7c2d12;
+}
+
+.dice-roll-item.border-neutral {
+  border-left-color: #6b7280;
+}
+
+.dice-roll-item.slide-in {
+  animation: slide-in-from-top 0.4s ease-out;
+}
+
+@keyframes slide-in-from-top {
   0% {
     transform: translateY(-100%);
     opacity: 0;
@@ -1387,6 +1407,7 @@ button:hover {
     padding-top: 0;
     padding-bottom: 0;
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
