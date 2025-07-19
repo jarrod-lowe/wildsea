@@ -71,6 +71,7 @@ export type DiceRoll = {
   gameId: Scalars['ID']['output'];
   grade: Scalars['String']['output'];
   playerId: Scalars['ID']['output'];
+  playerName: Scalars['String']['output'];
   rollType: Scalars['String']['output'];
   rolledAt: Scalars['AWSDateTime']['output'];
   target: Scalars['Int']['output'];

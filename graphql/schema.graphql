@@ -186,6 +186,7 @@ input RollDiceInput {
 type DiceRoll @aws_cognito_user_pools {
   gameId: ID!
   playerId: ID!
+  playerName: String!
   dice: [Dice!]!
   rollType: String!
   target: Int!

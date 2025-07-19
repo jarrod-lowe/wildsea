@@ -11,6 +11,7 @@ import {
   isInterfaceType,
   isObjectType,
   isScalarType,
+  isUnionType,
 } from 'graphql';
 
 // Function to read all data from STDIN
@@ -147,6 +148,17 @@ function getFieldSelection(type: GraphQLOutputType, depth: number = 0): string {
 
   if ('ofType' in type && type.ofType) {
     return getFieldSelection(type.ofType, depth);
+  }
+
+  if (isUnionType(type)) {
+    const possibleTypes = type.getTypes();
+    const inlineFragments = possibleTypes
+      .map((possibleType) => {
+        const subFields = getFieldSelection(possibleType, depth + 1);
+        return subFields ? `... on ${possibleType.name} { ${subFields} }` : '';
+      })
+      .filter(Boolean);
+    return inlineFragments.join(' ');
   }
 
   if (isObjectType(type) || isInterfaceType(type)) {
