@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
+import { DiceRollModal } from './components/DiceRollModal';
+import { Grades } from "../../graphql/lib/constants/rollTypes";
 
 interface DeltaGreenSkillItem extends BaseSectionItem {
   used: boolean;
@@ -60,6 +62,10 @@ const DEFAULT_SKILLS = [
 
 export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
+  const [diceModalOpen, setDiceModalOpen] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState<{ name: string; value: number; item: DeltaGreenSkillItem } | null>(null);
+  const [currentContent, setCurrentContent] = useState<SectionTypeDeltaGreenSkills | null>(null);
+  const [currentUpdateSection, setCurrentUpdateSection] = useState<((updatedSection: Partial<SheetSection>) => Promise<void>) | null>(null);
 
   const handleUsedToggle = async (
     item: DeltaGreenSkillItem,
@@ -74,6 +80,39 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     const newContent = { ...content, items: newItems };
     setContent(newContent);
     await updateSection({ content: JSON.stringify(newContent) });
+  };
+
+  const handleDiceClick = (
+    skillName: string, 
+    skillValue: number, 
+    item: DeltaGreenSkillItem,
+    content: SectionTypeDeltaGreenSkills,
+    setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
+    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>
+  ) => {
+    setSelectedSkill({ name: skillName, value: skillValue, item });
+    setCurrentContent(content);
+    setCurrentUpdateSection(() => updateSection);
+    setDiceModalOpen(true);
+  };
+
+  const handleRollComplete = async (grade: string) => {
+    if (!selectedSkill || !currentContent || !currentUpdateSection) return;
+    
+    // Mark skill as used if it was a failure or fumble AND the skill has a used flag
+    if ((grade === Grades.FAILURE || grade === Grades.FUMBLE) && selectedSkill.item.hasUsedFlag !== false) {
+      const newItems = [...currentContent.items];
+      const itemIndex = newItems.findIndex(i => i.id === selectedSkill.item.id);
+      if (itemIndex !== -1) {
+        const updatedItem = { ...selectedSkill.item, used: true };
+        newItems[itemIndex] = updatedItem;
+        const newContent = { ...currentContent, items: newItems };
+        
+        // We need to call setContent from the BaseSection, but we don't have access to it here
+        // Instead, we'll update the section directly
+        await currentUpdateSection({ content: JSON.stringify(newContent) });
+      }
+    }
   };
 
   const renderItems = (
@@ -112,6 +151,16 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
             <div className="skills-col-name">{item.name}</div>
             <div className="skills-col-roll">
               <span className="roll-display">{item.roll}%</span>
+              {item.roll > 0 && (
+                <button
+                  className="dice-button"
+                  onClick={() => handleDiceClick(item.name, item.roll, item, content, setContent, updateSection)}
+                  aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
+                  title={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
+                >
+                  🎲
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -227,7 +276,21 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     );
   };
 
-  return <BaseSection<DeltaGreenSkillItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
+  return (
+    <>
+      <BaseSection<DeltaGreenSkillItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />
+      {selectedSkill && (
+        <DiceRollModal
+          isOpen={diceModalOpen}
+          onClose={() => setDiceModalOpen(false)}
+          gameId={props.section.gameId}
+          skillName={selectedSkill.name}
+          skillValue={selectedSkill.value}
+          onRollComplete={handleRollComplete}
+        />
+      )}
+    </>
+  );
 };
 
 export const createDefaultDeltaGreenSkillsContent = (): SectionTypeDeltaGreenSkills => ({

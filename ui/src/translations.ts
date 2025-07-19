@@ -126,6 +126,7 @@ export const messages = {
     'deltaGreenSkills.skill': 'Skill',
     'deltaGreenSkills.roll': 'Roll %',
     'deltaGreenSkills.hasUsedFlag': 'Has used flag',
+    'deltaGreenSkills.rollDice': 'Roll dice for {skillName}',
 
     // Dice roll panel translations
     'diceRollPanel.title': 'Dice Rolls',
@@ -155,6 +156,19 @@ export const messages = {
     // Animation characters
     'diceRoll.animation.firework': '✨',
     'diceRoll.animation.skull': '💀',
+
+    // Dice roll modal
+    'diceRollModal.title': 'Roll Dice',
+    'diceRollModal.close': 'Close',
+    'diceRollModal.action': 'Action',
+    'diceRollModal.actionPlaceholder': 'What are you rolling for?',
+    'diceRollModal.actionHelp': 'Describe what this roll is for (optional)',
+    'diceRollModal.target': 'Target Number',
+    'diceRollModal.targetHelp': 'Base skill value: {skillValue}%. Select a modifier to apply.',
+    'diceRollModal.roll': 'Roll Dice',
+    'diceRollModal.rolling': 'Rolling...',
+    'diceRollModal.rollHelp': 'Roll a d100 against the target number',
+    'diceRollModal.result': 'Roll Result',
 
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
