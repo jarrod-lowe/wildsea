@@ -22,7 +22,7 @@ ui-local: ui/config/config-dev.json appsync/schema.ts appsync/graphql.ts terrafo
 
 ui/node_modules: ui/package.json
 	if [ -z "$(IN_PIPELINE)" ] ; then \
-		docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --network host node:20 npm install --userconfig=/dev/null --cache=/app/ui/.npm-cache ; \
+		docker run --rm --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --network host node:20 npm install --userconfig=/dev/null --cache=/app/ui/.npm-cache ; \
 	else \
 		cd ui ; npm install ; \
 	fi
