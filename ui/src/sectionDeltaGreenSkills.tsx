@@ -6,6 +6,27 @@ import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
 import { Grades } from "../../graphql/lib/constants/rollTypes";
 
+// Color scaling function for skill proficiency (0-99 scale)
+// Returns WCAG AAA compliant light colors from red to green with better breakpoint
+const getSkillBackgroundColor = (rollValue: number): string => {
+  if (rollValue <= 0) return 'transparent';
+  
+  // Normalize the value to 0-1 range, with breakpoint at 40%
+  const normalized = Math.min(rollValue, 99) / 99;
+  
+  // Simple red to green gradient: Red (0°) to Green (120°)
+  // But adjust the curve to make higher skills more distinct
+  const adjustedProgress = normalized >= 0.4 
+    ? 0.5 + (normalized - 0.4) * 0.833 // 40-99% maps to 50-100% of color range
+    : normalized * 1.25; // 0-40% maps to 0-50% of color range
+  
+  const hue = Math.min(adjustedProgress, 1) * 120; // 0 to 120 degrees (red to green)
+  const saturation = 40; // Moderate saturation for readability
+  const lightness = 85; // High lightness for WCAG AAA compliance
+  
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
+
 interface DeltaGreenSkillItem extends BaseSectionItem {
   used: boolean;
   roll: number;
@@ -157,7 +178,11 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
       <>
         <div className={`delta-green-skills-grid ${!hasAnyUsedFlags ? 'no-used-column' : ''}`}>
           {sortedItems.map(item => (
-            <div key={item.id} className="skills-item">
+            <div 
+              key={item.id} 
+              className="skills-item"
+              style={{ backgroundColor: getSkillBackgroundColor(item.roll) }}
+            >
               {hasAnyUsedFlags && (
                 <div className="skills-col-used">
                   {item.hasUsedFlag !== false ? (
