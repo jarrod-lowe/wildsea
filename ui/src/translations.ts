@@ -149,6 +149,10 @@ export const messages = {
     'diceRoll.target': 'Target: {target}',
     'diceRoll.result': 'Rolled: {value}',
     'diceRoll.total': 'Total: {value}',
+    
+    // Animation characters
+    'diceRoll.animation.firework': '✨',
+    'diceRoll.animation.skull': '💀',
 
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
