@@ -128,6 +128,8 @@ export const messages = {
     'deltaGreenSkills.hasUsedFlag': 'Has used flag',
     'deltaGreenSkills.rollDice': 'Roll dice for {skillName}',
     'deltaGreenSkills.actionFor': 'for {skillName}',
+    'deltaGreenSkills.postSessionUpgrades.button': 'Post-session Upgrades',
+    'deltaGreenSkills.postSessionUpgrades.tooltip': 'Upgrade all used skills (+1%) and clear used flags',
 
     'deltaGreenStats.rollDice': 'Roll dice for {statName}',
     'deltaGreenStats.actionWith': 'with {statName}',

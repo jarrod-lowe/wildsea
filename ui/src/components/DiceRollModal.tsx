@@ -30,6 +30,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   const [isRolling, setIsRolling] = useState(false);
   const [rollResult, setRollResult] = useState<DiceRoll | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const rollButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -39,8 +40,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
       setIsRolling(false);
       
       setTimeout(() => {
-        const firstInput = document.querySelector('.dice-roll-modal input') as HTMLElement;
-        firstInput?.focus();
+        rollButtonRef.current?.focus();
       }, 100);
     }
   }, [isOpen, skillValue, initialAction]);
@@ -160,6 +160,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
 
               <div className="form-actions">
                 <button
+                  ref={rollButtonRef}
                   type="submit"
                   className="btn btn-primary"
                   disabled={isRolling}

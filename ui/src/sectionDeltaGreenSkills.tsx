@@ -116,6 +116,27 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     }
   };
 
+  const handlePostSessionUpgrades = async (
+    content: SectionTypeDeltaGreenSkills,
+    setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
+    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+  ) => {
+    const newItems = content.items.map(item => {
+      if (item.used && item.hasUsedFlag !== false) {
+        return {
+          ...item,
+          roll: Math.min(99, item.roll + 1),
+          used: false
+        };
+      }
+      return item;
+    });
+    
+    const newContent = { ...content, items: newItems };
+    setContent(newContent);
+    await updateSection({ content: JSON.stringify(newContent) });
+  };
+
   const renderItems = (
     content: SectionTypeDeltaGreenSkills,
     mayEditSheet: boolean,
@@ -130,42 +151,57 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     const sortedItems = [...filteredItems].sort((a, b) => a.name.localeCompare(b.name));
 
     const hasAnyUsedFlags = sortedItems.some(item => item.hasUsedFlag !== false);
+    const hasAnyUsedSkills = sortedItems.some(item => item.used && item.hasUsedFlag !== false);
 
     return (
-      <div className={`delta-green-skills-grid ${!hasAnyUsedFlags ? 'no-used-column' : ''}`}>
-        {sortedItems.map(item => (
-          <div key={item.id} className="skills-item">
-            {hasAnyUsedFlags && (
-              <div className="skills-col-used">
-                {item.hasUsedFlag !== false ? (
-                  <input
-                    type="checkbox"
-                    checked={item.used}
-                    onChange={() => handleUsedToggle(item, content, setContent, updateSection)}
-                    disabled={!mayEditSheet}
-                  />
-                ) : (
-                  <span></span>
+      <>
+        <div className={`delta-green-skills-grid ${!hasAnyUsedFlags ? 'no-used-column' : ''}`}>
+          {sortedItems.map(item => (
+            <div key={item.id} className="skills-item">
+              {hasAnyUsedFlags && (
+                <div className="skills-col-used">
+                  {item.hasUsedFlag !== false ? (
+                    <input
+                      type="checkbox"
+                      checked={item.used}
+                      onChange={() => handleUsedToggle(item, content, setContent, updateSection)}
+                      disabled={!mayEditSheet}
+                    />
+                  ) : (
+                    <span></span>
+                  )}
+                </div>
+              )}
+              <div className="skills-col-name">{item.name}</div>
+              <div className="skills-col-roll">
+                <span className="roll-display">{item.roll}%</span>
+                {item.roll > 0 && (
+                  <button
+                    className="dice-button"
+                    onClick={() => handleDiceClick(item.name, item.roll, item, content, setContent, updateSection)}
+                    aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
+                    title={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
+                  >
+                    {intl.formatMessage({ id: 'dice.icon' })}
+                  </button>
                 )}
               </div>
-            )}
-            <div className="skills-col-name">{item.name}</div>
-            <div className="skills-col-roll">
-              <span className="roll-display">{item.roll}%</span>
-              {item.roll > 0 && (
-                <button
-                  className="dice-button"
-                  onClick={() => handleDiceClick(item.name, item.roll, item, content, setContent, updateSection)}
-                  aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
-                  title={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
-                >
-                  {intl.formatMessage({ id: 'dice.icon' })}
-                </button>
-              )}
             </div>
+          ))}
+        </div>
+        {mayEditSheet && (
+          <div className="post-session-upgrades">
+            <button
+              className="post-session-upgrades-button"
+              onClick={() => handlePostSessionUpgrades(content, setContent, updateSection)}
+              title={intl.formatMessage({ id: 'deltaGreenSkills.postSessionUpgrades.tooltip' })}
+              disabled={!hasAnyUsedSkills}
+            >
+              <FormattedMessage id="deltaGreenSkills.postSessionUpgrades.button" />
+            </button>
           </div>
-        ))}
-      </div>
+        )}
+      </>
     );
   };
 
