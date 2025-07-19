@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { generateClient } from "aws-amplify/api";
 import { rollDiceMutation } from "../../../appsync/schema";
@@ -8,7 +9,7 @@ import { DiceRollFormatter } from './DiceRollFormatter';
 
 interface DiceRollModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onRequestClose: () => void;
   gameId: string;
   skillValue: number;
   initialAction: string;
@@ -17,7 +18,7 @@ interface DiceRollModalProps {
 
 export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   isOpen,
-  onClose,
+  onRequestClose,
   gameId,
   skillValue,
   initialAction,
@@ -28,7 +29,6 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   const [target, setTarget] = useState(skillValue);
   const [isRolling, setIsRolling] = useState(false);
   const [rollResult, setRollResult] = useState<DiceRoll | null>(null);
-  const modalRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -39,29 +39,12 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
       setIsRolling(false);
       
       setTimeout(() => {
-        const firstInput = modalRef.current?.querySelector('input') as HTMLElement;
+        const firstInput = document.querySelector('.dice-roll-modal input') as HTMLElement;
         firstInput?.focus();
       }, 100);
     }
   }, [isOpen, skillValue, initialAction]);
 
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen && !isRolling) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = '';
-    };
-  }, [isOpen, isRolling, onClose]);
 
   const targetOptions = [-40, -30, -20, -10, 0, 10, 20, 30, 40].map(modifier => {
     const value = Math.max(0, Math.min(99, skillValue + modifier));
@@ -101,40 +84,19 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
 
   const handleClose = () => {
     if (!isRolling) {
-      onClose();
+      onRequestClose();
     }
   };
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget && !isRolling) {
-      onClose();
-    }
-  };
-
-  const handleBackdropKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      if (e.target === e.currentTarget && !isRolling) {
-        onClose();
-      }
-    }
-  };
-
-  if (!isOpen) return null;
 
   return (
-    <div 
-      className="modal-backdrop"
-      onClick={handleBackdropClick}
-      onKeyDown={handleBackdropKeyDown}
-      tabIndex={-1}
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={isRolling ? () => {} : onRequestClose}
+      contentLabel={intl.formatMessage({ id: 'diceRollModal.title' })}
+      className="dice-roll-modal"
+      overlayClassName="modal-overlay"
     >
-      <dialog 
-        ref={modalRef}
-        className="modal-content dice-roll-modal"
-        open={isOpen}
-        aria-labelledby="dice-roll-modal-title"
-        onClick={(e) => e.stopPropagation()}
-      >
         <div className="modal-header">
           <h2 id="dice-roll-modal-title">
             <FormattedMessage id="diceRollModal.title" />
@@ -232,7 +194,6 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
             </div>
           )}
         </div>
-      </dialog>
-    </div>
+    </Modal>
   );
 };

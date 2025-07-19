@@ -283,7 +283,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
       {selectedSkill && (
         <DiceRollModal
           isOpen={diceModalOpen}
-          onClose={() => setDiceModalOpen(false)}
+          onRequestClose={() => setDiceModalOpen(false)}
           gameId={props.section.gameId}
           skillValue={selectedSkill.value}
           initialAction={selectedSkill.actionText}
