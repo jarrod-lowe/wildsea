@@ -20,10 +20,11 @@ jest.mock("@aws-appsync/utils", () => ({
   },
 }));
 
-const mockGame = {
+const mockPlayerSheet = {
+  userId: "test-user-id",
   gameId: "test-game-id",
-  fireflyUserId: "test-user-id",
-  players: ["test-user-id"],
+  characterName: "Test Character",
+  type: "character",
 };
 
 const mockContext = {
@@ -47,7 +48,7 @@ const mockContext = {
     },
     playerId: "test-user-id",
   },
-  result: mockGame,
+  result: mockPlayerSheet,
   error: null,
 } as unknown as Context;
 
@@ -64,7 +65,7 @@ describe("rollDice resolver", () => {
         operation: "GetItem",
         key: {
           PK: "GAME#test-game-id",
-          SK: "GAME",
+          SK: "PLAYER#test-user-id",
         },
       });
     });
@@ -79,6 +80,7 @@ describe("rollDice resolver", () => {
 
       expect(result.grade).toBe(Grades.CRITICAL_SUCCESS);
       expect(result.diceList[0].value).toBe(1);
+      expect(result.playerName).toBe("Test Character");
     });
 
     it("should return FUMBLE for roll of 00 (100)", () => {
@@ -89,6 +91,7 @@ describe("rollDice resolver", () => {
 
       expect(result.grade).toBe(Grades.FUMBLE);
       expect(result.diceList[0].value).toBe(100);
+      expect(result.playerName).toBe("Test Character");
     });
 
     it("should return CRITICAL_SUCCESS for matching digits <= target", () => {
@@ -99,6 +102,7 @@ describe("rollDice resolver", () => {
 
       expect(result.grade).toBe(Grades.CRITICAL_SUCCESS);
       expect(result.diceList[0].value).toBe(22);
+      expect(result.playerName).toBe("Test Character");
     });
 
     it("should return FUMBLE for matching digits > target", () => {
@@ -109,6 +113,7 @@ describe("rollDice resolver", () => {
 
       expect(result.grade).toBe(Grades.FUMBLE);
       expect(result.diceList[0].value).toBe(66);
+      expect(result.playerName).toBe("Test Character");
     });
 
     it("should return SUCCESS for regular roll <= target", () => {
@@ -119,6 +124,7 @@ describe("rollDice resolver", () => {
 
       expect(result.grade).toBe(Grades.SUCCESS);
       expect(result.diceList[0].value).toBe(25);
+      expect(result.playerName).toBe("Test Character");
     });
 
     it("should return FAILURE for regular roll > target", () => {
@@ -129,6 +135,7 @@ describe("rollDice resolver", () => {
 
       expect(result.grade).toBe(Grades.FAILURE);
       expect(result.diceList[0].value).toBe(75);
+      expect(result.playerName).toBe("Test Character");
     });
   });
 
@@ -159,6 +166,7 @@ describe("rollDice resolver", () => {
           },
           playerId: "test-user-id",
         },
+        result: mockPlayerSheet,
       } as unknown as Context;
 
       // Mock Math.random to return consistent values
@@ -171,6 +179,7 @@ describe("rollDice resolver", () => {
 
       expect(result.grade).toBe(Grades.NEUTRAL);
       expect(result.value).toBe(8); // 4 + 4
+      expect(result.playerName).toBe("Test Character");
     });
   });
 });
