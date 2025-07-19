@@ -155,7 +155,7 @@ function getFieldSelection(type: GraphQLOutputType, depth: number = 0): string {
     const inlineFragments = possibleTypes
       .map((possibleType) => {
         const subFields = getFieldSelection(possibleType, depth + 1);
-        return subFields ? `... on ${possibleType.name} { ${subFields} }` : '';
+        return subFields ? `... on ${possibleType.name} { __typename ${subFields} }` : '';
       })
       .filter(Boolean);
     return inlineFragments.join(' ');

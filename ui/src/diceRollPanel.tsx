@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { GraphQLSubscription } from "@aws-amplify/api-graphql";
 import { DiceRoll, Subscription as GQLSubscription } from "../../appsync/graphql";
-import { diceRolledSubscription } from "../../appsync/schema";
+import { diceRolledSubscription, rollDiceMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { RollTypes, Grades } from "../../graphql/lib/constants/rollTypes";
+import { RollDiceInput } from "../../appsync/graphql";
 
 interface DiceRollPanelProps {
   gameId: string;
@@ -170,6 +171,25 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
     setUnreadCount(0); // Reset unread count when panel is opened/closed
   };
 
+  const rollSimpleDice = async (dieSize: number) => {
+    try {
+      const client = generateClient();
+      const input: RollDiceInput = {
+        gameId,
+        dice: [{ type: `d${dieSize}`, size: dieSize }],
+        rollType: RollTypes.SUM,
+        target: 0, // Not used for sum rolls
+      };
+      
+      await client.graphql({
+        query: rollDiceMutation,
+        variables: { input },
+      });
+    } catch (error) {
+      console.error('Error rolling dice:', error);
+    }
+  };
+
   return (
     <>
       <div 
@@ -196,27 +216,44 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
           aria-live="polite"
           aria-relevant="additions"
         >
-          {diceRolls.length === 0 ? (
-            <p className="no-rolls" role="status"><FormattedMessage id="diceRollPanel.noRolls" /></p>
-          ) : (
-            <ul className="dice-roll-list" role="list" aria-label={intl.formatMessage({ id: 'diceRollPanel.recentRolls' })}>
-              {diceRolls.map((roll) => {
-                const rollId = `${roll.gameId}-${roll.playerId}-${roll.rolledAt}`;
-                const isNew = newRollIds.has(rollId);
-                const gradeInfo = formatGrade(roll.grade, roll.rollType, intl);
-                return (
-                  <li 
-                    key={rollId} 
-                    className={`dice-roll-item ${gradeInfo.borderClassName} ${isNew ? 'slide-in' : ''}`}
-                    role="listitem"
-                    aria-label={intl.formatMessage({ id: 'diceRollPanel.rollBy' }, { playerName: roll.playerName })}
-                  >
-                    {formatDiceRoll(roll, intl)}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          <div className="dice-roll-list-container">
+            {diceRolls.length === 0 ? (
+              <p className="no-rolls" role="status"><FormattedMessage id="diceRollPanel.noRolls" /></p>
+            ) : (
+              <ul className="dice-roll-list" role="list" aria-label={intl.formatMessage({ id: 'diceRollPanel.recentRolls' })}>
+                {diceRolls.map((roll) => {
+                  const rollId = `${roll.gameId}-${roll.playerId}-${roll.rolledAt}`;
+                  const isNew = newRollIds.has(rollId);
+                  const gradeInfo = formatGrade(roll.grade, roll.rollType, intl);
+                  return (
+                    <li 
+                      key={rollId} 
+                      className={`dice-roll-item ${gradeInfo.borderClassName} ${isNew ? 'slide-in' : ''}`}
+                      role="listitem"
+                      aria-label={intl.formatMessage({ id: 'diceRollPanel.rollBy' }, { playerName: roll.playerName })}
+                    >
+                      {formatDiceRoll(roll, intl)}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+          
+          <div className="simple-dice-buttons">
+            <div className="dice-button-row">
+              {[4, 6, 8, 10, 12, 20, 100].map((dieSize) => (
+                <button
+                  key={dieSize}
+                  className="simple-dice-button"
+                  onClick={() => rollSimpleDice(dieSize)}
+                  aria-label={intl.formatMessage({ id: 'diceRollPanel.rollDie' }, { size: dieSize })}
+                >
+                  d{dieSize}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
         
         {/* Panel animations */}

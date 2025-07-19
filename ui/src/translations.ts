@@ -136,6 +136,8 @@ export const messages = {
     'diceRollPanel.newRolls': '{count, plural, one {# new roll} other {# new rolls}}',
     'diceRollPanel.recentRolls': 'Recent dice rolls',
     'diceRollPanel.rollBy': 'Dice roll by {playerName}',
+    'diceRollPanel.simpleDice': 'Quick Dice',
+    'diceRollPanel.rollDie': 'Roll d{size}',
     
     // Dice roll grades
     'diceRoll.grade.CRITICAL_SUCCESS': 'CRITICAL SUCCESS',
