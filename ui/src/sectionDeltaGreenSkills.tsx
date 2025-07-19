@@ -63,7 +63,7 @@ const DEFAULT_SKILLS = [
 export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
   const [diceModalOpen, setDiceModalOpen] = useState(false);
-  const [selectedSkill, setSelectedSkill] = useState<{ name: string; value: number; item: DeltaGreenSkillItem } | null>(null);
+  const [selectedSkill, setSelectedSkill] = useState<{ name: string; value: number; item: DeltaGreenSkillItem; actionText: string } | null>(null);
   const [currentContent, setCurrentContent] = useState<SectionTypeDeltaGreenSkills | null>(null);
   const [currentUpdateSection, setCurrentUpdateSection] = useState<((updatedSection: Partial<SheetSection>) => Promise<void>) | null>(null);
 
@@ -90,7 +90,8 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>
   ) => {
-    setSelectedSkill({ name: skillName, value: skillValue, item });
+    const actionText = intl.formatMessage({ id: 'deltaGreenSkills.actionFor' }, { skillName });
+    setSelectedSkill({ name: skillName, value: skillValue, item, actionText });
     setCurrentContent(content);
     setCurrentUpdateSection(() => updateSection);
     setDiceModalOpen(true);
@@ -284,8 +285,8 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
           isOpen={diceModalOpen}
           onClose={() => setDiceModalOpen(false)}
           gameId={props.section.gameId}
-          skillName={selectedSkill.name}
           skillValue={selectedSkill.value}
+          initialAction={selectedSkill.actionText}
           onRollComplete={handleRollComplete}
         />
       )}

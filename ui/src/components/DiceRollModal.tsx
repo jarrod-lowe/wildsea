@@ -10,8 +10,8 @@ interface DiceRollModalProps {
   isOpen: boolean;
   onClose: () => void;
   gameId: string;
-  skillName: string;
   skillValue: number;
+  initialAction: string;
   onRollComplete?: (grade: string) => void;
 }
 
@@ -19,12 +19,12 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   isOpen,
   onClose,
   gameId,
-  skillName,
   skillValue,
+  initialAction,
   onRollComplete
 }) => {
   const intl = useIntl();
-  const [action, setAction] = useState(`for ${skillName}`);
+  const [action, setAction] = useState(initialAction);
   const [target, setTarget] = useState(skillValue);
   const [isRolling, setIsRolling] = useState(false);
   const [rollResult, setRollResult] = useState<DiceRoll | null>(null);
@@ -33,7 +33,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setAction(`for ${skillName}`);
+      setAction(initialAction);
       setTarget(skillValue);
       setRollResult(null);
       setIsRolling(false);
@@ -43,7 +43,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
         firstInput?.focus();
       }, 100);
     }
-  }, [isOpen, skillName, skillValue]);
+  }, [isOpen, skillValue, initialAction]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {

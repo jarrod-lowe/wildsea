@@ -69,7 +69,7 @@ export const messages = {
     'playerSheetTab.addSection': 'Add a section',
     'playerSheetTab.deleteSection': 'Delete a section',
     'playerSheetTab.deleteSectionWarning': 'Deleting a section is permanent and cannot be undone. All data within the section will be lost.',
-    'playerSheetTab.deleteSectionError': 'Failed to create deltete the section. Please try again.',
+    'playerSheetTab.deleteSectionError': 'Failed to create delete the section. Please try again.',
     'playerSheetTab.quitLabel': 'Quit Game',
     'playerSheetTab.kickShipLabel': 'Delete Ship',
     'playerSheetTab.kickPlayerLabel': 'Kick Player',
@@ -127,6 +127,7 @@ export const messages = {
     'deltaGreenSkills.roll': 'Roll %',
     'deltaGreenSkills.hasUsedFlag': 'Has used flag',
     'deltaGreenSkills.rollDice': 'Roll dice for {skillName}',
+    'deltaGreenSkills.actionFor': 'for {skillName}',
 
     // Dice roll panel translations
     'diceRollPanel.title': 'Dice Rolls',
