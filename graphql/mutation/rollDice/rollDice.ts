@@ -1,13 +1,13 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
-import type { DataGame } from "../../lib/dataTypes";
+import type { DataPlayerSheet } from "../../lib/dataTypes";
 import type {
   RollDiceInput,
   DiceRoll,
   SingleDie,
   Dice,
 } from "../../../appsync/graphql";
-import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
+import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
 import { TypeDiceRoll } from "../../lib/constants/entityTypes";
 import { RollTypes, Grades } from "../../lib/constants/rollTypes";
 
@@ -24,10 +24,10 @@ export function request(
   context.stash.input = input;
   context.stash.playerId = identity.sub;
 
-  // Check game access by getting the game
+  // Check game access by getting the player record
   const key = {
     PK: DDBPrefixGame + "#" + input.gameId,
-    SK: DDBPrefixGame,
+    SK: DDBPrefixPlayer + "#" + identity.sub,
   };
 
   return {
@@ -44,13 +44,13 @@ export function response(context: Context): DiceRoll {
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
 
-  const game = context.result as DataGame;
-  if (!game) {
-    util.error("Game not found", "NOT_FOUND");
+  const playerSheet = context.result as DataPlayerSheet;
+  if (!playerSheet) {
+    util.error("Player not found in game", "NOT_FOUND");
   }
 
-  // Check if user has access to this game
-  if (!permitted(identity, game)) {
+  // Check if user has access to this player sheet
+  if (playerSheet.userId !== identity.sub) {
     util.unauthorized();
   }
 
@@ -92,6 +92,7 @@ export function response(context: Context): DiceRoll {
   const result: DiceRoll = {
     gameId: input.gameId,
     playerId: playerId,
+    playerName: playerSheet.characterName,
     dice: outputDice,
     rollType: input.rollType,
     target: input.target,
@@ -104,26 +105,6 @@ export function response(context: Context): DiceRoll {
   };
 
   return result;
-}
-
-function permitted(identity: AppSyncIdentityCognito, data: DataGame): boolean {
-  if (data === null) {
-    return false;
-  }
-
-  if (data.fireflyUserId === identity.sub) {
-    return true;
-  }
-
-  if (data.players) {
-    for (const player of data.players) {
-      if (player === identity.sub) {
-        return true;
-      }
-    }
-  }
-
-  return false;
 }
 
 function calculateGrade(
