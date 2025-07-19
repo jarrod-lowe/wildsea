@@ -1893,7 +1893,7 @@ button:hover {
 
 .simple-dice-buttons {
   flex-shrink: 0;
-  padding: 8px 0 0 0;
+  padding: 8px 0 0;
   border-top: 1px solid #ddd;
   background: inherit;
 }
@@ -1932,7 +1932,7 @@ button:hover {
 }
 
 /* Responsive adjustments */
-@media (max-width: 480px) {
+@media (max-width <= 480px) {
   .dice-button-row {
     gap: 4px;
   }
