@@ -159,7 +159,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                   aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
                   title={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
                 >
-                  🎲
+                  {intl.formatMessage({ id: 'dice.icon' })}
                 </button>
               )}
             </div>

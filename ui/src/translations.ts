@@ -129,6 +129,11 @@ export const messages = {
     'deltaGreenSkills.rollDice': 'Roll dice for {skillName}',
     'deltaGreenSkills.actionFor': 'for {skillName}',
 
+    'deltaGreenStats.rollDice': 'Roll dice for {statName}',
+    'deltaGreenStats.actionWith': 'with {statName}',
+
+    'dice.icon': '🎲',
+
     // Dice roll panel translations
     'diceRollPanel.title': 'Dice Rolls',
     'diceRollPanel.noRolls': 'No dice rolls yet',
