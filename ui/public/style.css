@@ -1158,7 +1158,9 @@ button:hover {
 }
 
 .skills-col-roll {
-  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   border-right: 1px solid #eee;
 }
 
@@ -1174,7 +1176,7 @@ button:hover {
 
 .roll-display {
   font-family: monospace;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .adjust-btn.small {
@@ -1968,6 +1970,8 @@ button:hover {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  padding: 0;
 }
 
 .dice-roll-modal {
@@ -2120,15 +2124,6 @@ button:hover {
   transform: scale(0.95);
 }
 
-.skills-col-roll {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.roll-display {
-  font-weight: 500;
-}
 
 @media screen and (width <= 768px) {
   .modal-backdrop {

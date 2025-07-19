@@ -28,7 +28,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   const [target, setTarget] = useState(skillValue);
   const [isRolling, setIsRolling] = useState(false);
   const [rollResult, setRollResult] = useState<DiceRoll | null>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -111,19 +111,28 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
     }
   };
 
+  const handleBackdropKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      if (e.target === e.currentTarget && !isRolling) {
+        onClose();
+      }
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
     <div 
       className="modal-backdrop"
       onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="dice-roll-modal-title"
+      onKeyDown={handleBackdropKeyDown}
+      tabIndex={-1}
     >
-      <div 
+      <dialog 
         ref={modalRef}
         className="modal-content dice-roll-modal"
+        open={isOpen}
+        aria-labelledby="dice-roll-modal-title"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
@@ -223,7 +232,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
             </div>
           )}
         </div>
-      </div>
+      </dialog>
     </div>
   );
 };
