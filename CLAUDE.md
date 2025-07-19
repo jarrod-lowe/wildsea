@@ -27,6 +27,9 @@ beginning any new work. You MUST never commit changes to `main` directly.  Do
 not commit anything until after it has been tested by running `ui-local` or
 pushing to the development deployment.
 
+You will *never* need to run any command that isn't `make`. All the operations
+required are in the Makefile.
+
 ### Local Development
 
 ```bash
