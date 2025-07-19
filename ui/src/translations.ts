@@ -132,6 +132,23 @@ export const messages = {
     'diceRollPanel.noRolls': 'No dice rolls yet',
     'diceRollPanel.showPanel': 'Show dice rolls panel',
     'diceRollPanel.hidePanel': 'Hide dice rolls panel',
+    'diceRollPanel.closeButton': '✕',
+    'diceRollPanel.newRolls': '{count, plural, one {# new roll} other {# new rolls}}',
+    'diceRollPanel.recentRolls': 'Recent dice rolls',
+    'diceRollPanel.rollBy': 'Dice roll by {playerName}',
+    
+    // Dice roll grades
+    'diceRoll.grade.CRITICAL_SUCCESS': 'CRITICAL SUCCESS',
+    'diceRoll.grade.SUCCESS': 'SUCCESS', 
+    'diceRoll.grade.FAILURE': 'FAILURE',
+    'diceRoll.grade.FUMBLE': 'FUMBLE',
+    'diceRoll.grade.NEUTRAL': 'NEUTRAL',
+    
+    // Dice roll display
+    'diceRoll.rolled': 'rolled',
+    'diceRoll.target': 'Target: {target}',
+    'diceRoll.result': 'Rolled: {value}',
+    'diceRoll.total': 'Total: {value}',
 
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
