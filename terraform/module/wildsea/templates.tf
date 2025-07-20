@@ -318,7 +318,6 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
                 description   = ""
                 attributeType = "HP"
                 current       = 10
-                maximum       = 10
               },
               {
                 id            = "wp-item"
@@ -326,7 +325,6 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
                 description   = ""
                 attributeType = "WP"
                 current       = 10
-                maximum       = 10
               },
               {
                 id            = "san-item"
@@ -334,7 +332,6 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
                 description   = ""
                 attributeType = "SAN"
                 current       = 50
-                maximum       = 50
               },
               {
                 id            = "bp-item"
