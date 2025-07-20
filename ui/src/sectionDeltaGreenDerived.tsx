@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 interface DeltaGreenDerivedItem extends BaseSectionItem {
   attributeType: 'HP' | 'WP' | 'SAN' | 'BP';
   current: number;
-  maximum?: number;
 }
 
 type SectionTypeDeltaGreenDerived = BaseSectionContent<DeltaGreenDerivedItem>;
@@ -47,9 +46,15 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
   ) => {
+    // Get current calculated maximum
+    const stats = getStatsFromDataAttributes();
+    const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
+    const calc = derivedCalcs?.[item.attributeType];
+    const currentMax = calc && 'max' in calc ? calc.max : undefined;
+    
     let clampedCurrent = Math.max(0, newCurrent);
-    if (item.maximum !== undefined) {
-      clampedCurrent = Math.min(item.maximum, clampedCurrent);
+    if (currentMax !== undefined) {
+      clampedCurrent = Math.min(currentMax, clampedCurrent);
     }
     
     const newItems = [...content.items];
@@ -72,6 +77,38 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     const stats = getStatsFromDataAttributes();
     const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
 
+    // Track previous stats to detect changes
+    const prevStatsRef = useRef<string>();
+    
+    // Auto-clamp current values when maximums decrease and sync changes (only for authorized players)
+    useEffect(() => {
+      if (!derivedCalcs || !mayEditSheet) return;
+      
+      // Create a string representation of current stats for comparison
+      const currentStatsString = JSON.stringify(derivedCalcs);
+      const hasStatsChanged = prevStatsRef.current !== currentStatsString;
+      prevStatsRef.current = currentStatsString;
+      
+      let hasCurrentValueChanges = false;
+      const newItems = content.items.map(item => {
+        const calc = derivedCalcs[item.attributeType];
+        const currentMax = calc && 'max' in calc ? calc.max : undefined;
+        
+        if (currentMax !== undefined && item.current > currentMax) {
+          hasCurrentValueChanges = true;
+          return { ...item, current: currentMax };
+        }
+        return item;
+      });
+      
+      // Update if current values changed OR if stats changed (to sync maximums)
+      if (hasCurrentValueChanges || hasStatsChanged) {
+        const newContent = { ...content, items: hasCurrentValueChanges ? newItems : content.items };
+        setContent(newContent);
+        updateSection({ content: JSON.stringify(newContent) });
+      }
+    }, [derivedCalcs, content, setContent, updateSection, mayEditSheet]);
+
     const sanItem = content.items.find(item => item.attributeType === 'SAN');
     const bpItem = content.items.find(item => item.attributeType === 'BP');
     const bpCurrent = derivedCalcs?.BP?.current ?? bpItem?.current ?? 0;
@@ -86,7 +123,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
         </div>
         {content.items.map(item => {
           const calc = derivedCalcs?.[item.attributeType];
-          const displayMax = calc && 'max' in calc ? calc.max : item.maximum;
+          const displayMax = calc && 'max' in calc ? calc.max : undefined;
           const displayCurrent = item.attributeType === 'BP' ? (calc?.current ?? item.current) : item.current;
           const isDisorderRow = hasDisorder && (item.attributeType === 'SAN' || item.attributeType === 'BP');
           
@@ -110,7 +147,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                   <input
                     type="number"
                     min="0"
-                    max={item.maximum}
+                    max={displayMax}
                     value={displayCurrent}
                     onChange={(e) => handleCurrentChange(item, parseInt(e.target.value) || 0, content, setContent, updateSection)}
                     disabled={!mayEditSheet || item.attributeType === 'BP'}
@@ -119,7 +156,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                   {mayEditSheet && item.attributeType !== 'BP' && (
                     <button 
                       onClick={() => handleCurrentChange(item, item.current + 1, content, setContent, updateSection)}
-                      disabled={item.maximum !== undefined && item.current >= item.maximum}
+                      disabled={displayMax !== undefined && item.current >= displayMax}
                       className="adjust-btn"
                     >
                       +
@@ -166,7 +203,6 @@ export const createDefaultDeltaGreenDerivedContent = (_sheet?: any): SectionType
         description: '',
         attributeType: 'HP',
         current: derivedCalcs?.HP?.current || 10,
-        maximum: derivedCalcs?.HP?.max || 10,
       },
       {
         id: uuidv4(),
@@ -174,7 +210,6 @@ export const createDefaultDeltaGreenDerivedContent = (_sheet?: any): SectionType
         description: '',
         attributeType: 'WP',
         current: derivedCalcs?.WP?.current || 10,
-        maximum: derivedCalcs?.WP?.max || 10,
       },
       {
         id: uuidv4(),
@@ -182,7 +217,6 @@ export const createDefaultDeltaGreenDerivedContent = (_sheet?: any): SectionType
         description: '',
         attributeType: 'SAN',
         current: derivedCalcs?.SAN?.current || 50,
-        maximum: derivedCalcs?.SAN?.max || 50,
       },
       {
         id: uuidv4(),
