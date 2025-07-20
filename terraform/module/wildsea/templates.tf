@@ -215,15 +215,10 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
     sections = {
       S = jsonencode([
         {
-          sectionName = "Agent Details"
+          sectionName = "Personal Data"
           sectionType = "KEYVALUE"
           content = jsonencode({
             items = [
-              {
-                id          = "name"
-                name        = "Name"
-                description = ""
-              },
               {
                 id          = "profession"
                 name        = "Profession"
@@ -238,7 +233,22 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
                 id          = "nationality"
                 name        = "Nationality"
                 description = ""
-              }
+              },
+              {
+                id          = "gender",
+                name        = "Gender"
+                description = ""
+              },
+              {
+                id          = "age",
+                name        = "Age and D.O.B."
+                description = ""
+              },
+              {
+                id          = "education",
+                name        = "Education and Occupational History",
+                description = ""
+              },
             ]
             showEmpty = true
           })
@@ -254,42 +264,42 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
                 id                     = "stat-str"
                 name                   = "Strength (STR)"
                 description            = ""
-                score                  = 50
+                score                  = 10
                 distinguishingFeatures = ""
               },
               {
                 id                     = "stat-con"
                 name                   = "Constitution (CON)"
                 description            = ""
-                score                  = 50
+                score                  = 10
                 distinguishingFeatures = ""
               },
               {
                 id                     = "stat-dex"
                 name                   = "Dexterity (DEX)"
                 description            = ""
-                score                  = 50
+                score                  = 10
                 distinguishingFeatures = ""
               },
               {
                 id                     = "stat-int"
                 name                   = "Intelligence (INT)"
                 description            = ""
-                score                  = 50
+                score                  = 10
                 distinguishingFeatures = ""
               },
               {
                 id                     = "stat-pow"
                 name                   = "Power (POW)"
                 description            = ""
-                score                  = 50
+                score                  = 10
                 distinguishingFeatures = ""
               },
               {
                 id                     = "stat-cha"
                 name                   = "Charisma (CHA)"
                 description            = ""
-                score                  = 50
+                score                  = 10
                 distinguishingFeatures = ""
               }
             ]
