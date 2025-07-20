@@ -27,6 +27,7 @@ data "aws_iam_policy_document" "ro" {
     actions = [
       "dynamodb:Describe*",
       "dynamodb:List*",
+      "dynamodb:GetItem",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
@@ -191,22 +192,14 @@ data "aws_iam_policy_document" "rw" {
   }
 
   statement {
-    sid    = "DynamodbNoItem"
-    effect = "Deny"
-    actions = [
-      "dynamodb:DeleteItem",
-      "dynamodb:UpdateItem",
-    ]
-    resources = [
-      "arn:${data.aws_partition.current.id}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.app_name}-${var.environment}"
-    ]
-  }
-
-  statement {
     sid = "Dynamodb"
     actions = [
       "dynamodb:Create*",
       "dynamodb:Delete*",
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
       "dynamodb:TagResource",
       "dynamodb:UntagResource",
       "dynamodb:Update*",

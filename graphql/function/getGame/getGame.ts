@@ -142,6 +142,7 @@ export function makeGameData(data: DataGame, sub: string): Game {
   return {
     gameId: data.gameId,
     gameName: data.gameName,
+    gameType: data.gameType,
     gameDescription: data.gameDescription,
     playerSheets: [],
     joinToken: joinToken,

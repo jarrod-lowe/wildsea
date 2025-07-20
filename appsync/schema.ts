@@ -3,7 +3,7 @@
       export const getGameQuery = `
         query getGame($input: GetGameInput) {
           getGame(input: $input) {
-            gameId gameName gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId } joinToken fireflyUserId createdAt updatedAt type deleted
+            gameId gameName gameType gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId } joinToken fireflyUserId createdAt updatedAt type deleted
           }
         }
       `;
@@ -12,6 +12,22 @@
         query getGames {
           getGames {
             userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted
+          }
+        }
+      `;
+    
+      export const getCharacterTemplatesQuery = `
+        query getCharacterTemplates($input: GetCharacterTemplatesInput!) {
+          getCharacterTemplates(input: $input) {
+            templateName displayName gameType language
+          }
+        }
+      `;
+    
+      export const getCharacterTemplateQuery = `
+        query getCharacterTemplate($input: GetCharacterTemplateInput!) {
+          getCharacterTemplate(input: $input) {
+            sectionName sectionType content position
           }
         }
       `;

@@ -52,6 +52,11 @@ To automate:
   * Set up CodeQL to default
   * Set the Protection rules to Any/Any
 
+To set up the IAC roles:
+
+* For dev: `AWS_PROFILE=wildsea make iac-dev`
+* For prod: `AWS_PROFILE=wildsea make iac` -- you will need to enter the name of your github workspace
+
 ## Jumpcloud
 
 To integrate with Jumpcloud as your SAML Provider, get the output User Pool Id

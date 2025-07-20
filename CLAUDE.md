@@ -137,6 +137,11 @@ The application uses a modular section system for character sheets:
 - Environment-specific configs in `terraform/environment/`
 - Reusable modules in `terraform/module/`
 
+The IAC roles and github setup:
+
+- For dev: `AWS_PROFILE=wildsea make iac-dev`
+- For prod: `AWS_PROFILE=wildsea make iac` -- this need the user to enter the name of your github workspace, so ask the user to run this if needed
+
 ## Game Types
 
 The application supports multiple TTRPG systems with specific character types

@@ -145,6 +145,7 @@ describe("permitted", () => {
   const baseGameData: DataGame = {
     gameId: "game-1",
     gameName: "Test Game",
+    gameType: "wildsea",
     gameDescription: "A test game",
     createdAt: "2023-01-01T00:00:00Z",
     updatedAt: "2023-01-01T00:00:00Z",

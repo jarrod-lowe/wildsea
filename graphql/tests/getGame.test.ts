@@ -112,6 +112,7 @@ describe("response", () => {
           {
             gameId: "game1",
             gameName: "Test Game",
+            gameType: "wildsea",
             gameDescription: "A test game",
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
@@ -165,6 +166,7 @@ describe("response", () => {
     expect(result).toEqual({
       gameId: "game1",
       gameName: "Test Game",
+      gameType: "wildsea",
       gameDescription: "A test game",
       playerSheets: [
         {
@@ -217,6 +219,7 @@ describe("response", () => {
           {
             gameId: "game1",
             gameName: "Test Game",
+            gameType: "wildsea",
             gameDescription: "A test game",
             fireflyUserId: "user2",
             createdAt: "2023-01-01",
@@ -270,6 +273,7 @@ describe("response", () => {
     expect(result).toEqual({
       gameId: "game1",
       gameName: "Test Game",
+      gameType: "wildsea",
       gameDescription: "A test game",
       playerSheets: [
         {
@@ -348,6 +352,7 @@ describe("response", () => {
           {
             gameId: "game1",
             gameName: "Test Game",
+            gameType: "wildsea",
             gameDescription: "A test game",
             fireflyUserId: "user1",
             players: [],
@@ -377,6 +382,7 @@ describe("makeGameData", () => {
     const data: DataGame = {
       gameId: "game1",
       gameName: "Test Game",
+      gameType: "wildsea",
       gameDescription: "A test game",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
@@ -391,6 +397,7 @@ describe("makeGameData", () => {
     expect(result).toEqual({
       gameId: "game1",
       gameName: "Test Game",
+      gameType: "wildsea",
       gameDescription: "A test game",
       joinToken: null,
       playerSheets: [],
@@ -405,6 +412,7 @@ describe("makeGameData", () => {
     const data: DataGame = {
       gameId: "game1",
       gameName: "Test Game",
+      gameType: "wildsea",
       gameDescription: "A test game",
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
@@ -419,6 +427,7 @@ describe("makeGameData", () => {
     expect(result).toEqual({
       gameId: "game1",
       gameName: "Test Game",
+      gameType: "wildsea",
       gameDescription: "A test game",
       playerSheets: [],
       fireflyUserId: "user1",

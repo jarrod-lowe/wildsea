@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
@@ -67,7 +67,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     mayEditSheet: boolean,
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
   ) => {
     const stats = getStatsFromDataAttributes();
     const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
@@ -86,7 +86,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
         </div>
         {content.items.map(item => {
           const calc = derivedCalcs?.[item.attributeType];
-          const displayMax = calc?.max ?? item.maximum;
+          const displayMax = calc && 'max' in calc ? calc.max : item.maximum;
           const displayCurrent = item.attributeType === 'BP' ? (calc?.current ?? item.current) : item.current;
           const isDisorderRow = hasDisorder && (item.attributeType === 'SAN' || item.attributeType === 'BP');
           
@@ -141,7 +141,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     );
   };
 
-  const renderEditForm = (content: SectionTypeDeltaGreenDerived, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>) => {
+  const renderEditForm = (_content: SectionTypeDeltaGreenDerived, _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>) => {
     return (
       <div className="delta-green-derived-edit">
         <p><FormattedMessage id="deltaGreenDerived.editNote" /></p>
@@ -152,7 +152,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
   return <BaseSection<DeltaGreenDerivedItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
 };
 
-export const createDefaultDeltaGreenDerivedContent = (sheet?: any): SectionTypeDeltaGreenDerived => {
+export const createDefaultDeltaGreenDerivedContent = (_sheet?: any): SectionTypeDeltaGreenDerived => {
   // Try to get stats from data attributes (will be null on initial creation)
   const stats = getStatsFromDataAttributes();
   const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;

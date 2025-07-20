@@ -33,12 +33,22 @@ terraform/environment/%/.validate: terraform/environment/%/*.tf terraform-format
 	cd terraform/environment/$* ; terraform validate
 	touch $@
 
+.PHONY: iac-dev
+iac-dev: terraform/environment/aws-dev/.apply
+
+.PHONY: iac
+iac: terraform/environment/aws/.apply
+
 .PHONY: dev
 dev: ui/config/output-dev.json $(GRAPHQL_DEV) terraform-format terraform/environment/aws-dev/.apply terraform/environment/wildsea-dev/.apply ui/.push 
 	@echo URL is "https://$$(jq -r .cdn_domain_name.value $<)/"
 
 terraform/environment/aws-dev/.apply: terraform/environment/aws-dev/*.tf terraform/module/iac-roles/*.tf
 	AUTO_APPROVE=yes ./terraform/environment/aws-dev/deploy.sh $(ACCOUNT_ID) dev
+	touch $@
+
+terraform/environment/aws/.apply: terraform/environment/aws/*.tf terraform/module/iac-roles/*.tf
+	AUTO_APPROVE=yes ./terraform/environment/aws/deploy.sh $(ACCOUNT_ID)
 	touch $@
 
 terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform $(GRAPHQL_JS)

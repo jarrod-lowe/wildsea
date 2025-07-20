@@ -22,6 +22,14 @@ export type Scalars = {
   AWSURL: { input: string; output: string; }
 };
 
+export type CharacterTemplateMetadata = {
+  __typename?: 'CharacterTemplateMetadata';
+  displayName: Scalars['String']['output'];
+  gameType: Scalars['String']['output'];
+  language: Scalars['String']['output'];
+  templateName: Scalars['String']['output'];
+};
+
 export type CreateGameInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   gameType: Scalars['String']['input'];
@@ -87,6 +95,7 @@ export type Game = {
   gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
+  gameType: Scalars['String']['output'];
   joinToken?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
   type: Scalars['String']['output'];
@@ -104,6 +113,17 @@ export type GameSummary = {
   gameType: Scalars['String']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
+};
+
+export type GetCharacterTemplateInput = {
+  gameType: Scalars['String']['input'];
+  language: Scalars['String']['input'];
+  templateName: Scalars['String']['input'];
+};
+
+export type GetCharacterTemplatesInput = {
+  gameType: Scalars['String']['input'];
+  language: Scalars['String']['input'];
 };
 
 export type GetGameInput = {
@@ -213,8 +233,20 @@ export type PlayerSheetSummary = {
 
 export type Query = {
   __typename?: 'Query';
+  getCharacterTemplate: Array<TemplateSectionData>;
+  getCharacterTemplates: Array<CharacterTemplateMetadata>;
   getGame: Game;
   getGames?: Maybe<Array<PlayerSheetSummary>>;
+};
+
+
+export type QueryGetCharacterTemplateArgs = {
+  input: GetCharacterTemplateInput;
+};
+
+
+export type QueryGetCharacterTemplatesArgs = {
+  input: GetCharacterTemplatesInput;
 };
 
 
@@ -278,6 +310,14 @@ export type SubscriptionUpdatedPlayerArgs = {
 
 export type SubscriptionUpdatedSectionArgs = {
   gameId: Scalars['ID']['input'];
+};
+
+export type TemplateSectionData = {
+  __typename?: 'TemplateSectionData';
+  content: Scalars['AWSJSON']['output'];
+  position: Scalars['Int']['output'];
+  sectionName: Scalars['String']['output'];
+  sectionType: Scalars['String']['output'];
 };
 
 export type UpdateGameInput = {
