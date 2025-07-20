@@ -413,10 +413,442 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
                 roll        = 10
                 used        = false
                 hasUsedFlag = true
+              },
+              {
+                id          = "skill-accounting"
+                name        = "Accounting"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-anthropology"
+                name        = "Anthropology"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-archeology"
+                name        = "Archeology"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-art"
+                name        = "Art: ARTFORM"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-artillery"
+                name        = "Artillery"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-bureaucracy"
+                name        = "Bureaucracy"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-computer-science"
+                name        = "Computer Science"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-craft"
+                name        = "Craft: CRAFT"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-criminology"
+                name        = "Criminology"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-demolitions"
+                name        = "Demolitions"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-disguise"
+                name        = "Disguise"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-drive"
+                name        = "Drive"
+                description = ""
+                roll        = 20
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-forensics"
+                name        = "Forensics"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-heavy-machinery"
+                name        = "Heavy Machinery"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-heavy-weapons"
+                name        = "Heavy Weapons"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-history"
+                name        = "History"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-humint"
+                name        = "HUMINT"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-law"
+                name        = "Law"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-medicine"
+                name        = "Medicine"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-melee-weapons"
+                name        = "Melee Weapons"
+                description = ""
+                roll        = 30
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-military-science"
+                name        = "Military Science: SPECIALTY"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-navigate"
+                name        = "Navigate"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-occult"
+                name        = "Occult"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-pharmacy"
+                name        = "Pharmacy"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-pilot"
+                name        = "Pilot: AIRCRAFT"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-psychotherapy"
+                name        = "Psychotherapy"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-ride"
+                name        = "Ride"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-science"
+                name        = "Science: FIELD"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-sigint"
+                name        = "SIGINT"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-surgery"
+                name        = "Surgery"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-survival"
+                name        = "Survival"
+                description = ""
+                roll        = 10
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-swim"
+                name        = "Swim"
+                description = ""
+                roll        = 20
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-unarmed-combat"
+                name        = "Unarmed Combat"
+                description = ""
+                roll        = 40
+                used        = false
+                hasUsedFlag = true
+              },
+              {
+                id          = "skill-unnatural"
+                name        = "Unnatural"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = false
+              },
+              {
+                id          = "skill-language"
+                name        = "Language: LANGUAGE"
+                description = ""
+                roll        = 0
+                used        = false
+                hasUsedFlag = true
               }
             ]
           })
           position = 3
+        },
+        {
+          sectionName = "Bonds"
+          sectionType = "RICHTEXT"
+          content = jsonencode({
+            items = [
+              {
+                id          = "bonds"
+                name        = "Bonds"
+                description = ""
+                markdown    = "Add your bonds here"
+              }
+            ]
+            showEmpty = false
+          })
+          position = 4
+        },
+        {
+          sectionName = "Motivations and Mental Disorders"
+          sectionType = "RICHTEXT"
+          content = jsonencode({
+            items = [
+              {
+                id          = "motivations"
+                name        = "Motivations and Mental Disorders"
+                description = ""
+                markdown    = "None"
+              }
+            ]
+            showEmpty = false
+          })
+          position = 5
+        },
+        {
+          sectionName = "Incidents of SAN loss without going insane"
+          sectionType = "TRACKABLE"
+          content = jsonencode({
+            items = [
+              {
+                id          = "violence"
+                name        = "Violence"
+                description = ""
+                length      = 3
+                ticked      = 0
+              },
+              {
+                id          = "helplessness"
+                name        = "Helplessness"
+                description = ""
+                length      = 3
+                ticked      = 0
+              }
+            ]
+            showEmpty = true
+          })
+          position = 6
+        },
+        {
+          sectionName = "Wounds and Ailments"
+          sectionType = "RICHTEXT"
+          content = jsonencode({
+            items = [
+              {
+                id          = "wounds"
+                name        = "Wounds and Ailments"
+                description = ""
+                markdown    = "None"
+              }
+            ]
+            showEmpty = false
+          })
+          position = 7
+        },
+        {
+          sectionName = "Armor and Gear"
+          sectionType = "RICHTEXT"
+          content = jsonencode({
+            items = [
+              {
+                id          = "armor"
+                name        = "Armor and Gear"
+                description = ""
+                markdown    = "None"
+              }
+            ]
+            showEmpty = false
+          })
+          position = 8
+        },
+        {
+          sectionName = "Weapons"
+          sectionType = "RICHTEXT"
+          content = jsonencode({
+            items = [
+              {
+                id          = "weapons"
+                name        = "Weapons"
+                description = ""
+                markdown    = "None"
+              }
+            ]
+            showEmpty = false
+          })
+          position = 9
+        },
+        {
+          sectionName = "Personal Details and Notes"
+          sectionType = "RICHTEXT"
+          content = jsonencode({
+            items = [
+              {
+                id          = "personal"
+                name        = "Personal Details and Notes"
+                description = ""
+                markdown    = "Describe your character here"
+              }
+            ]
+            showEmpty = false
+          })
+          position = 10
+        },
+        {
+          sectionName = "Developments which affect Home and Family"
+          sectionType = "RICHTEXT"
+          content = jsonencode({
+            items = [
+              {
+                id          = "family"
+                name        = "Developments which affect Home and Family"
+                description = ""
+                markdown    = "None"
+              }
+            ]
+            showEmpty = false
+          })
+          position = 11
+        },
+        {
+          sectionName = "Special Training"
+          sectionType = "RICHTEXT"
+          content = jsonencode({
+            items = [
+              {
+                id          = "training"
+                name        = "Special Training"
+                description = ""
+                markdown    = "None"
+              }
+            ]
+            showEmpty = false
+          })
+          position = 12
         }
       ])
     }
