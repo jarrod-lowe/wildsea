@@ -178,6 +178,18 @@ export const messages = {
     'diceRollModal.rollHelp': 'Roll a d100 against the target number',
     'diceRollModal.result': 'Roll Result',
 
+    // Auto-populate translations
+    'autoPopulate.title': 'Auto-Populate Character',
+    'autoPopulate.description': 'Choose a pre-made character template to quickly set up your character sheet.',
+    'autoPopulate.selectTemplate': 'Select a character template...',
+    'autoPopulate.apply': 'Apply Template',
+    'autoPopulate.applying': 'Applying template...',
+    'autoPopulate.success': 'Character template applied successfully!',
+    'autoPopulate.error': 'Error applying character template',
+    'autoPopulate.fetchTemplatesError': 'Error loading character templates',
+    'autoPopulate.loadingTemplates': 'Loading templates...',
+    'autoPopulate.noTemplates': 'No character templates are available for this game type.',
+
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
     'sectionObject.addItem': '➕',

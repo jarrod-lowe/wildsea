@@ -13,6 +13,7 @@ import { DragDropContext, Droppable, Draggable, DroppableProvided, DraggableProv
 import Modal from 'react-modal';
 import { DeletePlayerModal } from './deletePlayer';
 import { DeleteGameModal } from './deleteGame';
+import { SectionAutoPopulate } from './sectionAutoPopulate';
 
 const reorderSections = (sections: SheetSection[], startIndex: number, endIndex: number) => {
   const result = Array.from(sections);
@@ -257,6 +258,18 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         <div className="read-only-sections">
           {renderSections(sheet.sections, false)}
         </div>
+      )}
+
+      {mayEditSheet && sheet.sections.length === 0 && (
+        <SectionAutoPopulate
+          gameType={game.gameType || 'wildsea'}
+          gameId={sheet.gameId}
+          userId={sheet.userId}
+          onSectionsAdded={() => {
+            // The sections will be updated automatically via GraphQL subscriptions
+            // so we don't need to do anything here
+          }}
+        />
       )}
 
       {mayEditSheet && !showNewSection && (
