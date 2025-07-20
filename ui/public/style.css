@@ -2175,7 +2175,7 @@ button:hover {
   border: 2px solid #007bff;
   border-radius: 6px;
   background-color: #f8f9fa;
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
+  box-shadow: 0 2px 4px rgb(0 123 255 / 10%);
 }
 
 .auto-populate-section h3 {
