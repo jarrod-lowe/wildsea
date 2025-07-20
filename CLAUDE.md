@@ -37,6 +37,7 @@ required are in the Makefile.
 AWS_PROFILE=<profile> make ui-local
 
 # Deploy development environment
+# This does EVERYTHING required to fully update the dev environment, including terraform
 AWS_PROFILE=<profile> make dev
 ```
 

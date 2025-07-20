@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
@@ -38,6 +38,9 @@ const calculateDerivedAttributes = (stats: { [key: string]: number }) => {
 
 export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
+  
+  // Track previous stats to detect changes
+  const prevStatsRef = useRef<string>();
 
   const handleCurrentChange = async (
     item: DeltaGreenDerivedItem,
@@ -59,13 +62,13 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
-    const updatedItem = { ...item, current: clampedCurrent };
+    const { maximum, ...itemWithoutMaximum } = item as any; // Remove maximum field if it exists
+    const updatedItem = { ...itemWithoutMaximum, current: clampedCurrent };
     newItems[itemIndex] = updatedItem;
     const newContent = { ...content, items: newItems };
     setContent(newContent);
     await updateSection({ content: JSON.stringify(newContent) });
   };
-
 
   const renderItems = (
     content: SectionTypeDeltaGreenDerived,
@@ -77,37 +80,35 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     const stats = getStatsFromDataAttributes();
     const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
 
-    // Track previous stats to detect changes
-    const prevStatsRef = useRef<string>();
-    
-    // Auto-clamp current values when maximums decrease and sync changes (only for authorized players)
-    useEffect(() => {
-      if (!derivedCalcs || !mayEditSheet) return;
-      
-      // Create a string representation of current stats for comparison
+    // Auto-clamp and sync on every render if needed (not ideal but works)
+    if (derivedCalcs && mayEditSheet) {
       const currentStatsString = JSON.stringify(derivedCalcs);
       const hasStatsChanged = prevStatsRef.current !== currentStatsString;
-      prevStatsRef.current = currentStatsString;
       
-      let hasCurrentValueChanges = false;
-      const newItems = content.items.map(item => {
-        const calc = derivedCalcs[item.attributeType];
-        const currentMax = calc && 'max' in calc ? calc.max : undefined;
+      if (hasStatsChanged) {
+        prevStatsRef.current = currentStatsString;
         
-        if (currentMax !== undefined && item.current > currentMax) {
-          hasCurrentValueChanges = true;
-          return { ...item, current: currentMax };
+        let hasCurrentValueChanges = false;
+        const newItems = content.items.map(item => {
+          const calc = derivedCalcs[item.attributeType];
+          const currentMax = calc && 'max' in calc ? calc.max : undefined;
+          const { maximum, ...itemWithoutMaximum } = item as any; // Remove maximum field if it exists
+          
+          if (currentMax !== undefined && item.current > currentMax) {
+            hasCurrentValueChanges = true;
+            return { ...itemWithoutMaximum, current: currentMax };
+          }
+          return itemWithoutMaximum;
+        });
+        
+        // Update if current values changed OR if stats changed (to sync maximums)
+        if (hasCurrentValueChanges || hasStatsChanged) {
+          const newContent = { ...content, items: newItems };
+          setContent(newContent);
+          updateSection({ content: JSON.stringify(newContent) });
         }
-        return item;
-      });
-      
-      // Update if current values changed OR if stats changed (to sync maximums)
-      if (hasCurrentValueChanges || hasStatsChanged) {
-        const newContent = { ...content, items: hasCurrentValueChanges ? newItems : content.items };
-        setContent(newContent);
-        updateSection({ content: JSON.stringify(newContent) });
       }
-    }, [derivedCalcs, content, setContent, updateSection, mayEditSheet]);
+    }
 
     const sanItem = content.items.find(item => item.attributeType === 'SAN');
     const bpItem = content.items.find(item => item.attributeType === 'BP');
