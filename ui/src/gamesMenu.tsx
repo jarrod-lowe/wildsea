@@ -162,9 +162,9 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                                 </div>
                                 
                                 <div className="form-field">
-                                    <label htmlFor="gameDescription"><FormattedMessage id="gameDescription" /></label>
+                                    <label htmlFor="game-description"><FormattedMessage id="gameDescription" /></label>
                                     <SectionItemDescription 
-                                        id="gameDescription"
+                                        id="game-description"
                                         value={gameDescription}
                                         onChange={(d) => setGameDescription(d)}
                                         placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
