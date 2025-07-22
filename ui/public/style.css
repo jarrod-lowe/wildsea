@@ -1,20 +1,84 @@
+/* WCAG AAA Compliant Color Variables for Games Menu */
+:root {
+  /* Primary colors - WCAG AAA compliant */
+  --color-primary: #0056b3;
+  --color-primary-dark: #003d82;
+  --color-primary-light: #e3f2fd;
+  --color-primary-hover: #004494;
+  
+  /* Secondary colors */
+  --color-secondary: #6c757d;
+  --color-secondary-dark: #495057;
+  --color-secondary-light: #f8f9fa;
+  
+  /* Success colors */
+  --color-success: #155724;
+  --color-success-light: #d4edda;
+  --color-success-hover: #0f4419;
+  
+  /* Background colors */
+  --color-bg-main: #ffffff;
+  --color-bg-light: #f8f9fa;
+  --color-bg-lighter: #e9ecef;
+  
+  /* Text colors */
+  --color-text-primary: #212529;
+  --color-text-secondary: #495057;
+  --color-text-muted: #6c757d;
+  
+  /* Border colors */
+  --color-border: #dee2e6;
+  --color-border-light: #e9ecef;
+  --color-border-focus: #0056b3;
+  
+  /* Shadow colors */
+  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-strong: 0 8px 16px rgba(0, 0, 0, 0.15);
+  
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
 @media screen and (width <= 768px) {
   body {
     font-size: 16px;
+    overflow-x: hidden;
+  }
+  
+  * {
+    box-sizing: border-box;
   }
 
   .gameslist {
-    padding: 10px;
+    padding: var(--space-md);
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
   }
 
   .allgames {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
   }
 
   .joingame,
   .newgame {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   h1 {
@@ -25,11 +89,11 @@
   textarea,
   button {
     font-size: 16px;
-    padding: 10px;
+    padding: var(--space-md);
   }
 
   .game-container {
-    padding: 10px;
+    padding: var(--space-md);
   }
 
   .top-bar {
@@ -38,7 +102,7 @@
   }
 
   .user-menu {
-    margin-top: 10px;
+    margin-top: var(--space-md);
   }
 
   .tab-bar {
@@ -47,7 +111,26 @@
 
   .tab-bar button {
     flex: 1 0 50%;
-    margin-bottom: 5px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .game-card {
+    min-height: auto;
+  }
+
+  .game-cards-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .allgames {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+  
+  .newgame {
+    position: static;
+    max-height: none;
   }
 }
 
@@ -56,77 +139,243 @@
 }
 
 .gameslist {
-    font-family: Arial, sans-serif;
-    max-width: 600px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
-    background-color: #f2f2f2;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
+    padding: var(--space-xl);
+    background-color: var(--color-bg-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-light);
 }
 
 .allgames {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+/* Ensure proper responsive behavior for intermediate screen sizes */
+@media screen and (max-width: 1024px) {
+    .allgames {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    
+    .newgame {
+        position: static;
+        max-height: none;
+    }
 }
 
 .joingame,
 .newgame {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
+    background-color: var(--color-bg-main);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-medium);
+    border: 1px solid var(--color-border-light);
 }
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
+.joingame {
+    min-height: 400px;
 }
 
-ul {
+.newgame {
+    height: fit-content;
+    max-height: 600px;
+    position: sticky;
+    top: var(--space-lg);
+}
+
+/* Games Menu Typography */
+.gameslist h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: var(--space-lg);
+    color: var(--color-text-primary);
+    line-height: 1.2;
+}
+
+/* Games List Styling */
+.joingame ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-md);
 }
 
-li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-li:last-child {
-    border-bottom: none;
-}
-
-form {
+.game-card {
+    background-color: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-light);
+    transition: all 0.2s ease;
+    min-height: 140px;
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow: hidden;
 }
 
-label {
-    font-weight: bold;
-    margin-bottom: 5px;
+.game-card:hover {
+    box-shadow: var(--shadow-medium);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
 }
 
-input,
-textarea {
-    padding: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
+.game-card:focus-within {
+    box-shadow: var(--shadow-medium);
+    border-color: var(--color-border-focus);
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
 }
 
-button {
-    padding: 10px;
-    background-color: #4CAF50;
-    color: #fff;
+.game-link:focus {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+}
+
+.game-link:active {
+    transform: translateY(1px);
+}
+
+/* Game Link Styling */
+.game-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.game-link h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 var(--space-sm) 0;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+}
+
+.game-link h4 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0 0 var(--space-sm) 0;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.game-link span {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    display: block;
+    margin-bottom: var(--space-sm);
+}
+
+.game-link .game-description {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    margin: 0;
+    flex: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Create Game Form Styling */
+.newgame form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.newgame .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+}
+
+.newgame label {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.newgame input,
+.newgame textarea,
+.newgame select {
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    background-color: var(--color-bg-main);
+    color: var(--color-text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.newgame input:focus,
+.newgame textarea:focus,
+.newgame select:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.newgame button {
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--color-success);
+    color: var(--color-bg-main);
     border: none;
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-button:hover {
-    background-color: #45a049;
+.newgame button:hover {
+    background-color: var(--color-success-hover);
+    transform: translateY(-1px);
+}
+
+.newgame button:active {
+    transform: translateY(0);
+}
+
+/* Game Description Editor Styling */
+.newgame .form-field #gameDescription {
+    min-height: 150px;
+}
+
+.newgame .form-field .w-md-editor-text {
+    min-height: 150px;
+    height: 150px;
+}
+
+.newgame .form-field .w-md-editor textarea {
+    color: var(--color-text-primary);
+    -webkit-text-fill-color: var(--color-text-primary);
+}
+
+.newgame input::placeholder,
+.newgame .form-field .w-md-editor-text-input::placeholder {
+    color: var(--color-text-muted);
+    -webkit-text-fill-color: var(--color-text-muted);
 }
 
 .error-container {
@@ -159,19 +408,6 @@ button:hover {
     background-color: #d32f2f;
 }
 
-.game-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    transition: background-color 0.2s ease;
-}
-
-.game-link:hover {
-    background-color: #f0f0f0;
-}
 
 .game-container {
   font-family: Arial, sans-serif;
@@ -202,10 +438,37 @@ button:hover {
   position: absolute;
   right: 0;
   top: 100%;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 10px;
+  background-color: var(--color-bg-main);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  z-index: 1001;
+  box-shadow: var(--shadow-medium);
+  min-width: 120px;
+}
+
+.dropdown button {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-success);
+  color: var(--color-bg-main);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dropdown button:hover {
+  background-color: var(--color-success-hover);
+  transform: translateY(-1px);
+}
+
+.dropdown button:active {
+  transform: translateY(0);
 }
 
 .top-bar h1 {
@@ -671,16 +934,6 @@ button:hover {
   cursor: not-allowed;
 }
 
-.game-panel {
-  background-color: #f5f5f5;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  padding: 10px;
-}
-
-.game-panel a span {
-  font-style: italic;
-}
 
 .edit-icon-button {
   background: none;
