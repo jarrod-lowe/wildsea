@@ -316,7 +316,6 @@
 }
 
 .newgame input,
-.newgame textarea,
 .newgame select {
     padding: var(--space-md);
     border: 1px solid var(--color-border);
@@ -328,7 +327,6 @@
 }
 
 .newgame input:focus,
-.newgame textarea:focus,
 .newgame select:focus {
     outline: none;
     border-color: var(--color-border-focus);
@@ -374,11 +372,6 @@
     min-height: 150px;
     height: auto;
     flex: 1;
-}
-
-.newgame .form-field .w-md-editor textarea {
-    color: var(--color-text-primary);
-    -webkit-text-fill-color: var(--color-text-primary);
 }
 
 .newgame input::placeholder,
