@@ -54,11 +54,11 @@
   
   /* Semantic colors */
   --color-accent: #28a745;
-  --color-accent-dark: #16a34a;
-  --color-accent-alt: #d97706;
+  --color-accent-success: #16a34a;
+  --color-accent-critical-success: #d97706;
   --color-accent-orange: #AA5722;
-  --color-accent-orange-dark: #7c2d12;
-  --color-neutral: #6b7280;
+  --color-accent-fumble: #7c2d12;
+  --color-accent-neutral: #6b7280;
   --color-neutral-medium: #adb5bd;
   --color-neutral-muted: #666;
   --color-focus: rgb(0 123 255 / 25%);
@@ -66,7 +66,7 @@
   /* State colors */
   --color-error: #f44336;
   --color-error-dark: #d32f2f;
-  --color-error-darker: #dc2626;
+  --color-accent-failure: #dc2626;
   --color-error-light: #ffebee;
   --color-error-lighter: #ffe6e6;
   --color-error-lightest: #fdd;
@@ -1615,23 +1615,23 @@
 }
 
 .dice-roll-item.border-critical-success {
-  border-left-color: var(--color-accent-alt);
+  border-left-color: var(--color-accent-critical-success);
 }
 
 .dice-roll-item.border-success {
-  border-left-color: var(--color-accent-dark);
+  border-left-color: var(--color-accent-success);
 }
 
 .dice-roll-item.border-failure {
-  border-left-color: var(--color-error-darker);
+  border-left-color: var(--color-accent-failure);
 }
 
 .dice-roll-item.border-fumble {
-  border-left-color: var(--color-accent-orange-dark);
+  border-left-color: var(--color-accent-fumble);
 }
 
 .dice-roll-item.border-neutral {
-  border-left-color: var(--color-neutral);
+  border-left-color: var(--color-accent-neutral);
 }
 
 .dice-roll-item.slide-in {
@@ -1690,27 +1690,27 @@
 
 /* Grade styling */
 .grade-critical-success {
-  color: var(--color-accent-alt);
+  color: var(--color-accent-critical-success);
   font-weight: 600;
 }
 
 .grade-success {
-  color: var(--color-accent-dark);
+  color: var(--color-accent-success);
   font-weight: 600;
 }
 
 .grade-failure {
-  color: var(--color-error-darker);
+  color: var(--color-accent-failure);
   font-weight: 600;
 }
 
 .grade-fumble {
-  color: var(--color-accent-orange-dark);
+  color: var(--color-accent-fumble);
   font-weight: 600;
 }
 
 .grade-neutral {
-  color: var(--color-neutral);
+  color: var(--color-accent-neutral);
   font-weight: 500;
 }
 
