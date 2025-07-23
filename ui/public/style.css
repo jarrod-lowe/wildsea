@@ -7,9 +7,9 @@
   
   --color-secondary: #6c757d;
   --color-secondary-dark: #495057;
-  --color-success: #155724;
-  --color-success-light: #d4edda;
-  --color-success-hover: #0f4419;
+  --color-action: #155724;
+  --color-action-light: #d4edda;
+  --color-action-hover: #0f4419;
   --color-danger: #dc3545;
   --color-danger-hover: #c82333;
   --color-warning: #856404;
@@ -23,7 +23,6 @@
   --color-interactive-border: rgb(0 86 179 / 30%);
   
   /* Contextual colors */
-  --color-destructive-light: #ffebee;
   --color-info-light: #d1edff;
   --color-info-border: #a7d8f0;
   
@@ -37,7 +36,6 @@
   --color-text: #212529;
   --color-text-secondary: #495057;
   --color-text-muted: #6c757d;
-  --color-text-contrast: #333;
   
   /* Border colors */
   --color-border: #dee2e6;
@@ -60,18 +58,15 @@
   --color-accent-failure: #dc2626;
   --color-accent-fumble: #7c2d12;
   --color-accent-neutral: #6b7280;
+  --color-accent-sane: var(--color-action);
   --color-focus: rgb(0 123 255 / 25%);
+  --color-accent-disorder1: #ffe6e6;
+  --color-accent-disorder2: #fdd;
   
   /* State colors */
   --color-error: #f44336;
-  --color-error-dark: #d32f2f;
+  --color-error-hover: #d32f2f;
   --color-error-light: #ffebee;
-  --color-disorder1: #ffe6e6;
-  --color-disorder2: #fdd;
-  
-  /* Special purpose */
-  --color-black: #000;
-  --color-highlight: #add8e6;
   
   /* Overlay and shadow effects */
   --color-overlay: rgb(0 0 0 / 50%);
@@ -390,7 +385,7 @@
 
 .newgame button {
     padding: var(--space-md) var(--space-lg);
-    background-color: var(--color-success);
+    background-color: var(--color-action);
     color: var(--color-surface);
     border: none;
     border-radius: var(--radius-md);
@@ -403,7 +398,7 @@
 }
 
 .newgame button:hover {
-    background-color: var(--color-success-hover);
+    background-color: var(--color-action-hover);
     transform: translateY(-1px);
 }
 
@@ -462,7 +457,7 @@
 }
 
 .error-container button:hover {
-    background-color: var(--color-error-dark);
+    background-color: var(--color-error-hover);
 }
 
 
@@ -507,7 +502,7 @@
 .dropdown button {
   width: 100%;
   padding: var(--space-md) var(--space-lg);
-  background-color: var(--color-success);
+  background-color: var(--color-action);
   color: var(--color-surface);
   border: none;
   border-radius: var(--radius-md);
@@ -520,7 +515,7 @@
 }
 
 .dropdown button:hover {
-  background-color: var(--color-success-hover);
+  background-color: var(--color-action-hover);
   transform: translateY(-1px);
 }
 
@@ -666,8 +661,8 @@
 }
 
 .own-ops .own-sheet {
-  background-color: var(--color-highlight); /* Light blue background */
-  color: var(--color-black); /* Black text */
+  background-color: var(--color-primary-light); /* Light blue background */
+  color: var(--color-text); /* Black text */
   padding: 2px 6px; /* Padding inside the box */
   border-radius: 8px; /* Rounded corners */
   text-transform: uppercase; /* Make the text uppercase */
@@ -1195,12 +1190,12 @@
 }
 
 .derived-row.disorder-warning {
-  background-color: var(--color-disorder1);
+  background-color: var(--color-accent-disorder1);
   box-shadow: inset 4px 0 0 var(--color-danger);
 }
 
 .derived-row.disorder-warning:nth-child(even) {
-  background-color: var(--color-disorder2);
+  background-color: var(--color-accent-disorder2);
 }
 
 .derived-col-attribute,
@@ -1267,7 +1262,7 @@
   font-size: 14px;
   font-weight: bold;
   padding: 0;
-  color: var(--color-text-contrast);
+  color: var(--color-text);
 }
 
 .adjust-btn:hover:not(:disabled) {
@@ -1305,7 +1300,7 @@
 .disorder-notice.sane {
   background-color: var(--color-info-bg);
   border-color: var(--color-info-border);
-  color: var(--color-success);
+  color: var(--color-accent-sane);
 }
 
 @media screen and (max-width: 768px) {
@@ -1565,7 +1560,7 @@
 .dice-roll-header h3 {
   margin: 0;
   font-size: 16px;
-  color: var(--color-text-contrast);
+  color: var(--color-text);
 }
 
 .panel-close-button {
@@ -1585,7 +1580,7 @@
 
 .panel-close-button:hover {
   background: var(--color-surface-lighter);
-  color: var(--color-text-contrast);
+  color: var(--color-text);
 }
 
 .dice-roll-content {
@@ -1661,7 +1656,7 @@
   font-family: 'Courier New', monospace;
   font-size: 12px;
   white-space: pre-wrap;
-  color: var(--color-text-contrast);
+  color: var(--color-text);
 }
 
 /* Formatted dice roll styles */
@@ -1671,7 +1666,7 @@
 
 .roll-header {
   font-weight: 600;
-  color: var(--color-text-contrast);
+  color: var(--color-text);
   margin-bottom: 4px;
 }
 
@@ -2146,7 +2141,7 @@
   border: 1px solid var(--color-border-medium);
   border-radius: 4px;
   background: var(--color-surface-light);
-  color: var(--color-text-contrast);
+  color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -2179,7 +2174,7 @@
 /* Standard Button Classes */
 .btn-standard {
   padding: var(--space-md) var(--space-lg);
-  background-color: var(--color-success);
+  background-color: var(--color-action);
   color: var(--color-surface);
   border: none;
   border-radius: var(--radius-md);
@@ -2192,7 +2187,7 @@
 }
 
 .btn-standard:hover:not(:disabled) {
-  background-color: var(--color-success-hover);
+  background-color: var(--color-action-hover);
   transform: translateY(-1px);
 }
 
@@ -2350,42 +2345,6 @@
   margin: var(--space-xs);
 }
 
-/* Form-specific button overrides */
-.btn-form-action {
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  padding: var(--space-xs) var(--space-sm);
-  font-size: 0.875rem;
-  margin: 0 var(--space-xs);
-}
-
-.btn-form-action:hover:not(:disabled) {
-  background-color: var(--color-surface-light);
-  border-color: var(--color-primary);
-  transform: none;
-}
-
-.btn-form-action.remove {
-  color: var(--color-danger);
-  border-color: var(--color-danger);
-}
-
-.btn-form-action.remove:hover:not(:disabled) {
-  background-color: var(--color-destructive-light);
-  border-color: var(--color-danger-hover);
-}
-
-.btn-form-action.add {
-  color: var(--color-success);
-  border-color: var(--color-success);
-}
-
-.btn-form-action.add:hover:not(:disabled) {
-  background-color: var(--color-success-light);
-  border-color: var(--color-success-hover);
-}
-
 /* Edit form buttons - using browser defaults like Delta Green Stats */
 .btn-edit-form {
   /* Default browser button styling is fine - keeping class for future modifications */
@@ -2420,7 +2379,7 @@
 .modal-header h2 {
   margin: 0;
   font-size: 18px;
-  color: var(--color-text-contrast);
+  color: var(--color-text);
 }
 
 .modal-body {
@@ -2435,7 +2394,7 @@
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
-  color: var(--color-text-contrast);
+  color: var(--color-text);
 }
 
 .form-group input,
@@ -2474,7 +2433,7 @@
 
 .roll-result-container h3 {
   margin: 0 0 20px;
-  color: var(--color-text-contrast);
+  color: var(--color-text);
 }
 
 /* Skill dice buttons */
