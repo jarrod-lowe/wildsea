@@ -29,8 +29,8 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   const [target, setTarget] = useState(skillValue);
   const [isRolling, setIsRolling] = useState(false);
   const [rollResult, setRollResult] = useState<DiceRoll | null>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const rollButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -101,15 +101,6 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
           <h2 id="dice-roll-modal-title">
             <FormattedMessage id="diceRollModal.title" />
           </h2>
-          <button
-            ref={closeButtonRef}
-            className="modal-close-button"
-            onClick={handleClose}
-            disabled={isRolling}
-            aria-label={intl.formatMessage({ id: 'diceRollModal.close' })}
-          >
-            ×
-          </button>
         </div>
 
         <div className="modal-body">
@@ -162,9 +153,8 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
                 <button
                   ref={rollButtonRef}
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn-standard"
                   disabled={isRolling}
-                  aria-describedby="roll-button-help"
                 >
                   {isRolling ? (
                     <FormattedMessage id="diceRollModal.rolling" />
@@ -172,9 +162,15 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
                     <FormattedMessage id="diceRollModal.roll" />
                   )}
                 </button>
-                <div id="roll-button-help" className="form-help">
-                  <FormattedMessage id="diceRollModal.rollHelp" />
-                </div>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  className="btn-secondary"
+                  onClick={handleClose}
+                  disabled={isRolling}
+                >
+                  <FormattedMessage id="diceRollModal.close" />
+                </button>
               </div>
             </form>
           ) : (
@@ -185,7 +181,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
               <DiceRollFormatter roll={rollResult} />
               <div className="form-actions">
                 <button
-                  className="btn btn-secondary"
+                  className="btn-secondary"
                   onClick={handleClose}
                   autoFocus
                 >

@@ -133,12 +133,12 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
               placeholder={intl.formatMessage({ id: "deltaGreenStats.distinguishingFeatures" })}
               maxLength={40}
             />
-            <button onClick={() => handleRemoveItem(index)}>
+            <button onClick={() => handleRemoveItem(index)} className="btn-edit-form">
               <FormattedMessage id="sectionObject.removeItem" />
             </button>
           </div>
         ))}
-        <button onClick={handleAddItem}>
+        <button onClick={handleAddItem} className="btn-edit-form">
           <FormattedMessage id="sectionObject.addItem" />
         </button>
       </div>

@@ -217,7 +217,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
         {mayEditSheet && (
           <div className="post-session-upgrades">
             <button
-              className="post-session-upgrades-button"
+              className="btn-standard btn-small"
               onClick={() => handlePostSessionUpgrades(content, setContent, updateSection)}
               title={intl.formatMessage({ id: 'deltaGreenSkills.postSessionUpgrades.tooltip' })}
               disabled={!hasAnyUsedSkills}
@@ -326,12 +326,12 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
               />
               <FormattedMessage id="deltaGreenSkills.hasUsedFlag" />
             </label>
-            <button onClick={() => handleRemoveItem(index)}>
+            <button onClick={() => handleRemoveItem(index)} className="btn-edit-form">
               <FormattedMessage id="sectionObject.removeItem" />
             </button>
           </div>
         ))}
-        <button onClick={handleAddItem}>
+        <button onClick={handleAddItem} className="btn-edit-form">
           <FormattedMessage id="sectionObject.addItem" />
         </button>
       </div>

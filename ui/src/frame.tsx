@@ -39,13 +39,13 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
           placement="bottom"
           className="markdown-tippy"
         >
-          <button className="info-icon-button">
+          <button className="btn-icon info">
             <FaInfoCircle className="info-icon" />
           </button>
         </Tippy>
       )}
       {isFirefly && onEditGame && (
-        <button className="edit-icon-button" onClick={onEditGame}>
+        <button className="btn-icon edit" onClick={onEditGame}>
           <FaPencilAlt />
         </button>
       )}
@@ -68,7 +68,7 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
           </button>
           {showDropdown && (
             <div className="dropdown">
-              <button onClick={() => { handleSignOutClick(); }}>
+              <button onClick={() => { handleSignOutClick(); }} className="btn-standard btn-small">
                 <FormattedMessage id="logout" />
               </button>
             </div>
@@ -81,7 +81,7 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
       <div className="top-bar">
         <h1>{title}</h1>
         <div className="user-menu">
-            <button onClick={() => { handleSignInClick(); }}>
+            <button onClick={() => { handleSignInClick(); }} className="btn-standard btn-small">
               <FormattedMessage id="login" />
             </button>
         </div>

@@ -175,6 +175,7 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                                 <div className="form-field">
                                     <button 
                                         type="submit"
+                                        className="btn-standard"
                                         aria-describedby="create-game-help"
                                     >
                                         <FormattedMessage id="createGame" />
@@ -190,8 +191,8 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                     {error && (
                         <div role="alert" className="error-container">
                             <p className="error-message">{error}</p>
-                            <button onClick={() => setError(null)} aria-label="Dismiss error message">
-                                Dismiss
+                            <button onClick={() => setError(null)} className="btn-danger btn-small" aria-label={intl.formatMessage({ id: 'dismissErrorMessage' })}>
+                                <FormattedMessage id="dismiss" />
                             </button>
                         </div>
                     )}

@@ -119,10 +119,10 @@ export const BaseSection = <T extends BaseSectionItem>({
                     placeholder={intl.formatMessage({ id: "sectionName" })}
                 />
                 {renderEditForm(content, setContent)}
-                <button onClick={handleUpdate}>
+                <button onClick={handleUpdate} className="btn-standard btn-small">
                     <FormattedMessage id="save" />
                 </button>
-                <button onClick={handleCancel}>
+                <button onClick={handleCancel} className="btn-secondary btn-small">
                     <FormattedMessage id="cancel" />
                 </button>
             </div>
@@ -131,11 +131,11 @@ export const BaseSection = <T extends BaseSectionItem>({
 
     return (
         <div className="section">
-            <h3>{sectionName} <FaPencilAlt onClick={() => {
+            <h3>{sectionName} <button className="btn-icon edit" onClick={() => {
                 setOriginalContent(content);
                 setOriginalSectionName(section.sectionName);
                 setIsEditing(true);
-            }} /></h3>
+            }}><FaPencilAlt /></button></h3>
             <div className="section-items">
                 {renderItems(content, mayEditSheet, setContent, updateSection, false)}
             </div>

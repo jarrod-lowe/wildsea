@@ -22,12 +22,12 @@ export function SectionEditForm<T extends BaseSectionItem>({
       {content.items.map((item, index) => (
         <div key={item.id} className={`${content.constructor.name.toLowerCase()}-item-edit`}>
           {renderItemEdit(item, index)}
-          <button onClick={() => removeItem(index)}>
+          <button onClick={() => removeItem(index)} className="btn-edit-form">
             <FormattedMessage id={`sectionObject.removeItem`} />
           </button>
         </div>
       ))}
-      <button onClick={addItem}>
+      <button onClick={addItem} className="btn-edit-form">
         <FormattedMessage id={`sectionObject.addItem`} />
       </button>
       <div className="show-zeros-toggle">

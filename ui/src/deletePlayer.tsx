@@ -63,13 +63,13 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
         <FormattedMessage id="playerSheetTab.deletePlayerUnderstand" />
       </label>
       <div className="modal-buttons">
-        <button onClick={onRequestClose} className="cancel-button">
+        <button onClick={onRequestClose} className="btn-secondary btn-small">
           <FormattedMessage id="cancel" />
         </button>
         <button
           onClick={handleConfirm}
           disabled={!isConfirmed}
-          className="confirm-button"
+          className="btn-danger btn-small"
         >
           <FormattedMessage id={buttonId} />
         </button>

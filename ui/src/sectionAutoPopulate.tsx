@@ -141,6 +141,7 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
         <button
           onClick={handleAutoPopulate}
           disabled={!selectedTemplate || loading}
+          className="btn-standard"
         >
           {loading ? (
             <FormattedMessage id="autoPopulate.applying" />
