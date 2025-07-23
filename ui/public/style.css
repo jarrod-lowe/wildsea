@@ -66,8 +66,8 @@
   --color-error: #f44336;
   --color-error-dark: #d32f2f;
   --color-error-light: #ffebee;
-  --color-error-lighter: #ffe6e6;
-  --color-error-lightest: #fdd;
+  --color-disorder1: #ffe6e6;
+  --color-disorder2: #fdd;
   
   /* Special purpose */
   --color-black: #000;
@@ -878,13 +878,13 @@
 .delete-section-button {
   background-color: transparent;
   border: none;
-  color: var(--color-error);
+  color: var(--color-danger);
   cursor: pointer;
   padding: 5px;
 }
 
 .delete-section-button:hover {
-  color: var(--color-error-dark);
+  color: var(--color-danger-hover);
 }
 
 
@@ -922,7 +922,7 @@
 }
 
 .delete-player-warning {
-  color: var(--color-error);
+  color: var(--color-danger);
   margin-bottom: 20px;
 }
 
@@ -1195,12 +1195,12 @@
 }
 
 .derived-row.disorder-warning {
-  background-color: var(--color-error-lighter);
-  box-shadow: inset 4px 0 0 var(--color-error);
+  background-color: var(--color-disorder1);
+  box-shadow: inset 4px 0 0 var(--color-danger);
 }
 
 .derived-row.disorder-warning:nth-child(even) {
-  background-color: var(--color-error-lightest);
+  background-color: var(--color-disorder2);
 }
 
 .derived-col-attribute,
