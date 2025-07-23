@@ -53,20 +53,18 @@
   --shadow-strong: 0 8px 16px rgb(0 0 0 / 15%);
   
   /* Semantic colors */
-  --color-accent: #28a745;
+  --color-accent-burnt: #AA5722;
+  --color-accent-ticked: #28a745;
   --color-accent-success: #16a34a;
   --color-accent-critical-success: #d97706;
-  --color-accent-orange: #AA5722;
+  --color-accent-failure: #dc2626;
   --color-accent-fumble: #7c2d12;
   --color-accent-neutral: #6b7280;
-  --color-neutral-medium: #adb5bd;
-  --color-neutral-muted: #666;
   --color-focus: rgb(0 123 255 / 25%);
   
   /* State colors */
   --color-error: #f44336;
   --color-error-dark: #d32f2f;
-  --color-accent-failure: #dc2626;
   --color-error-light: #ffebee;
   --color-error-lighter: #ffe6e6;
   --color-error-lightest: #fdd;
@@ -550,7 +548,7 @@
 }
 
 .top-bar .edit-icon-button {
-  color: var(--color-accent);
+  color: var(--color-primary);
 }
 
 .tab-bar {
@@ -694,12 +692,12 @@
 }
 
 .burn-checkbox.ticked {
-  background-color: var(--color-accent);
+  background-color: var(--color-accent-ticked);
   color: white;
 }
 
 .burn-checkbox.burnt {
-  background-color: var(--color-accent-orange);
+  background-color: var(--color-accent-burnt);
   color: white;
 }
 
@@ -742,7 +740,7 @@
 }
 
 .tick-checkbox.ticked {
-  background-color: var(--color-accent);
+  background-color: var(--color-accent-ticked);
   color: white;
 }
 
@@ -1575,7 +1573,7 @@
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: var(--color-neutral-muted);
+  color: var(--color-text);
   padding: 0;
   width: 24px;
   height: 24px;
@@ -1684,7 +1682,7 @@
 
 .roll-details {
   font-size: 11px;
-  color: var(--color-neutral-muted);
+  color: var(--color-text-muted);
   font-family: 'Courier New', monospace;
 }
 
@@ -1716,7 +1714,7 @@
 
 .no-rolls {
   text-align: center;
-  color: var(--color-neutral-muted);
+  color: var(--color-text-muted);
   font-style: italic;
   margin: 20px 0;
 }
@@ -2155,7 +2153,7 @@
 
 .simple-dice-button:hover {
   background: var(--color-surface-lighter);
-  border-color: var(--color-neutral-medium);
+  border-color: var(--color-primary);
   transform: translateY(-1px);
 }
 
@@ -2338,11 +2336,11 @@
 }
 
 .btn-icon.edit {
-  color: var(--color-success);
+  color: var(--color-primary);
 }
 
 .btn-icon.edit:hover {
-  color: var(--color-success-hover);
+  color: var(--color-primary-hover);
 }
 
 /* Button spacing */
@@ -2425,26 +2423,6 @@
   color: var(--color-text-contrast);
 }
 
-.modal-close-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-neutral-muted);
-}
-
-.modal-close-button:hover {
-  color: var(--color-text-contrast);
-  background-color: var(--color-surface-light);
-  border-radius: 4px;
-}
-
 .modal-body {
   padding: 20px;
 }
@@ -2479,7 +2457,7 @@
 
 .form-help {
   font-size: 12px;
-  color: var(--color-neutral-muted);
+  color: var(--color-text-muted);
   margin-top: 5px;
 }
 
