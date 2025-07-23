@@ -21,6 +21,7 @@ export const messages = {
     'errorFetchingGames': 'Error fetching games:',
     'errorCreatingGame': 'Error creating game:',
     'dismiss': 'Dismiss',
+    'dismissErrorMessage': 'Dismiss error message',
     'playGame': 'Play game:',
     'loading': 'Loading...',
     'login': 'Login',

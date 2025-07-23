@@ -7,23 +7,20 @@
   
   --color-secondary: #6c757d;
   --color-secondary-dark: #495057;
-  
   --color-success: #155724;
   --color-success-light: #d4edda;
   --color-success-hover: #0f4419;
-  
   --color-danger: #dc3545;
   --color-danger-hover: #c82333;
-  
   --color-warning: #856404;
   --color-warning-light: #fff3cd;
   --color-warning-border: #ffeeba;
   
   /* Interactive element colors */
-  --color-interactive-bg: rgba(255, 255, 255, 0.5);
-  --color-interactive-hover: rgba(227, 242, 253, 0.9);
-  --color-interactive-active: rgba(233, 236, 239, 0.8);
-  --color-interactive-border: rgba(0, 86, 179, 0.3);
+  --color-interactive-bg: rgb(255 255 255 / 50%);
+  --color-interactive-hover: rgb(227 242 253 / 90%);
+  --color-interactive-active: rgb(233 236 239 / 80%);
+  --color-interactive-border: rgb(0 86 179 / 30%);
   
   /* Contextual colors */
   --color-destructive-light: #ffebee;
@@ -64,7 +61,7 @@
   --color-neutral: #6b7280;
   --color-neutral-medium: #adb5bd;
   --color-neutral-muted: #666;
-  --color-focus: rgba(0, 123, 255, 0.25);
+  --color-focus: rgb(0 123 255 / 25%);
   
   /* State colors */
   --color-error: #f44336;
@@ -72,7 +69,7 @@
   --color-error-darker: #dc2626;
   --color-error-light: #ffebee;
   --color-error-lighter: #ffe6e6;
-  --color-error-lightest: #ffdddd;
+  --color-error-lightest: #fdd;
   
   /* Special purpose */
   --color-black: #000;
