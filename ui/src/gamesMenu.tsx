@@ -83,60 +83,109 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
         <div className="gameslist">
             <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={ userEmail } gameDescription="" isFirefly={false}/>
             <div className="allgames">
-                <div className="joingame">
-                    <h1><FormattedMessage id="availableGames" /></h1>
-                    <ul>
-                        {games?.map((game) => (
-                            <li key={game.gameId} className="game-panel">
-                                <a href={`/?gameId=${game.gameId}`} className="game-link" aria-label={intl.formatMessage({ id: "playGame"}) + game.gameName}>
-                                    <h3>{game.gameName}</h3>
-                                    <h4>{getGameTypeName(game.gameType)}</h4>
-                                    <span>{game.characterName}</span>
-                                    <ReactMarkdown>{game.gameDescription}</ReactMarkdown>
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className="newgame">
-                    <h1><FormattedMessage id="createNewGame" /></h1>
+                <section className="joingame" role="region" aria-labelledby="available-games-heading">
+                    <h1 id="available-games-heading"><FormattedMessage id="availableGames" /></h1>
+                    {games?.length === 0 ? (
+                        <p role="status" aria-live="polite">
+                            <FormattedMessage id="noGamesAvailable" />
+                        </p>
+                    ) : (
+                        <ul role="list" aria-label={intl.formatMessage({ id: "availableGames" })}>
+                            {games?.map((game) => (
+                                <li key={game.gameId} className="game-card" role="listitem">
+                                    <a 
+                                        href={`/?gameId=${game.gameId}`} 
+                                        className="game-link" 
+                                        aria-describedby={`game-${game.gameId}-description`}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                window.location.href = `/?gameId=${game.gameId}`;
+                                            }
+                                        }}
+                                    >
+                                        <h3>{game.gameName}</h3>
+                                        <h4>{getGameTypeName(game.gameType)}</h4>
+                                        <span aria-label={intl.formatMessage({ id: "characterName" })}>{game.characterName}</span>
+                                        <div 
+                                            id={`game-${game.gameId}-description`}
+                                            className="game-description"
+                                            aria-label={intl.formatMessage({ id: "gameDescription" })}
+                                        >
+                                            <ReactMarkdown>{game.gameDescription}</ReactMarkdown>
+                                        </div>
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </section>
+                <section className="newgame" role="region" aria-labelledby="create-game-heading">
+                    <h1 id="create-game-heading"><FormattedMessage id="createNewGame" /></h1>
                     {canCreateGame ? (
-                        <form onSubmit={handleCreateGame} aria-label={intl.formatMessage({ id: "createNewGame" })}>
-                            <label htmlFor="gameName"><FormattedMessage id="gameName" /></label>
-                            <input 
-                                type="text" 
-                                id="gameName" 
-                                name="gameName" 
-                                required 
-                                value={gameName}
-                                onChange={(e) => setGameName(e.target.value)}
-                                placeholder={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
-                            />
-                            <label htmlFor="gameType"><FormattedMessage id="gameType" /></label>
-                            <select
-                                id="gameType"
-                                name="gameType"
-                                value={gameType}
-                                onChange={(e) => setGameType(e.target.value)}
-                                required
-                                >
-                                    {GameTypes.filter(gt => gt.enabled).map(gameType => (
-                                        <option key={gameType.id} value={gameType.id}>
-                                            {intl.formatMessage({ id: gameType.name })}
-                                        </option>
-                                    ))}
-                                </select>
-                            <label htmlFor="gameDescription">Game Description:</label>
-                            <SectionItemDescription 
-                                id="gameDescription"
-                                value={gameDescription}
-                                onChange={(d) => setGameDescription(d)}
-                                placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
-                            />
-                            <button type="submit"><FormattedMessage id="createGame" /></button>
+                        <form 
+                            onSubmit={handleCreateGame} 
+                            aria-labelledby="create-game-heading"
+                            role="form"
+                        >
+                            <div role="group" aria-labelledby="game-details">
+                                <div className="form-field">
+                                    <label htmlFor="gameName"><FormattedMessage id="gameName" /></label>
+                                    <input 
+                                        type="text" 
+                                        id="gameName" 
+                                        name="gameName" 
+                                        required 
+                                        value={gameName}
+                                        onChange={(e) => setGameName(e.target.value)}
+                                        placeholder={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
+                                        aria-describedby="game-name-help"
+                                    />
+                                </div>
+                                
+                                <div className="form-field">
+                                    <label htmlFor="gameType"><FormattedMessage id="gameType" /></label>
+                                    <select
+                                        id="gameType"
+                                        name="gameType"
+                                        value={gameType}
+                                        onChange={(e) => setGameType(e.target.value)}
+                                        required
+                                        aria-describedby="game-type-help"
+                                    >
+                                        {GameTypes.filter(gt => gt.enabled).map(gameType => (
+                                            <option key={gameType.id} value={gameType.id}>
+                                                {intl.formatMessage({ id: gameType.name })}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                
+                                <div className="form-field">
+                                    <label htmlFor="game-description"><FormattedMessage id="gameDescription" /></label>
+                                    <SectionItemDescription 
+                                        id="game-description"
+                                        value={gameDescription}
+                                        onChange={(d) => setGameDescription(d)}
+                                        placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
+                                        aria-describedby="game-description-help"
+                                    />
+                                </div>
+                                
+                                <div className="form-field">
+                                    <button 
+                                        type="submit"
+                                        aria-describedby="create-game-help"
+                                    >
+                                        <FormattedMessage id="createGame" />
+                                    </button>
+                                </div>
+                            </div>
                         </form>
                     ) : (
-                        <p><FormattedMessage id="createGamePermissionDenied" /></p>
+                        <p role="alert" aria-live="polite">
+                            <FormattedMessage id="createGamePermissionDenied" />
+                        </p>
                     )}
                     {error && (
                         <div role="alert" className="error-container">
@@ -146,7 +195,7 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                             </button>
                         </div>
                     )}
-                </div>
+                </section>
             </div>
         </div>
     );

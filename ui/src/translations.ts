@@ -16,6 +16,7 @@ export const messages = {
     'gameType': 'Game Type',
     'gameDescription': 'Game Description:',
     'createGame': 'Create Game',
+    'noGamesAvailable': 'No Games Available',
 
     'errorFetchingGames': 'Error fetching games:',
     'errorCreatingGame': 'Error creating game:',
