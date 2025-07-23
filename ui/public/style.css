@@ -1,19 +1,10 @@
-/* WCAG AAA Compliant Color Variables for Games Menu */
 :root {
-  /* Role-based color system - WCAG AAA compliant */
+  /* Main Colours */
   --color-primary: #0056b3;
   --color-primary-light: #e3f2fd;
   --color-primary-hover: #004494;
-  
   --color-secondary: #6c757d;
   --color-secondary-dark: #495057;
-  --color-action: #155724;
-  --color-action-hover: #0f4419;
-  --color-danger: #dc3545;
-  --color-danger-hover: #c82333;
-  --color-warning: #856404;
-  --color-warning-light: #fff3cd;
-  --color-warning-border: #ffeeba;
   
   /* Interactive element colors */
   --color-interactive-bg: rgb(255 255 255 / 50%);
@@ -22,6 +13,13 @@
   --color-interactive-border: rgb(0 86 179 / 30%);
   
   /* Contextual colors */
+  --color-action: #155724;
+  --color-action-hover: #0f4419;
+  --color-danger: #dc3545;
+  --color-danger-hover: #c82333;
+  --color-warning: #856404;
+  --color-warning-light: #fff3cd;
+  --color-warning-border: #ffeeba;
   --color-info-light: #d1edff;
   --color-info-border: #a7d8f0;
   
@@ -42,7 +40,7 @@
   --shadow-light: 0 2px 4px rgb(0 0 0 / 10%);
   --shadow-medium: 0 4px 8px rgb(0 0 0 / 12%);
   
-  /* Semantic colors */
+  /* Accent colors */
   --color-accent-burnt: #AA5722;
   --color-accent-ticked: #28a745;
   --color-accent-success: #16a34a;
@@ -687,31 +685,6 @@
   color: white;
 }
 
-.keyvalue-item span {
-  flex-grow: 1;
-  margin-right: 0.5rem;
-}
-
-.keyvalue-item input {
-  flex-grow: 2;
-  margin-right: 0.5rem;
-}
-
-.keyvalue-items-edit {
-  display: flex;
-  flex-direction: column;
-}
-
-.keyvalue-item-edit {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.keyvalue-item-edit input,
-.keyvalue-item-edit textarea {
-  margin-right: 0.5rem;
-}
 
 .tick-checkbox {
   width: 24px;
@@ -749,6 +722,47 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
+}
+
+.section-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  max-width: 100%;
+  grid-column: 1 / -1;
+  margin-bottom: 0.75rem;
+}
+
+.section-item span {
+  flex: 0 0 200px;
+  font-weight: 500;
+  padding-top: 0.25rem;
+  text-align: left;
+}
+
+.section-item input[type="text"] {
+  flex: 1;
+  max-width: 400px;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+}
+
+@media screen and (width <= 600px) {
+  .section-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .section-item span {
+    flex: none;
+    padding-top: 0;
+  }
+  
+  .section-item input[type="text"] {
+    max-width: none;
+  }
 }
 
 /* Override section-items grid for delta green stats to take full width */
