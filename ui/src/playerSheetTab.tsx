@@ -277,10 +277,10 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           <button onClick={() => {
             setShowNewSection(true);
             setEditingSheetId(sheet.userId);
-          }}>
+          }} className="btn-standard btn-small">
             <FaPlus /> <FormattedMessage id="playerSheetTab.addSection" />
           </button>
-          <button onClick={() => setShowDeleteSectionModal(true)}>
+          <button onClick={() => setShowDeleteSectionModal(true)} className="btn-danger btn-small">
             <FaTrash /> <FormattedMessage id="playerSheetTab.deleteSection" />
           </button>
         </>
@@ -301,10 +301,10 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
               </option>
             ))}
           </select>
-          <button onClick={handleCreateSection}>
+          <button onClick={handleCreateSection} className="btn-standard btn-small">
             <FormattedMessage id="create" />
           </button>
-          <button onClick={handleCancelCreateSection}>
+          <button onClick={handleCancelCreateSection} className="btn-secondary btn-small">
             <FormattedMessage id="cancel" />
           </button>
         </div>
@@ -318,19 +318,19 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
       />
 
       {sheet.type === TypeFirefly && (
-        <button onClick={() => setShowCreateShipModal(true)} className="create-ship-button">
+        <button onClick={() => setShowCreateShipModal(true)} className="btn-standard btn-small">
           <FormattedMessage id="createShipModal.buttonLabel" />
         </button>
       )}
 
       {(userSubject === sheet.userId || userSubject === sheet.fireflyUserId ) && (sheet.userId != sheet.fireflyUserId) && (
-        <button onClick={() => setShowDeleteModal(true)} className="delete-player-button">
+        <button onClick={() => setShowDeleteModal(true)} className="btn-danger btn-small">
           <FormattedMessage id={deleteButtonId} />
         </button>
       )}
 
       {(userSubject === sheet.fireflyUserId) && (sheet.userId == sheet.fireflyUserId) && (
-        <button onClick={() => setShowDeleteGameModal(true)} className="delete-game-button">
+        <button onClick={() => setShowDeleteGameModal(true)} className="btn-danger btn-small">
           <FormattedMessage id="deleteGameModal.deleteGame" />
         </button>
       )}
@@ -411,15 +411,15 @@ const SheetHeader: React.FC<{
             onChange={(e) => setCharacterName(e.target.value)}
             placeholder={intl.formatMessage({ id: "characterName" })}
           />
-          <button onClick={handleSave}><FormattedMessage id="save" /></button>
-          <button onClick={() => setIsEditing(false)}><FormattedMessage id="cancel" /></button>
+          <button onClick={handleSave} className="btn-standard btn-small"><FormattedMessage id="save" /></button>
+          <button onClick={() => setIsEditing(false)} className="btn-secondary btn-small"><FormattedMessage id="cancel" /></button>
         </div>
       ) : (
         <div className="view-character-name">
           <h2>{sheet.characterName}
             {mayEditSheet && (
               <span className="own-ops">
-                <FaPencilAlt onClick={() => setIsEditing(true)} />
+                <button className="btn-icon edit" onClick={() => setIsEditing(true)}><FaPencilAlt /></button>
                 {ownSheet && (<span className="own-sheet"><FormattedMessage id="playerSheetTab.ownSheet" /></span>)}
               </span>
             )}
@@ -474,14 +474,14 @@ export const DeleteSectionModal: React.FC<DeleteSectionModalProps> = ({
             <span className="delete-section-name">{section.sectionName}</span>
             <button 
               onClick={() => onDeleteSection(section.sectionId)}
-              className="delete-section-button"
+              className="btn-icon"
             >
               <FaTrash />
             </button>
           </li>
         ))}
       </ul>
-      <button onClick={onRequestClose} className="delete-modal-close">
+      <button onClick={onRequestClose} className="btn-secondary btn-small">
         <FormattedMessage id="close" />
       </button>
     </Modal>
@@ -519,13 +519,13 @@ const CreateShipModal: React.FC<{
         placeholder={intl.formatMessage({ id: "createShipModal.namePlaceholder" })}
       />
       <div className="modal-buttons">
-        <button onClick={onRequestClose} className="cancel-button">
+        <button onClick={onRequestClose} className="btn-secondary btn-small">
           <FormattedMessage id="cancel" />
         </button>
         <button
           onClick={handleConfirm}
           disabled={!shipName.trim()}
-          className="confirm-button"
+          className="btn-standard btn-small"
         >
           <FormattedMessage id="create" />
         </button>

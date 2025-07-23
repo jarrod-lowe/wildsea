@@ -25,7 +25,7 @@ export function SectionItem<T extends BaseSectionItem>({ item, renderContent }: 
         placement="top"
         className="markdown-tippy"
       >
-        <button className="info-icon-button">
+        <button className="btn-icon info">
           <FaInfoCircle className="info-icon" />
         </button>
       </Tippy>

@@ -68,8 +68,8 @@ export const EditGameModal: React.FC<EditGameModalProps> = ({
         placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
       />
       <div className="modal-buttons">
-        <button onClick={onRequestClose}><FormattedMessage id="cancel" /></button>
-        <button onClick={handleSave}><FormattedMessage id="save" /></button>
+        <button onClick={onRequestClose} className="btn-secondary btn-small"><FormattedMessage id="cancel" /></button>
+        <button onClick={handleSave} className="btn-standard btn-small"><FormattedMessage id="save" /></button>
       </div>
     </Modal>
   );

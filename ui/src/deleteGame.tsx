@@ -44,13 +44,13 @@ export const DeleteGameModal: React.FC<DeleteGameModalProps> = ({
         <FormattedMessage id="deleteGameModal.understand" />
       </label>
       <div className="modal-buttons">
-        <button onClick={onRequestClose} className="cancel-button">
+        <button onClick={onRequestClose} className="btn-secondary btn-small">
           <FormattedMessage id="cancel" />
         </button>
         <button
           onClick={handleConfirm}
           disabled={!isConfirmed}
-          className="confirm-button"
+          className="btn-danger btn-small"
         >
           <FormattedMessage id="deleteGameModal.confirm" />
         </button>
