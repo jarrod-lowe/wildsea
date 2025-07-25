@@ -1418,21 +1418,6 @@
   padding: 0;
 }
 
-.delta-green-skills-items-edit {
-  margin-top: 10px;
-}
-
-.delta-green-skills-item-edit {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background-color: var(--color-surface-light);
-}
 
 .roll-input-with-controls {
   display: flex;
@@ -1446,26 +1431,6 @@
   justify-content: center;
 }
 
-.delta-green-skills-item-edit input[type="text"] {
-  padding: 6px;
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-}
-
-.delta-green-skills-item-edit input[type="number"] {
-  padding: 6px;
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-  text-align: center;
-}
-
-.delta-green-skills-item-edit label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-  white-space: nowrap;
-}
 
 
 .show-empty-toggle {
@@ -1510,10 +1475,6 @@
     font-size: 9px;
   }
   
-  .delta-green-skills-item-edit {
-    grid-template-columns: 1fr;
-    gap: 5px;
-  }
 }
 
 /* Post-session upgrades button styling */
