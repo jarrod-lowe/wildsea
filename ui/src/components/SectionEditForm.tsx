@@ -18,19 +18,8 @@ export function SectionEditForm<T extends BaseSectionItem>({
   removeItem
 }: Readonly<SectionEditFormProps<T>>) {
   return (
-    <div className={`${content.constructor.name.toLowerCase()}-items-edit`}>
-      {content.items.map((item, index) => (
-        <div key={item.id} className={`${content.constructor.name.toLowerCase()}-item-edit`}>
-          {renderItemEdit(item, index)}
-          <button onClick={() => removeItem(index)} className="btn-edit-form">
-            <FormattedMessage id={`sectionObject.removeItem`} />
-          </button>
-        </div>
-      ))}
-      <button onClick={addItem} className="btn-edit-form">
-        <FormattedMessage id={`sectionObject.addItem`} />
-      </button>
-      <div className="show-zeros-toggle">
+    <div className="section-items-edit">
+      <div className="show-empty-toggle">
         <label>
           <input
             type="checkbox"
@@ -40,6 +29,19 @@ export function SectionEditForm<T extends BaseSectionItem>({
           <FormattedMessage id={`sectionObject.showEmpty`} />
         </label>
       </div>
+      {content.items.map((item, index) => (
+        <div key={item.id} className="section-item-edit">
+          <div className="section-item-content">
+            {renderItemEdit(item, index)}
+          </div>
+          <button onClick={() => removeItem(index)} className="btn-edit-form">
+            <FormattedMessage id={`sectionObject.removeItem`} />
+          </button>
+        </div>
+      ))}
+      <button onClick={addItem} className="btn-edit-form">
+        <FormattedMessage id={`sectionObject.addItem`} />
+      </button>
     </div>
   );
 }

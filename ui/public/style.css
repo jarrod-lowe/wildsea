@@ -633,6 +633,7 @@
   margin: 0 0.5rem;
 }
 
+/* Legacy class for backwards compatibility */
 .show-zeros-toggle {
   margin-top: 1rem;
 }
@@ -1477,8 +1478,8 @@
 .show-empty-toggle label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: bold;
+  gap: 5px;
+  font-size: 14px;
 }
 
 @media screen and (max-width: 768px) {
@@ -2353,10 +2354,58 @@
   margin: var(--space-xs);
 }
 
-/* Edit form buttons - using browser defaults like Delta Green Stats */
-.btn-edit-form {
-  /* Default browser button styling is fine - keeping class for future modifications */
+/* Generic section edit form styles */
+.section-items-edit {
+  margin-top: 10px;
 }
+
+.section-item-edit {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background-color: var(--color-surface-light);
+}
+
+.section-item-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.section-item-content > textarea,
+.section-item-content > .item-length-controls {
+  grid-column: 1 / -1;
+}
+
+.item-length-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.section-item-edit input,
+.section-item-edit textarea,
+.section-item-edit select {
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+}
+
+.section-item-edit label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+
+/* Edit form buttons use browser defaults like Delta Green Stats */
 
 /* Dice Roll Modal */
 .dice-roll-modal {
@@ -2549,5 +2598,14 @@
   .auto-populate-form select {
     min-width: unset;
     margin-bottom: 10px;
+  }
+  
+  .section-item-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .section-item-edit {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 }
