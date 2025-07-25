@@ -53,7 +53,7 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
             content: SectionTypeBurnable,
             setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>,
             updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
         ) => {
         const newItems = [...content.items];
         const itemIndex = newItems.findIndex(i => i.id === item.id);
@@ -86,7 +86,7 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
             mayEditSheet: boolean,
             setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>,
             updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
         ) => {
         return content.items
         .filter(item => content.showEmpty || item.states.some(state => state !== 'unticked'))
@@ -106,7 +106,7 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
                         <BurnCheckbox
                             key={`${item.id}-${index}`}
                             state={state}
-                            onClick={() => handleStateChange(item, index, content, setContent, updateSection)}
+                            onClick={() => handleStateChange(item, index, content, setContent, updateSection, _isEditing)}
                             disabled={!mayEditSheet}
                         />
                     ))}

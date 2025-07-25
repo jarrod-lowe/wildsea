@@ -35,10 +35,10 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
 
   const renderItems = (
         content: SectionTypeDeltaGreenStats,
-        mayEditSheet: boolean,
-        setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
-        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-        isEditing: boolean,
+        _mayEditSheet: boolean,
+        _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
+        _updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+        _isEditing: boolean,
     ) => {
     // Create data attributes from current stats for derived attributes to read
     const statsDataAttributes: { [key: string]: number } = {};

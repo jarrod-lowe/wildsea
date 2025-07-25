@@ -109,7 +109,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     skillValue: number, 
     item: DeltaGreenSkillItem,
     content: SectionTypeDeltaGreenSkills,
-    setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
+    _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>
   ) => {
     const actionText = intl.formatMessage({ id: 'deltaGreenSkills.actionFor' }, { skillName });
@@ -164,7 +164,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     mayEditSheet: boolean,
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
   ) => {
     const filteredItems = content.showEmpty 
       ? content.items 

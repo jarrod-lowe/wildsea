@@ -41,7 +41,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
       content: SectionTypeTrackable,
       setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>,
       updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
     ) => {
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
@@ -78,7 +78,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
                 <TickCheckbox
                   key={`${item.id}-${index}`}
                   state={index < item.ticked ? 'ticked' : 'unticked'}
-                  onClick={() => handleTickClick(item, index, content, setContent, updateSection)}
+                  onClick={() => handleTickClick(item, index, content, setContent, updateSection, isEditing)}
                   disabled={!mayEditSheet}
                 />
               ))}
