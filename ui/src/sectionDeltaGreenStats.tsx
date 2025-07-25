@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
-import { useIntl, FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
+import { SectionEditForm } from './components/SectionEditForm';
 
 interface DeltaGreenStatItem extends BaseSectionItem {
   score: number;
@@ -109,9 +110,11 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
     };
 
     return (
-      <div className="delta-green-stats-items-edit">
-        {content.items.map((item, index) => (
-          <div key={item.id} className="delta-green-stats-item-edit">
+      <SectionEditForm
+        content={content}
+        setContent={setContent}
+        renderItemEdit={(item, index) => (
+          <>
             <input
               type="text"
               value={item.name}
@@ -133,15 +136,11 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
               placeholder={intl.formatMessage({ id: "deltaGreenStats.distinguishingFeatures" })}
               maxLength={40}
             />
-            <button onClick={() => handleRemoveItem(index)} className="btn-edit-form">
-              <FormattedMessage id="sectionObject.removeItem" />
-            </button>
-          </div>
-        ))}
-        <button onClick={handleAddItem} className="btn-edit-form">
-          <FormattedMessage id="sectionObject.addItem" />
-        </button>
-      </div>
+          </>
+        )}
+        addItem={handleAddItem}
+        removeItem={handleRemoveItem}
+      />
     );
   };
 
