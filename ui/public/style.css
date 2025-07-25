@@ -633,10 +633,6 @@
   margin: 0 0.5rem;
 }
 
-/* Legacy class for backwards compatibility */
-.show-zeros-toggle {
-  margin-top: 1rem;
-}
 
 .react-tooltip {
   max-width: 250px; /* Adjust to the width you prefer */
