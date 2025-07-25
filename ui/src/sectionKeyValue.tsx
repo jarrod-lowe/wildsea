@@ -21,7 +21,7 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
         content: SectionTypeKeyValue,
         setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
     ) => {
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
@@ -50,7 +50,7 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
             <input
               type="text"
               value={item.value}
-              onChange={(e) => handleValueChange(item, e.target.value, content, setContent, updateSection)}
+              onChange={(e) => handleValueChange(item, e.target.value, content, setContent, updateSection, isEditing)}
               disabled={!mayEditSheet}
             />
           )}
