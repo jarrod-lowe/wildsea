@@ -4,6 +4,7 @@ import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
+import { SectionEditForm } from './components/SectionEditForm';
 import { Grades } from "../../graphql/lib/constants/rollTypes";
 
 // Color scaling function for skill proficiency (0-99 scale)
@@ -255,19 +256,11 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     };
 
     return (
-      <div className="delta-green-skills-items-edit">
-        <div className="show-empty-toggle">
-          <label>
-            <input
-              type="checkbox"
-              checked={content.showEmpty}
-              onChange={() => setContent({ ...content, showEmpty: !content.showEmpty })}
-            />
-            <FormattedMessage id="sectionObject.showEmpty" />
-          </label>
-        </div>
-        {content.items.map((item, index) => (
-          <div key={item.id} className="delta-green-skills-item-edit">
+      <SectionEditForm
+        content={content}
+        setContent={setContent}
+        renderItemEdit={(item, index) => (
+          <>
             <input
               type="text"
               value={item.name}
@@ -326,15 +319,11 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
               />
               <FormattedMessage id="deltaGreenSkills.hasUsedFlag" />
             </label>
-            <button onClick={() => handleRemoveItem(index)} className="btn-edit-form">
-              <FormattedMessage id="sectionObject.removeItem" />
-            </button>
-          </div>
-        ))}
-        <button onClick={handleAddItem} className="btn-edit-form">
-          <FormattedMessage id="sectionObject.addItem" />
-        </button>
-      </div>
+          </>
+        )}
+        addItem={handleAddItem}
+        removeItem={handleRemoveItem}
+      />
     );
   };
 
