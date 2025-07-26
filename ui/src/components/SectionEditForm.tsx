@@ -8,6 +8,8 @@ interface SectionEditFormProps<T extends BaseSectionItem> {
   readonly renderItemEdit: (item: T, index: number) => React.ReactNode;
   readonly addItem: () => void;
   readonly removeItem: (index: number) => void;
+  readonly handleUpdate: () => void;
+  readonly handleCancel: () => void;
 }
 
 export function SectionEditForm<T extends BaseSectionItem>({
@@ -15,7 +17,9 @@ export function SectionEditForm<T extends BaseSectionItem>({
   setContent,
   renderItemEdit,
   addItem,
-  removeItem
+  removeItem,
+  handleUpdate,
+  handleCancel
 }: Readonly<SectionEditFormProps<T>>) {
   return (
     <div className="section-items-edit">
@@ -39,9 +43,17 @@ export function SectionEditForm<T extends BaseSectionItem>({
           </button>
         </div>
       ))}
-      <button onClick={addItem} className="btn-edit-form">
-        <FormattedMessage id={`sectionObject.addItem`} />
-      </button>
+      <div className="section-edit-buttons">
+        <button onClick={addItem} className="btn-standard btn-small">
+          <FormattedMessage id={`sectionObject.addItem`} />
+        </button>
+        <button onClick={handleUpdate} className="btn-standard btn-small">
+          <FormattedMessage id="save" />
+        </button>
+        <button onClick={handleCancel} className="btn-secondary btn-small">
+          <FormattedMessage id="cancel" />
+        </button>
+      </div>
     </div>
   );
 }
