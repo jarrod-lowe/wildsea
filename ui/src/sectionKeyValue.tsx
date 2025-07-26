@@ -91,17 +91,20 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <input
               type="text"
               value={item.value || ''}
               onChange={(e) => handleItemChange(index, 'value', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
+              aria-label={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
             />
             <textarea
               value={item.description || ''}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
           </>
         )}

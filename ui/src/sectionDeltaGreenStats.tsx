@@ -154,6 +154,7 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenStats.statistic" })}
+              aria-label={intl.formatMessage({ id: "deltaGreenStats.statistic" })}
             />
             <input
               type="number"
@@ -163,12 +164,14 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
               onChange={(e) => handleItemChange(index, 'score', e.target.value)}
               onBlur={(e) => handleScoreBlur(index, e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenStats.score" })}
+              aria-label={intl.formatMessage({ id: "deltaGreenStats.score" })}
             />
             <input
               type="text"
               value={item.distinguishingFeatures || ''}
               onChange={(e) => handleItemChange(index, 'distinguishingFeatures', e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenStats.distinguishingFeatures" })}
+              aria-label={intl.formatMessage({ id: "deltaGreenStats.distinguishingFeatures" })}
               maxLength={40}
             />
           </>

@@ -307,6 +307,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenSkills.skill" })}
+              aria-label={intl.formatMessage({ id: "deltaGreenSkills.skill" })}
             />
             <div className="roll-input-with-controls">
               <input
@@ -317,6 +318,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                 onChange={(e) => handleItemChange(index, 'roll', e.target.value)}
                 onBlur={(e) => handleRollBlur(index, e.target.value)}
                 placeholder={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
+                aria-label={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
               />
               <div className="roll-controls">
                 {(() => {

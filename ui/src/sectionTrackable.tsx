@@ -135,6 +135,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <div className="item-length-controls">
               <button onClick={() => handleItemChange(index, 'length', item.length - 1)}>
@@ -149,6 +150,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
               value={item.description || ''}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
           </>
         )}

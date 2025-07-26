@@ -41,9 +41,10 @@ interface MarkdownEditorProps {
   onChange: (value: string) => void;
   placeholder?: string;
   id?: string;
+  ariaLabel?: string;
 }
 
-export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, onChange, placeholder, id }) => {
+export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, onChange, placeholder, id, ariaLabel }) => {
   // Filter out the preview command to protect against XSS issues
   const customCommands = getCommands().filter((cmd: ICommand) => 
     cmd.name !== 'preview' && cmd.name !== 'live'
@@ -56,7 +57,8 @@ export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, o
       preview="edit"
       textareaProps={{
         placeholder: placeholder,
-        id: id
+        id: id,
+        'aria-label': ariaLabel
       }}
       commands={customCommands}
       extraCommands={[]}
