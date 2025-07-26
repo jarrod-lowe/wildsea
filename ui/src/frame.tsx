@@ -1,8 +1,7 @@
 import md5 from 'md5';
 import { signInWithRedirect, signOut } from "@aws-amplify/auth";
 import React, { useState } from "react";
-import { FormattedMessage } from 'react-intl';
-import { FaInfoCircle, FaPencilAlt } from 'react-icons/fa';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
 
@@ -26,6 +25,7 @@ interface TopBarProps {
 // TopBar component
 export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isFirefly, onEditGame }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const intl = useIntl();
 
   const renderTitle = () => (
     <h1>
@@ -40,13 +40,13 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
           className="markdown-tippy"
         >
           <button className="btn-icon info">
-            <FaInfoCircle className="info-icon" />
+            {intl.formatMessage({ id: 'showInfo' })}
           </button>
         </Tippy>
       )}
       {isFirefly && onEditGame && (
-        <button className="btn-icon edit" onClick={onEditGame}>
-          <FaPencilAlt />
+        <button className="btn-standard btn-small edit" onClick={onEditGame}>
+{intl.formatMessage({ id: 'edit' })}
         </button>
       )}
     </h1>

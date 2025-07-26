@@ -198,6 +198,10 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                         checked={item.used}
                         onChange={() => handleUsedToggle(item, content, setContent, updateSection)}
                         disabled={!mayEditSheet}
+                        aria-label={intl.formatMessage(
+                          { id: "deltaGreenSkills.hasFailed" },
+                          { skillName: item.name }
+                        )}
                       />
                     ) : (
                       <span></span>
@@ -211,7 +215,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                     <button
                       className="dice-button"
                       onClick={() => handleDiceClick(item.name, numericRoll, item, content, setContent, updateSection)}
-                      aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
+                      aria-label={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
                       title={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
                     >
                       {intl.formatMessage({ id: 'dice.icon' })}
@@ -303,6 +307,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenSkills.skill" })}
+              aria-label={intl.formatMessage({ id: "deltaGreenSkills.skill" })}
             />
             <div className="roll-input-with-controls">
               <input
@@ -313,6 +318,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                 onChange={(e) => handleItemChange(index, 'roll', e.target.value)}
                 onBlur={(e) => handleRollBlur(index, e.target.value)}
                 placeholder={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
+                aria-label={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
               />
               <div className="roll-controls">
                 {(() => {
