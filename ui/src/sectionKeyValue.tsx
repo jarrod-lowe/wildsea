@@ -3,8 +3,8 @@ import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } f
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
-import { SectionItem } from './components/SectionItem';
 import { SectionEditForm } from './components/SectionEditForm';
+import { SectionItem } from './components/SectionItem';
 
 interface KeyValueItem extends BaseSectionItem {
   value: string;
@@ -42,20 +42,25 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
     ) => {
     return content.items
       .filter(item => content.showEmpty || item.value !== '')
-      .map(item => (
-        <SectionItem
-          key={item.id}
-          item={item}
-          renderContent={(item) => (
-            <input
-              type="text"
-              value={item.value || ''}
-              onChange={(e) => handleValueChange(item, e.target.value, content, setContent, updateSection, isEditing)}
-              disabled={!mayEditSheet}
-            />
-          )}
-        />
-      ));
+      .map(item => {
+        const inputId = `keyvalue-input-${item.id}`;
+        return (
+          <SectionItem
+            key={item.id}
+            item={item}
+            renderContent={(item) => (
+              <input
+                id={inputId}
+                type="text"
+                value={(item as KeyValueItem).value || ''}
+                onChange={(e) => handleValueChange(item as KeyValueItem, e.target.value, content, setContent, updateSection, isEditing)}
+                disabled={!mayEditSheet}
+                aria-label={item.name}
+              />
+            )}
+          />
+        );
+      });
   };
 
   const renderEditForm = (content: SectionTypeKeyValue, setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>, handleUpdate: () => void, handleCancel: () => void) => {
@@ -86,17 +91,20 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <input
               type="text"
               value={item.value || ''}
               onChange={(e) => handleItemChange(index, 'value', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
+              aria-label={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
             />
             <textarea
               value={item.description || ''}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
           </>
         )}

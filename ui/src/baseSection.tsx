@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
 import { useIntl } from 'react-intl';
-import { FaPencilAlt } from 'react-icons/fa';
 import { useToast } from './notificationToast';
 import { generateClient, GraphQLResult } from 'aws-amplify/api';
 import { updateSectionMutation } from '../../appsync/schema';
@@ -134,6 +133,7 @@ export const BaseSection = <T extends BaseSectionItem>({
                     value={sectionName}
                     onChange={(e) => setSectionName(e.target.value)}
                     placeholder={intl.formatMessage({ id: "sectionName" })}
+                    aria-label={intl.formatMessage({ id: "sectionName" })}
                     className="section-title-edit"
                 />
                 {renderEditForm(content, setContent, handleUpdate, handleCancel)}
@@ -143,11 +143,11 @@ export const BaseSection = <T extends BaseSectionItem>({
 
     return (
         <div className="section" ref={sectionRef}>
-            <h3>{sectionName} <button className="btn-icon edit" onClick={() => {
+            <h3>{sectionName} <button className="btn-standard btn-small edit" onClick={() => {
                 setOriginalContent(content);
                 setOriginalSectionName(section.sectionName);
                 setIsEditing(true);
-            }}><FaPencilAlt /></button></h3>
+            }}>{intl.formatMessage({ id: 'edit' })}</button></h3>
             <div className="section-items">
                 {renderItems(content, mayEditSheet, setContent, updateSection, false)}
             </div>

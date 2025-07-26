@@ -128,9 +128,13 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
           const displayCurrent = item.attributeType === 'BP' ? (calc?.current ?? item.current) : item.current;
           const isDisorderRow = hasDisorder && (item.attributeType === 'SAN' || item.attributeType === 'BP');
           
+          const inputId = `derived-current-${item.id}`;
+          
           return (
             <div key={item.id} className={`derived-row ${isDisorderRow ? 'disorder-warning' : ''}`}>
-              <div className="derived-col-attribute">{item.name}</div>
+              <div className="derived-col-attribute">
+                <label htmlFor={inputId}>{item.name}</label>
+              </div>
               <div className="derived-col-maximum">
                 {item.attributeType === 'BP' ? '—' : displayMax}
               </div>
@@ -146,6 +150,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                     </button>
                   )}
                   <input
+                    id={inputId}
                     type="number"
                     min="0"
                     max={displayMax}

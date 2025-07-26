@@ -2,7 +2,7 @@ import React from 'react';
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
 import 'tippy.js/dist/tippy.css';
-import { FaInfoCircle } from 'react-icons/fa';
+import { useIntl } from 'react-intl';
 import { BaseSectionItem } from '../baseSection';
 import MDEditor, { getCommands, ICommand } from '@uiw/react-md-editor';
 
@@ -12,6 +12,8 @@ interface SectionItemProps<T extends BaseSectionItem> {
 }
 
 export function SectionItem<T extends BaseSectionItem>({ item, renderContent }: Readonly<SectionItemProps<T>>) {
+  const intl = useIntl();
+  
   return (
     <div className={`section-item ${item.constructor.name.toLowerCase()}-item`}>
       <span>{item.name}</span>
@@ -26,7 +28,7 @@ export function SectionItem<T extends BaseSectionItem>({ item, renderContent }: 
         className="markdown-tippy"
       >
         <button className="btn-icon info">
-          <FaInfoCircle className="info-icon" />
+          {intl.formatMessage({ id: 'showInfo' })}
         </button>
       </Tippy>
       )}
@@ -39,9 +41,10 @@ interface MarkdownEditorProps {
   onChange: (value: string) => void;
   placeholder?: string;
   id?: string;
+  ariaLabel?: string;
 }
 
-export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, onChange, placeholder, id }) => {
+export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, onChange, placeholder, id, ariaLabel }) => {
   // Filter out the preview command to protect against XSS issues
   const customCommands = getCommands().filter((cmd: ICommand) => 
     cmd.name !== 'preview' && cmd.name !== 'live'
@@ -54,7 +57,8 @@ export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, o
       preview="edit"
       textareaProps={{
         placeholder: placeholder,
-        id: id
+        id: id,
+        'aria-label': ariaLabel
       }}
       commands={customCommands}
       extraCommands={[]}

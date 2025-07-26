@@ -26,6 +26,7 @@ const TickCheckbox: React.FC<{
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={`tick-checkbox ${state}`}
+      aria-label={intl.formatMessage({ id: `sectionObject.buttonState.${state}` })}
     >
       {content}
     </button>
@@ -74,6 +75,15 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
           item={item}
           renderContent={(item) => (
             <>
+              <span 
+                className="sr-only" 
+                aria-live="polite"
+              >
+                {intl.formatMessage(
+                  { id: 'sectionObject.trackableSummary' }, 
+                  { ticked: item.ticked, total: item.length }
+                )}
+              </span>
               {[...Array(item.length)].map((_, index) => (
                 <TickCheckbox
                   key={`${item.id}-${index}`}
@@ -125,6 +135,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <div className="item-length-controls">
               <button onClick={() => handleItemChange(index, 'length', item.length - 1)}>
@@ -139,6 +150,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
               value={item.description || ''}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
           </>
         )}

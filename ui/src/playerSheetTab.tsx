@@ -4,7 +4,7 @@ import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput,
 import { createSectionMutation, createShipMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 import { TypeFirefly, TypeShip } from "../../graphql/lib/constants/entityTypes";
 import { Section } from './section';
 import { getSectionSeed, getSectionTypes } from './sectionRegistry';
@@ -419,7 +419,7 @@ const SheetHeader: React.FC<{
           <h2>{sheet.characterName}
             {mayEditSheet && (
               <span className="own-ops">
-                <button className="btn-icon edit" onClick={() => setIsEditing(true)}><FaPencilAlt /></button>
+                <button className="btn-standard btn-small edit" onClick={() => setIsEditing(true)}>{intl.formatMessage({ id: 'edit' })}</button>
                 {ownSheet && (<span className="own-sheet"><FormattedMessage id="playerSheetTab.ownSheet" /></span>)}
               </span>
             )}

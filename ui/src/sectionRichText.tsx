@@ -38,6 +38,7 @@ export const SectionRichText: React.FC<SectionDefinition> = (props) => {
                     value={item.markdown || ''}
                     onChange={(value) => handleItemChange(index, value ?? "")}
                     placeholder={intl.formatMessage({ id: "sectionRichText.sampleContent" })}
+                    ariaLabel={intl.formatMessage({ id: "sectionRichText.sampleContent" })}
                 />
           </div>
         ))}
