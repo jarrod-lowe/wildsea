@@ -1,12 +1,37 @@
 {
     "cSpell.words": [
+        "accountid",
+        "allgames",
+        "amazoncognito",
         "amplifyconfig",
         "amplifyconfiguration",
+        "authorised",
+        "Codacy",
         "DELTAGREENDERED",
+        "deltagreenskills",
         "DELTAGREENSTATS",
         "DICEROLL",
+        "DNSSEC",
+        "firstname",
+        "gameslist",
+        "gpgsign",
+        "HUMINT",
+        "idpresponse",
+        "joingame",
+        "Jumpcloud",
         "KEYVALUE",
+        "lastname",
+        "newgame",
+        "pangea",
         "SECTIONUSER",
-        "wildsea"
+        "signingkey",
+        "TERRAFOM",
+        "tfstate",
+        "tfvars",
+        "tippyjs",
+        "unticked",
+        "uuidv",
+        "wildsea",
+        "YOURDOMAIN"
     ]
 }

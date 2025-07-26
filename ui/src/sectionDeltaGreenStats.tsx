@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
-import { useIntl, FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
+import { SectionEditForm } from './components/SectionEditForm';
 
 interface DeltaGreenStatItem extends BaseSectionItem {
   score: number;
@@ -34,10 +35,10 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
 
   const renderItems = (
         content: SectionTypeDeltaGreenStats,
-        mayEditSheet: boolean,
-        setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
-        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-        isEditing: boolean,
+        _mayEditSheet: boolean,
+        _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
+        _updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+        _isEditing: boolean,
     ) => {
     // Create data attributes from current stats for derived attributes to read
     const statsDataAttributes: { [key: string]: number } = {};
@@ -85,7 +86,7 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
     );
   };
 
-  const renderEditForm = (content: SectionTypeDeltaGreenStats, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>) => {
+  const renderEditForm = (content: SectionTypeDeltaGreenStats, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleAddItem = () => {
       const newItems = [...content.items, { 
         id: uuidv4(), 
@@ -109,12 +110,14 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
     };
 
     return (
-      <div className="delta-green-stats-items-edit">
-        {content.items.map((item, index) => (
-          <div key={item.id} className="delta-green-stats-item-edit">
+      <SectionEditForm
+        content={content}
+        setContent={setContent}
+        renderItemEdit={(item, index) => (
+          <>
             <input
               type="text"
-              value={item.name}
+              value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenStats.statistic" })}
             />
@@ -122,26 +125,24 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
               type="number"
               min="0"
               max="18"
-              value={item.score}
+              value={item.score || 0}
               onChange={(e) => handleItemChange(index, 'score', parseInt(e.target.value) || 0)}
               placeholder={intl.formatMessage({ id: "deltaGreenStats.score" })}
             />
             <input
               type="text"
-              value={item.distinguishingFeatures}
+              value={item.distinguishingFeatures || ''}
               onChange={(e) => handleItemChange(index, 'distinguishingFeatures', e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenStats.distinguishingFeatures" })}
               maxLength={40}
             />
-            <button onClick={() => handleRemoveItem(index)} className="btn-edit-form">
-              <FormattedMessage id="sectionObject.removeItem" />
-            </button>
-          </div>
-        ))}
-        <button onClick={handleAddItem} className="btn-edit-form">
-          <FormattedMessage id="sectionObject.addItem" />
-        </button>
-      </div>
+          </>
+        )}
+        addItem={handleAddItem}
+        removeItem={handleRemoveItem}
+        handleUpdate={handleUpdate}
+        handleCancel={handleCancel}
+      />
     );
   };
 
