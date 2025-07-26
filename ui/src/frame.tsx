@@ -39,7 +39,10 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
           placement="bottom"
           className="markdown-tippy"
         >
-          <button className="btn-icon info">
+          <button 
+            className="btn-icon info"
+            aria-label={intl.formatMessage({ id: 'showInfo.gameDescription' })}
+          >
             {intl.formatMessage({ id: 'showInfo' })}
           </button>
         </Tippy>

@@ -66,6 +66,8 @@ export const messages = {
     'close': '✖ Close',
     'edit': '✎ Edit',
     'showInfo': 'ℹ',
+    'showInfo.gameDescription': 'Show game description',
+    'showInfo.itemDescription': 'Show item description',
     'characterName': 'Character Name',
     'playerSheetTab.updateError': 'Failed to update the character name. Please try again.',
     'playerSheetTab.createSectionError': 'Failed to create a new section. Please try again.',
