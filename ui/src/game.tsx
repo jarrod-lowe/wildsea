@@ -3,7 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { Game, PlayerSheetSummary, Subscription as GQLSubscription, SheetSection, GameSummary } from "../../appsync/graphql";
 import { getGameQuery, updatedPlayerSubscription, updatedSectionSubscription, updatedGameSubscription } from "../../appsync/schema";
 import { IntlProvider, FormattedMessage, useIntl, IntlShape } from 'react-intl';
-import { GraphQLResult, GraphQLSubscription } from "@aws-amplify/api-graphql";
+import { GraphQLResult, GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
 import { messages } from './translations';
 import { TopBar } from "./frame";
 import { fetchUserAttributes } from 'aws-amplify/auth';
@@ -349,10 +349,10 @@ async function subscribeToPlayerSheetUpdates(
 ) {
   try {
     const client = generateClient();
-    const subscription = client.graphql<GraphQLSubscription<GQLSubscription>>({
+    const subscription = (client.graphql<GraphQLSubscription<GQLSubscription>>({
       query: updatedPlayerSubscription,
       variables: { gameId },
-    })
+    }) as GraphqlSubscriptionResult<GQLSubscription>)
     .subscribe({
       next: ({ data }) => {
         if (data?.updatedPlayer) {
@@ -380,10 +380,10 @@ async function subscribeToSectionUpdates(
 ): Promise<() => void | null> {
   try {
     const client = generateClient();
-    const subscription = client.graphql<GraphQLSubscription<GQLSubscription>>({
+    const subscription = (client.graphql<GraphQLSubscription<GQLSubscription>>({
       query: updatedSectionSubscription,
       variables: { gameId },
-    }).subscribe({
+    }) as GraphqlSubscriptionResult<GQLSubscription>).subscribe({
       next: ({ data }) => {
         if (data?.updatedSection) {
           onUpdate(data.updatedSection);
@@ -411,10 +411,10 @@ async function subscribeToGameUpdates(
 ): Promise<() => void | null> {
   try {
     const client = generateClient();
-    const subscription = client.graphql<GraphQLSubscription<GQLSubscription>>({
+    const subscription = (client.graphql<GraphQLSubscription<GQLSubscription>>({
       query: updatedGameSubscription,
       variables: { gameId },
-    }).subscribe({
+    }) as GraphqlSubscriptionResult<GQLSubscription>).subscribe({
       next: ({ data }) => {
         if (data?.updatedGame) {
           onUpdate(data.updatedGame);
