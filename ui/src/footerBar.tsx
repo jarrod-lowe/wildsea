@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 const FooterBar: React.FC = () => {
   return (
-    <div className="footer-bar">
+    <footer className="footer-bar">
       <div className="footer-bar-links">
         <a href="/tos.html"><FormattedMessage id="footer.privacyPolicy" /></a>
         <a href="https://github.com/jarrod-lowe/wildsea"><FormattedMessage id="footer.github" /></a>
@@ -11,7 +11,7 @@ const FooterBar: React.FC = () => {
         <a href="https://www.delta-green.com/"><FormattedMessage id="footer.deltaGreenOfficial" /></a>
       </div>
       <p><FormattedMessage id="footer.disclaimer" /></p>
-    </div>
+    </footer>
   );
 };
 
