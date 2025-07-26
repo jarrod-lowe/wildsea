@@ -41,7 +41,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
       content: SectionTypeTrackable,
       setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>,
       updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
     ) => {
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
@@ -78,7 +78,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
                 <TickCheckbox
                   key={`${item.id}-${index}`}
                   state={index < item.ticked ? 'ticked' : 'unticked'}
-                  onClick={() => handleTickClick(item, index, content, setContent, updateSection)}
+                  onClick={() => handleTickClick(item, index, content, setContent, updateSection, isEditing)}
                   disabled={!mayEditSheet}
                 />
               ))}
@@ -88,7 +88,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
       ));
   };
 
-  const renderEditForm = (content: SectionTypeTrackable, setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>) => {
+  const renderEditForm = (content: SectionTypeTrackable, setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleAddItem = () => {
       const newItems = [...content.items, { id: uuidv4(), name: '', length: 1, ticked: 0, description: '' }];
       setContent({ ...content, items: newItems });
@@ -122,7 +122,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
           <>
             <input
               type="text"
-              value={item.name}
+              value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
@@ -136,7 +136,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
               </button>
             </div>
             <textarea
-              value={item.description}
+              value={item.description || ''}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
@@ -144,6 +144,8 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
         )}
         addItem={handleAddItem}
         removeItem={handleRemoveItem}
+        handleUpdate={handleUpdate}
+        handleCancel={handleCancel}
       />
     );
   };

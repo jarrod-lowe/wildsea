@@ -194,7 +194,7 @@ export const messages = {
 
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
-    'sectionObject.addItem': '➕',
+    'sectionObject.addItem': 'Add New Item',
     'sectionObject.removeItem': '❌',
     'sectionObject.showEmpty': 'Show Empty Items',
     'sectionObject.burntEmoji': '🔥',

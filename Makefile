@@ -73,6 +73,7 @@ terraform/environment/wildsea-dev/.terraform: terraform/environment/wildsea-dev/
 clean:
 	rm -f terraform/environment/*/.validate
 	rm -f terraform/environment/*/plan.tfplan
+	rm -rf terraform/environment/*/.terraform
 	rm -f graphql/mutation/*/appsync.js
 	rm -f graphql/query/*/appsync.js
 	rm -f graphql/subscription/*/appsync.js

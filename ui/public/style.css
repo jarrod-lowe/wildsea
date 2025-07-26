@@ -564,6 +564,18 @@
   align-items: center;
 }
 
+.section-title-edit {
+  width: 100%;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  padding: 8px 12px;
+  border: 2px solid var(--color-primary);
+  border-radius: 4px;
+  background-color: var(--color-surface);
+}
+
 .new-section {
   margin-top: 20px;
   padding: 10px;
@@ -633,9 +645,6 @@
   margin: 0 0.5rem;
 }
 
-.show-zeros-toggle {
-  margin-top: 1rem;
-}
 
 .react-tooltip {
   max-width: 250px; /* Adjust to the width you prefer */
@@ -1417,21 +1426,6 @@
   padding: 0;
 }
 
-.delta-green-skills-items-edit {
-  margin-top: 10px;
-}
-
-.delta-green-skills-item-edit {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background-color: var(--color-surface-light);
-}
 
 .roll-input-with-controls {
   display: flex;
@@ -1445,26 +1439,6 @@
   justify-content: center;
 }
 
-.delta-green-skills-item-edit input[type="text"] {
-  padding: 6px;
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-}
-
-.delta-green-skills-item-edit input[type="number"] {
-  padding: 6px;
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-  text-align: center;
-}
-
-.delta-green-skills-item-edit label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-  white-space: nowrap;
-}
 
 
 .show-empty-toggle {
@@ -1477,8 +1451,8 @@
 .show-empty-toggle label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: bold;
+  gap: 5px;
+  font-size: 14px;
 }
 
 @media screen and (max-width: 768px) {
@@ -1509,10 +1483,6 @@
     font-size: 9px;
   }
   
-  .delta-green-skills-item-edit {
-    grid-template-columns: 1fr;
-    gap: 5px;
-  }
 }
 
 /* Post-session upgrades button styling */
@@ -2353,10 +2323,58 @@
   margin: var(--space-xs);
 }
 
-/* Edit form buttons - using browser defaults like Delta Green Stats */
-.btn-edit-form {
-  /* Default browser button styling is fine - keeping class for future modifications */
+/* Generic section edit form styles */
+.section-items-edit {
+  margin-top: 10px;
 }
+
+.section-item-edit {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background-color: var(--color-surface-light);
+}
+
+.section-item-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.section-item-content > textarea,
+.section-item-content > .item-length-controls {
+  grid-column: 1 / -1;
+}
+
+.item-length-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.section-item-edit input,
+.section-item-edit textarea,
+.section-item-edit select {
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+}
+
+.section-item-edit label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+
+/* Edit form buttons use browser defaults like Delta Green Stats */
 
 /* Dice Roll Modal */
 .dice-roll-modal {
@@ -2549,5 +2567,14 @@
   .auto-populate-form select {
     min-width: unset;
     margin-bottom: 10px;
+  }
+  
+  .section-item-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .section-item-edit {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 }
