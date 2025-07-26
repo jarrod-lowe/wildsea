@@ -112,8 +112,8 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>
   ) => {
-    const actionText = intl.formatMessage({ id: 'deltaGreenSkills.actionFor' }, { skillName });
-    setSelectedSkill({ name: skillName, value: skillValue, item, actionText });
+    // Use just the skill name without "for" prefix for the action
+    setSelectedSkill({ name: skillName, value: skillValue, item, actionText: skillName });
     setCurrentContent(content);
     setCurrentUpdateSection(() => updateSection);
     setDiceModalOpen(true);

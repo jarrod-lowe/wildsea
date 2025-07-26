@@ -137,6 +137,49 @@ describe("rollDice resolver", () => {
       expect(result.diceList[0].value).toBe(75);
       expect(result.playerName).toBe("Test Character");
     });
+
+    it("should return SUCCESS for roll exactly equal to target", () => {
+      // Mock Math.random to return 0.49 (which becomes 50, exactly equal to target 50)
+      jest.spyOn(Math, "random").mockReturnValue(0.49);
+
+      const result = response(mockContext);
+
+      expect(result.grade).toBe(Grades.SUCCESS);
+      expect(result.diceList[0].value).toBe(50);
+      expect(result.playerName).toBe("Test Character");
+    });
+
+    it("should return CRITICAL_SUCCESS for matching digits equal to target", () => {
+      // Mock Math.random to return 0.32 (which becomes 33, matching digits and = target)
+      const contextWithTarget33 = {
+        ...mockContext,
+        arguments: {
+          input: {
+            gameId: "test-game-id",
+            dice: [{ type: "d100", size: 100 }],
+            rollType: RollTypes.DELTA_GREEN,
+            target: 33,
+          },
+        },
+        stash: {
+          input: {
+            gameId: "test-game-id",
+            dice: [{ type: "d100", size: 100 }],
+            rollType: RollTypes.DELTA_GREEN,
+            target: 33,
+          },
+          playerId: "test-user-id",
+        },
+      } as unknown as Context;
+
+      jest.spyOn(Math, "random").mockReturnValue(0.32);
+
+      const result = response(contextWithTarget33);
+
+      expect(result.grade).toBe(Grades.CRITICAL_SUCCESS);
+      expect(result.diceList[0].value).toBe(33);
+      expect(result.playerName).toBe("Test Character");
+    });
   });
 
   describe("response function - Sum rolls", () => {
