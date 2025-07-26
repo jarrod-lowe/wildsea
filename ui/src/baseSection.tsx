@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
 import { useIntl } from 'react-intl';
 import { FaPencilAlt } from 'react-icons/fa';
@@ -52,6 +52,7 @@ export const BaseSection = <T extends BaseSectionItem>({
     const [sectionName, setSectionName] = useState(section.sectionName);
     const [originalContent, setOriginalContent] = useState(content);
     const [originalSectionName, setOriginalSectionName] = useState(section.sectionName);
+    const sectionRef = useRef<HTMLDivElement>(null);
     const intl = useIntl();
     const toast = useToast();
 
@@ -60,6 +61,18 @@ export const BaseSection = <T extends BaseSectionItem>({
         setContent(JSON.parse(section.content || '{}'));
         setOriginalContent(content);
     }, [section]);
+
+    const scrollSectionIntoView = () => {
+        // Use setTimeout to ensure DOM has updated after state change
+        setTimeout(() => {
+            if (sectionRef.current) {
+                sectionRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }, 50);
+    };
 
     const updateSection = async (updatedSection: Partial<SheetSection>): Promise<void> => {
         const input: UpdateSectionInput = {
@@ -88,6 +101,7 @@ export const BaseSection = <T extends BaseSectionItem>({
                 content: JSON.stringify(content),
             });
             setIsEditing(false);
+            scrollSectionIntoView();
         } catch (error) {
             console.error("Error updating section:", error);
             toast.addToast(intl.formatMessage({ id: "sectionObject.updateError" }), 'error');
@@ -98,11 +112,12 @@ export const BaseSection = <T extends BaseSectionItem>({
         setContent(originalContent);
         setSectionName(originalSectionName);
         setIsEditing(false);
+        scrollSectionIntoView();
     };
 
     if (!mayEditSheet) {
         return (
-            <div className="section">
+            <div className="section" ref={sectionRef}>
                 <h3>{sectionName}</h3>
                 <div className="section-items">
                     {renderItems(content, mayEditSheet, setContent, updateSection, false)}
@@ -113,7 +128,7 @@ export const BaseSection = <T extends BaseSectionItem>({
 
     if (isEditing) {
         return (
-            <div className="section">
+            <div className="section" ref={sectionRef}>
                 <input
                     type="text"
                     value={sectionName}
@@ -127,7 +142,7 @@ export const BaseSection = <T extends BaseSectionItem>({
     }
 
     return (
-        <div className="section">
+        <div className="section" ref={sectionRef}>
             <h3>{sectionName} <button className="btn-icon edit" onClick={() => {
                 setOriginalContent(content);
                 setOriginalSectionName(section.sectionName);
