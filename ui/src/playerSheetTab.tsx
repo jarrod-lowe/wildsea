@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateShipInput } from "../../appsync/graphql";
 import { createSectionMutation, createShipMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
@@ -34,6 +34,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
   const [editingSheetId, setEditingSheetId] = useState<string | null>(null);
   const [showCreateShipModal, setShowCreateShipModal] = useState(false);
+  const [isDragLocked, setIsDragLocked] = useState(true);
   const sectionTypes = getSectionTypes();
   const intl = useIntl();
   const toast = useToast();
@@ -45,7 +46,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   }, [sheet.userId]);
 
   const handleDragEnd = async (result: any) => {
-    if (!result.destination) {
+    if (!result.destination || isDragLocked) {
       return;
     }
 
@@ -240,14 +241,16 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         onUpdate={onUpdate}
         isEditing={editingSheetId === sheet.userId}
         setIsEditing={(editing) => setEditingSheetId(editing ? sheet.userId : null)}
+        isDragLocked={isDragLocked}
+        setIsDragLocked={setIsDragLocked}
       />
       
       {mayEditSheet ? (
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="sections">
             {(provided: DroppableProvided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                {renderSections(sheet.sections, true)}
+              <div {...provided.droppableProps} ref={provided.innerRef} className={!isDragLocked ? "sections-unlocked" : ""}>
+                {renderSections(sheet.sections, !isDragLocked)}
                 {provided.placeholder}
               </div>
             )}
@@ -368,10 +371,37 @@ const SheetHeader: React.FC<{
     onUpdate: (updatedSheet: PlayerSheet) => void;
     isEditing: boolean;
     setIsEditing: (editing: boolean) => void;
-  }> = ({ sheet, mayEditSheet, ownSheet, game, onUpdate, isEditing, setIsEditing }) => {
+    isDragLocked: boolean;
+    setIsDragLocked: (locked: boolean) => void;
+  }> = ({ sheet, mayEditSheet, ownSheet, game, onUpdate, isEditing, setIsEditing, isDragLocked, setIsDragLocked }) => {
   const [characterName, setCharacterName] = useState(sheet.characterName);
   const intl = useIntl();
   const toast = useToast();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [buttonWidth, setButtonWidth] = useState<number>(0);
+
+  // Calculate button width based on longest translated string
+  const lockText = intl.formatMessage({ id: 'playerSheetTab.lockDragIcon' });
+  const unlockText = intl.formatMessage({ id: 'playerSheetTab.unlockDragIcon' });
+  
+  // Measure actual rendered width to handle mobile properly
+  useEffect(() => {
+    if (buttonRef.current) {
+      // Temporarily set both texts to measure their widths
+      const originalText = buttonRef.current.textContent;
+      
+      buttonRef.current.textContent = lockText;
+      const lockWidth = buttonRef.current.scrollWidth;
+      
+      buttonRef.current.textContent = unlockText;
+      const unlockWidth = buttonRef.current.scrollWidth;
+      
+      // Restore original text
+      buttonRef.current.textContent = originalText;
+      
+      setButtonWidth(Math.max(lockWidth, unlockWidth) + 8); // +8px for extra padding
+    }
+  }, [lockText, unlockText]);
 
   useEffect(() => {
     setCharacterName(sheet.characterName);
@@ -424,6 +454,16 @@ const SheetHeader: React.FC<{
             {mayEditSheet && (
               <span className="own-ops">
                 <button className="btn-standard btn-small edit" onClick={() => setIsEditing(true)}>{intl.formatMessage({ id: 'edit' })}</button>
+                <button 
+                  ref={buttonRef}
+                  className="btn-standard btn-small drag-toggle" 
+                  onClick={() => setIsDragLocked(!isDragLocked)}
+                  aria-label={isDragLocked ? intl.formatMessage({ id: 'playerSheetTab.unlockDrag' }) : intl.formatMessage({ id: 'playerSheetTab.lockDrag' })}
+                  title={isDragLocked ? intl.formatMessage({ id: 'playerSheetTab.unlockDrag' }) : intl.formatMessage({ id: 'playerSheetTab.lockDrag' })}
+                  style={buttonWidth > 0 ? { width: `${buttonWidth}px` } : {}}
+                >
+                  {isDragLocked ? lockText : unlockText}
+                </button>
                 {ownSheet && (<span className="own-sheet"><FormattedMessage id="playerSheetTab.ownSheet" /></span>)}
               </span>
             )}
