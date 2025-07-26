@@ -4,6 +4,7 @@ import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
+import { SectionEditForm } from './components/SectionEditForm';
 import { Grades } from "../../graphql/lib/constants/rollTypes";
 
 // Color scaling function for skill proficiency (0-99 scale)
@@ -108,7 +109,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     skillValue: number, 
     item: DeltaGreenSkillItem,
     content: SectionTypeDeltaGreenSkills,
-    setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
+    _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>
   ) => {
     const actionText = intl.formatMessage({ id: 'deltaGreenSkills.actionFor' }, { skillName });
@@ -163,7 +164,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     mayEditSheet: boolean,
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
   ) => {
     const filteredItems = content.showEmpty 
       ? content.items 
@@ -230,7 +231,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     );
   };
 
-  const renderEditForm = (content: SectionTypeDeltaGreenSkills, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>) => {
+  const renderEditForm = (content: SectionTypeDeltaGreenSkills, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleAddItem = () => {
       const newItems = [...content.items, { 
         id: uuidv4(), 
@@ -255,22 +256,14 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     };
 
     return (
-      <div className="delta-green-skills-items-edit">
-        <div className="show-empty-toggle">
-          <label>
-            <input
-              type="checkbox"
-              checked={content.showEmpty}
-              onChange={() => setContent({ ...content, showEmpty: !content.showEmpty })}
-            />
-            <FormattedMessage id="sectionObject.showEmpty" />
-          </label>
-        </div>
-        {content.items.map((item, index) => (
-          <div key={item.id} className="delta-green-skills-item-edit">
+      <SectionEditForm
+        content={content}
+        setContent={setContent}
+        renderItemEdit={(item, index) => (
+          <>
             <input
               type="text"
-              value={item.name}
+              value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenSkills.skill" })}
             />
@@ -279,7 +272,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                 type="number"
                 min="0"
                 max="99"
-                value={item.roll}
+                value={item.roll || 0}
                 onChange={(e) => handleItemChange(index, 'roll', parseInt(e.target.value) || 0)}
                 placeholder={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
               />
@@ -326,15 +319,13 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
               />
               <FormattedMessage id="deltaGreenSkills.hasUsedFlag" />
             </label>
-            <button onClick={() => handleRemoveItem(index)} className="btn-edit-form">
-              <FormattedMessage id="sectionObject.removeItem" />
-            </button>
-          </div>
-        ))}
-        <button onClick={handleAddItem} className="btn-edit-form">
-          <FormattedMessage id="sectionObject.addItem" />
-        </button>
-      </div>
+          </>
+        )}
+        addItem={handleAddItem}
+        removeItem={handleRemoveItem}
+        handleUpdate={handleUpdate}
+        handleCancel={handleCancel}
+      />
     );
   };
 

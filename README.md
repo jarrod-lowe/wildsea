@@ -119,7 +119,7 @@ If you do not set the secret, then Cognito will be used as the identity source.
   * Back to dashboard
   * Go to "Credentials", and "Create Credentials", then "OAuth Client ID"
   * Name it "wildsea" or "wildsea-dev"
-  * For the autorised javascript origins, add your cognito url available from the app integration page of the user pool - e.g. <https://yourDomainPrefix.auth.region.amazoncognito.com> (If it is not set up yet, add a dummy value and come back and change this later)
+  * For the authorised javascript origins, add your cognito url available from the app integration page of the user pool - e.g. <https://yourDomainPrefix.auth.region.amazoncognito.com> (If it is not set up yet, add a dummy value and come back and change this later)
   * Set the authorised redirect URIs to the same URL, with `/oauth2/idpresponse` added onto the end
   * Create
   * For dev: Add the client ID and client secret to `terraform/environment/wildsea-dev/terraform.tfvars` as `google_client_id` and `google_client_secret`

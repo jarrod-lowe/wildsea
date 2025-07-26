@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { GraphQLSubscription } from "@aws-amplify/api-graphql";
+import { GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
 import { DiceRoll, Subscription as GQLSubscription } from "../../appsync/graphql";
 import { diceRolledSubscription, rollDiceMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -41,10 +41,10 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
   const subscribeToDiceRolls = async () => {
     try {
       const client = generateClient();
-      const subscription = client.graphql<GraphQLSubscription<GQLSubscription>>({
+      const subscription = (client.graphql<GraphQLSubscription<GQLSubscription>>({
         query: diceRolledSubscription,
         variables: { gameId },
-      }).subscribe({
+      }) as GraphqlSubscriptionResult<GQLSubscription>).subscribe({
         next: ({ data }) => {
           if (data?.diceRolled) {
             const newRoll = data.diceRolled!;

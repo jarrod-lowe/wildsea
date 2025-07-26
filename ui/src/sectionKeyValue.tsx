@@ -21,7 +21,7 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
         content: SectionTypeKeyValue,
         setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
         updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
     ) => {
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
@@ -49,8 +49,8 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
           renderContent={(item) => (
             <input
               type="text"
-              value={item.value}
-              onChange={(e) => handleValueChange(item, e.target.value, content, setContent, updateSection)}
+              value={item.value || ''}
+              onChange={(e) => handleValueChange(item, e.target.value, content, setContent, updateSection, isEditing)}
               disabled={!mayEditSheet}
             />
           )}
@@ -58,7 +58,7 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
       ));
   };
 
-  const renderEditForm = (content: SectionTypeKeyValue, setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>) => {
+  const renderEditForm = (content: SectionTypeKeyValue, setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleAddItem = () => {
       const newItems = [...content.items, { id: uuidv4(), name: '', value: '', description: '' }];
       setContent({ ...content, items: newItems });
@@ -83,18 +83,18 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
           <>
             <input
               type="text"
-              value={item.name}
+              value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <input
               type="text"
-              value={item.value}
+              value={item.value || ''}
               onChange={(e) => handleItemChange(index, 'value', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
             />
             <textarea
-              value={item.description}
+              value={item.description || ''}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
@@ -102,6 +102,8 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
         )}
         addItem={handleAddItem}
         removeItem={handleRemoveItem}
+        handleUpdate={handleUpdate}
+        handleCancel={handleCancel}
       />
     );
   };
