@@ -42,7 +42,7 @@
   
   /* Accent colors */
   --color-accent-burnt: #AA5722;
-  --color-accent-ticked: #28a745;
+  --color-accent-ticked: #155724;
   --color-accent-success: #16a34a;
   --color-accent-critical-success: #d97706;
   --color-accent-failure: #dc2626;
@@ -2311,11 +2311,8 @@
 }
 
 .btn-icon.edit {
-  color: var(--color-primary);
-}
-
-.btn-icon.edit:hover {
-  color: var(--color-primary-hover);
+  font-size: 0.75rem;
+  margin-left: var(--space-sm);
 }
 
 /* Button spacing */

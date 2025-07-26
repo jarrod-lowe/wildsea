@@ -2,7 +2,7 @@ import React from 'react';
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
 import 'tippy.js/dist/tippy.css';
-import { FaInfoCircle } from 'react-icons/fa';
+import { useIntl } from 'react-intl';
 import { BaseSectionItem } from '../baseSection';
 import MDEditor, { getCommands, ICommand } from '@uiw/react-md-editor';
 
@@ -12,6 +12,8 @@ interface SectionItemProps<T extends BaseSectionItem> {
 }
 
 export function SectionItem<T extends BaseSectionItem>({ item, renderContent }: Readonly<SectionItemProps<T>>) {
+  const intl = useIntl();
+  
   return (
     <div className={`section-item ${item.constructor.name.toLowerCase()}-item`}>
       <span>{item.name}</span>
@@ -26,7 +28,7 @@ export function SectionItem<T extends BaseSectionItem>({ item, renderContent }: 
         className="markdown-tippy"
       >
         <button className="btn-icon info">
-          <FaInfoCircle className="info-icon" />
+          {intl.formatMessage({ id: 'showInfo' })}
         </button>
       </Tippy>
       )}

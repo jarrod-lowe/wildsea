@@ -198,6 +198,10 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                         checked={item.used}
                         onChange={() => handleUsedToggle(item, content, setContent, updateSection)}
                         disabled={!mayEditSheet}
+                        aria-label={intl.formatMessage(
+                          { id: "deltaGreenSkills.hasFailed" },
+                          { skillName: item.name }
+                        )}
                       />
                     ) : (
                       <span></span>
