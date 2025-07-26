@@ -566,6 +566,7 @@
 
 .section-title-edit {
   width: 100%;
+  box-sizing: border-box;
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
