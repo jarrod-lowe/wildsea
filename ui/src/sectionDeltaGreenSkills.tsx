@@ -263,7 +263,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
           <>
             <input
               type="text"
-              value={item.name}
+              value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenSkills.skill" })}
             />
@@ -272,7 +272,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                 type="number"
                 min="0"
                 max="99"
-                value={item.roll}
+                value={item.roll || 0}
                 onChange={(e) => handleItemChange(index, 'roll', parseInt(e.target.value) || 0)}
                 placeholder={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
               />

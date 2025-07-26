@@ -35,7 +35,7 @@ export const SectionRichText: React.FC<SectionDefinition> = (props) => {
         {content.items.map((item, index) => (
           <div key={`${item.id}-${index}`} className="rich-text-edit">
                 <SectionItemDescription
-                    value={item.markdown}
+                    value={item.markdown || ''}
                     onChange={(value) => handleItemChange(index, value ?? "")}
                     placeholder={intl.formatMessage({ id: "sectionRichText.sampleContent" })}
                 />
