@@ -1,7 +1,12 @@
 import React from 'react'
 
-const MDEditor = ({ value, onChange, placeholder, id }) => {
-  return <textarea id={id} placeholder={placeholder} value={value} onChange={onChange}/>
+const MDEditor = ({ value, onChange, textareaProps }) => {
+  return <textarea 
+    id={textareaProps?.id} 
+    placeholder={textareaProps?.placeholder} 
+    value={value} 
+    onChange={(e) => onChange(e.target.value)}
+  />
 }
 
 export interface ICommand {
