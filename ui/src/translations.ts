@@ -96,6 +96,10 @@ export const messages = {
     'playerSheetTab.deletePlayerError': 'Failed to delete the player. Please try again.',
     'playerSheetTab.playerLeft': 'Player {name} has left the game.',
     'playerSheetTab.playerJoined': '{name} has joined the game.',
+    'playerSheetTab.lockDrag': 'Switch to fixed layout',
+    'playerSheetTab.unlockDrag': 'Switch to free layout',
+    'playerSheetTab.lockDragIcon': '📌 Fixed Layout',
+    'playerSheetTab.unlockDragIcon': '↕️ Free Layout',
 
     'createShipModal.title': 'Create New Ship',
     'createShipModal.namePlaceholder': 'Enter ship name',

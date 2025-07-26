@@ -562,6 +562,18 @@
   border-radius: 4px;
 }
 
+/* Lifted styling for sections when drag is unlocked */
+.sections-unlocked .section {
+  box-shadow: var(--color-shadow-section);
+  transform: translateY(-2px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sections-unlocked .section:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--color-shadow-strong);
+}
+
 .section h3 {
   display: flex;
   justify-content: space-between;
@@ -2228,6 +2240,12 @@
 .btn-danger.btn-small {
   padding: var(--space-sm) var(--space-md);
   font-size: 0.875rem;
+  min-height: 2.5em; /* Consistent height for all small buttons */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  vertical-align: top; /* Force top alignment for cross-browser consistency */
 }
 
 /* Large Button Variant */
@@ -2314,6 +2332,7 @@
   font-size: 0.75rem;
   margin-left: var(--space-sm);
 }
+
 
 /* Button spacing */
 .btn-standard,
