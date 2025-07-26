@@ -184,10 +184,18 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     );
   };
 
-  const renderEditForm = (_content: SectionTypeDeltaGreenDerived, _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>) => {
+  const renderEditForm = (_content: SectionTypeDeltaGreenDerived, _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>, handleUpdate: () => void, handleCancel: () => void) => {
     return (
       <div className="delta-green-derived-edit">
         <p><FormattedMessage id="deltaGreenDerived.editNote" /></p>
+        <div className="section-edit-buttons">
+          <button className="btn-standard btn-small" onClick={handleUpdate}>
+            <FormattedMessage id="save" />
+          </button>
+          <button className="btn-secondary btn-small" onClick={handleCancel}>
+            <FormattedMessage id="cancel" />
+          </button>
+        </div>
       </div>
     );
   };

@@ -2,7 +2,7 @@ import React from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
-import { useIntl } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 
 interface RichTextItem extends BaseSectionItem {
   markdown: string;
@@ -23,7 +23,7 @@ export const SectionRichText: React.FC<SectionDefinition> = (props) => {
     ));
   };
 
-  const renderEditForm = (content: SectionTypeRichText, setContent: React.Dispatch<React.SetStateAction<SectionTypeRichText>>) => {
+  const renderEditForm = (content: SectionTypeRichText, setContent: React.Dispatch<React.SetStateAction<SectionTypeRichText>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleItemChange = (index: number, value: string) => {
       const newItems = [...content.items];
       newItems[index] = { ...newItems[index], markdown: value };
@@ -42,6 +42,14 @@ export const SectionRichText: React.FC<SectionDefinition> = (props) => {
                 />
           </div>
         ))}
+        <div className="section-edit-buttons">
+          <button className="btn-standard btn-small" onClick={handleUpdate}>
+            <FormattedMessage id="save" />
+          </button>
+          <button className="btn-secondary btn-small" onClick={handleCancel}>
+            <FormattedMessage id="cancel" />
+          </button>
+        </div>
       </>
     );
   };
