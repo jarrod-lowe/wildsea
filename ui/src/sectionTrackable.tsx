@@ -122,7 +122,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
           <>
             <input
               type="text"
-              value={item.name}
+              value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
@@ -136,7 +136,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
               </button>
             </div>
             <textarea
-              value={item.description}
+              value={item.description || ''}
               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
