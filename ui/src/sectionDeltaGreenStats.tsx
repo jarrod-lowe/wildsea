@@ -73,7 +73,7 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
                   <button
                     className="dice-button"
                     onClick={() => handleDiceClick(item.name, numericScore * 5)}
-                    aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
+                    aria-label={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
                     title={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
                   >
                     {intl.formatMessage({ id: 'dice.icon' })}
