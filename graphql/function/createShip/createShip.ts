@@ -28,6 +28,7 @@ export function request(
       gameId: input.gameId,
       userId: id,
       gameName: context.prev.result.gameName,
+      gameType: context.prev.result.gameType,
       gameDescription: context.prev.result.gameDescription,
       characterName: input.characterName,
       fireflyUserId: context.prev.result.fireflyUserId,
