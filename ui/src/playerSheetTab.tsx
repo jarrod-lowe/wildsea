@@ -410,6 +410,7 @@ const SheetHeader: React.FC<{
             value={characterName}
             onChange={(e) => setCharacterName(e.target.value)}
             placeholder={intl.formatMessage({ id: "characterName" })}
+            aria-label={intl.formatMessage({ id: "characterName" })}
           />
           <button onClick={handleSave} className="btn-standard btn-small"><FormattedMessage id="save" /></button>
           <button onClick={() => setIsEditing(false)} className="btn-secondary btn-small"><FormattedMessage id="cancel" /></button>

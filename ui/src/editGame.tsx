@@ -61,11 +61,13 @@ export const EditGameModal: React.FC<EditGameModalProps> = ({
         value={gameName}
         onChange={(e) => setGameName(e.target.value)}
         placeholder={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
+        aria-label={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
       />
       <SectionItemDescription
         value={gameDescription}
         onChange={setGameDescription}
         placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
+        ariaLabel={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
       />
       <div className="modal-buttons">
         <button onClick={onRequestClose} className="btn-secondary btn-small"><FormattedMessage id="cancel" /></button>
