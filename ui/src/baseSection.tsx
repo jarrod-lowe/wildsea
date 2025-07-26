@@ -119,6 +119,7 @@ export const BaseSection = <T extends BaseSectionItem>({
                     value={sectionName}
                     onChange={(e) => setSectionName(e.target.value)}
                     placeholder={intl.formatMessage({ id: "sectionName" })}
+                    className="section-title-edit"
                 />
                 {renderEditForm(content, setContent, handleUpdate, handleCancel)}
             </div>
