@@ -205,5 +205,10 @@ export const messages = {
     'sectionObject.tickedEmoji': '✘',
     'sectionObject.itemName': 'Name',
     'sectionObject.itemDescription': 'Description',
+    'sectionObject.trackableSummary': '{ticked} of {total} ticked',
+    'sectionObject.burnableSummary': '{burnt} burnt, {ticked} ticked, {unticked} unticked',
+    'sectionObject.buttonState.ticked': 'Ticked',
+    'sectionObject.buttonState.unticked': 'Unticked', 
+    'sectionObject.buttonState.burnt': 'Burnt',
   },
 };

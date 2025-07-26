@@ -26,6 +26,7 @@ const TickCheckbox: React.FC<{
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={`tick-checkbox ${state}`}
+      aria-label={intl.formatMessage({ id: `sectionObject.buttonState.${state}` })}
     >
       {content}
     </button>
@@ -74,6 +75,15 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
           item={item}
           renderContent={(item) => (
             <>
+              <span 
+                className="sr-only" 
+                aria-live="polite"
+              >
+                {intl.formatMessage(
+                  { id: 'sectionObject.trackableSummary' }, 
+                  { ticked: item.ticked, total: item.length }
+                )}
+              </span>
               {[...Array(item.length)].map((_, index) => (
                 <TickCheckbox
                   key={`${item.id}-${index}`}

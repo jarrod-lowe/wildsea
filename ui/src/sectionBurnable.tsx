@@ -38,6 +38,7 @@ const BurnCheckbox: React.FC<{
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={`burn-checkbox ${state}`}
+      aria-label={intl.formatMessage({ id: `sectionObject.buttonState.${state}` })}
     >
       {content}
     </button>
@@ -100,18 +101,33 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
             <SectionItem
                 key={item.id}
                 item={item}
-                renderContent={(item) => (
-                    <>
-                    {sortedStates.map((state, index) => (
-                        <BurnCheckbox
-                            key={`${item.id}-${index}`}
-                            state={state}
-                            onClick={() => handleStateChange(item, index, content, setContent, updateSection, _isEditing)}
-                            disabled={!mayEditSheet}
-                        />
-                    ))}
-                    </>
-                )}
+                renderContent={(item) => {
+                    const burnt = item.states.filter(s => s === 'burnt').length;
+                    const ticked = item.states.filter(s => s === 'ticked').length;
+                    const unticked = item.states.filter(s => s === 'unticked').length;
+                    
+                    return (
+                        <>
+                        <span 
+                            className="sr-only" 
+                            aria-live="polite"
+                        >
+                            {intl.formatMessage(
+                                { id: 'sectionObject.burnableSummary' }, 
+                                { burnt, ticked, unticked }
+                            )}
+                        </span>
+                        {sortedStates.map((state, index) => (
+                            <BurnCheckbox
+                                key={`${item.id}-${index}`}
+                                state={state}
+                                onClick={() => handleStateChange(item, index, content, setContent, updateSection, _isEditing)}
+                                disabled={!mayEditSheet}
+                            />
+                        ))}
+                        </>
+                    );
+                }}
             />
         )});
     };
