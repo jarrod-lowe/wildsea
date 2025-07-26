@@ -133,8 +133,12 @@ export function AppContent() {
     if (!userEmail) {
         return (
             <div>
-                <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} gameDescription="" isFirefly={false}/>
-                <div><FormattedMessage id="pleaseLogin" /></div>
+                <header>
+                    <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} gameDescription="" isFirefly={false}/>
+                </header>
+                <main>
+                    <div><FormattedMessage id="pleaseLogin" /></div>
+                </main>
                 <FooterBar />
             </div>
         )
@@ -142,9 +146,11 @@ export function AppContent() {
 
     return (
         <div>
-            <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
-                {gameId ? <AppGame id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
-            </Suspense>
+            <main>
+                <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
+                    {gameId ? <AppGame id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
+                </Suspense>
+            </main>
             <FooterBar />
         </div>
     );

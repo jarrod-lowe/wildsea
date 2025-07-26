@@ -49,11 +49,13 @@ export const SectionItemDescription: React.FC<MarkdownEditorProps> = ({ value, o
 
   return (
     <MDEditor
-      id={id}
       value={value}
       onChange={(value) => onChange(value ?? "")}
       preview="edit"
-      textareaProps={{placeholder: placeholder }}
+      textareaProps={{
+        placeholder: placeholder,
+        id: id
+      }}
       commands={customCommands}
       extraCommands={[]}
       previewOptions={{

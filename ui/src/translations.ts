@@ -23,6 +23,7 @@ export const messages = {
     'dismiss': 'Dismiss',
     'dismissErrorMessage': 'Dismiss error message',
     'playGame': 'Play game:',
+    'game.playLink': 'Play {gameName} ({gameType} game) as {characterName}',
     'loading': 'Loading...',
     'login': 'Login',
     'logout': 'Logout',

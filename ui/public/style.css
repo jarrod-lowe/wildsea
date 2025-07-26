@@ -228,7 +228,8 @@
 }
 
 /* Games Menu Typography */
-.gameslist h1 {
+.gameslist h1,
+.gameslist h2 {
     font-size: 1.75rem;
     font-weight: 600;
     margin-bottom: var(--space-lg);
@@ -566,6 +567,7 @@
 
 .section-title-edit {
   width: 100%;
+  box-sizing: border-box;
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
@@ -1038,7 +1040,7 @@
 .footer-bar p {
   margin-top: 5px;
   font-size: 0.8em;
-  color: var(--color-secondary);
+  color: var(--color-text);
 }
 
 .game-container,

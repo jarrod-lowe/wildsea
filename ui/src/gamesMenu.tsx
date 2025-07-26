@@ -84,7 +84,7 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
             <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={ userEmail } gameDescription="" isFirefly={false}/>
             <div className="allgames">
                 <section className="joingame" role="region" aria-labelledby="available-games-heading">
-                    <h1 id="available-games-heading"><FormattedMessage id="availableGames" /></h1>
+                    <h2 id="available-games-heading"><FormattedMessage id="availableGames" /></h2>
                     {games?.length === 0 ? (
                         <p role="status" aria-live="polite">
                             <FormattedMessage id="noGamesAvailable" />
@@ -96,6 +96,14 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                                     <a 
                                         href={`/?gameId=${game.gameId}`} 
                                         className="game-link" 
+                                        aria-label={intl.formatMessage(
+                                            { id: "game.playLink" }, 
+                                            { 
+                                                gameName: game.gameName,
+                                                gameType: getGameTypeName(game.gameType),
+                                                characterName: game.characterName 
+                                            }
+                                        )}
                                         aria-describedby={`game-${game.gameId}-description`}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' || e.key === ' ') {
@@ -121,14 +129,14 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                     )}
                 </section>
                 <section className="newgame" role="region" aria-labelledby="create-game-heading">
-                    <h1 id="create-game-heading"><FormattedMessage id="createNewGame" /></h1>
+                    <h2 id="create-game-heading"><FormattedMessage id="createNewGame" /></h2>
                     {canCreateGame ? (
                         <form 
                             onSubmit={handleCreateGame} 
                             aria-labelledby="create-game-heading"
                             role="form"
                         >
-                            <div role="group" aria-labelledby="game-details">
+                            <div role="group">
                                 <div className="form-field">
                                     <label htmlFor="gameName"><FormattedMessage id="gameName" /></label>
                                     <input 
@@ -139,7 +147,6 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                                         value={gameName}
                                         onChange={(e) => setGameName(e.target.value)}
                                         placeholder={intl.formatMessage({ id: "editGameModal.namePlaceholder" })}
-                                        aria-describedby="game-name-help"
                                     />
                                 </div>
                                 
@@ -151,7 +158,6 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                                         value={gameType}
                                         onChange={(e) => setGameType(e.target.value)}
                                         required
-                                        aria-describedby="game-type-help"
                                     >
                                         {GameTypes.filter(gt => gt.enabled).map(gameType => (
                                             <option key={gameType.id} value={gameType.id}>
@@ -168,7 +174,6 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                                         value={gameDescription}
                                         onChange={(d) => setGameDescription(d)}
                                         placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
-                                        aria-describedby="game-description-help"
                                     />
                                 </div>
                                 
@@ -176,7 +181,6 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
                                     <button 
                                         type="submit"
                                         className="btn-standard"
-                                        aria-describedby="create-game-help"
                                     >
                                         <FormattedMessage id="createGame" />
                                     </button>

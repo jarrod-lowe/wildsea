@@ -7,7 +7,7 @@ import { DiceRollModal } from './components/DiceRollModal';
 import { SectionEditForm } from './components/SectionEditForm';
 
 interface DeltaGreenStatItem extends BaseSectionItem {
-  score: number;
+  score: number | string;
   distinguishingFeatures: string;
 };
 
@@ -46,7 +46,8 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
       // Find the corresponding stat definition to get the abbreviation
       const statDef = DEFAULT_STATS.find(stat => stat.name === item.name);
       if (statDef) {
-        statsDataAttributes[`data-stat-${statDef.abbreviation.toLowerCase()}`] = item.score;
+        const numericScore = typeof item.score === 'string' ? parseInt(item.score) || 0 : item.score;
+        statsDataAttributes[`data-stat-${statDef.abbreviation.toLowerCase()}`] = numericScore;
       }
     });
 
@@ -58,30 +59,33 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
           <div className="stats-col-x5">{intl.formatMessage({ id: "deltaGreenStats.x5" })}</div>
           <div className="stats-col-features">{intl.formatMessage({ id: "deltaGreenStats.distinguishingFeatures" })}</div>
         </div>
-        {content.items.map(item => (
-          <div key={item.id} className="stats-row">
-            <div className="stats-col-statistic">{item.name}</div>
-            <div className="stats-col-score">
-              <span>{item.score}</span>
+        {content.items.map(item => {
+          const numericScore = typeof item.score === 'string' ? parseInt(item.score) || 0 : item.score;
+          return (
+            <div key={item.id} className="stats-row">
+              <div className="stats-col-statistic">{item.name}</div>
+              <div className="stats-col-score">
+                <span>{numericScore}</span>
+              </div>
+              <div className="stats-col-x5">
+                <span className="x5-display">{numericScore * 5}</span>
+                {numericScore > 0 && (
+                  <button
+                    className="dice-button"
+                    onClick={() => handleDiceClick(item.name, numericScore * 5)}
+                    aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
+                    title={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
+                  >
+                    {intl.formatMessage({ id: 'dice.icon' })}
+                  </button>
+                )}
+              </div>
+              <div className="stats-col-features">
+                <span>{item.distinguishingFeatures}</span>
+              </div>
             </div>
-            <div className="stats-col-x5">
-              <span className="x5-display">{item.score * 5}</span>
-              {item.score > 0 && (
-                <button
-                  className="dice-button"
-                  onClick={() => handleDiceClick(item.name, item.score * 5)}
-                  aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
-                  title={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
-                >
-                  {intl.formatMessage({ id: 'dice.icon' })}
-                </button>
-              )}
-            </div>
-            <div className="stats-col-features">
-              <span>{item.distinguishingFeatures}</span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };
@@ -105,8 +109,38 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
 
     const handleItemChange = (index: number, field: string, value: string | number) => {
       const newItems = [...content.items];
-      newItems[index] = { ...newItems[index], [field]: value };
+      
+      // Handle score field with proper validation
+      if (field === 'score') {
+        if (typeof value === 'string') {
+          // Allow empty string for editing, but validate on conversion
+          if (value === '') {
+            newItems[index] = { ...newItems[index], [field]: '' as any };
+          } else {
+            const numValue = parseInt(value);
+            if (!isNaN(numValue)) {
+              // Clamp to valid range (0-18)
+              const clampedValue = Math.max(0, Math.min(18, numValue));
+              newItems[index] = { ...newItems[index], [field]: clampedValue };
+            }
+          }
+        } else {
+          // Handle direct number input
+          const clampedValue = Math.max(0, Math.min(18, value as number));
+          newItems[index] = { ...newItems[index], [field]: clampedValue };
+        }
+      } else {
+        newItems[index] = { ...newItems[index], [field]: value };
+      }
+      
       setContent({ ...content, items: newItems });
+    };
+
+    const handleScoreBlur = (index: number, value: string) => {
+      // Convert empty string to 0 on blur
+      if (value === '') {
+        handleItemChange(index, 'score', 0);
+      }
     };
 
     return (
@@ -125,8 +159,9 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
               type="number"
               min="0"
               max="18"
-              value={item.score || 0}
-              onChange={(e) => handleItemChange(index, 'score', parseInt(e.target.value) || 0)}
+              value={item.score === '' ? '' : (item.score || 0)}
+              onChange={(e) => handleItemChange(index, 'score', e.target.value)}
+              onBlur={(e) => handleScoreBlur(index, e.target.value)}
               placeholder={intl.formatMessage({ id: "deltaGreenStats.score" })}
             />
             <input
