@@ -62,6 +62,7 @@ export function response(
   context.stash.gameId = context.result.gameId;
   context.stash.fireflyUserId = context.result.fireflyUserId;
   context.stash.gameName = context.result.gameName;
+  context.stash.gameType = context.result.gameType;
   context.stash.gameDescription = context.result.gameDescription;
   context.stash.characterName = context.result.characterName;
   context.stash.createdAt = context.result.createdAt;
