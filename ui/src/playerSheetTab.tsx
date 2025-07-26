@@ -4,7 +4,6 @@ import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput,
 import { createSectionMutation, createShipMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { FaPlus, FaTrash } from 'react-icons/fa';
 import { TypeFirefly, TypeShip } from "../../graphql/lib/constants/entityTypes";
 import { Section } from './section';
 import { getSectionSeed, getSectionTypes } from './sectionRegistry';
@@ -278,10 +277,10 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
             setShowNewSection(true);
             setEditingSheetId(sheet.userId);
           }} className="btn-standard btn-small">
-            <FaPlus /> <FormattedMessage id="playerSheetTab.addSection" />
+            <FormattedMessage id="playerSheetTab.addSection" />
           </button>
           <button onClick={() => setShowDeleteSectionModal(true)} className="btn-danger btn-small">
-            <FaTrash /> <FormattedMessage id="playerSheetTab.deleteSection" />
+            <FormattedMessage id="playerSheetTab.deleteSection" />
           </button>
         </>
       )}
@@ -289,6 +288,8 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
       {mayEditSheet && showNewSection && editingSheetId === sheet.userId && (
         <div className="new-section">
           <input
+            id="new-section-name"
+            name="newSectionName"
             type="text"
             value={newSectionName}
             onChange={(e) => setNewSectionName(e.target.value)}
@@ -406,6 +407,8 @@ const SheetHeader: React.FC<{
       {isEditing ? (
         <div className="edit-character-name">
           <input
+            id="character-name-edit"
+            name="characterName"
             type="text"
             value={characterName}
             onChange={(e) => setCharacterName(e.target.value)}
@@ -477,7 +480,7 @@ export const DeleteSectionModal: React.FC<DeleteSectionModalProps> = ({
               onClick={() => onDeleteSection(section.sectionId)}
               className="btn-icon"
             >
-              <FaTrash />
+              <FormattedMessage id="sectionObject.removeItem" />
             </button>
           </li>
         ))}
@@ -514,6 +517,8 @@ const CreateShipModal: React.FC<{
     >
       <h2><FormattedMessage id="createShipModal.title" /></h2>
       <input
+        id="ship-name"
+        name="shipName"
         type="text"
         value={shipName}
         onChange={(e) => setShipName(e.target.value)}

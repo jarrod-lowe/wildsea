@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { BaseSectionItem, BaseSectionContent } from '../baseSection';
 
 interface SectionEditFormProps<T extends BaseSectionItem> {
@@ -21,11 +21,14 @@ export function SectionEditForm<T extends BaseSectionItem>({
   handleUpdate,
   handleCancel
 }: Readonly<SectionEditFormProps<T>>) {
+  const intl = useIntl();
   return (
     <div className="section-items-edit">
       <div className="show-empty-toggle">
         <label>
           <input
+            id="show-empty-items"
+            name="showEmpty"
             type="checkbox"
             checked={content.showEmpty}
             onChange={() => setContent({ ...content, showEmpty: !content.showEmpty })}
@@ -38,7 +41,14 @@ export function SectionEditForm<T extends BaseSectionItem>({
           <div className="section-item-content">
             {renderItemEdit(item, index)}
           </div>
-          <button onClick={() => removeItem(index)} className="btn-edit-form">
+          <button 
+            onClick={() => removeItem(index)} 
+            className="btn-edit-form"
+            aria-label={intl.formatMessage(
+              { id: 'sectionObject.removeItemLabel' }, 
+              { itemName: item.name || `item ${index + 1}` }
+            )}
+          >
             <FormattedMessage id={`sectionObject.removeItem`} />
           </button>
         </div>

@@ -57,6 +57,8 @@ export const EditGameModal: React.FC<EditGameModalProps> = ({
     >
       <h2><FormattedMessage id="editGameModal.title" /></h2>
       <input
+        id="edit-game-name"
+        name="gameName"
         type="text"
         value={gameName}
         onChange={(e) => setGameName(e.target.value)}

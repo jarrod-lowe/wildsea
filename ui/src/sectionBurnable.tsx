@@ -3,7 +3,7 @@ import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } f
 import { SheetSection } from "../../appsync/graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
-import { SectionItem, SectionItemDescription } from './components/SectionItem';
+import { SectionItem } from './components/SectionItem';
 import { SectionEditForm } from './components/SectionEditForm';
 
 type BurnableState = 'unticked' | 'ticked' | 'burnt';
@@ -176,6 +176,8 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
         renderItemEdit={(item, index) => (
           <>
             <input
+              id={`burnable-item-name-${item.id}`}
+              name={`burnableItemName_${item.id}`}
               type="text"
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
@@ -191,11 +193,11 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
                 <FormattedMessage id="sectionBurnable.increment" />
               </button>
             </div>
-            <SectionItemDescription
-              value={item.description}
-              onChange={(value) => handleItemChange(index, 'description', value)}
+            <textarea
+              value={item.description || ''}
+              onChange={(e) => handleItemChange(index, 'description', e.target.value)}
               placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
-              ariaLabel={intl.formatMessage({ id: "sectionObject.itemDescription" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
           </>
         )}

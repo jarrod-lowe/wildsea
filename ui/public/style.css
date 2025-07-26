@@ -1,3 +1,7 @@
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
 :root {
   /* Main Colours */
   --color-primary: #0056b3;
@@ -178,7 +182,6 @@
 }
 
 .gameslist {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--space-xl);
@@ -328,6 +331,7 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
 }
 
@@ -452,7 +456,6 @@
 
 
 .game-container {
-  font-family: Arial, sans-serif;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -1416,7 +1419,7 @@
 }
 
 .roll-display {
-  font-family: monospace;
+  font-family: 'Courier New', monospace;
   font-weight: 500;
 }
 
@@ -1637,9 +1640,6 @@
 }
 
 /* Formatted dice roll styles */
-.dice-roll-formatted {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
 
 .roll-header {
   font-weight: 600;
@@ -1654,7 +1654,7 @@
 
 .roll-details {
   font-size: 11px;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   font-family: 'Courier New', monospace;
 }
 

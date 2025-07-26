@@ -56,6 +56,8 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
       </p>
       <label className="confirm-checkbox">
         <input
+          id="delete-player-confirm"
+          name="deleteConfirm"
           type="checkbox"
           checked={isConfirmed}
           onChange={(e) => setIsConfirmed(e.target.checked)}
