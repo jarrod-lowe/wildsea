@@ -30,7 +30,7 @@ const getSkillBackgroundColor = (rollValue: number): string => {
 
 interface DeltaGreenSkillItem extends BaseSectionItem {
   used: boolean;
-  roll: number;
+  roll: number | string;
   hasUsedFlag: boolean;
 };
 
@@ -145,9 +145,10 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   ) => {
     const newItems = content.items.map(item => {
       if (item.used && item.hasUsedFlag !== false) {
+        const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
         return {
           ...item,
-          roll: Math.min(99, item.roll + 1),
+          roll: Math.min(99, numericRoll + 1),
           used: false
         };
       }
@@ -168,7 +169,10 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   ) => {
     const filteredItems = content.showEmpty 
       ? content.items 
-      : content.items.filter(item => item.roll > 0);
+      : content.items.filter(item => {
+          const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
+          return numericRoll > 0;
+        });
     
     const sortedItems = [...filteredItems].sort((a, b) => a.name.localeCompare(b.name));
 
@@ -178,42 +182,45 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     return (
       <>
         <div className={`delta-green-skills-grid ${!hasAnyUsedFlags ? 'no-used-column' : ''}`}>
-          {sortedItems.map(item => (
-            <div 
-              key={item.id} 
-              className="skills-item"
-              style={{ backgroundColor: getSkillBackgroundColor(item.roll) }}
-            >
-              {hasAnyUsedFlags && (
-                <div className="skills-col-used">
-                  {item.hasUsedFlag !== false ? (
-                    <input
-                      type="checkbox"
-                      checked={item.used}
-                      onChange={() => handleUsedToggle(item, content, setContent, updateSection)}
-                      disabled={!mayEditSheet}
-                    />
-                  ) : (
-                    <span></span>
+          {sortedItems.map(item => {
+            const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
+            return (
+              <div 
+                key={item.id} 
+                className="skills-item"
+                style={{ backgroundColor: getSkillBackgroundColor(numericRoll) }}
+              >
+                {hasAnyUsedFlags && (
+                  <div className="skills-col-used">
+                    {item.hasUsedFlag !== false ? (
+                      <input
+                        type="checkbox"
+                        checked={item.used}
+                        onChange={() => handleUsedToggle(item, content, setContent, updateSection)}
+                        disabled={!mayEditSheet}
+                      />
+                    ) : (
+                      <span></span>
+                    )}
+                  </div>
+                )}
+                <div className="skills-col-name">{item.name}</div>
+                <div className="skills-col-roll">
+                  <span className="roll-display">{numericRoll}%</span>
+                  {numericRoll > 0 && (
+                    <button
+                      className="dice-button"
+                      onClick={() => handleDiceClick(item.name, numericRoll, item, content, setContent, updateSection)}
+                      aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
+                      title={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
+                    >
+                      {intl.formatMessage({ id: 'dice.icon' })}
+                    </button>
                   )}
                 </div>
-              )}
-              <div className="skills-col-name">{item.name}</div>
-              <div className="skills-col-roll">
-                <span className="roll-display">{item.roll}%</span>
-                {item.roll > 0 && (
-                  <button
-                    className="dice-button"
-                    onClick={() => handleDiceClick(item.name, item.roll, item, content, setContent, updateSection)}
-                    aria-label={intl.formatMessage({ id: 'diceRollModal.title' }) + ` ${item.name}`}
-                    title={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
-                  >
-                    {intl.formatMessage({ id: 'dice.icon' })}
-                  </button>
-                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         {mayEditSheet && (
           <div className="post-session-upgrades">
@@ -251,8 +258,38 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
 
     const handleItemChange = (index: number, field: string, value: string | number | boolean) => {
       const newItems = [...content.items];
-      newItems[index] = { ...newItems[index], [field]: value };
+      
+      // Handle roll field with proper validation
+      if (field === 'roll') {
+        if (typeof value === 'string') {
+          // Allow empty string for editing, but validate on conversion
+          if (value === '') {
+            newItems[index] = { ...newItems[index], [field]: '' as any };
+          } else {
+            const numValue = parseInt(value);
+            if (!isNaN(numValue)) {
+              // Clamp to valid range (0-99)
+              const clampedValue = Math.max(0, Math.min(99, numValue));
+              newItems[index] = { ...newItems[index], [field]: clampedValue };
+            }
+          }
+        } else {
+          // Handle direct number input
+          const clampedValue = Math.max(0, Math.min(99, value as number));
+          newItems[index] = { ...newItems[index], [field]: clampedValue };
+        }
+      } else {
+        newItems[index] = { ...newItems[index], [field]: value };
+      }
+      
       setContent({ ...content, items: newItems });
+    };
+
+    const handleRollBlur = (index: number, value: string) => {
+      // Convert empty string to 0 on blur
+      if (value === '') {
+        handleItemChange(index, 'roll', 0);
+      }
     };
 
     return (
@@ -272,43 +309,51 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                 type="number"
                 min="0"
                 max="99"
-                value={item.roll || 0}
-                onChange={(e) => handleItemChange(index, 'roll', parseInt(e.target.value) || 0)}
+                value={item.roll === '' ? '' : (item.roll || 0)}
+                onChange={(e) => handleItemChange(index, 'roll', e.target.value)}
+                onBlur={(e) => handleRollBlur(index, e.target.value)}
                 placeholder={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
               />
               <div className="roll-controls">
-                <button
-                  type="button"
-                  onClick={() => handleItemChange(index, 'roll', Math.max(0, item.roll - 10))}
-                  disabled={item.roll <= 0}
-                  className="adjust-btn small"
-                >
-                  -10
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleItemChange(index, 'roll', Math.max(0, item.roll - 1))}
-                  disabled={item.roll <= 0}
-                  className="adjust-btn small"
-                >
-                  -1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleItemChange(index, 'roll', Math.min(99, item.roll + 1))}
-                  disabled={item.roll >= 99}
-                  className="adjust-btn small"
-                >
-                  +1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleItemChange(index, 'roll', Math.min(99, item.roll + 10))}
-                  disabled={item.roll >= 99}
-                  className="adjust-btn small"
-                >
-                  +10
-                </button>
+                {(() => {
+                  const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
+                  return (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleItemChange(index, 'roll', Math.max(0, numericRoll - 10))}
+                        disabled={numericRoll <= 0}
+                        className="adjust-btn small"
+                      >
+                        -10
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleItemChange(index, 'roll', Math.max(0, numericRoll - 1))}
+                        disabled={numericRoll <= 0}
+                        className="adjust-btn small"
+                      >
+                        -1
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleItemChange(index, 'roll', Math.min(99, numericRoll + 1))}
+                        disabled={numericRoll >= 99}
+                        className="adjust-btn small"
+                      >
+                        +1
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleItemChange(index, 'roll', Math.min(99, numericRoll + 10))}
+                        disabled={numericRoll >= 99}
+                        className="adjust-btn small"
+                      >
+                        +10
+                      </button>
+                    </>
+                  );
+                })()}
               </div>
             </div>
             <label>
