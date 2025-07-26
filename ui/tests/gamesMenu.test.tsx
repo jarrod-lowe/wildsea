@@ -103,7 +103,7 @@ describe('GamesMenu', () => {
     fireEvent.change(screen.getByLabelText('Game Description:'), { target: { value: 'New Description' } });
     
     await act(async () => {
-      fireEvent.click(screen.getByText('Create Game'));
+      fireEvent.click(screen.getByText('🆕 Create Game'));
     });
 
     await act(async () => {
