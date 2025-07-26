@@ -131,6 +131,8 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
         renderItemEdit={(item, index) => (
           <>
             <input
+              id={`trackable-item-name-${item.id}`}
+              name={`trackableItemName_${item.id}`}
               type="text"
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
