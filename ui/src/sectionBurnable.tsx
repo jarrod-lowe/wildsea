@@ -116,7 +116,7 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
         )});
     };
 
-  const renderEditForm = (content: SectionTypeBurnable, setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>) => {
+  const renderEditForm = (content: SectionTypeBurnable, setContent: React.Dispatch<React.SetStateAction<SectionTypeBurnable>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleAddItem = () => {
       const newItems = [...content.items, { id: uuidv4(), name: '', length: 1, states: ['unticked' as BurnableState], description: '' }];
       setContent({ ...content, items: newItems });
@@ -183,6 +183,8 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
         )}
         addItem={handleAddItem}
         removeItem={handleRemoveItem}
+        handleUpdate={handleUpdate}
+        handleCancel={handleCancel}
       />
     );
   };

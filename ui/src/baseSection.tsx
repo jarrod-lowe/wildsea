@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useToast } from './notificationToast';
 import { generateClient, GraphQLResult } from 'aws-amplify/api';
@@ -30,6 +30,8 @@ interface BaseSectionProps<T extends BaseSectionItem> {
     renderEditForm: (
         content: BaseSectionContent<T>,
         setContent: React.Dispatch<React.SetStateAction<BaseSectionContent<T>>>,
+        handleUpdate: () => void,
+        handleCancel: () => void,
     ) => React.ReactNode;
 }
 
@@ -118,13 +120,7 @@ export const BaseSection = <T extends BaseSectionItem>({
                     onChange={(e) => setSectionName(e.target.value)}
                     placeholder={intl.formatMessage({ id: "sectionName" })}
                 />
-                {renderEditForm(content, setContent)}
-                <button onClick={handleUpdate} className="btn-standard btn-small">
-                    <FormattedMessage id="save" />
-                </button>
-                <button onClick={handleCancel} className="btn-secondary btn-small">
-                    <FormattedMessage id="cancel" />
-                </button>
+                {renderEditForm(content, setContent, handleUpdate, handleCancel)}
             </div>
         );
     }

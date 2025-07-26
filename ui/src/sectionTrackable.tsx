@@ -88,7 +88,7 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
       ));
   };
 
-  const renderEditForm = (content: SectionTypeTrackable, setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>) => {
+  const renderEditForm = (content: SectionTypeTrackable, setContent: React.Dispatch<React.SetStateAction<SectionTypeTrackable>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleAddItem = () => {
       const newItems = [...content.items, { id: uuidv4(), name: '', length: 1, ticked: 0, description: '' }];
       setContent({ ...content, items: newItems });
@@ -144,6 +144,8 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
         )}
         addItem={handleAddItem}
         removeItem={handleRemoveItem}
+        handleUpdate={handleUpdate}
+        handleCancel={handleCancel}
       />
     );
   };

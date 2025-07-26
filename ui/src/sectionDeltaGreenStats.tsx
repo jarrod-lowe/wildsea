@@ -86,7 +86,7 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
     );
   };
 
-  const renderEditForm = (content: SectionTypeDeltaGreenStats, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>) => {
+  const renderEditForm = (content: SectionTypeDeltaGreenStats, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleAddItem = () => {
       const newItems = [...content.items, { 
         id: uuidv4(), 
@@ -140,6 +140,8 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
         )}
         addItem={handleAddItem}
         removeItem={handleRemoveItem}
+        handleUpdate={handleUpdate}
+        handleCancel={handleCancel}
       />
     );
   };

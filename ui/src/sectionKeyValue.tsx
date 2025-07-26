@@ -58,7 +58,7 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
       ));
   };
 
-  const renderEditForm = (content: SectionTypeKeyValue, setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>) => {
+  const renderEditForm = (content: SectionTypeKeyValue, setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>, handleUpdate: () => void, handleCancel: () => void) => {
     const handleAddItem = () => {
       const newItems = [...content.items, { id: uuidv4(), name: '', value: '', description: '' }];
       setContent({ ...content, items: newItems });
@@ -102,6 +102,8 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
         )}
         addItem={handleAddItem}
         removeItem={handleRemoveItem}
+        handleUpdate={handleUpdate}
+        handleCancel={handleCancel}
       />
     );
   };
