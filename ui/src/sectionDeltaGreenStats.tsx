@@ -28,8 +28,8 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
   const [selectedStat, setSelectedStat] = useState<{ name: string; value: number; actionText: string } | null>(null);
 
   const handleDiceClick = (statName: string, statValue: number) => {
-    const actionText = intl.formatMessage({ id: 'deltaGreenStats.actionWith' }, { statName });
-    setSelectedStat({ name: statName, value: statValue, actionText });
+    // Use just the stat name without "with" prefix for the action
+    setSelectedStat({ name: statName, value: statValue, actionText: statName });
     setDiceModalOpen(true);
   };
 

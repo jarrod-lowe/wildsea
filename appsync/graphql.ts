@@ -78,6 +78,7 @@ export type DiceRoll = {
   diceList: Array<Dice>;
   gameId: Scalars['ID']['output'];
   grade: Scalars['String']['output'];
+  messageIndex: Scalars['Int']['output'];
   playerId: Scalars['ID']['output'];
   playerName: Scalars['String']['output'];
   rollType: Scalars['String']['output'];

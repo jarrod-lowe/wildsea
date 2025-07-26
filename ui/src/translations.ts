@@ -1,5 +1,8 @@
+import { diceRollMessages } from './rollTranslations';
+
 export const messages = {
   en: {
+    ...diceRollMessages.en,
     'wildsea': 'Wildsea',
     'pleaseLogin': 'Please Log In',
     'unableToJoin': 'Unable to join game',

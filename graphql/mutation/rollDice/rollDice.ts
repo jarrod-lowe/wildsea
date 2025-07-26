@@ -79,6 +79,9 @@ export function response(context: Context): DiceRoll {
   // Calculate grade based on roll type using total value
   const grade = calculateGrade(input.rollType, totalValue, input.target);
 
+  // Generate random message index for result text variation (0-9999)
+  const messageIndex = Math.floor(Math.random() * 10000);
+
   // Convert input dice to output dice format
   const outputDice: Dice[] = input.dice.map(
     (diceInput): SingleDie => ({
@@ -102,6 +105,7 @@ export function response(context: Context): DiceRoll {
     value: totalValue,
     rolledAt: util.time.nowISO8601(),
     type: TypeDiceRoll,
+    messageIndex: messageIndex,
   };
 
   return result;
