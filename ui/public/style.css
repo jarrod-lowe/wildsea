@@ -1444,17 +1444,6 @@
 }
 
 
-.roll-input-with-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.roll-controls {
-  display: flex;
-  gap: 2px;
-  justify-content: center;
-}
 
 /* Inline control layouts for compact numeric inputs */
 .roll-inline-controls,
