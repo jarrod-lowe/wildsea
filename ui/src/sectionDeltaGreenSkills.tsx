@@ -37,6 +37,67 @@ interface DeltaGreenSkillItem extends BaseSectionItem {
 
 type SectionTypeDeltaGreenSkills = BaseSectionContent<DeltaGreenSkillItem>;
 
+const renderRollControls = (
+  item: DeltaGreenSkillItem, 
+  index: number, 
+  handleItemChange: (index: number, field: string, value: any) => void,
+  handleRollBlur: (index: number, value: string) => void,
+  intl: any
+) => {
+  const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => handleItemChange(index, 'roll', Math.max(0, numericRoll - 10))}
+        disabled={numericRoll <= 0}
+        className="adjust-btn small"
+        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.decreaseBy10' }, { name: item.name })}
+      >
+        <FormattedMessage id="sectionDeltaGreenSkills.decrementBy10Symbol" />
+      </button>
+      <button
+        type="button"
+        onClick={() => handleItemChange(index, 'roll', Math.max(0, numericRoll - 1))}
+        disabled={numericRoll <= 0}
+        className="adjust-btn small"
+        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.decreaseBy1' }, { name: item.name })}
+      >
+        <FormattedMessage id="sectionDeltaGreenSkills.decrementBy1Symbol" />
+      </button>
+      <input
+        type="number"
+        min="0"
+        max="99"
+        value={item.roll === '' ? '' : (item.roll || 0)}
+        onChange={(e) => handleItemChange(index, 'roll', e.target.value)}
+        onBlur={(e) => handleRollBlur(index, e.target.value)}
+        placeholder={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
+        aria-label={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
+        className="roll-input-inline"
+      />
+      <button
+        type="button"
+        onClick={() => handleItemChange(index, 'roll', Math.min(99, numericRoll + 1))}
+        disabled={numericRoll >= 99}
+        className="adjust-btn small"
+        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.increaseBy1' }, { name: item.name })}
+      >
+        <FormattedMessage id="sectionDeltaGreenSkills.incrementBy1Symbol" />
+      </button>
+      <button
+        type="button"
+        onClick={() => handleItemChange(index, 'roll', Math.min(99, numericRoll + 10))}
+        disabled={numericRoll >= 99}
+        className="adjust-btn small"
+        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.increaseBy10' }, { name: item.name })}
+      >
+        <FormattedMessage id="sectionDeltaGreenSkills.incrementBy10Symbol" />
+      </button>
+    </>
+  );
+};
+
 export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
   const [diceModalOpen, setDiceModalOpen] = useState(false);
@@ -265,60 +326,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
               aria-label={intl.formatMessage({ id: "deltaGreenSkills.skill" })}
             />
             <div className="roll-inline-controls">
-              {(() => {
-                const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
-                return (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => handleItemChange(index, 'roll', Math.max(0, numericRoll - 10))}
-                      disabled={numericRoll <= 0}
-                      className="adjust-btn small"
-                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.decreaseBy10' }, { name: item.name })}
-                    >
-                      <FormattedMessage id="sectionDeltaGreenSkills.decrementBy10Symbol" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleItemChange(index, 'roll', Math.max(0, numericRoll - 1))}
-                      disabled={numericRoll <= 0}
-                      className="adjust-btn small"
-                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.decreaseBy1' }, { name: item.name })}
-                    >
-                      <FormattedMessage id="sectionDeltaGreenSkills.decrementBy1Symbol" />
-                    </button>
-                    <input
-                      type="number"
-                      min="0"
-                      max="99"
-                      value={item.roll === '' ? '' : (item.roll || 0)}
-                      onChange={(e) => handleItemChange(index, 'roll', e.target.value)}
-                      onBlur={(e) => handleRollBlur(index, e.target.value)}
-                      placeholder={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
-                      aria-label={intl.formatMessage({ id: "deltaGreenSkills.roll" })}
-                      className="roll-input-inline"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleItemChange(index, 'roll', Math.min(99, numericRoll + 1))}
-                      disabled={numericRoll >= 99}
-                      className="adjust-btn small"
-                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.increaseBy1' }, { name: item.name })}
-                    >
-                      <FormattedMessage id="sectionDeltaGreenSkills.incrementBy1Symbol" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleItemChange(index, 'roll', Math.min(99, numericRoll + 10))}
-                      disabled={numericRoll >= 99}
-                      className="adjust-btn small"
-                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.increaseBy10' }, { name: item.name })}
-                    >
-                      <FormattedMessage id="sectionDeltaGreenSkills.incrementBy10Symbol" />
-                    </button>
-                  </>
-                );
-              })()}
+              {renderRollControls(item, index, handleItemChange, handleRollBlur, intl)}
             </div>
             <label>
               <input

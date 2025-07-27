@@ -13,6 +13,49 @@ interface DeltaGreenStatItem extends BaseSectionItem {
 
 type SectionTypeDeltaGreenStats = BaseSectionContent<DeltaGreenStatItem>;
 
+const ScoreInlineControls: React.FC<{
+  item: DeltaGreenStatItem;
+  index: number;
+  handleItemChange: (index: number, field: string, value: any) => void;
+  handleScoreBlur: (index: number, value: string) => void;
+  intl: any;
+}> = ({ item, index, handleItemChange, handleScoreBlur, intl }) => {
+  const numericScore = typeof item.score === 'string' ? parseInt(item.score) || 0 : item.score;
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => handleItemChange(index, 'score', Math.max(0, numericScore - 1))}
+        disabled={numericScore <= 0}
+        className="adjust-btn small"
+        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenStats.decrease' }, { name: item.name })}
+      >
+        <FormattedMessage id="sectionDeltaGreenStats.decrementSymbol" />
+      </button>
+      <input
+        type="number"
+        min="0"
+        max="18"
+        value={item.score === '' ? '' : (item.score || 0)}
+        onChange={(e) => handleItemChange(index, 'score', e.target.value)}
+        onBlur={(e) => handleScoreBlur(index, e.target.value)}
+        placeholder={intl.formatMessage({ id: "deltaGreenStats.score" })}
+        aria-label={intl.formatMessage({ id: "deltaGreenStats.score" })}
+        className="score-input-inline"
+      />
+      <button
+        type="button"
+        onClick={() => handleItemChange(index, 'score', Math.min(18, numericScore + 1))}
+        disabled={numericScore >= 18}
+        className="adjust-btn small"
+        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenStats.increase' }, { name: item.name })}
+      >
+        <FormattedMessage id="sectionDeltaGreenStats.incrementSymbol" />
+      </button>
+    </>
+  );
+};
+
 const DEFAULT_STATS = [
   { name: 'Strength (STR)', abbreviation: 'STR' },
   { name: 'Constitution (CON)', abbreviation: 'CON' },
@@ -157,42 +200,13 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
               aria-label={intl.formatMessage({ id: "deltaGreenStats.statistic" })}
             />
             <div className="score-inline-controls">
-              {(() => {
-                const numericScore = typeof item.score === 'string' ? parseInt(item.score) || 0 : item.score;
-                return (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => handleItemChange(index, 'score', Math.max(0, numericScore - 1))}
-                      disabled={numericScore <= 0}
-                      className="adjust-btn small"
-                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenStats.decrease' }, { name: item.name })}
-                    >
-                      <FormattedMessage id="sectionDeltaGreenStats.decrementSymbol" />
-                    </button>
-                    <input
-                      type="number"
-                      min="0"
-                      max="18"
-                      value={item.score === '' ? '' : (item.score || 0)}
-                      onChange={(e) => handleItemChange(index, 'score', e.target.value)}
-                      onBlur={(e) => handleScoreBlur(index, e.target.value)}
-                      placeholder={intl.formatMessage({ id: "deltaGreenStats.score" })}
-                      aria-label={intl.formatMessage({ id: "deltaGreenStats.score" })}
-                      className="score-input-inline"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleItemChange(index, 'score', Math.min(18, numericScore + 1))}
-                      disabled={numericScore >= 18}
-                      className="adjust-btn small"
-                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenStats.increase' }, { name: item.name })}
-                    >
-                      <FormattedMessage id="sectionDeltaGreenStats.incrementSymbol" />
-                    </button>
-                  </>
-                );
-              })()}
+              <ScoreInlineControls 
+                item={item}
+                index={index}
+                handleItemChange={handleItemChange}
+                handleScoreBlur={handleScoreBlur}
+                intl={intl}
+              />
             </div>
             <input
               type="text"
