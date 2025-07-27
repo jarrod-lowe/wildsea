@@ -24,6 +24,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
   const [showButtonFireworks, setShowButtonFireworks] = useState(false);
   const [showButtonSkulls, setShowButtonSkulls] = useState(false);
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const intl = useIntl();
 
   useEffect(() => {
@@ -37,6 +38,13 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
       }
     };
   }, [gameId]);
+
+  // Focus management for accessibility
+  useEffect(() => {
+    if (isVisible && closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
+  }, [isVisible]);
 
   const subscribeToDiceRolls = async () => {
     try {
@@ -148,6 +156,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
         <div className="dice-roll-header">
           <h3 id="dice-rolls-title"><FormattedMessage id="diceRollPanel.title" /></h3>
           <button 
+            ref={closeButtonRef}
             className="panel-close-button"
             onClick={togglePanel}
             aria-label={intl.formatMessage({ id: 'diceRollPanel.hidePanel' })}
