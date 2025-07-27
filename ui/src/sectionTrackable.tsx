@@ -140,11 +140,17 @@ export const SectionTrackable: React.FC<SectionDefinition> = (props) => {
               aria-label={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <div className="item-length-controls">
-              <button onClick={() => handleItemChange(index, 'length', item.length - 1)}>
+              <button 
+                onClick={() => handleItemChange(index, 'length', item.length - 1)}
+                aria-label={intl.formatMessage({ id: 'sectionTrackable.decrementLength' }, { name: item.name })}
+              >
                 <FormattedMessage id="sectionTrackable.decrement" />
               </button>
               <span>{item.length}</span>
-              <button onClick={() => handleItemChange(index, 'length', item.length + 1)}>
+              <button 
+                onClick={() => handleItemChange(index, 'length', item.length + 1)}
+                aria-label={intl.formatMessage({ id: 'sectionTrackable.incrementLength' }, { name: item.name })}
+              >
                 <FormattedMessage id="sectionTrackable.increment" />
               </button>
             </div>

@@ -285,32 +285,36 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                         onClick={() => handleItemChange(index, 'roll', Math.max(0, numericRoll - 10))}
                         disabled={numericRoll <= 0}
                         className="adjust-btn small"
+                        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.decreaseBy10' }, { name: item.name })}
                       >
-                        -10
+                        <FormattedMessage id="sectionDeltaGreenSkills.decrementBy10Symbol" />
                       </button>
                       <button
                         type="button"
                         onClick={() => handleItemChange(index, 'roll', Math.max(0, numericRoll - 1))}
                         disabled={numericRoll <= 0}
                         className="adjust-btn small"
+                        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.decreaseBy1' }, { name: item.name })}
                       >
-                        -1
+                        <FormattedMessage id="sectionDeltaGreenSkills.decrementBy1Symbol" />
                       </button>
                       <button
                         type="button"
                         onClick={() => handleItemChange(index, 'roll', Math.min(99, numericRoll + 1))}
                         disabled={numericRoll >= 99}
                         className="adjust-btn small"
+                        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.increaseBy1' }, { name: item.name })}
                       >
-                        +1
+                        <FormattedMessage id="sectionDeltaGreenSkills.incrementBy1Symbol" />
                       </button>
                       <button
                         type="button"
                         onClick={() => handleItemChange(index, 'roll', Math.min(99, numericRoll + 10))}
                         disabled={numericRoll >= 99}
                         className="adjust-btn small"
+                        aria-label={intl.formatMessage({ id: 'sectionDeltaGreenSkills.increaseBy10' }, { name: item.name })}
                       >
-                        +10
+                        <FormattedMessage id="sectionDeltaGreenSkills.incrementBy10Symbol" />
                       </button>
                     </>
                   );
