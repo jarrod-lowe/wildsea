@@ -411,7 +411,7 @@ async function subscribeToSectionUpdates(
   gameId: string,
   onUpdate: (updatedSection: SheetSection) => void,
   onError: (error: any) => void
-): Promise<() => void | null> {
+): Promise<(() => void) | undefined> {
   try {
     const client = generateClient();
     const subscription = (client.graphql<GraphQLSubscription<GQLSubscription>>({
@@ -434,7 +434,7 @@ async function subscribeToSectionUpdates(
   } catch (error) {
     console.error('Error subscribing to section updates:', error);
     onError(error);
-    return () => null;
+    return undefined;
   }
 }
 
@@ -442,7 +442,7 @@ async function subscribeToGameUpdates(
   gameId: string,
   onUpdate: (updatedGame: GameSummary) => void,
   onError: (error: any) => void
-): Promise<() => void | null> {
+): Promise<(() => void) | undefined> {
   try {
     const client = generateClient();
     const subscription = (client.graphql<GraphQLSubscription<GQLSubscription>>({
@@ -463,9 +463,9 @@ async function subscribeToGameUpdates(
     // Return the unsubscribe function
     return () => subscription.unsubscribe();
   } catch (error) {
-    console.error('Error subscribing to section updates:', error);
+    console.error('Error subscribing to game updates:', error);
     onError(error);
-    return () => null;
+    return undefined;
   }
 }
 
