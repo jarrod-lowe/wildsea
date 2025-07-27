@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
 import { SectionEditForm } from './components/SectionEditForm';
 import { Grades } from "../../graphql/lib/constants/rollTypes";
+import deltaGreenSkillsSeed from '../deltaGreenSkillsSeed.json';
 
 // Color scaling function for skill proficiency (0-99 scale)
 // Returns WCAG AAA compliant light colors from red to green with better breakpoint
@@ -35,52 +36,6 @@ interface DeltaGreenSkillItem extends BaseSectionItem {
 };
 
 type SectionTypeDeltaGreenSkills = BaseSectionContent<DeltaGreenSkillItem>;
-
-const DEFAULT_SKILLS = [
-  { name: 'Accounting', roll: 10 },
-  { name: 'Alertness', roll: 20 },
-  { name: 'Anthropology', roll: 0 },
-  { name: 'Archeology', roll: 0 },
-  { name: 'Art: ART', roll: 0 },
-  { name: 'Artillery', roll: 0 },
-  { name: 'Athletics', roll: 30 },
-  { name: 'Bureaucracy', roll: 10 },
-  { name: 'Computer Science', roll: 0 },
-  { name: 'Craft: CRAFT', roll: 0 },
-  { name: 'Criminology', roll: 10 },
-  { name: 'Demolitions', roll: 0 },
-  { name: 'Disguise', roll: 10 },
-  { name: 'Dodge', roll: 30 },
-  { name: 'Drive', roll: 20 },
-  { name: 'Firearms', roll: 20 },
-  { name: 'First Aid', roll: 10 },
-  { name: 'Forensics', roll: 0 },
-  { name: 'Heavy Machinery', roll: 10 },
-  { name: 'Heavy Weapons', roll: 0 },
-  { name: 'History', roll: 10 },
-  { name: 'HUMINT', roll: 10 },
-  { name: 'Language: LANGUAGE', roll: 0 },
-  { name: 'Law', roll: 0 },
-  { name: 'Medicine', roll: 0 },
-  { name: 'Melee Weapons', roll: 30 },
-  { name: 'Military Science: SUBJECT', roll: 0 },
-  { name: 'Navigate', roll: 10 },
-  { name: 'Occult', roll: 10 },
-  { name: 'Persuade', roll: 20 },
-  { name: 'Pharmacy', roll: 0 },
-  { name: 'Pilot: AIRCRAFT', roll: 0 },
-  { name: 'Psychotherapy', roll: 10 },
-  { name: 'Ride', roll: 10 },
-  { name: 'Science: SUBJECT', roll: 0 },
-  { name: 'Search', roll: 20 },
-  { name: 'SIGINT', roll: 0 },
-  { name: 'Stealth', roll: 10 },
-  { name: 'Surgery', roll: 0 },
-  { name: 'Survival', roll: 10 },
-  { name: 'Swim', roll: 20 },
-  { name: 'Unarmed Combat', roll: 40 },
-  { name: 'Unnatural', roll: 0, hasUsedFlag: false },
-];
 
 export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
@@ -399,10 +354,10 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
 
 export const createDefaultDeltaGreenSkillsContent = (): SectionTypeDeltaGreenSkills => ({
   showEmpty: false,
-  items: DEFAULT_SKILLS.map(skill => ({
+  items: deltaGreenSkillsSeed.map((skill: any) => ({
     id: uuidv4(),
     name: skill.name,
-    description: '',
+    description: skill.description || '',
     roll: skill.roll,
     used: false,
     hasUsedFlag: skill.hasUsedFlag !== false,
