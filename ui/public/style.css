@@ -2325,7 +2325,8 @@
 .btn-icon.info:focus {
   background: none;
   color: var(--color-primary-hover);
-  outline: none;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .btn-icon.edit {

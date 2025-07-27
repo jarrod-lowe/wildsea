@@ -19,21 +19,23 @@ export function SectionItem<T extends BaseSectionItem>({ item, renderContent }: 
       <span>{item.name}</span>
       {renderContent(item)}
       { item.description && (
-      <Tippy
-        content={<ReactMarkdown>{item.description}</ReactMarkdown> }
-        interactive={true}
-        trigger="click"
-        arrow={true}
-        placement="top"
-        className="markdown-tippy"
-      >
-        <button 
-          className="btn-icon info"
-          aria-label={intl.formatMessage({ id: 'showInfo.itemDescription' })}
+      <span>
+        <Tippy
+          content={<ReactMarkdown>{item.description}</ReactMarkdown> }
+          interactive={true}
+          trigger="click"
+          arrow={true}
+          placement="top"
+          className="markdown-tippy"
         >
-          {intl.formatMessage({ id: 'showInfo' })}
-        </button>
-      </Tippy>
+          <button 
+            className="btn-icon info"
+            aria-label={intl.formatMessage({ id: 'showInfo.itemDescription' })}
+          >
+            {intl.formatMessage({ id: 'showInfo' })}
+          </button>
+        </Tippy>
+      </span>
       )}
     </div>
   );

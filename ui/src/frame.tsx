@@ -31,21 +31,23 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
     <h1>
       {title}
       {gameDescription && (
-        <Tippy
-          content={<ReactMarkdown>{gameDescription}</ReactMarkdown>}
-          interactive={true}
-          trigger="click"
-          arrow={true}
-          placement="bottom"
-          className="markdown-tippy"
-        >
-          <button 
-            className="btn-icon info"
-            aria-label={intl.formatMessage({ id: 'showInfo.gameDescription' })}
+        <span>
+          <Tippy
+            content={<ReactMarkdown>{gameDescription}</ReactMarkdown>}
+            interactive={true}
+            trigger="click"
+            arrow={true}
+            placement="bottom"
+            className="markdown-tippy"
           >
-            {intl.formatMessage({ id: 'showInfo' })}
-          </button>
-        </Tippy>
+            <button 
+              className="btn-icon info"
+              aria-label={intl.formatMessage({ id: 'showInfo.gameDescription' })}
+            >
+              {intl.formatMessage({ id: 'showInfo' })}
+            </button>
+          </Tippy>
+        </span>
       )}
       {isFirefly && onEditGame && (
         <button className="btn-standard btn-small edit" onClick={onEditGame}>
