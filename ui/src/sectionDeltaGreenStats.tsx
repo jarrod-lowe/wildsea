@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
-import { useIntl } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
 import { SectionEditForm } from './components/SectionEditForm';
@@ -156,16 +156,44 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
               placeholder={intl.formatMessage({ id: "deltaGreenStats.statistic" })}
               aria-label={intl.formatMessage({ id: "deltaGreenStats.statistic" })}
             />
-            <input
-              type="number"
-              min="0"
-              max="18"
-              value={item.score === '' ? '' : (item.score || 0)}
-              onChange={(e) => handleItemChange(index, 'score', e.target.value)}
-              onBlur={(e) => handleScoreBlur(index, e.target.value)}
-              placeholder={intl.formatMessage({ id: "deltaGreenStats.score" })}
-              aria-label={intl.formatMessage({ id: "deltaGreenStats.score" })}
-            />
+            <div className="score-inline-controls">
+              {(() => {
+                const numericScore = typeof item.score === 'string' ? parseInt(item.score) || 0 : item.score;
+                return (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleItemChange(index, 'score', Math.max(0, numericScore - 1))}
+                      disabled={numericScore <= 0}
+                      className="adjust-btn small"
+                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenStats.decrease' }, { name: item.name })}
+                    >
+                      <FormattedMessage id="sectionDeltaGreenStats.decrementSymbol" />
+                    </button>
+                    <input
+                      type="number"
+                      min="0"
+                      max="18"
+                      value={item.score === '' ? '' : (item.score || 0)}
+                      onChange={(e) => handleItemChange(index, 'score', e.target.value)}
+                      onBlur={(e) => handleScoreBlur(index, e.target.value)}
+                      placeholder={intl.formatMessage({ id: "deltaGreenStats.score" })}
+                      aria-label={intl.formatMessage({ id: "deltaGreenStats.score" })}
+                      className="score-input-inline"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleItemChange(index, 'score', Math.min(18, numericScore + 1))}
+                      disabled={numericScore >= 18}
+                      className="adjust-btn small"
+                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenStats.increase' }, { name: item.name })}
+                    >
+                      <FormattedMessage id="sectionDeltaGreenStats.incrementSymbol" />
+                    </button>
+                  </>
+                );
+              })()}
+            </div>
             <input
               type="text"
               value={item.distinguishingFeatures || ''}

@@ -164,6 +164,10 @@ export const messages = {
 
     'deltaGreenStats.rollDice': 'Roll dice for {statName}',
     'deltaGreenStats.actionWith': 'with {statName}',
+    'sectionDeltaGreenStats.increase': 'Increase {name}',
+    'sectionDeltaGreenStats.decrease': 'Decrease {name}',
+    'sectionDeltaGreenStats.incrementSymbol': '+',
+    'sectionDeltaGreenStats.decrementSymbol': '−',
 
     'dice.icon': '🎲',
 
