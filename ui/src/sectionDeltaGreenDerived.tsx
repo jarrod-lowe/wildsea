@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
@@ -41,8 +41,10 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
   
   // Track previous stats to detect changes
   const prevStatsRef = useRef<string>();
+  // Track pending updates to prevent race conditions
+  const updateTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const handleCurrentChange = async (
+  const handleCurrentChange = useCallback((
     item: DeltaGreenDerivedItem,
     newCurrent: number,
     content: SectionTypeDeltaGreenDerived,
@@ -66,9 +68,19 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     const updatedItem = { ...itemWithoutMaximum, current: clampedCurrent };
     newItems[itemIndex] = updatedItem;
     const newContent = { ...content, items: newItems };
+    
+    // Update local state immediately for responsive UI
     setContent(newContent);
-    await updateSection({ content: JSON.stringify(newContent) });
-  };
+    
+    // Debounce the backend update to prevent race conditions
+    if (updateTimeoutRef.current) {
+      clearTimeout(updateTimeoutRef.current);
+    }
+    
+    updateTimeoutRef.current = setTimeout(async () => {
+      await updateSection({ content: JSON.stringify(newContent) });
+    }, 150); // Short delay for buttons
+  }, []);
 
   const renderItems = (
     content: SectionTypeDeltaGreenDerived,
