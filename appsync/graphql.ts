@@ -81,8 +81,10 @@ export type DiceRoll = {
   messageIndex: Scalars['Int']['output'];
   playerId: Scalars['ID']['output'];
   playerName: Scalars['String']['output'];
+  proxyRoll: Scalars['Boolean']['output'];
   rollType: Scalars['String']['output'];
   rolledAt: Scalars['AWSDateTime']['output'];
+  rolledBy: Scalars['String']['output'];
   target: Scalars['Int']['output'];
   type: Scalars['String']['output'];
   value: Scalars['Int']['output'];
@@ -259,6 +261,7 @@ export type RollDiceInput = {
   action?: InputMaybe<Scalars['String']['input']>;
   dice: Array<DiceInput>;
   gameId: Scalars['ID']['input'];
+  onBehalfOf?: InputMaybe<Scalars['ID']['input']>;
   rollType: Scalars['String']['input'];
   target: Scalars['Int']['input'];
 };
