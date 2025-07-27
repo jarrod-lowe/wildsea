@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { TypeShip } from '../../graphql/lib/constants/entityTypes';
@@ -20,6 +20,13 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
 }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const intl = useIntl();
+
+  // Reset checkbox when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsConfirmed(false);
+    }
+  }, [isOpen]);
 
   const handleConfirm = () => {
     onConfirm();
