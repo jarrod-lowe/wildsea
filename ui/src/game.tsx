@@ -40,6 +40,85 @@ async function fetchWithBackoff<T>(
   }
 }
 
+// Helper function to handle player deletion
+const handlePlayerDeletion = (
+  updatedSheetSummary: PlayerSheetSummary,
+  currentGame: Game,
+  userSubject: string,
+  setGame: (game: Game) => void,
+  gameRef: React.MutableRefObject<Game | null>,
+  setActiveSheet: React.Dispatch<React.SetStateAction<string | null>>,
+  toast: any,
+  intl: IntlShape
+) => {
+  const updatedSheets = currentGame.playerSheets.filter(sheet => sheet.userId !== updatedSheetSummary.userId);
+  const updatedGame = { ...currentGame, playerSheets: updatedSheets };
+  setGame(updatedGame);
+  gameRef.current = updatedGame;
+
+  if (updatedSheetSummary.userId === userSubject) {
+    const currentUrl = new URL(window.location.href);
+    const newUrl = `${window.location.origin}${currentUrl.pathname}`;
+    window.location.href = newUrl;
+  } else {
+    setActiveSheet(prevActiveSheet => 
+      prevActiveSheet === updatedSheetSummary.userId ? userSubject : prevActiveSheet
+    );
+  }
+
+  toast.addToast(intl.formatMessage(
+    { id: 'playerSheetTab.playerLeft' },
+    { name: updatedSheetSummary.characterName }
+  ), 'success');
+};
+
+// Helper function to handle new player joining
+const handlePlayerJoining = async (
+  updatedSheetSummary: PlayerSheetSummary,
+  gameId: string,
+  setGame: (game: Game) => void,
+  gameRef: React.MutableRefObject<Game | null>,
+  toast: any,
+  intl: IntlShape
+) => {
+  try {
+    const client = generateClient();
+    const response = await client.graphql({
+      query: getGameQuery,
+      variables: { input: { gameId } },
+    }) as GraphQLResult<{ getGame: Game }>;
+
+    if (response.data?.getGame) {
+      setGame(response.data.getGame);
+      gameRef.current = response.data.getGame;
+      toast.addToast(intl.formatMessage(
+        { id: 'playerSheetTab.playerJoined' },
+        { name: updatedSheetSummary.characterName }
+      ), 'success');
+    }
+  } catch (error) {
+    console.error("Error fetching updated game data", error);
+    toast.addToast(intl.formatMessage({ id: 'errorFetchingGameData' }), 'error');
+  }
+};
+
+// Helper function to handle player character name update
+const handlePlayerUpdate = (
+  updatedSheetSummary: PlayerSheetSummary,
+  currentGame: Game,
+  setGame: (game: Game) => void,
+  gameRef: React.MutableRefObject<Game | null>
+) => {
+  const updatedSheets = currentGame.playerSheets.map(sheet =>
+    sheet.userId === updatedSheetSummary.userId
+      ? { ...sheet, characterName: updatedSheetSummary.characterName }
+      : sheet
+  );
+  const updatedGame = { ...currentGame, playerSheets: updatedSheets };
+  setGame(updatedGame);
+  gameRef.current = updatedGame;
+};
+
 // Custom hook for subscribing to player sheet updates
 const usePlayerSheetUpdates = (
     gameId: string,
@@ -59,68 +138,24 @@ const usePlayerSheetUpdates = (
       const subscribe = async () => {
         unsubscribe = await subscribeToPlayerSheetUpdates(gameId, async (updatedSheetSummary) => {
           const currentGame = gameRef.current;
-          if (currentGame) {
-            if (updatedSheetSummary.deleted) {
-              // Player was deleted
-              const updatedSheets = currentGame.playerSheets.filter(sheet => sheet.userId !== updatedSheetSummary.userId);
-              const updatedGame = { ...currentGame, playerSheets: updatedSheets };
-              setGame(updatedGame);
-              gameRef.current = updatedGame;
+          if (!currentGame) return;
 
-              if (updatedSheetSummary.userId === userSubject) {
-                // Current user was deleted, redirect to games list
-                const currentUrl = new URL(window.location.href);
-                const newUrl = `${window.location.origin}${currentUrl.pathname}`;
-                window.location.href = newUrl;
-              } else {
-                // Another player was deleted, update active sheet if necessary
-                setActiveSheet(prevActiveSheet => 
-                  prevActiveSheet === updatedSheetSummary.userId ? userSubject : prevActiveSheet
-                );
-              }
+          if (updatedSheetSummary.deleted) {
+            handlePlayerDeletion(
+              updatedSheetSummary, currentGame, userSubject, setGame, 
+              gameRef, setActiveSheet, toast, intl
+            );
+            return;
+          }
 
-              toast.addToast(intl.formatMessage(
-                { id: 'playerSheetTab.playerLeft' },
-                { name: updatedSheetSummary.characterName }
-              ), 'success');
-            } else {
-              const existingPlayerIndex = currentGame.playerSheets.findIndex(sheet => sheet.userId === updatedSheetSummary.userId);
+          const existingPlayerIndex = currentGame.playerSheets.findIndex(
+            sheet => sheet.userId === updatedSheetSummary.userId
+          );
 
-              if (existingPlayerIndex == -1) {
-                try {
-                  const client = generateClient();
-                  const response = await client.graphql({
-                    query: getGameQuery,
-                    variables: {
-                      input: {
-                        gameId: gameId,
-                      },
-                    }
-                  }) as GraphQLResult<{ getGame: Game }>;
-
-                  if (response.data?.getGame) {
-                    setGame(response.data.getGame);
-                    gameRef.current = response.data.getGame;
-                    toast.addToast(intl.formatMessage(
-                      { id: 'playerSheetTab.playerJoined' },
-                      { name: updatedSheetSummary.characterName }
-                    ), 'success');
-                  }
-                } catch (error) {
-                  console.error("Error fetching updated game data", error);
-                  toast.addToast(intl.formatMessage({ id: 'errorFetchingGameData' }), 'error');
-                }
-              } else {
-                const updatedSheets = currentGame.playerSheets.map(sheet =>
-                sheet.userId === updatedSheetSummary.userId
-                  ? { ...sheet, characterName: updatedSheetSummary.characterName }
-                  : sheet
-                );
-                const updatedGame = { ...currentGame, playerSheets: updatedSheets };
-                setGame(updatedGame);
-                gameRef.current = updatedGame;
-              }
-            }
+          if (existingPlayerIndex === -1) {
+            await handlePlayerJoining(updatedSheetSummary, gameId, setGame, gameRef, toast, intl);
+          } else {
+            handlePlayerUpdate(updatedSheetSummary, currentGame, setGame, gameRef);
           }
         }, (err) => {
           console.error("Error subscribing to player sheet updates", err);
@@ -136,7 +171,7 @@ const usePlayerSheetUpdates = (
         unsubscribe();
       }
     };
-  }, [gameId, setGame, gameRef, toast, intl, isGameFetched]);
+  }, [gameId, setGame, gameRef, userSubject, setActiveSheet, toast, intl, isGameFetched]);
 };
 
 const useSectionUpdates = (
