@@ -34,8 +34,8 @@ export function request(
     }),
   ];
 
-  // Add ship record to batch if rolling on behalf of ship
-  if (input.onBehalfOf) {
+  // Add ship record to batch if rolling on behalf of ship (and it's different from current user)
+  if (input.onBehalfOf && input.onBehalfOf !== identity.sub) {
     keys.push(
       util.dynamodb.toMapValues({
         PK: DDBPrefixGame + "#" + input.gameId,
@@ -85,7 +85,7 @@ export function response(context: Context): DiceRoll {
   let rolledBy: string;
   let proxyRoll: boolean;
 
-  if (onBehalfOf) {
+  if (onBehalfOf && onBehalfOf !== identity.sub) {
     // Find ship record
     const shipSheet = results.find(
       (record) => record.userId === onBehalfOf && record.type == TypeShip,
@@ -100,7 +100,7 @@ export function response(context: Context): DiceRoll {
     rolledBy = playerSheet.characterName;
     proxyRoll = true;
   } else {
-    // Use player's details for the roll
+    // Use player's details for the roll (either no onBehalfOf or onBehalfOf is self)
     rollerName = playerSheet.characterName;
     actualPlayerId = playerId;
     rolledBy = playerSheet.characterName;

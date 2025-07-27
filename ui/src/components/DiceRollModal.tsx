@@ -14,6 +14,7 @@ interface DiceRollModalProps {
   skillValue: number;
   initialAction: string;
   onRollComplete?: (grade: string) => void;
+  onBehalfOf?: string;
 }
 
 export const DiceRollModal: React.FC<DiceRollModalProps> = ({
@@ -22,7 +23,8 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   gameId,
   skillValue,
   initialAction,
-  onRollComplete
+  onRollComplete,
+  onBehalfOf
 }) => {
   const intl = useIntl();
   const [action, setAction] = useState(initialAction);
@@ -61,6 +63,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
         rollType: RollTypes.DELTA_GREEN,
         target,
         action: action.trim() || undefined,
+        onBehalfOf: onBehalfOf || undefined,
       };
       
       const result = await client.graphql({

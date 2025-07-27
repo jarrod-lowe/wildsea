@@ -189,6 +189,7 @@ export const messages = {
     'diceRoll.grade.FAILURE': 'FAILURE',
     'diceRoll.grade.FUMBLE': 'FUMBLE',
     'diceRoll.grade.NEUTRAL': 'NEUTRAL',
+    'diceRoll.proxyBy': '(by {rollerName})',
     
     // Dice roll display
     'diceRoll.rolled': 'rolled',

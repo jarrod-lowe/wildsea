@@ -38,6 +38,7 @@ export type SectionDefinition = {
   section: SheetSection
   mayEditSheet: boolean
   onUpdate: (updatedSection: SheetSection) => void
+  userSubject: string
 }
 
 export const BaseSection = <T extends BaseSectionItem>({
