@@ -66,6 +66,7 @@ const DEFAULT_STATS = [
 ];
 
 export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
+  const { section, userSubject } = props;
   const intl = useIntl();
   const [diceModalOpen, setDiceModalOpen] = useState(false);
   const [selectedStat, setSelectedStat] = useState<{ name: string; value: number; actionText: string } | null>(null);
@@ -78,7 +79,7 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
 
   const renderItems = (
         content: SectionTypeDeltaGreenStats,
-        _mayEditSheet: boolean,
+        mayEditSheet: boolean,
         _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenStats>>,
         _updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
         _isEditing: boolean,
@@ -116,6 +117,7 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
                   <button
                     className="dice-button"
                     onClick={() => handleDiceClick(item.name, numericScore * 5)}
+                    disabled={!mayEditSheet}
                     aria-label={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
                     title={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
                   >
@@ -226,6 +228,10 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
     );
   };
 
+  // Determine if we need to pass onBehalfOf
+  const shouldUseOnBehalfOf = userSubject !== section.userId;
+  const onBehalfOfValue = shouldUseOnBehalfOf ? section.userId : undefined;
+
   return (
     <>
       <BaseSection<DeltaGreenStatItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />
@@ -236,6 +242,7 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
           gameId={props.section.gameId}
           skillValue={selectedStat.value}
           initialAction={selectedStat.actionText}
+          onBehalfOf={onBehalfOfValue}
         />
       )}
     </>

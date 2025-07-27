@@ -2508,6 +2508,20 @@
   background-color: var(--color-interactive-active);
 }
 
+.dice-button:disabled {
+  background-color: var(--color-muted-bg);
+  border-color: var(--color-muted-border);
+  color: var(--color-muted-text);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.dice-button:disabled:hover {
+  background-color: var(--color-muted-bg);
+  border-color: var(--color-muted-border);
+  transform: none;
+}
+
 
 @media screen and (width <= 768px) {
   .dice-roll-modal {

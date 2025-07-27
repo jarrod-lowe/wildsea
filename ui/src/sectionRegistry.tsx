@@ -9,7 +9,7 @@ import { SectionDeltaGreenDerived, createDefaultDeltaGreenDerivedContent } from 
 import { SectionDeltaGreenSkills, createDefaultDeltaGreenSkillsContent } from './sectionDeltaGreenSkills';
 
 type SectionTypeConfig = {
-  component: React.FC<{ section: SheetSection, mayEditSheet: boolean, onUpdate: (updatedSection: SheetSection) => void }>;
+  component: React.FC<{ section: SheetSection, mayEditSheet: boolean, onUpdate: (updatedSection: SheetSection) => void, userSubject: string }>;
   label: string; // i18n key for translation
   seed: (sheet?: any) => any;
 };

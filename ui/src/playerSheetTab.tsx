@@ -202,6 +202,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           key={section.sectionId}
           section={section}
           mayEditSheet={mayEditSheet}
+          userSubject={userSubject}
           onUpdate={(updatedSection) => {
             const updatedSections = sheet.sections.map(s =>
               s.sectionId === updatedSection.sectionId ? updatedSection : s

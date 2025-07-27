@@ -22,7 +22,7 @@ const formatGrade = (grade: string, rollType: string, intl: any) => {
   }
 };
 
-const formatDiceDetails = (diceList: any[], grade: string, target?: number, action?: string) => {
+const formatDiceDetails = (diceList: any[], grade: string, target?: number, action?: string, proxyRoll?: boolean, rolledBy?: string, intl?: any) => {
   const values = diceList.map(die => die.value);
   const sum = values.reduce((a, b) => a + b, 0);
   
@@ -38,6 +38,12 @@ const formatDiceDetails = (diceList: any[], grade: string, target?: number, acti
     result = `${rollPart} vs. ${target}; ${grade}`;
   } else {
     result = `${rollPart}; ${grade}`;
+  }
+  
+  // Add proxy roll suffix if present
+  if (proxyRoll && rolledBy && intl) {
+    const proxyText = intl.formatMessage({ id: 'diceRoll.proxyBy' }, { rollerName: rolledBy });
+    result = `${result} ${proxyText}`;
   }
   
   // Add action prefix if present
@@ -117,7 +123,7 @@ export const DiceRollFormatter: React.FC<DiceRollFormatterProps> = ({ roll }) =>
       </div>
       
       <div className="roll-details">
-        {formatDiceDetails(roll.diceList, gradeInfo.text, hasTarget ? roll.target : undefined, roll.action || undefined)}
+        {formatDiceDetails(roll.diceList, gradeInfo.text, hasTarget ? roll.target : undefined, roll.action || undefined, roll.proxyRoll, roll.rolledBy, intl)}
       </div>
     </div>
   );

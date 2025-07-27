@@ -45,8 +45,8 @@ interface MockContextOverrides {
 
 const createMockContext = (overrides: MockContextOverrides = {}) => {
   const tableName = "Wildsea-" + environment.name;
-  
-  return ({
+
+  return {
     identity: {
       sub: "test-user-id",
       ...overrides.identity,
@@ -79,7 +79,7 @@ const createMockContext = (overrides: MockContextOverrides = {}) => {
           : { [tableName]: [mockPlayerSheet] },
     },
     error: null,
-  }) as unknown as Context;
+  } as unknown as Context;
 };
 
 describe("rollDice resolver", () => {
@@ -128,6 +128,29 @@ describe("rollDice resolver", () => {
               {
                 PK: "GAME#test-game-id",
                 SK: "PLAYER#ship-id",
+              },
+            ],
+          },
+        },
+      });
+    });
+
+    it("should not add duplicate keys when onBehalfOf equals current user", () => {
+      const tableName = "Wildsea-" + environment.name;
+      const contextWithSelfOnBehalfOf = createMockContext({
+        input: { onBehalfOf: "test-user-id" }, // Same as identity.sub
+      });
+
+      const result = request(contextWithSelfOnBehalfOf);
+
+      expect(result).toEqual({
+        operation: "BatchGetItem",
+        tables: {
+          [tableName]: {
+            keys: [
+              {
+                PK: "GAME#test-game-id",
+                SK: "PLAYER#test-user-id",
               },
             ],
           },
@@ -234,6 +257,32 @@ describe("rollDice resolver", () => {
       expect(result.grade).toBe(Grades.CRITICAL_SUCCESS);
       expect(result.diceList[0].value).toBe(33);
       expect(result.playerName).toBe("Test Character");
+    });
+
+    it("should handle onBehalfOf that equals current user (self-roll)", () => {
+      const contextWithSelfOnBehalfOf = createMockContext({
+        stash: {
+          input: {
+            gameId: "test-game-id",
+            dice: [{ type: "d100", size: 100 }],
+            rollType: RollTypes.DELTA_GREEN,
+            target: 50,
+          },
+          playerId: "test-user-id",
+          onBehalfOf: "test-user-id", // Same as identity.sub
+        },
+        result: [mockPlayerSheet], // Only the player sheet
+      });
+
+      jest.spyOn(Math, "random").mockReturnValue(0.24);
+
+      const result = response(contextWithSelfOnBehalfOf);
+
+      expect(result.grade).toBe(Grades.SUCCESS);
+      expect(result.playerName).toBe("Test Character");
+      expect(result.playerId).toBe("test-user-id");
+      expect(result.rolledBy).toBe("Test Character");
+      expect(result.proxyRoll).toBe(false); // Should be false for self-roll
     });
   });
 

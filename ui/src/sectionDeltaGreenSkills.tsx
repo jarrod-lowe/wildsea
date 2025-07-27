@@ -99,6 +99,7 @@ const renderRollControls = (
 };
 
 export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
+  const { section, userSubject } = props;
   const intl = useIntl();
   const [diceModalOpen, setDiceModalOpen] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<{ name: string; value: number; item: DeltaGreenSkillItem; actionText: string } | null>(null);
@@ -231,6 +232,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
                     <button
                       className="dice-button"
                       onClick={() => handleDiceClick(item.name, numericRoll, item, content, setContent, updateSection)}
+                      disabled={!mayEditSheet}
                       aria-label={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
                       title={intl.formatMessage({ id: 'deltaGreenSkills.rollDice' }, { skillName: item.name })}
                     >
@@ -346,6 +348,10 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     );
   };
 
+  // Determine if we need to pass onBehalfOf
+  const shouldUseOnBehalfOf = userSubject !== section.userId;
+  const onBehalfOfValue = shouldUseOnBehalfOf ? section.userId : undefined;
+
   return (
     <>
       <BaseSection<DeltaGreenSkillItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />
@@ -357,6 +363,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
           skillValue={selectedSkill.value}
           initialAction={selectedSkill.actionText}
           onRollComplete={handleRollComplete}
+          onBehalfOf={onBehalfOfValue}
         />
       )}
     </>
