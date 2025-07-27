@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl } from 'react-intl';
@@ -14,8 +14,9 @@ type SectionTypeKeyValue = BaseSectionContent<KeyValueItem>;
 
 export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
+  const updateTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const handleValueChange = async (
+  const handleValueChange = useCallback(async (
         item: KeyValueItem,
         newValue: string,
         content: SectionTypeKeyValue,
@@ -28,10 +29,19 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
     const updatedItem = { ...item, value: newValue };
     newItems[itemIndex] = updatedItem;
     const newContent = { ...content, items: newItems };
+    
+    // Update local state immediately for responsive UI
     setContent(newContent);
-    await updateSection({ content: JSON.stringify(newContent) })
-
-  };
+    
+    // Debounce the backend update to prevent race conditions
+    if (updateTimeoutRef.current) {
+      clearTimeout(updateTimeoutRef.current);
+    }
+    
+    updateTimeoutRef.current = setTimeout(async () => {
+      await updateSection({ content: JSON.stringify(newContent) });
+    }, 300);
+  }, []);
 
   const renderItems = (
         content: SectionTypeKeyValue,
