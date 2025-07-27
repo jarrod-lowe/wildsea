@@ -2,6 +2,7 @@ import { request, response } from "../mutation/rollDice/rollDice";
 import { Context } from "@aws-appsync/utils";
 import { RollTypes, Grades } from "../lib/constants/rollTypes";
 import type { RollDiceInput } from "../../appsync/graphql";
+import environment from "../environment.json";
 
 // Mock the util functions
 jest.mock("@aws-appsync/utils", () => ({
@@ -42,8 +43,10 @@ interface MockContextOverrides {
   identity?: { sub: string };
 }
 
-const createMockContext = (overrides: MockContextOverrides = {}) =>
-  ({
+const createMockContext = (overrides: MockContextOverrides = {}) => {
+  const tableName = "Wildsea-" + environment.name;
+  
+  return ({
     identity: {
       sub: "test-user-id",
       ...overrides.identity,
@@ -72,11 +75,12 @@ const createMockContext = (overrides: MockContextOverrides = {}) =>
     result: {
       data:
         overrides.result !== undefined
-          ? { "Wildsea-dev": overrides.result }
-          : { "Wildsea-dev": [mockPlayerSheet] },
+          ? { [tableName]: overrides.result }
+          : { [tableName]: [mockPlayerSheet] },
     },
     error: null,
   }) as unknown as Context;
+};
 
 describe("rollDice resolver", () => {
   beforeEach(() => {
@@ -85,13 +89,14 @@ describe("rollDice resolver", () => {
 
   describe("request function", () => {
     it("should create correct DynamoDB BatchGetItem request", () => {
+      const tableName = "Wildsea-" + environment.name;
       const mockContext = createMockContext();
       const result = request(mockContext);
 
       expect(result).toEqual({
         operation: "BatchGetItem",
         tables: {
-          "Wildsea-dev": {
+          [tableName]: {
             keys: [
               {
                 PK: "GAME#test-game-id",
@@ -104,6 +109,7 @@ describe("rollDice resolver", () => {
     });
 
     it("should include ship key when onBehalfOf is provided", () => {
+      const tableName = "Wildsea-" + environment.name;
       const contextWithOnBehalfOf = createMockContext({
         input: { onBehalfOf: "ship-id" },
       });
@@ -113,7 +119,7 @@ describe("rollDice resolver", () => {
       expect(result).toEqual({
         operation: "BatchGetItem",
         tables: {
-          "Wildsea-dev": {
+          [tableName]: {
             keys: [
               {
                 PK: "GAME#test-game-id",
