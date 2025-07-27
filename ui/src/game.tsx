@@ -53,79 +53,89 @@ const usePlayerSheetUpdates = (
   const intl = useIntl();
 
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined = undefined;
+
     if (isGameFetched) {
-      subscribeToPlayerSheetUpdates(gameId, async (updatedSheetSummary) => {
-        const currentGame = gameRef.current;
-        if (currentGame) {
-          if (updatedSheetSummary.deleted) {
-            // Player was deleted
-            const updatedSheets = currentGame.playerSheets.filter(sheet => sheet.userId !== updatedSheetSummary.userId);
-            const updatedGame = { ...currentGame, playerSheets: updatedSheets };
-            setGame(updatedGame);
-            gameRef.current = updatedGame;
-
-            if (updatedSheetSummary.userId === userSubject) {
-              // Current user was deleted, redirect to games list
-              const currentUrl = new URL(window.location.href);
-              const newUrl = `${window.location.origin}${currentUrl.pathname}`;
-              window.location.href = newUrl;
-            } else {
-              // Another player was deleted, update active sheet if necessary
-              setActiveSheet(prevActiveSheet => 
-                prevActiveSheet === updatedSheetSummary.userId ? userSubject : prevActiveSheet
-              );
-            }
-
-            toast.addToast(intl.formatMessage(
-              { id: 'playerSheetTab.playerLeft' },
-              { name: updatedSheetSummary.characterName }
-            ), 'success');
-          } else {
-            const existingPlayerIndex = currentGame.playerSheets.findIndex(sheet => sheet.userId === updatedSheetSummary.userId);
-
-            if (existingPlayerIndex == -1) {
-              try {
-                const client = generateClient();
-                const response = await client.graphql({
-                  query: getGameQuery,
-                  variables: {
-                    input: {
-                      gameId: gameId,
-                    },
-                  }
-                }) as GraphQLResult<{ getGame: Game }>;
-
-                if (response.data?.getGame) {
-                  setGame(response.data.getGame);
-                  gameRef.current = response.data.getGame;
-                  toast.addToast(intl.formatMessage(
-                    { id: 'playerSheetTab.playerJoined' },
-                    { name: updatedSheetSummary.characterName }
-                  ), 'success');
-                }
-              } catch (error) {
-                console.error("Error fetching updated game data", error);
-                toast.addToast(intl.formatMessage({ id: 'errorFetchingGameData' }), 'error');
-              }
-            } else {
-              const updatedSheets = currentGame.playerSheets.map(sheet =>
-              sheet.userId === updatedSheetSummary.userId
-                ? { ...sheet, characterName: updatedSheetSummary.characterName }
-                : sheet
-              );
+      const subscribe = async () => {
+        unsubscribe = await subscribeToPlayerSheetUpdates(gameId, async (updatedSheetSummary) => {
+          const currentGame = gameRef.current;
+          if (currentGame) {
+            if (updatedSheetSummary.deleted) {
+              // Player was deleted
+              const updatedSheets = currentGame.playerSheets.filter(sheet => sheet.userId !== updatedSheetSummary.userId);
               const updatedGame = { ...currentGame, playerSheets: updatedSheets };
               setGame(updatedGame);
               gameRef.current = updatedGame;
+
+              if (updatedSheetSummary.userId === userSubject) {
+                // Current user was deleted, redirect to games list
+                const currentUrl = new URL(window.location.href);
+                const newUrl = `${window.location.origin}${currentUrl.pathname}`;
+                window.location.href = newUrl;
+              } else {
+                // Another player was deleted, update active sheet if necessary
+                setActiveSheet(prevActiveSheet => 
+                  prevActiveSheet === updatedSheetSummary.userId ? userSubject : prevActiveSheet
+                );
+              }
+
+              toast.addToast(intl.formatMessage(
+                { id: 'playerSheetTab.playerLeft' },
+                { name: updatedSheetSummary.characterName }
+              ), 'success');
+            } else {
+              const existingPlayerIndex = currentGame.playerSheets.findIndex(sheet => sheet.userId === updatedSheetSummary.userId);
+
+              if (existingPlayerIndex == -1) {
+                try {
+                  const client = generateClient();
+                  const response = await client.graphql({
+                    query: getGameQuery,
+                    variables: {
+                      input: {
+                        gameId: gameId,
+                      },
+                    }
+                  }) as GraphQLResult<{ getGame: Game }>;
+
+                  if (response.data?.getGame) {
+                    setGame(response.data.getGame);
+                    gameRef.current = response.data.getGame;
+                    toast.addToast(intl.formatMessage(
+                      { id: 'playerSheetTab.playerJoined' },
+                      { name: updatedSheetSummary.characterName }
+                    ), 'success');
+                  }
+                } catch (error) {
+                  console.error("Error fetching updated game data", error);
+                  toast.addToast(intl.formatMessage({ id: 'errorFetchingGameData' }), 'error');
+                }
+              } else {
+                const updatedSheets = currentGame.playerSheets.map(sheet =>
+                sheet.userId === updatedSheetSummary.userId
+                  ? { ...sheet, characterName: updatedSheetSummary.characterName }
+                  : sheet
+                );
+                const updatedGame = { ...currentGame, playerSheets: updatedSheets };
+                setGame(updatedGame);
+                gameRef.current = updatedGame;
+              }
             }
           }
-        }
-      }, (err) => {
-        console.error("Error subscribing to player sheet updates", err);
-        toast.addToast(intl.formatMessage({ id: 'errorSubscribingToPlayerSheetUpdates' }), 'error');
-      });
+        }, (err) => {
+          console.error("Error subscribing to player sheet updates", err);
+          toast.addToast(intl.formatMessage({ id: 'errorSubscribingToPlayerSheetUpdates' }), 'error');
+        });
+      };
+
+      subscribe();
     }
 
-    // TODO: unsubscribe
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [gameId, setGame, gameRef, toast, intl, isGameFetched]);
 };
 
@@ -136,51 +146,63 @@ const useSectionUpdates = (
     isGameFetched: boolean,
   ) => {
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined = undefined;
+
     if (isGameFetched) {
-      subscribeToSectionUpdates(gameId, (updatedSection) => {
-        const currentGame = gameRef.current;
-        if (currentGame) {
-          const updatedSheets = currentGame.playerSheets.map(sheet => {
-            if (sheet.userId === updatedSection.userId) {
-              // Check if section already exists
-              const sectionExists = sheet.sections.some(section => section.sectionId === updatedSection.sectionId);
+      const subscribe = async () => {
+        unsubscribe = await subscribeToSectionUpdates(gameId, (updatedSection) => {
+          const currentGame = gameRef.current;
+          if (currentGame) {
+            const updatedSheets = currentGame.playerSheets.map(sheet => {
+              if (sheet.userId === updatedSection.userId) {
+                // Check if section already exists
+                const sectionExists = sheet.sections.some(section => section.sectionId === updatedSection.sectionId);
 
-              let updatedSections = [...sheet.sections];
+                let updatedSections = [...sheet.sections];
 
-              if (sectionExists) {
-                // Update or mark as deleted
-                updatedSections = updatedSections.map(section => {
-                  if (section.sectionId === updatedSection.sectionId) {
-                    return updatedSection.deleted
-                      ? { ...updatedSection, deleted: true }
-                      : updatedSection;
-                  }
-                  return section;
-                });
+                if (sectionExists) {
+                  // Update or mark as deleted
+                  updatedSections = updatedSections.map(section => {
+                    if (section.sectionId === updatedSection.sectionId) {
+                      return updatedSection.deleted
+                        ? { ...updatedSection, deleted: true }
+                        : updatedSection;
+                    }
+                    return section;
+                  });
 
-                // Remove deleted sections
-                updatedSections = updatedSections.filter(section => !section.deleted);
-              } else {
-                // Add new section
-                updatedSections.push(updatedSection);
+                  // Remove deleted sections
+                  updatedSections = updatedSections.filter(section => !section.deleted);
+                } else {
+                  // Add new section
+                  updatedSections.push(updatedSection);
+                }
+
+                // Sort sections by position
+                const sortedSections = updatedSections.toSorted((a, b) => a.position - b.position);
+
+                return { ...sheet, sections: sortedSections };
               }
+              return sheet;
+            });
 
-              // Sort sections by position
-              const sortedSections = updatedSections.toSorted((a, b) => a.position - b.position);
+            const updatedGame = { ...currentGame, playerSheets: updatedSheets };
+            setGame(updatedGame);
+            gameRef.current = updatedGame;
+          }
+        }, (err) => {
+          console.error("Error subscribing to section updates", err);
+        });
+      };
 
-              return { ...sheet, sections: sortedSections };
-            }
-            return sheet;
-          });
-
-          const updatedGame = { ...currentGame, playerSheets: updatedSheets };
-          setGame(updatedGame);
-          gameRef.current = updatedGame;
-        }
-      }, (err) => {
-        console.error("Error subscribing to section updates", err);
-      });
+      subscribe();
     }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [gameId, setGame, gameRef, isGameFetched]);
 };
 
@@ -191,27 +213,39 @@ const useGameUpdates = (
     isGameFetched: boolean,
   ) => {
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined = undefined;
+
     if (isGameFetched) {
-      subscribeToGameUpdates(gameId, (updatedGame: GameSummary) => {
-        const currentGame = gameRef.current;
-        if (currentGame != null) {
-          if (updatedGame.deleted) {
-            const currentUrl = new URL(window.location.href);
-            const newUrl = `${window.location.origin}${currentUrl.pathname}`;
-            window.location.href = newUrl;
+      const subscribe = async () => {
+        unsubscribe = await subscribeToGameUpdates(gameId, (updatedGame: GameSummary) => {
+          const currentGame = gameRef.current;
+          if (currentGame != null) {
+            if (updatedGame.deleted) {
+              const currentUrl = new URL(window.location.href);
+              const newUrl = `${window.location.origin}${currentUrl.pathname}`;
+              window.location.href = newUrl;
+            }
+            const updatedGameData: Game = {
+              ...currentGame,
+              gameName: updatedGame.gameName,
+              gameDescription: updatedGame.gameDescription,
+            }
+            setGame(updatedGameData);
+            gameRef.current = updatedGameData;
           }
-          const updatedGameData: Game = {
-            ...currentGame,
-            gameName: updatedGame.gameName,
-            gameDescription: updatedGame.gameDescription,
-          }
-          setGame(updatedGameData);
-          gameRef.current = updatedGameData;
-        }
-      }, (err) => {
-        console.error("Error subscribing to game updates", err)
-      });
+        }, (err) => {
+          console.error("Error subscribing to game updates", err)
+        });
+      };
+
+      subscribe();
     }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [gameId, setGame, gameRef, isGameFetched]);
 };
 
@@ -346,7 +380,7 @@ async function subscribeToPlayerSheetUpdates(
   gameId: string, 
   onUpdate: (updatedSheet: PlayerSheetSummary) => void, 
   onError: (error: any) => void
-) {
+): Promise<(() => void) | undefined> {
   try {
     const client = generateClient();
     const subscription = (client.graphql<GraphQLSubscription<GQLSubscription>>({
@@ -369,8 +403,8 @@ async function subscribeToPlayerSheetUpdates(
   } catch (error) {
     console.error('Error subscribing to player sheet updates:', error);
     onError(error);
+    return undefined;
   }
-
 }
 
 async function subscribeToSectionUpdates(
