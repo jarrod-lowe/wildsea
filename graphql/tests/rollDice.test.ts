@@ -1,6 +1,8 @@
 import { request, response } from "../mutation/rollDice/rollDice";
 import { Context } from "@aws-appsync/utils";
 import { RollTypes, Grades } from "../lib/constants/rollTypes";
+import type { RollDiceInput } from "../../appsync/graphql";
+import environment from "../environment.json";
 
 // Mock the util functions
 jest.mock("@aws-appsync/utils", () => ({
@@ -24,33 +26,61 @@ const mockPlayerSheet = {
   userId: "test-user-id",
   gameId: "test-game-id",
   characterName: "Test Character",
-  type: "character",
+  type: "CHARACTER",
 };
 
-const mockContext = {
-  identity: {
-    sub: "test-user-id",
-  },
-  arguments: {
-    input: {
-      gameId: "test-game-id",
-      dice: [{ type: "d100", size: 100 }],
-      rollType: RollTypes.DELTA_GREEN,
-      target: 50,
+const mockShipSheet = {
+  userId: "ship-id",
+  gameId: "test-game-id",
+  characterName: "Test Ship",
+  type: "SHIP",
+};
+
+interface MockContextOverrides {
+  input?: Partial<RollDiceInput>;
+  stash?: Record<string, unknown>;
+  result?: unknown[];
+  identity?: { sub: string };
+}
+
+const createMockContext = (overrides: MockContextOverrides = {}) => {
+  const tableName = "Wildsea-" + environment.name;
+  
+  return ({
+    identity: {
+      sub: "test-user-id",
+      ...overrides.identity,
     },
-  },
-  stash: {
-    input: {
-      gameId: "test-game-id",
-      dice: [{ type: "d100", size: 100 }],
-      rollType: RollTypes.DELTA_GREEN,
-      target: 50,
+    arguments: {
+      input: {
+        gameId: "test-game-id",
+        dice: [{ type: "d100", size: 100 }],
+        rollType: RollTypes.DELTA_GREEN,
+        target: 50,
+        ...overrides.input,
+      },
     },
-    playerId: "test-user-id",
-  },
-  result: mockPlayerSheet,
-  error: null,
-} as unknown as Context;
+    stash: {
+      input: {
+        gameId: "test-game-id",
+        dice: [{ type: "d100", size: 100 }],
+        rollType: RollTypes.DELTA_GREEN,
+        target: 50,
+        ...overrides.input,
+      },
+      playerId: "test-user-id",
+      onBehalfOf: undefined,
+      ...overrides.stash,
+    },
+    result: {
+      data:
+        overrides.result !== undefined
+          ? { [tableName]: overrides.result }
+          : { [tableName]: [mockPlayerSheet] },
+    },
+    error: null,
+  }) as unknown as Context;
+};
 
 describe("rollDice resolver", () => {
   beforeEach(() => {
@@ -58,14 +88,49 @@ describe("rollDice resolver", () => {
   });
 
   describe("request function", () => {
-    it("should create correct DynamoDB request", () => {
+    it("should create correct DynamoDB BatchGetItem request", () => {
+      const tableName = "Wildsea-" + environment.name;
+      const mockContext = createMockContext();
       const result = request(mockContext);
 
       expect(result).toEqual({
-        operation: "GetItem",
-        key: {
-          PK: "GAME#test-game-id",
-          SK: "PLAYER#test-user-id",
+        operation: "BatchGetItem",
+        tables: {
+          [tableName]: {
+            keys: [
+              {
+                PK: "GAME#test-game-id",
+                SK: "PLAYER#test-user-id",
+              },
+            ],
+          },
+        },
+      });
+    });
+
+    it("should include ship key when onBehalfOf is provided", () => {
+      const tableName = "Wildsea-" + environment.name;
+      const contextWithOnBehalfOf = createMockContext({
+        input: { onBehalfOf: "ship-id" },
+      });
+
+      const result = request(contextWithOnBehalfOf);
+
+      expect(result).toEqual({
+        operation: "BatchGetItem",
+        tables: {
+          [tableName]: {
+            keys: [
+              {
+                PK: "GAME#test-game-id",
+                SK: "PLAYER#test-user-id",
+              },
+              {
+                PK: "GAME#test-game-id",
+                SK: "PLAYER#ship-id",
+              },
+            ],
+          },
         },
       });
     });
@@ -76,6 +141,7 @@ describe("rollDice resolver", () => {
       // Mock Math.random to return 0 (which becomes 1)
       jest.spyOn(Math, "random").mockReturnValue(0);
 
+      const mockContext = createMockContext();
       const result = response(mockContext);
 
       expect(result.grade).toBe(Grades.CRITICAL_SUCCESS);
@@ -87,6 +153,7 @@ describe("rollDice resolver", () => {
       // Mock Math.random to return 0.99 (which becomes 100)
       jest.spyOn(Math, "random").mockReturnValue(0.99);
 
+      const mockContext = createMockContext();
       const result = response(mockContext);
 
       expect(result.grade).toBe(Grades.FUMBLE);
@@ -98,6 +165,7 @@ describe("rollDice resolver", () => {
       // Mock Math.random to return 0.21 (which becomes 22, all digits same and <= 50)
       jest.spyOn(Math, "random").mockReturnValue(0.21);
 
+      const mockContext = createMockContext();
       const result = response(mockContext);
 
       expect(result.grade).toBe(Grades.CRITICAL_SUCCESS);
@@ -109,6 +177,7 @@ describe("rollDice resolver", () => {
       // Mock Math.random to return 0.65 (which becomes 66, all digits same and > 50)
       jest.spyOn(Math, "random").mockReturnValue(0.65);
 
+      const mockContext = createMockContext();
       const result = response(mockContext);
 
       expect(result.grade).toBe(Grades.FUMBLE);
@@ -120,6 +189,7 @@ describe("rollDice resolver", () => {
       // Mock Math.random to return 0.24 (which becomes 25, <= 50)
       jest.spyOn(Math, "random").mockReturnValue(0.24);
 
+      const mockContext = createMockContext();
       const result = response(mockContext);
 
       expect(result.grade).toBe(Grades.SUCCESS);
@@ -131,6 +201,7 @@ describe("rollDice resolver", () => {
       // Mock Math.random to return 0.74 (which becomes 75, > 50)
       jest.spyOn(Math, "random").mockReturnValue(0.74);
 
+      const mockContext = createMockContext();
       const result = response(mockContext);
 
       expect(result.grade).toBe(Grades.FAILURE);
@@ -142,6 +213,7 @@ describe("rollDice resolver", () => {
       // Mock Math.random to return 0.49 (which becomes 50, exactly equal to target 50)
       jest.spyOn(Math, "random").mockReturnValue(0.49);
 
+      const mockContext = createMockContext();
       const result = response(mockContext);
 
       expect(result.grade).toBe(Grades.SUCCESS);
@@ -151,28 +223,11 @@ describe("rollDice resolver", () => {
 
     it("should return CRITICAL_SUCCESS for matching digits equal to target", () => {
       // Mock Math.random to return 0.32 (which becomes 33, matching digits and = target)
-      const contextWithTarget33 = {
-        ...mockContext,
-        arguments: {
-          input: {
-            gameId: "test-game-id",
-            dice: [{ type: "d100", size: 100 }],
-            rollType: RollTypes.DELTA_GREEN,
-            target: 33,
-          },
-        },
-        stash: {
-          input: {
-            gameId: "test-game-id",
-            dice: [{ type: "d100", size: 100 }],
-            rollType: RollTypes.DELTA_GREEN,
-            target: 33,
-          },
-          playerId: "test-user-id",
-        },
-      } as unknown as Context;
-
       jest.spyOn(Math, "random").mockReturnValue(0.32);
+
+      const contextWithTarget33 = createMockContext({
+        input: { target: 33 },
+      });
 
       const result = response(contextWithTarget33);
 
@@ -182,35 +237,97 @@ describe("rollDice resolver", () => {
     });
   });
 
-  describe("response function - Sum rolls", () => {
-    it("should return NEUTRAL for sum roll type", () => {
-      const sumContext = {
-        ...mockContext,
-        arguments: {
-          input: {
-            gameId: "test-game-id",
-            dice: [
-              { type: "d6", size: 6 },
-              { type: "d6", size: 6 },
-            ],
-            rollType: RollTypes.SUM,
-            target: 7,
-          },
-        },
+  describe("response function - error cases", () => {
+    it("should error when player not found in game (no onBehalfOf)", () => {
+      const contextWithNoPlayer = createMockContext({
+        result: [], // Empty result - no player found
+      });
+
+      expect(() => response(contextWithNoPlayer)).toThrow("Unauthorized");
+    });
+  });
+
+  describe("response function - onBehalfOf ship rolls", () => {
+    it("should return ship name when rolling on behalf of ship", () => {
+      const contextWithShip = createMockContext({
         stash: {
           input: {
             gameId: "test-game-id",
-            dice: [
-              { type: "d6", size: 6 },
-              { type: "d6", size: 6 },
-            ],
-            rollType: RollTypes.SUM,
-            target: 7,
+            dice: [{ type: "d100", size: 100 }],
+            rollType: RollTypes.DELTA_GREEN,
+            target: 50,
           },
           playerId: "test-user-id",
+          onBehalfOf: "ship-id",
         },
-        result: mockPlayerSheet,
-      } as unknown as Context;
+        result: [mockPlayerSheet, mockShipSheet],
+      });
+
+      jest.spyOn(Math, "random").mockReturnValue(0.24);
+
+      const result = response(contextWithShip);
+
+      expect(result.grade).toBe(Grades.SUCCESS);
+      expect(result.playerName).toBe("Test Ship");
+      expect(result.playerId).toBe("ship-id");
+    });
+
+    it("should error if onBehalfOf record is not a ship", () => {
+      const mockNonShip = {
+        userId: "non-ship-id",
+        gameId: "test-game-id",
+        characterName: "Not A Ship",
+        type: "CHARACTER",
+      };
+
+      const contextWithNonShip = createMockContext({
+        stash: {
+          input: {
+            gameId: "test-game-id",
+            dice: [{ type: "d100", size: 100 }],
+            rollType: RollTypes.DELTA_GREEN,
+            target: 50,
+          },
+          playerId: "test-user-id",
+          onBehalfOf: "non-ship-id",
+        },
+        result: [mockPlayerSheet, mockNonShip],
+      });
+
+      expect(() => response(contextWithNonShip)).toThrow("Unauthorized");
+    });
+
+    it("should error if onBehalfOf ID does not exist in game", () => {
+      const contextWithMissingShip = createMockContext({
+        stash: {
+          input: {
+            gameId: "test-game-id",
+            dice: [{ type: "d100", size: 100 }],
+            rollType: RollTypes.DELTA_GREEN,
+            target: 50,
+          },
+          playerId: "test-user-id",
+          onBehalfOf: "non-existent-id",
+        },
+        result: [mockPlayerSheet], // Only player, no ship
+      });
+
+      expect(() => response(contextWithMissingShip)).toThrow("Unauthorized");
+    });
+  });
+
+  describe("response function - Sum rolls", () => {
+    it("should return NEUTRAL for sum roll type", () => {
+      const sumContext = createMockContext({
+        input: {
+          dice: [
+            { type: "d6", size: 6 },
+            { type: "d6", size: 6 },
+          ],
+          rollType: RollTypes.SUM,
+          target: 7,
+        },
+      });
 
       // Mock Math.random to return consistent values
       jest

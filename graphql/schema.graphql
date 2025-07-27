@@ -195,6 +195,7 @@ input RollDiceInput {
   action: String
   rollType: String!
   target: Int!
+  onBehalfOf: ID
 }
 
 type DiceRoll @aws_cognito_user_pools {
@@ -209,6 +210,8 @@ type DiceRoll @aws_cognito_user_pools {
   diceList: [Dice!]!
   value: Int!
   rolledAt: AWSDateTime!
+  rolledBy: String!
+  proxyRoll: Boolean!
   type: String!
   messageIndex: Int!
 }

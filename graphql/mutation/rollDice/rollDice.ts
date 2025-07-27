@@ -1,5 +1,6 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
-import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
+import type { DynamoDBBatchGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
+import environment from "../../environment.json";
 import type { DataPlayerSheet } from "../../lib/dataTypes";
 import type {
   RollDiceInput,
@@ -8,12 +9,12 @@ import type {
   Dice,
 } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
-import { TypeDiceRoll } from "../../lib/constants/entityTypes";
+import { TypeDiceRoll, TypeShip } from "../../lib/constants/entityTypes";
 import { RollTypes, Grades } from "../../lib/constants/rollTypes";
 
 export function request(
   context: Context<{ input: RollDiceInput }>,
-): DynamoDBGetItemRequest {
+): DynamoDBBatchGetItemRequest {
   if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
@@ -23,16 +24,35 @@ export function request(
   // Store input in stash for response function
   context.stash.input = input;
   context.stash.playerId = identity.sub;
+  context.stash.onBehalfOf = input.onBehalfOf;
 
-  // Check game access by getting the player record
-  const key = {
-    PK: DDBPrefixGame + "#" + input.gameId,
-    SK: DDBPrefixPlayer + "#" + identity.sub,
-  };
+  // Always use BatchGetItem for consistency
+  const keys = [
+    util.dynamodb.toMapValues({
+      PK: DDBPrefixGame + "#" + input.gameId,
+      SK: DDBPrefixPlayer + "#" + identity.sub,
+    }),
+  ];
+
+  // Add ship record to batch if rolling on behalf of ship
+  if (input.onBehalfOf) {
+    keys.push(
+      util.dynamodb.toMapValues({
+        PK: DDBPrefixGame + "#" + input.gameId,
+        SK: DDBPrefixPlayer + "#" + input.onBehalfOf,
+      }),
+    );
+  }
+
+  const tableName = "Wildsea-" + environment.name;
 
   return {
-    operation: "GetItem",
-    key: util.dynamodb.toMapValues(key),
+    operation: "BatchGetItem",
+    tables: {
+      [tableName]: {
+        keys,
+      },
+    },
   };
 }
 
@@ -44,18 +64,48 @@ export function response(context: Context): DiceRoll {
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
 
-  const playerSheet = context.result as DataPlayerSheet;
-  if (!playerSheet) {
-    util.error("Player not found in game", "NOT_FOUND");
-  }
+  const input = context.stash.input as RollDiceInput;
+  const playerId = context.stash.playerId as string;
+  const onBehalfOf = context.stash.onBehalfOf as string | undefined;
 
-  // Check if user has access to this player sheet
-  if (playerSheet.userId !== identity.sub) {
+  // Handle BatchGetItem result
+  const tableName = "Wildsea-" + environment.name;
+  const results = context.result.data[tableName] as DataPlayerSheet[];
+
+  // Find player record (always required)
+  const playerSheet = results.find(
+    (record) => record != null && record.userId === identity.sub,
+  );
+  if (!playerSheet) {
     util.unauthorized();
   }
 
-  const input = context.stash.input as RollDiceInput;
-  const playerId = context.stash.playerId as string;
+  let rollerName: string;
+  let actualPlayerId: string;
+  let rolledBy: string;
+  let proxyRoll: boolean;
+
+  if (onBehalfOf) {
+    // Find ship record
+    const shipSheet = results.find(
+      (record) => record.userId === onBehalfOf && record.type == TypeShip,
+    );
+    if (!shipSheet) {
+      util.unauthorized();
+    }
+
+    // Use ship's details for the roll
+    rollerName = shipSheet.characterName;
+    actualPlayerId = shipSheet.userId;
+    rolledBy = playerSheet.characterName;
+    proxyRoll = true;
+  } else {
+    // Use player's details for the roll
+    rollerName = playerSheet.characterName;
+    actualPlayerId = playerId;
+    rolledBy = playerSheet.characterName;
+    proxyRoll = false;
+  }
 
   // Roll each die in the input array
   const rolledDice: Dice[] = [];
@@ -94,8 +144,8 @@ export function response(context: Context): DiceRoll {
 
   const result: DiceRoll = {
     gameId: input.gameId,
-    playerId: playerId,
-    playerName: playerSheet.characterName,
+    playerId: actualPlayerId,
+    playerName: rollerName,
     dice: outputDice,
     rollType: input.rollType,
     target: input.target,
@@ -104,6 +154,8 @@ export function response(context: Context): DiceRoll {
     diceList: rolledDice,
     value: totalValue,
     rolledAt: util.time.nowISO8601(),
+    rolledBy: rolledBy,
+    proxyRoll: proxyRoll,
     type: TypeDiceRoll,
     messageIndex: messageIndex,
   };
