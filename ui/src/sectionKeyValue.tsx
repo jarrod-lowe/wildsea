@@ -44,28 +44,35 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
   }, []);
 
   const renderItems = (
-        content: SectionTypeKeyValue,
-        mayEditSheet: boolean,
-        setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
-        updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    content: SectionTypeKeyValue,
+    mayEditSheet: boolean,
+    setContent: React.Dispatch<React.SetStateAction<SectionTypeKeyValue>>,
+    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     isEditing: boolean,
-    ) => {
+  ) => {
+    // Always provide default values for all fields to avoid uncontrolled input warnings
     return content.items
-      .filter(item => content.showEmpty || item.value !== '')
+      .filter(item => content.showEmpty || (item.value ?? '') !== '')
       .map(item => {
-        const inputId = `keyvalue-input-${item.id}`;
+        const safeItem: KeyValueItem = {
+          ...item,
+          name: item.name ?? '',
+          value: item.value ?? '',
+          description: item.description ?? '',
+        };
+        const inputId = `keyvalue-input-${safeItem.id}`;
         return (
           <SectionItem
-            key={item.id}
-            item={item}
-            renderContent={(item) => (
+            key={safeItem.id}
+            item={safeItem}
+            renderContent={() => (
               <input
                 id={inputId}
                 type="text"
-                value={(item as KeyValueItem).value || ''}
-                onChange={(e) => handleValueChange(item as KeyValueItem, e.target.value, content, setContent, updateSection, isEditing)}
+                value={safeItem.value}
+                onChange={(e) => handleValueChange(safeItem, e.target.value, content, setContent, updateSection, isEditing)}
                 disabled={!mayEditSheet}
-                aria-label={item.name}
+                aria-label={safeItem.name}
               />
             )}
           />
@@ -94,30 +101,38 @@ export const SectionKeyValue: React.FC<SectionDefinition> = (props) => {
       <SectionEditForm
         content={content}
         setContent={setContent}
-        renderItemEdit={(item, index) => (
-          <>
-            <input
-              type="text"
-              value={item.name || ''}
-              onChange={(e) => handleItemChange(index, 'name', e.target.value)}
-              placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
-              aria-label={intl.formatMessage({ id: "sectionObject.itemName" })}
-            />
-            <input
-              type="text"
-              value={item.value || ''}
-              onChange={(e) => handleItemChange(index, 'value', e.target.value)}
-              placeholder={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
-              aria-label={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
-            />
-            <textarea
-              value={item.description || ''}
-              onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-              placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
-              aria-label={intl.formatMessage({ id: "sectionObject.itemDescription" })}
-            />
-          </>
-        )}
+        renderItemEdit={(item, index) => {
+          const safeItem: KeyValueItem = {
+            ...item,
+            name: item.name ?? '',
+            value: item.value ?? '',
+            description: item.description ?? '',
+          };
+          return (
+            <>
+              <input
+                type="text"
+                value={safeItem.name}
+                onChange={(e) => handleItemChange(index, 'name', e.target.value)}
+                placeholder={intl.formatMessage({ id: "sectionObject.itemName" })}
+                aria-label={intl.formatMessage({ id: "sectionObject.itemName" })}
+              />
+              <input
+                type="text"
+                value={safeItem.value}
+                onChange={(e) => handleItemChange(index, 'value', e.target.value)}
+                placeholder={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
+                aria-label={intl.formatMessage({ id: "sectionKeyValue.itemValue" })}
+              />
+              <textarea
+                value={safeItem.description}
+                onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
+                aria-label={intl.formatMessage({ id: "sectionObject.itemDescription" })}
+              />
+            </>
+          );
+        }}
         addItem={handleAddItem}
         removeItem={handleRemoveItem}
         handleUpdate={handleUpdate}
