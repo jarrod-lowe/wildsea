@@ -1456,6 +1456,20 @@
   justify-content: center;
 }
 
+/* Inline control layouts for compact numeric inputs */
+.roll-inline-controls,
+.score-inline-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.roll-input-inline,
+.score-input-inline {
+  width: 60px;
+  text-align: center;
+}
+
 
 
 .show-empty-toggle {
