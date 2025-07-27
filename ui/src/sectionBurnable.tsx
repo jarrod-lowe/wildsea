@@ -185,11 +185,17 @@ export const SectionBurnable: React.FC<SectionDefinition> = (props) => {
               aria-label={intl.formatMessage({ id: "sectionObject.itemName" })}
             />
             <div className="item-length-controls">
-              <button onClick={() => handleItemChange(index, 'length', item.length - 1)}>
+              <button 
+                onClick={() => handleItemChange(index, 'length', item.length - 1)}
+                aria-label={intl.formatMessage({ id: 'sectionBurnable.decrementLength' }, { name: item.name })}
+              >
                 <FormattedMessage id="sectionBurnable.decrement" />
               </button>
               <span>{item.length}</span>
-              <button onClick={() => handleItemChange(index, 'length', item.length + 1)}>
+              <button 
+                onClick={() => handleItemChange(index, 'length', item.length + 1)}
+                aria-label={intl.formatMessage({ id: 'sectionBurnable.incrementLength' }, { name: item.name })}
+              >
                 <FormattedMessage id="sectionBurnable.increment" />
               </button>
             </div>

@@ -157,8 +157,9 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                       onClick={() => handleCurrentChange(item, item.current - 1, content, setContent, updateSection)}
                       disabled={item.current <= 0}
                       className="adjust-btn"
+                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenDerived.decrease' }, { name: item.name })}
                     >
-                      −
+                      <FormattedMessage id="sectionDeltaGreenDerived.decrementSymbol" />
                     </button>
                   )}
                   <input
@@ -176,8 +177,9 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                       onClick={() => handleCurrentChange(item, item.current + 1, content, setContent, updateSection)}
                       disabled={displayMax !== undefined && item.current >= displayMax}
                       className="adjust-btn"
+                      aria-label={intl.formatMessage({ id: 'sectionDeltaGreenDerived.increase' }, { name: item.name })}
                     >
-                      +
+                      <FormattedMessage id="sectionDeltaGreenDerived.incrementSymbol" />
                     </button>
                   )}
                 </div>
