@@ -16,9 +16,9 @@ type SectionTypeConfig = {
 
 // Section type registry to map types to components and labels
 const sectionRegistry: Record<string, SectionTypeConfig> = {
-  'TRACKABLE': { component: SectionTrackable, label: 'sectionType.trackable', seed: () => ({items: []}) },
-  'BURNABLE': { component: SectionBurnable, label: 'sectionType.burnable', seed: () => ({items: []}) },
-  'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue', seed: () => ({items: []}) },
+  'TRACKABLE': { component: SectionTrackable, label: 'sectionType.trackable', seed: () => ({showEmpty: false, items: []}) },
+  'BURNABLE': { component: SectionBurnable, label: 'sectionType.burnable', seed: () => ({showEmpty: false, items: []}) },
+  'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue', seed: () => ({showEmpty: false, items: []}) },
   'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: () => ({items: [{content: ""}]}) },
   'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: () => createDefaultDeltaGreenStatsContent() },
   'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet) => createDefaultDeltaGreenDerivedContent(sheet) },
