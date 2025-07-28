@@ -562,6 +562,29 @@
   border-radius: 4px;
 }
 
+/* Edit mode styling for sections */
+.section.editing {
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-primary-light);
+  box-shadow: var(--color-shadow-medium);
+  position: relative;
+}
+
+.section-editing-indicator {
+  position: absolute;
+  top: -12px;
+  right: 10px;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 1;
+}
+
 /* Lifted styling for sections when drag is unlocked */
 .sections-unlocked .section {
   box-shadow: var(--color-shadow-section);

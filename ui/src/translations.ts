@@ -68,6 +68,7 @@ export const messages = {
     'cancel': '❌ Cancel',
     'close': '✖ Close',
     'edit': '✎ Edit',
+    'editingMode': '✏️ Editing',
     'showInfo': 'ℹ',
     'showInfo.gameDescription': 'Show game description',
     'showInfo.itemDescription': 'Show item description',

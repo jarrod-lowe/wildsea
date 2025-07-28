@@ -128,7 +128,10 @@ export const BaseSection = <T extends BaseSectionItem>({
 
     if (isEditing) {
         return (
-            <div className="section" ref={sectionRef}>
+            <div className="section editing" ref={sectionRef}>
+                <div className="section-editing-indicator">
+                    {intl.formatMessage({ id: "editingMode" })}
+                </div>
                 <input
                     type="text"
                     value={sectionName}
