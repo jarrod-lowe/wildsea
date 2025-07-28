@@ -48,7 +48,7 @@
 .submitButton-customizable {
   font-size: 14px;
   font-weight: 400;
-  margin: 20px 0px 10px;
+  margin: 20px 0 10px 0;
   height: 40px;
   width: 100%;
   color: #fff;
@@ -91,7 +91,7 @@
 .inputField-customizable:focus {
   border-color: #1e7e34;
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(30, 126, 52, 25%);
+  box-shadow: 0 0 0 0.2rem rgb(30 126 52 / 0.25);
 }
 
 .idpButton-customizable {
