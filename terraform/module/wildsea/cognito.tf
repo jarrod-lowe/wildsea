@@ -114,6 +114,14 @@ resource "aws_cognito_user_pool_domain" "cognito" {
   user_pool_id = aws_cognito_user_pool.cognito.id
 }
 
+resource "aws_cognito_user_pool_ui_customization" "cognito" {
+  client_id    = aws_cognito_user_pool_client.cognito.id
+  css          = file("${path.module}/../../cognito-ui.css")
+  user_pool_id = aws_cognito_user_pool_domain.cognito.user_pool_id
+
+  depends_on = [aws_cognito_user_pool_domain.cognito]
+}
+
 resource "aws_cognito_identity_provider" "google-oauth" {
   count = local.enable_google_auth ? 1 : 0
 
