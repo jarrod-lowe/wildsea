@@ -150,11 +150,19 @@
 
   .tab-bar {
     flex-wrap: wrap;
+    margin-bottom: var(--space-sm);
   }
 
   .tab-bar button {
-    flex: 1 0 50%;
-    margin-bottom: var(--space-sm);
+    flex: 1 0 45%;
+    margin-bottom: var(--space-xs);
+    margin-right: var(--space-xs);
+    border-radius: 6px;
+    max-width: none;
+  }
+
+  .tab-bar button.active::after {
+    display: none;
   }
 
   .game-card {
@@ -541,18 +549,53 @@
 
 .tab-bar {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 0;
+  border-bottom: 2px solid var(--color-border);
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .tab-bar button {
-  padding: 10px 20px;
-  border: none;
+  padding: 12px 16px;
+  border: 2px solid var(--color-border);
+  border-bottom: none;
   background-color: var(--color-surface-light);
   cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: all 0.2s ease;
+  border-radius: 8px 8px 0 0;
+  margin-right: 2px;
+  min-width: 0;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab-bar button:hover {
+  background-color: var(--color-interactive-hover);
+  color: var(--color-text);
+  transform: translateY(-1px);
 }
 
 .tab-bar button.active {
-  background-color: var(--color-surface-medium);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  font-weight: 600;
+  z-index: 1;
+}
+
+.tab-bar button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-surface);
 }
 
 .section {

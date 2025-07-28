@@ -358,7 +358,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         isFirefly={userSubject === game.fireflyUserId}
         onEditGame={() => setShowEditModal(true)}
       />
-      <div className="tab-bar">
+      <div className="tab-bar" role="tablist" aria-label={intl.formatMessage({ id: 'game.characterTabs' })}>
         {game.playerSheets
           .slice() 
           .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())  
@@ -367,23 +367,36 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
               key={sheet.userId}
               className={activeSheet === sheet.userId ? 'active' : ''}
               onClick={() => setActiveSheet(sheet.userId)}
+              role="tab"
+              aria-selected={activeSheet === sheet.userId}
+              aria-controls={`panel-${sheet.userId}`}
+              id={`tab-${sheet.userId}`}
+              title={sheet.characterName}
+              tabIndex={activeSheet === sheet.userId ? 0 : -1}
             >
               {sheet.characterName}
             </button>
           ))}
       </div>
       {activeSheet && (
-        <PlayerSheetTab
-          game={game}
-          sheet={game.playerSheets.find(s => s.userId === activeSheet)!}
-          userSubject={userSubject}
-          onUpdate={(updatedSheet) => {
-            const updatedSheets = game.playerSheets.map(s =>
-              s.userId === updatedSheet.userId ? updatedSheet : s
-            );
-            setGame({ ...game, playerSheets: updatedSheets });
-          }}
-        />
+        <div
+          role="tabpanel"
+          id={`panel-${activeSheet}`}
+          aria-labelledby={`tab-${activeSheet}`}
+          tabIndex={0}
+        >
+          <PlayerSheetTab
+            game={game}
+            sheet={game.playerSheets.find(s => s.userId === activeSheet)!}
+            userSubject={userSubject}
+            onUpdate={(updatedSheet) => {
+              const updatedSheets = game.playerSheets.map(s =>
+                s.userId === updatedSheet.userId ? updatedSheet : s
+              );
+              setGame({ ...game, playerSheets: updatedSheets });
+            }}
+          />
+        </div>
       )}
       <EditGameModal
         isOpen={showEditModal}
