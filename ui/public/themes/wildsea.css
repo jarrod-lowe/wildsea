@@ -33,6 +33,7 @@
   --color-text: #212529;
   --color-text-secondary: #495057;
   --color-text-muted: #6c757d;
+  --color-text-inverse: #fff;
   
   /* Border colors */
   --color-border: #dee2e6;
@@ -77,3 +78,15 @@
   --color-animation-firework-shadow: 0 0 6px rgb(255 215 0 / 80%);
   --color-animation-skull-shadow: 0 0 6px rgb(139 0 0 / 80%);
 }
+
+/* Skill proficiency level background colors */
+.skill-proficiency-0 { background-color: hsl(7.5, 40%, 85%); } /* 0-9% */
+.skill-proficiency-1 { background-color: hsl(22.5, 40%, 85%); } /* 10-19% */
+.skill-proficiency-2 { background-color: hsl(37.5, 40%, 85%); } /* 20-29% */
+.skill-proficiency-3 { background-color: hsl(52.5, 40%, 85%); } /* 30-39% */
+.skill-proficiency-4 { background-color: hsl(67.5, 40%, 85%); } /* 40-49% */
+.skill-proficiency-5 { background-color: hsl(82.5, 40%, 85%); } /* 50-59% */
+.skill-proficiency-6 { background-color: hsl(97.5, 40%, 85%); } /* 60-69% */
+.skill-proficiency-7 { background-color: hsl(112.5, 40%, 85%); } /* 70-79% */
+.skill-proficiency-8 { background-color: hsl(127.5, 40%, 85%); } /* 80-89% */
+.skill-proficiency-9 { background-color: hsl(142.5, 40%, 85%); } /* 90-99% */

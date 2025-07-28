@@ -8,25 +8,13 @@ import { SectionEditForm } from './components/SectionEditForm';
 import { Grades } from "../../graphql/lib/constants/rollTypes";
 import deltaGreenSkillsSeed from '../deltaGreenSkillsSeed.json';
 
-// Color scaling function for skill proficiency (0-99 scale)
-// Returns WCAG AAA compliant light colors from red to green with better breakpoint
-const getSkillBackgroundColor = (rollValue: number): string => {
-  if (rollValue <= 0) return 'transparent';
+// Get CSS class name for skill proficiency level
+const getSkillProficiencyClass = (rollValue: number): string => {
+  if (rollValue <= 0) return '';
   
-  // Normalize the value to 0-1 range, with breakpoint at 40%
-  const normalized = Math.min(rollValue, 99) / 99;
-  
-  // Simple red to green gradient: Red (0°) to Green (120°)
-  // But adjust the curve to make higher skills more distinct
-  const adjustedProgress = normalized >= 0.4 
-    ? 0.5 + (normalized - 0.4) * 0.833 // 40-99% maps to 50-100% of color range
-    : normalized * 1.25; // 0-40% maps to 0-50% of color range
-  
-  const hue = Math.min(adjustedProgress, 1) * 120; // 0 to 120 degrees (red to green)
-  const saturation = 40; // Moderate saturation for readability
-  const lightness = 85; // High lightness for WCAG AAA compliance
-  
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  // Return class for 10-point ranges: 0-9, 10-19, ..., 90-99
+  const range = Math.floor(Math.min(rollValue, 99) / 10);
+  return `skill-proficiency-${range}`;
 };
 
 interface DeltaGreenSkillItem extends BaseSectionItem {
@@ -204,8 +192,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
             return (
               <div 
                 key={item.id} 
-                className="skills-item"
-                style={{ backgroundColor: getSkillBackgroundColor(numericRoll) }}
+                className={`skills-item ${getSkillProficiencyClass(numericRoll)}`}
               >
                 {hasAnyUsedFlags && (
                   <div className="skills-col-used">

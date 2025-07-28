@@ -1,79 +1,92 @@
-/* Delta Green Theme Variables */
+/* Delta Green Theme Variables - Dark Surreal Horror Aesthetic */
 :root {
-  /* Main Colours - Military/government greens and dark tones */
-  --color-primary: #2d5016;
-  --color-primary-light: #e8f5e8;
-  --color-primary-hover: #1a300d;
-  --color-secondary: #5a5a5a;
-  --color-secondary-dark: #404040;
+  /* Main Colours - Dark institutional with sickly green undertones */
+  --color-primary: #9aa891;
+  --color-primary-light: #2a2d26;
+  --color-primary-hover: #aab8a1;
+  --color-secondary: #8a8a84;
+  --color-secondary-dark: #7a7a74;
   
-  /* Interactive element colors */
-  --color-interactive-bg: rgb(255 255 255 / 50%);
-  --color-interactive-hover: rgb(232 245 232 / 90%);
-  --color-interactive-active: rgb(220 230 220 / 80%);
-  --color-interactive-border: rgb(45 80 22 / 30%);
+  /* Interactive element colors - Dark with subtle highlights */
+  --color-interactive-bg: rgb(42 45 38 / 80%);
+  --color-interactive-hover: rgb(50 55 45 / 90%);
+  --color-interactive-active: rgb(35 38 32 / 85%);
+  --color-interactive-border: rgb(122 132 113 / 50%);
   
-  /* Contextual colors */
-  --color-action: #2d5016;
-  --color-action-hover: #1a300d;
-  --color-danger: #8b0000;
-  --color-danger-hover: #6b0000;
-  --color-warning: #7c6f00;
-  --color-warning-light: #fffbcd;
-  --color-warning-border: #eee8aa;
-  --color-info-light: #f0f8f0;
-  --color-info-border: #c8e6c8;
+  /* Contextual colors - Muted military/horror palette */
+  --color-action: #9baa8a;
+  --color-action-hover: #abba9a;
+  --color-danger: #d47580;
+  --color-danger-hover: #e48590;
+  --color-warning: #d4c091;
+  --color-warning-light: #3d3a32;
+  --color-warning-border: #5a543f;
+  --color-info-light: #32323a;
+  --color-info-border: #44444f;
   
-  /* Surface colors */
-  --color-surface: #fff;
-  --color-surface-light: #f2f2f2;
-  --color-surface-medium: #d9d9d9;
+  /* Surface colors - Dark backgrounds with subtle texture */
+  --color-surface: #1e201c;
+  --color-surface-light: #24261f;
+  --color-surface-medium: #2a2d26;
   
-  /* Text colors */
-  --color-text: #1a1a1a;
-  --color-text-secondary: #404040;
-  --color-text-muted: #666;
+  /* Text colors - Light text on dark backgrounds */
+  --color-text: #e4e6e0;
+  --color-text-secondary: #b8bca4;
+  --color-text-muted: #8a8e84;
+  --color-text-inverse: #0a0c08;
   
-  /* Border colors */
-  --color-border: #ccc;
+  /* Border colors - Dark, subtle separation */
+  --color-border: #3a3d34;
   
-  /* Shadow colors */
-  --shadow-light: 0 2px 4px rgb(0 0 0 / 15%);
-  --shadow-medium: 0 4px 8px rgb(0 0 0 / 18%);
+  /* Shadow colors - Deep, atmospheric shadows */
+  --shadow-light: 0 2px 8px rgb(0 0 0 / 40%);
+  --shadow-medium: 0 4px 16px rgb(0 0 0 / 50%);
   
-  /* Accent colors - Delta Green specific */
-  --color-accent-burnt: #8b4513;
-  --color-accent-ticked: #2d5016;
-  --color-accent-success: #228b22;
-  --color-accent-critical-success: #ff8c00;
-  --color-accent-failure: #8b0000;
-  --color-accent-fumble: #4b0000;
-  --color-accent-neutral: #696969;
+  /* Accent colors - Dark horror palette with subtle glows */
+  --color-accent-burnt: #c4936a;
+  --color-accent-ticked: #9baa8a;
+  --color-accent-success: #7a8a6a;
+  --color-accent-critical-success: #d4b85a;
+  --color-accent-failure: #d47580;
+  --color-accent-fumble: #8b4a56;
+  --color-accent-neutral: #8a8e84;
   --color-accent-sane: var(--color-action);
-  --color-focus: rgb(45 80 22 / 25%);
-  --color-accent-disorder1: #ffe4e4;
-  --color-accent-disorder2: #fcc;
+  --color-focus: rgb(122 132 113 / 40%);
+  --color-accent-disorder1: #4a3232;
+  --color-accent-disorder2: #5a3a3a;
   
-  /* State colors */
-  --color-error: #8b0000;
-  --color-error-hover: #6b0000;
-  --color-error-light: #ffe4e4;
+  /* State colors - Dark theme error states */
+  --color-error: #d47580;
+  --color-error-hover: #e48590;
+  --color-error-light: #4a3232;
   
-  /* Overlay and shadow effects */
-  --color-overlay: rgb(0 0 0 / 60%);
-  --color-shadow: 0 4px 8px rgb(0 0 0 / 25%);
-  --color-shadow-light: 0 4px 6px rgb(0 0 0 / 15%);
-  --color-shadow-strong: 0 4px 12px rgb(0 0 0 / 20%);
-  --color-shadow-darker: 0 4px 12px rgb(0 0 0 / 35%);
-  --color-shadow-section: 0 2px 8px rgb(0 0 0 / 25%);
+  /* Overlay and shadow effects - Deep, ominous darkness */
+  --color-overlay: rgb(10 12 8 / 85%);
+  --color-shadow: 0 4px 16px rgb(0 0 0 / 60%);
+  --color-shadow-light: 0 2px 12px rgb(0 0 0 / 40%);
+  --color-shadow-strong: 0 8px 24px rgb(0 0 0 / 50%);
+  --color-shadow-darker: 0 12px 32px rgb(0 0 0 / 70%);
+  --color-shadow-section: 0 4px 20px rgb(0 0 0 / 50%);
   
-  /* Toast notification colors */
-  --color-toast-error: rgb(139 0 0 / 90%);
-  --color-toast-success: rgb(34 139 34 / 90%);
+  /* Toast notification colors - Dark, eerie notifications */
+  --color-toast-error: rgb(196 101 112 / 95%);
+  --color-toast-success: rgb(107 122 90 / 95%);
   
-  /* Animation colors */
-  --color-animation-firework-glow: 0 0 8px #32cd32, 0 0 12px #7cfc00, 0 0 16px #90ee90;
-  --color-animation-skull-glow: 0 0 8px #8b0000, 0 0 12px #dc143c, 0 0 16px #b22222;
-  --color-animation-firework-shadow: 0 0 6px rgb(50 205 50 / 80%);
-  --color-animation-skull-shadow: 0 0 6px rgb(139 0 0 / 80%);
+  /* Animation colors - Unsettling anomalous glows */
+  --color-animation-firework-glow: 0 0 12px #d4b85a, 0 0 18px #e6ca6a, 0 0 24px #f2d678;
+  --color-animation-skull-glow: 0 0 12px #c46570, 0 0 18px #d47580, 0 0 24px #e48590;
+  --color-animation-firework-shadow: 0 0 8px rgb(212 184 90 / 90%);
+  --color-animation-skull-shadow: 0 0 8px rgb(196 101 112 / 90%);
 }
+
+/* Skill proficiency level background colors - Dark horror theme */
+.skill-proficiency-0 { background-color: #4a2424; } /* 0-9% - Dark red */
+.skill-proficiency-1 { background-color: #4a3224; } /* 10-19% - Dark red-orange */
+.skill-proficiency-2 { background-color: #4a4024; } /* 20-29% - Dark orange */
+.skill-proficiency-3 { background-color: #4a4824; } /* 30-39% - Dark yellow-orange */
+.skill-proficiency-4 { background-color: #424a24; } /* 40-49% - Dark yellow-green */
+.skill-proficiency-5 { background-color: #344a24; } /* 50-59% - Dark green-yellow */
+.skill-proficiency-6 { background-color: #244a2a; } /* 60-69% - Dark green */
+.skill-proficiency-7 { background-color: #244a38; } /* 70-79% - Dark green-teal */
+.skill-proficiency-8 { background-color: #244a46; } /* 80-89% - Dark teal-green */
+.skill-proficiency-9 { background-color: #244a4a; } /* 90-99% - Dark teal */
