@@ -27,6 +27,8 @@ export const messages = {
     'dismissErrorMessage': 'Dismiss error message',
     'playGame': 'Play game:',
     'game.playLink': 'Play {gameName} ({gameType} game) as {characterName}',
+    'game.characterTabs': 'Character selection tabs',
+    'game.characterTabLabel': '{name} character tab{selected, select, true { (selected)} other {}}',
     'loading': 'Loading...',
     'login': 'Login',
     'logout': 'Logout',
