@@ -1,7 +1,7 @@
 /* Default Theme Variables - For non-game screens */
 :root {
   /* Main Colours - Neutral professional colors */
-  --color-primary: #0066cc;
+  --color-primary: #06c;
   --color-primary-light: #e6f3ff;
   --color-primary-hover: #0052a3;
   --color-secondary: #6c757d;
@@ -45,7 +45,7 @@
   --color-accent-burnt: #8b5000;
   --color-accent-ticked: #1e7e34;
   --color-accent-success: #1e7e34;
-  --color-accent-critical-success: #cc5500;
+  --color-accent-critical-success: #c50;
   --color-accent-failure: #dc3545;
   --color-accent-fumble: #6f1a1a;
   --color-accent-neutral: #6c757d;

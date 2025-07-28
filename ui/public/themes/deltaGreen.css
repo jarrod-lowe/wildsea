@@ -25,17 +25,17 @@
   --color-info-border: #c8e6c8;
   
   /* Surface colors */
-  --color-surface: #ffffff;
+  --color-surface: #fff;
   --color-surface-light: #f2f2f2;
   --color-surface-medium: #d9d9d9;
   
   /* Text colors */
   --color-text: #1a1a1a;
   --color-text-secondary: #404040;
-  --color-text-muted: #666666;
+  --color-text-muted: #666;
   
   /* Border colors */
-  --color-border: #cccccc;
+  --color-border: #ccc;
   
   /* Shadow colors */
   --shadow-light: 0 2px 4px rgb(0 0 0 / 15%);
@@ -52,7 +52,7 @@
   --color-accent-sane: var(--color-action);
   --color-focus: rgb(45 80 22 / 25%);
   --color-accent-disorder1: #ffe4e4;
-  --color-accent-disorder2: #ffcccc;
+  --color-accent-disorder2: #fcc;
   
   /* State colors */
   --color-error: #8b0000;
