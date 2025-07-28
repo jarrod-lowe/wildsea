@@ -171,9 +171,11 @@ update this configuration file.
 
 ### Section Development
 
+- sections are in `ui/src/section*.tsx` and `ui/src/components/*.tsx`
 - Section components extend `BaseSectionItem` interface
 - Use `FormattedMessage` and `useIntl` for internationalization
-- Custom edit forms should be created if the generic `SectionEditForm` will not do
+- Custom edit forms should be created only if the generic `SectionEditForm` will not do
+- Each section has a normal/renderItems (for play) form, and an edit/renderEditForm (for edits not normally required during play) form
 - Default section content should be created with appropriate `showEmpty` settings
 - Things in a section that will change regularly during gameplay (e.g. HP or usages) should be able to be changed in the normal form (`renderItems`)
 - Things in a section that will not change regularly during gameplay (e.g. STR, CON, ...) should only be able to be changed in the edit form (`renderEditForm`)
