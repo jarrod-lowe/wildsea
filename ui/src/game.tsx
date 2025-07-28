@@ -371,8 +371,10 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
               aria-selected={activeSheet === sheet.userId}
               aria-controls={`panel-${sheet.userId}`}
               id={`tab-${sheet.userId}`}
-              title={sheet.characterName}
-              tabIndex={activeSheet === sheet.userId ? 0 : -1}
+              aria-label={intl.formatMessage(
+                { id: 'game.characterTabLabel' },
+                { name: sheet.characterName, selected: activeSheet === sheet.userId }
+              )}
             >
               {sheet.characterName}
             </button>
