@@ -11,6 +11,7 @@ import { PlayerSheetTab } from './playerSheetTab';
 import { useToast } from './notificationToast';
 import { EditGameModal } from './editGame';
 import { DiceRollPanel } from './diceRollPanel';
+import { loadTheme } from './themeLoader';
 
 const MAX_RETRIES = 5;
 const INITIAL_BACKOFF_TIME = 1000; // 1 second
@@ -320,6 +321,9 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         setUserSubject(sub);
         setIsGameFetched(true);
         setActiveSheet(sub);
+        
+        // Load theme based on game type
+        loadTheme(response.data.getGame.gameType);
       } catch (err: any) {
         if (err.errors?.some((e: any) => e.message.includes(NO_GAME))) {
           toast.addToast(intl.formatMessage({ id: "noGame" }), 'error');

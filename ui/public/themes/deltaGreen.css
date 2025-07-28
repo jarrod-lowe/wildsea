@@ -1,0 +1,79 @@
+/* Delta Green Theme Variables */
+:root {
+  /* Main Colours - Military/government greens and dark tones */
+  --color-primary: #2d5016;
+  --color-primary-light: #e8f5e8;
+  --color-primary-hover: #1a300d;
+  --color-secondary: #5a5a5a;
+  --color-secondary-dark: #404040;
+  
+  /* Interactive element colors */
+  --color-interactive-bg: rgb(255 255 255 / 50%);
+  --color-interactive-hover: rgb(232 245 232 / 90%);
+  --color-interactive-active: rgb(220 230 220 / 80%);
+  --color-interactive-border: rgb(45 80 22 / 30%);
+  
+  /* Contextual colors */
+  --color-action: #2d5016;
+  --color-action-hover: #1a300d;
+  --color-danger: #8b0000;
+  --color-danger-hover: #6b0000;
+  --color-warning: #7c6f00;
+  --color-warning-light: #fffbcd;
+  --color-warning-border: #eee8aa;
+  --color-info-light: #f0f8f0;
+  --color-info-border: #c8e6c8;
+  
+  /* Surface colors */
+  --color-surface: #fff;
+  --color-surface-light: #f2f2f2;
+  --color-surface-medium: #d9d9d9;
+  
+  /* Text colors */
+  --color-text: #1a1a1a;
+  --color-text-secondary: #404040;
+  --color-text-muted: #666;
+  
+  /* Border colors */
+  --color-border: #ccc;
+  
+  /* Shadow colors */
+  --shadow-light: 0 2px 4px rgb(0 0 0 / 15%);
+  --shadow-medium: 0 4px 8px rgb(0 0 0 / 18%);
+  
+  /* Accent colors - Delta Green specific */
+  --color-accent-burnt: #8b4513;
+  --color-accent-ticked: #2d5016;
+  --color-accent-success: #228b22;
+  --color-accent-critical-success: #ff8c00;
+  --color-accent-failure: #8b0000;
+  --color-accent-fumble: #4b0000;
+  --color-accent-neutral: #696969;
+  --color-accent-sane: var(--color-action);
+  --color-focus: rgb(45 80 22 / 25%);
+  --color-accent-disorder1: #ffe4e4;
+  --color-accent-disorder2: #fcc;
+  
+  /* State colors */
+  --color-error: #8b0000;
+  --color-error-hover: #6b0000;
+  --color-error-light: #ffe4e4;
+  
+  /* Overlay and shadow effects */
+  --color-overlay: rgb(0 0 0 / 60%);
+  --color-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+  --color-shadow-light: 0 4px 6px rgb(0 0 0 / 15%);
+  --color-shadow-strong: 0 4px 12px rgb(0 0 0 / 20%);
+  --color-shadow-darker: 0 4px 12px rgb(0 0 0 / 35%);
+  --color-shadow-section: 0 2px 8px rgb(0 0 0 / 25%);
+  
+  /* Toast notification colors */
+  --color-toast-error: rgb(139 0 0 / 90%);
+  --color-toast-success: rgb(34 139 34 / 90%);
+  
+  /* Animation colors */
+  --color-animation-firework-glow: 0 0 8px #32cd32, 0 0 12px #7cfc00, 0 0 16px #90ee90;
+  --color-animation-skull-glow: 0 0 8px #8b0000, 0 0 12px #dc143c, 0 0 16px #b22222;
+  --color-animation-firework-shadow: 0 0 6px rgb(50 205 50 / 80%);
+  --color-animation-skull-shadow: 0 0 6px rgb(139 0 0 / 80%);
+}

@@ -60,6 +60,7 @@ ui/public/*
 !ui/public/style.css
 !ui/public/favicon.webp
 !ui/public/tos.html
+!ui/public/themes/
 ui/dist/*
 !ui/dist/.emptyDir
 ui/.push
