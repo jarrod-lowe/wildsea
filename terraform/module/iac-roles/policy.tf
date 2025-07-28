@@ -219,6 +219,7 @@ data "aws_iam_policy_document" "rw" {
       "cognito-idp:UntagResource",
       "cognito-idp:Delete*",
       "cognito-idp:Update*",
+      "cognito-idp:SetUICustomization",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:userpool/*",
@@ -469,6 +470,7 @@ data "aws_iam_policy_document" "rw_boundary" {
       "cognito-idp:Get*",
       "cognito-idp:Delete*",
       "cognito-idp:Update*",
+      "cognito-idp:SetUICustomization",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:userpool/*",
