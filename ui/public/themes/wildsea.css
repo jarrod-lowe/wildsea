@@ -1,0 +1,79 @@
+/* Wildsea Theme Variables */
+:root {
+  /* Main Colours - Nautical blues and adventure tones */
+  --color-primary: #0056b3;
+  --color-primary-light: #e3f2fd;
+  --color-primary-hover: #004494;
+  --color-secondary: #6c757d;
+  --color-secondary-dark: #495057;
+  
+  /* Interactive element colors */
+  --color-interactive-bg: rgb(255 255 255 / 50%);
+  --color-interactive-hover: rgb(227 242 253 / 90%);
+  --color-interactive-active: rgb(233 236 239 / 80%);
+  --color-interactive-border: rgb(0 86 179 / 30%);
+  
+  /* Contextual colors */
+  --color-action: #155724;
+  --color-action-hover: #0f4419;
+  --color-danger: #dc3545;
+  --color-danger-hover: #c82333;
+  --color-warning: #856404;
+  --color-warning-light: #fff3cd;
+  --color-warning-border: #ffeeba;
+  --color-info-light: #d1edff;
+  --color-info-border: #a7d8f0;
+  
+  /* Surface colors */
+  --color-surface: #fff;
+  --color-surface-light: #f8f9fa;
+  --color-surface-medium: #dee2e6;
+  
+  /* Text colors */
+  --color-text: #212529;
+  --color-text-secondary: #495057;
+  --color-text-muted: #6c757d;
+  
+  /* Border colors */
+  --color-border: #dee2e6;
+  
+  /* Shadow colors */
+  --shadow-light: 0 2px 4px rgb(0 0 0 / 10%);
+  --shadow-medium: 0 4px 8px rgb(0 0 0 / 12%);
+  
+  /* Accent colors - Wildsea specific */
+  --color-accent-burnt: #8b4513;
+  --color-accent-ticked: #155724;
+  --color-accent-success: #155724;
+  --color-accent-critical-success: #cc5500;
+  --color-accent-failure: #dc2626;
+  --color-accent-fumble: #7c2d12;
+  --color-accent-neutral: #6b7280;
+  --color-accent-sane: var(--color-action);
+  --color-focus: rgb(0 123 255 / 25%);
+  --color-accent-disorder1: #ffe6e6;
+  --color-accent-disorder2: #fdd;
+  
+  /* State colors */
+  --color-error: #f44336;
+  --color-error-hover: #d32f2f;
+  --color-error-light: #ffebee;
+  
+  /* Overlay and shadow effects */
+  --color-overlay: rgb(0 0 0 / 50%);
+  --color-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+  --color-shadow-light: 0 4px 6px rgb(0 0 0 / 10%);
+  --color-shadow-strong: 0 4px 12px rgb(0 0 0 / 15%);
+  --color-shadow-darker: 0 4px 12px rgb(0 0 0 / 30%);
+  --color-shadow-section: 0 2px 8px rgb(0 0 0 / 20%);
+  
+  /* Toast notification colors */
+  --color-toast-error: rgb(255 0 0 / 80%);
+  --color-toast-success: rgb(0 128 0 / 80%);
+  
+  /* Animation colors */
+  --color-animation-firework-glow: 0 0 8px #ffd700, 0 0 12px #ffed4a, 0 0 16px #f39c12;
+  --color-animation-skull-glow: 0 0 8px #8b0000, 0 0 12px #dc143c, 0 0 16px #b22222;
+  --color-animation-firework-shadow: 0 0 6px rgb(255 215 0 / 80%);
+  --color-animation-skull-shadow: 0 0 6px rgb(139 0 0 / 80%);
+}

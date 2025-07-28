@@ -1,0 +1,79 @@
+/* Default Theme Variables - For non-game screens */
+:root {
+  /* Main Colours - Neutral professional colors */
+  --color-primary: #0066cc;
+  --color-primary-light: #e6f3ff;
+  --color-primary-hover: #0052a3;
+  --color-secondary: #6c757d;
+  --color-secondary-dark: #495057;
+  
+  /* Interactive element colors */
+  --color-interactive-bg: rgb(255 255 255 / 50%);
+  --color-interactive-hover: rgb(230 243 255 / 90%);
+  --color-interactive-active: rgb(233 236 239 / 80%);
+  --color-interactive-border: rgb(0 102 204 / 30%);
+  
+  /* Contextual colors */
+  --color-action: #1e7e34;
+  --color-action-hover: #155724;
+  --color-danger: #dc3545;
+  --color-danger-hover: #c82333;
+  --color-warning: #b8860b;
+  --color-warning-light: #fff3cd;
+  --color-warning-border: #ffeeba;
+  --color-info-light: #d1ecf1;
+  --color-info-border: #bee5eb;
+  
+  /* Surface colors */
+  --color-surface: #fff;
+  --color-surface-light: #f8f9fa;
+  --color-surface-medium: #dee2e6;
+  
+  /* Text colors */
+  --color-text: #212529;
+  --color-text-secondary: #495057;
+  --color-text-muted: #6c757d;
+  
+  /* Border colors */
+  --color-border: #dee2e6;
+  
+  /* Shadow colors */
+  --shadow-light: 0 2px 4px rgb(0 0 0 / 10%);
+  --shadow-medium: 0 4px 8px rgb(0 0 0 / 12%);
+  
+  /* Accent colors - Generic/neutral */
+  --color-accent-burnt: #8b5000;
+  --color-accent-ticked: #1e7e34;
+  --color-accent-success: #1e7e34;
+  --color-accent-critical-success: #cc5500;
+  --color-accent-failure: #dc3545;
+  --color-accent-fumble: #6f1a1a;
+  --color-accent-neutral: #6c757d;
+  --color-accent-sane: var(--color-action);
+  --color-focus: rgb(0 102 204 / 25%);
+  --color-accent-disorder1: #ffe6e6;
+  --color-accent-disorder2: #fdd;
+  
+  /* State colors */
+  --color-error: #f44336;
+  --color-error-hover: #d32f2f;
+  --color-error-light: #ffebee;
+  
+  /* Overlay and shadow effects */
+  --color-overlay: rgb(0 0 0 / 50%);
+  --color-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+  --color-shadow-light: 0 4px 6px rgb(0 0 0 / 10%);
+  --color-shadow-strong: 0 4px 12px rgb(0 0 0 / 15%);
+  --color-shadow-darker: 0 4px 12px rgb(0 0 0 / 30%);
+  --color-shadow-section: 0 2px 8px rgb(0 0 0 / 20%);
+  
+  /* Toast notification colors */
+  --color-toast-error: rgb(255 0 0 / 80%);
+  --color-toast-success: rgb(30 126 52 / 90%);
+  
+  /* Animation colors */
+  --color-animation-firework-glow: 0 0 8px #ffd700, 0 0 12px #ffed4a, 0 0 16px #f39c12;
+  --color-animation-skull-glow: 0 0 8px #8b0000, 0 0 12px #dc143c, 0 0 16px #b22222;
+  --color-animation-firework-shadow: 0 0 6px rgb(255 215 0 / 80%);
+  --color-animation-skull-shadow: 0 0 6px rgb(139 0 0 / 80%);
+}

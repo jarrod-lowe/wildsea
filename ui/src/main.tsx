@@ -12,6 +12,7 @@ import type { PlayerSheetSummary } from "../../appsync/graphql";
 import { ToastProvider, useToast } from "./notificationToast";
 import Modal from 'react-modal';
 import FooterBar from './footerBar';
+import { loadDefaultTheme } from './themeLoader';
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const AppGame = React.lazy(() => import("./game"))
@@ -131,6 +132,9 @@ export function AppContent() {
     }
 
     if (!userEmail) {
+        // Load default theme for login screen
+        loadDefaultTheme();
+        
         return (
             <div>
                 <header>
@@ -142,6 +146,11 @@ export function AppContent() {
                 <FooterBar />
             </div>
         )
+    }
+
+    // Load default theme for non-game screens
+    if (!gameId) {
+        loadDefaultTheme();
     }
 
     return (
