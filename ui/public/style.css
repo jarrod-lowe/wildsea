@@ -2576,7 +2576,7 @@ body {
 
 .auto-populate-section p {
   margin-bottom: 15px;
-  color: var(--color-secondary);
+  color: var(--color-text);
   font-style: italic;
 }
 
@@ -2594,6 +2594,7 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 4px;
   background-color: var(--color-surface);
+  color: var(--color-text);
   font-size: 14px;
 }
 

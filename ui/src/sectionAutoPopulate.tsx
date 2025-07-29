@@ -127,6 +127,7 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
           value={selectedTemplate}
           onChange={(e) => setSelectedTemplate(e.target.value)}
           disabled={loading}
+          aria-label={intl.formatMessage({ id: "autoPopulate.selectTemplate" })}
         >
           <option value="">
             {intl.formatMessage({ id: "autoPopulate.selectTemplate" })}
