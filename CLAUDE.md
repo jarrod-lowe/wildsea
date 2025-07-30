@@ -41,6 +41,10 @@ AWS_PROFILE=<profile> make ui-local
 AWS_PROFILE=<profile> make dev
 ```
 
+The `make dev` is the only way to update the development graphql server. If any
+changes where made in graphql or the resolvers, or to terraform, this will need
+to be run.
+
 ### Testing
 
 ```bash
@@ -49,10 +53,9 @@ make ui-test
 
 # Run GraphQL/backend tests  
 make graphql-test
-
-# Run all tests
-make ui-test graphql-test
 ```
+
+You cannot run node commands directly, they will not work.
 
 ### Code Quality
 
@@ -67,12 +70,8 @@ make terraform-format
 ### Building
 
 ```bash
-# Build GraphQL resolvers
+# Build GraphQL auto-generated javascript files used by appsync query, mutations and subscriptions
 make graphql
-
-# Build UI for specific environment
-make ui/.build-dev
-make ui/.build-prod
 ```
 
 ### Individual Component Commands
@@ -142,6 +141,8 @@ The IAC roles and github setup:
 
 - For dev: `AWS_PROFILE=wildsea make iac-dev`
 - For prod: `AWS_PROFILE=wildsea make iac` -- this need the user to enter the name of your github workspace, so ask the user to run this if needed
+
+Code is stored in github, and issues are tracked there too.
 
 ## Game Types
 

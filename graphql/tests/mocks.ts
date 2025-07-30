@@ -16,6 +16,7 @@ export const awsAppsyncUtilsMock = {
     appendError: jest.fn(),
     dynamodb: {
       toMapValues: jest.fn((val) => mockMarshall(val)),
+      toString: jest.fn((val) => ({ S: val })),
     },
   },
 };

@@ -152,6 +152,7 @@ export type Mutation = {
   updateJoinCode: GameSummary;
   updatePlayer?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;
+  updateUserSettings: UserSettings;
 };
 
 
@@ -214,6 +215,11 @@ export type MutationUpdateSectionArgs = {
   input: UpdateSectionInput;
 };
 
+
+export type MutationUpdateUserSettingsArgs = {
+  input: UpdateUserSettingsInput;
+};
+
 export type PlayerSheet = {
   __typename?: 'PlayerSheet';
   characterName: Scalars['String']['output'];
@@ -246,6 +252,7 @@ export type Query = {
   getCharacterTemplates: Array<CharacterTemplateMetadata>;
   getGame: Game;
   getGames?: Maybe<Array<PlayerSheetSummary>>;
+  getUserSettings?: Maybe<UserSettings>;
 };
 
 
@@ -300,6 +307,7 @@ export type Subscription = {
   updatedGame?: Maybe<GameSummary>;
   updatedPlayer?: Maybe<PlayerSheetSummary>;
   updatedSection?: Maybe<SheetSection>;
+  updatedUserSettings?: Maybe<UserSettings>;
 };
 
 
@@ -352,4 +360,17 @@ export type UpdateSectionInput = {
   position?: InputMaybe<Scalars['Int']['input']>;
   sectionId: Scalars['ID']['input'];
   sectionName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateUserSettingsInput = {
+  settings: Scalars['AWSJSON']['input'];
+};
+
+export type UserSettings = {
+  __typename?: 'UserSettings';
+  createdAt: Scalars['AWSDateTime']['output'];
+  settings: Scalars['AWSJSON']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
+  userId: Scalars['ID']['output'];
 };

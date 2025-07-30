@@ -32,6 +32,14 @@
         }
       `;
     
+      export const getUserSettingsQuery = `
+        query getUserSettings {
+          getUserSettings {
+            userId settings type createdAt updatedAt
+          }
+        }
+      `;
+    
 
     
       export const createGameMutation = `
@@ -130,6 +138,14 @@
         }
       `;
     
+      export const updateUserSettingsMutation = `
+        mutation updateUserSettings($input: UpdateUserSettingsInput!) {
+          updateUserSettings(input: $input) {
+            userId settings type createdAt updatedAt
+          }
+        }
+      `;
+    
 
     
       export const updatedPlayerSubscription = `
@@ -160,6 +176,14 @@
         subscription diceRolled($gameId: ID!) {
           diceRolled(gameId: $gameId) {
             gameId playerId playerName dice { ... on SingleDie { __typename type size value } } rollType target grade action diceList { ... on SingleDie { __typename type size value } } value rolledAt rolledBy proxyRoll type messageIndex
+          }
+        }
+      `;
+    
+      export const updatedUserSettingsSubscription = `
+        subscription updatedUserSettings {
+          updatedUserSettings {
+            userId settings type createdAt updatedAt
           }
         }
       `;

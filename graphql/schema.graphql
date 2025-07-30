@@ -29,6 +29,7 @@ type Mutation {
     deletePlayer(input: DeletePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools @aws_iam
     createShip(input: CreateShipInput!): PlayerSheetSummary! @aws_cognito_user_pools
     rollDice(input: RollDiceInput!): DiceRoll! @aws_cognito_user_pools
+    updateUserSettings(input: UpdateUserSettingsInput!): UserSettings! @aws_cognito_user_pools
 }
 
 type Query {
@@ -36,6 +37,7 @@ type Query {
     getGames: [PlayerSheetSummary!] @aws_cognito_user_pools
     getCharacterTemplates(input: GetCharacterTemplatesInput!): [CharacterTemplateMetadata!]! @aws_cognito_user_pools
     getCharacterTemplate(input: GetCharacterTemplateInput!): [TemplateSectionData!]! @aws_cognito_user_pools
+    getUserSettings: UserSettings @aws_cognito_user_pools
 }
 
 type Subscription @aws_cognito_user_pools {
@@ -43,6 +45,7 @@ type Subscription @aws_cognito_user_pools {
   updatedSection(gameId: ID!): SheetSection @aws_subscribe(mutations: ["createSection", "updateSection", "deleteSection"])
   updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "deleteGame"])
   diceRolled(gameId: ID!): DiceRoll @aws_subscribe(mutations: ["rollDice"])
+  updatedUserSettings: UserSettings @aws_subscribe(mutations: ["updateUserSettings"])
 }
 
 input GetGameInput {
@@ -239,4 +242,16 @@ type TemplateSectionData @aws_cognito_user_pools {
   sectionType: String!
   content: AWSJSON!
   position: Int!
+}
+
+type UserSettings @aws_cognito_user_pools {
+  userId: ID!
+  settings: AWSJSON!
+  type: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+input UpdateUserSettingsInput {
+  settings: AWSJSON!
 }

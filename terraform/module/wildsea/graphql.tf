@@ -169,6 +169,13 @@ resource "aws_appsync_datasource" "graphql" {
   }
 }
 
+resource "aws_appsync_datasource" "local" {
+  api_id      = aws_appsync_graphql_api.graphql.id
+  name        = "${replace(var.prefix, "-", "_")}_local"
+  type        = "NONE"
+  description = "Local/None data source for subscription resolvers"
+}
+
 resource "aws_iam_role" "graphql_datasource" {
   name               = "${var.prefix}-graphql-datasource"
   assume_role_policy = data.aws_iam_policy_document.graphql_datasource_assume.json
@@ -261,6 +268,9 @@ locals {
     }
   }
 
+  # Resolvers that should not use the DynamoDB data source (use local/none data source)
+  local_data_source_resolvers = ["updatedUserSettings"]
+
   all       = merge(local.mutations_map, local.queries_map, local.subscriptions_map, local.functions_map)
   resolvers = merge(local.mutations_map, local.queries_map, local.subscriptions_map)
 
@@ -310,7 +320,7 @@ resource "aws_appsync_resolver" "resolver" {
   api_id      = aws_appsync_graphql_api.graphql.id
   type        = each.value.type
   field       = each.key
-  data_source = aws_appsync_datasource.graphql.name
+  data_source = contains(local.local_data_source_resolvers, each.key) ? aws_appsync_datasource.local.name : aws_appsync_datasource.graphql.name
   code        = data.local_file.graphql_code[each.key].content
 
   runtime {
