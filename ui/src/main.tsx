@@ -176,6 +176,11 @@ function AppWithIntl() {
     // Resolve the actual language to use (handling auto-detect)
     const actualLanguage = resolveLanguage(currentLanguage);
     
+    // Update HTML lang attribute when language changes
+    useEffect(() => {
+        document.documentElement.lang = actualLanguage;
+    }, [actualLanguage]);
+    
     // For non-standard locales like Klingon, use 'en' as the locale but keep our custom messages
     const localeForIntl = actualLanguage === 'tlh' ? 'en' : actualLanguage;
 
