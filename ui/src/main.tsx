@@ -175,7 +175,7 @@ function AppWithIntl() {
     );
 }
 
-function AppContentWrapper({ onLanguageChange }: { onLanguageChange: (lang: SupportedLanguage) => void }) {
+function AppContentWrapper({ onLanguageChange }: { readonly onLanguageChange: (lang: SupportedLanguage) => void }) {
     const [gameId, setGameId] = useState<string | null>(null);
     const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
     const [userEmail, setUserEmail] = useState<string | undefined | null>(null);
@@ -186,7 +186,7 @@ function AppContentWrapper({ onLanguageChange }: { onLanguageChange: (lang: Supp
     const updateLanguageFromSettings = (settings: UserSettings | null) => {
         if (settings?.settings) {
             try {
-                const parsedSettings = JSON.parse(settings.settings as string);
+                const parsedSettings = JSON.parse(settings.settings);
                 const language = parsedSettings?.language as SupportedLanguage;
                 if (language && language in supportedLanguages) {
                     onLanguageChange(language);
