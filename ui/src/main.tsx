@@ -179,12 +179,12 @@ export function getJoinCode(): string | null {
         
         // Validate that all characters are valid (A-Z, 2-9, no confusing chars)
         const validChars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-        for (let i = 0; i < code.length; i++) {
-            if (validChars.indexOf(code[i]) === -1) {
+        for (const char of code) {
+            if (validChars.indexOf(char) === -1) {
                 return null;
             }
         }
-        
+
         return code;
     }
     
