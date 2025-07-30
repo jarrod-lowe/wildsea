@@ -99,7 +99,7 @@ export type Game = {
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
-  joinToken?: Maybe<Scalars['String']['output']>;
+  joinCode?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
@@ -114,6 +114,7 @@ export type GameSummary = {
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
+  joinCode?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
 };
@@ -134,8 +135,7 @@ export type GetGameInput = {
 };
 
 export type JoinGameInput = {
-  gameId: Scalars['ID']['input'];
-  joinToken: Scalars['ID']['input'];
+  joinCode: Scalars['String']['input'];
 };
 
 export type Mutation = {
@@ -149,6 +149,7 @@ export type Mutation = {
   joinGame: PlayerSheetSummary;
   rollDice: DiceRoll;
   updateGame: GameSummary;
+  updateJoinCode: GameSummary;
   updatePlayer?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;
 };
@@ -196,6 +197,11 @@ export type MutationRollDiceArgs = {
 
 export type MutationUpdateGameArgs = {
   input: UpdateGameInput;
+};
+
+
+export type MutationUpdateJoinCodeArgs = {
+  input: UpdateJoinCodeInput;
 };
 
 
@@ -328,6 +334,10 @@ export type UpdateGameInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   gameId: Scalars['ID']['input'];
   name: Scalars['String']['input'];
+};
+
+export type UpdateJoinCodeInput = {
+  gameId: Scalars['ID']['input'];
 };
 
 export type UpdatePlayerInput = {

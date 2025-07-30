@@ -18,14 +18,12 @@ describe("fnJoinGame request function", () => {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: undefined,
@@ -55,14 +53,12 @@ describe("fnJoinGame request function", () => {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {} as AppSyncIdentityCognito,
@@ -92,14 +88,12 @@ describe("fnJoinGame request function", () => {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {
@@ -118,6 +112,7 @@ describe("fnJoinGame request function", () => {
       stash: {},
       prev: {
         result: {
+          gameId: "game123",
           gameName: "Test Game",
           gameType: "wildsea",
           gameDescription: "Test Description",
@@ -191,14 +186,12 @@ describe("fnJoinGame response function", () => {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {
@@ -234,14 +227,12 @@ describe("fnJoinGame response function", () => {
       result: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {

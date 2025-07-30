@@ -1,5 +1,6 @@
 import { awsAppsyncUtilsMock } from "./mocks";
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
+import type { JoinGameInput } from "../../appsync/graphql";
 import {
   request,
   response,
@@ -9,20 +10,16 @@ jest.mock("@aws-appsync/utils", () => awsAppsyncUtilsMock);
 
 describe("joinGame request function", () => {
   it("should throw an error if context identity is missing", () => {
-    const mockContext: Context<{
-      input: { gameId: string; joinToken: string };
-    }> = {
+    const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: undefined,
@@ -48,20 +45,16 @@ describe("joinGame request function", () => {
   });
 
   it("should throw an error if user ID is missing", () => {
-    const mockContext: Context<{
-      input: { gameId: string; joinToken: string };
-    }> = {
+    const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {} as AppSyncIdentityCognito,
@@ -87,20 +80,16 @@ describe("joinGame request function", () => {
   });
 
   it("should return a valid DynamoDBGetItemRequest when context is valid", () => {
-    const mockContext: Context<{
-      input: { gameId: string; joinToken: string };
-    }> = {
+    const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {
@@ -127,31 +116,69 @@ describe("joinGame request function", () => {
     const result = request(mockContext);
 
     expect(result).toEqual({
-      operation: "GetItem",
-      key: {
-        PK: { S: "GAME#game123" },
-        SK: { S: "GAME" },
+      operation: "Query",
+      index: "GSI1",
+      query: {
+        expression: "GSI1PK = :gsi1pk",
+        expressionValues: {
+          ":gsi1pk": { S: "JOIN#ABC123" },
+        },
       },
     });
   });
 });
 
 describe("joinGame response function", () => {
-  it("should abort with an error if context has an error", () => {
-    const mockContext: Context<{
-      input: { gameId: string; joinToken: string };
-    }> = {
+  it("should throw unauthorized if no game found with join code", () => {
+    const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
+        },
+      },
+      identity: {
+        sub: "user123",
+      } as AppSyncIdentityCognito,
+      source: undefined,
+      error: undefined,
+      info: {
+        fieldName: "joinGame",
+        parentTypeName: "Mutation",
+        variables: {},
+        selectionSetList: [],
+        selectionSetGraphQL: "",
+      },
+      result: {
+        items: [],
+      },
+      stash: {},
+      prev: undefined,
+      request: {
+        headers: {},
+        domainName: null,
+      },
+    };
+
+    expect(() => response(mockContext)).toThrow("Unauthorized");
+  });
+
+  it("should abort with an error if context has an error", () => {
+    const mockContext: Context<{ input: JoinGameInput }> = {
+      env: {},
+      arguments: {
+        input: {
+          joinCode: "ABC123",
+        },
+      },
+      args: {
+        input: {
+          joinCode: "ABC123",
         },
       },
       identity: {
@@ -183,20 +210,16 @@ describe("joinGame response function", () => {
   });
 
   it("should throw an error if game not found or invalid token", () => {
-    const mockContext: Context<{
-      input: { gameId: string; joinToken: string };
-    }> = {
+    const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {
@@ -224,20 +247,16 @@ describe("joinGame response function", () => {
   });
 
   it("should throw an error if user is trying to join their own game", () => {
-    const mockContext: Context<{
-      input: { gameId: string; joinToken: string };
-    }> = {
+    const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {
@@ -253,8 +272,12 @@ describe("joinGame response function", () => {
         selectionSetGraphQL: "",
       },
       result: {
-        joinToken: "token123",
-        fireflyUserId: "user123",
+        items: [
+          {
+            joinToken: "token123",
+            fireflyUserId: "user123",
+          },
+        ],
       },
       stash: {},
       prev: undefined,
@@ -274,20 +297,16 @@ describe("joinGame response function", () => {
   });
 
   it("should throw an error if user is already a player in the game", () => {
-    const mockContext: Context<{
-      input: { gameId: string; joinToken: string };
-    }> = {
+    const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {
@@ -303,9 +322,13 @@ describe("joinGame response function", () => {
         selectionSetGraphQL: "",
       },
       result: {
-        joinToken: "token123",
-        fireflyUserId: "user456",
-        players: ["user123"],
+        items: [
+          {
+            joinToken: "token123",
+            fireflyUserId: "user456",
+            playerSheets: [{ userId: "user123" }],
+          },
+        ],
       },
       stash: {},
       prev: undefined,
@@ -325,20 +348,16 @@ describe("joinGame response function", () => {
   });
 
   it("should return the game data if no errors", () => {
-    const mockContext: Context<{
-      input: { gameId: string; joinToken: string };
-    }> = {
+    const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
       arguments: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       args: {
         input: {
-          gameId: "game123",
-          joinToken: "token123",
+          joinCode: "ABC123",
         },
       },
       identity: {
@@ -354,12 +373,16 @@ describe("joinGame response function", () => {
         selectionSetGraphQL: "",
       },
       result: {
-        joinToken: "token123",
-        fireflyUserId: "user456",
-        players: [],
-        gameId: "game123",
-        gameName: "Test Game",
-        gameDescription: "Test Description",
+        items: [
+          {
+            joinToken: "token123",
+            fireflyUserId: "user456",
+            players: [],
+            gameId: "game123",
+            gameName: "Test Game",
+            gameDescription: "Test Description",
+          },
+        ],
       },
       stash: {},
       prev: undefined,

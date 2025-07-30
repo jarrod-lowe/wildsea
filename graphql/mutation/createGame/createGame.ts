@@ -3,12 +3,17 @@ import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-r
 import environment from "../../environment.json";
 import { GameSummary, CreateGameInput } from "../../../appsync/graphql";
 import { TypeFirefly, TypeGame } from "../../lib/constants/entityTypes";
-import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
+import {
+  DDBPrefixGame,
+  DDBPrefixPlayer,
+  DDBPrefixJoin,
+} from "../../lib/constants/dbPrefixes";
 import {
   GameTypeConfig,
   DefaultGameConfig,
 } from "../../lib/constants/gameTypes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
+import { generateJoinCode } from "../../lib/joinCode";
 
 export function request(context: Context<{ input: CreateGameInput }>): unknown {
   if (!context.identity) util.unauthorized();
@@ -17,7 +22,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
 
   const input = context.arguments.input;
   const id = util.autoId();
-  const joinToken = util.autoId();
+  const joinCode = generateJoinCode();
   const timestamp = util.time.nowISO8601();
 
   const config = GameTypeConfig[input.gameType] || DefaultGameConfig;
@@ -27,9 +32,10 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
     gameDescription: input.description,
     gameType: input.gameType,
     gameId: id,
+    GSI1PK: `${DDBPrefixJoin}#${joinCode}`,
     fireflyUserId: identity.sub,
     // players: no value yet
-    joinToken: joinToken,
+    joinCode: joinCode,
     createdAt: timestamp,
     updatedAt: timestamp,
     type: TypeGame,
@@ -114,6 +120,7 @@ export function response(context: Context): GameSummary | null {
     gameDescription: context.stash.record.gameDescription,
     gameType: context.stash.record.gameType,
     gameId: context.stash.record.gameId,
+    joinCode: context.stash.record.joinCode,
     fireflyUserId: context.stash.record.fireflyUserId,
     createdAt: context.stash.record.createdAt,
     updatedAt: context.stash.record.updatedAt,

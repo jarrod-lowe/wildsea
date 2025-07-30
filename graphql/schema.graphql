@@ -21,6 +21,7 @@ type Mutation {
     joinGame(input: JoinGameInput!): PlayerSheetSummary! @aws_cognito_user_pools
     updateGame(input: UpdateGameInput!): GameSummary! @aws_cognito_user_pools
     deleteGame(input: DeleteGameInput!): GameSummary! @aws_cognito_user_pools
+    updateJoinCode(input: UpdateJoinCodeInput!): GameSummary! @aws_cognito_user_pools
     createSection(input: CreateSectionInput!): SheetSection! @aws_cognito_user_pools
     updateSection(input: UpdateSectionInput!): SheetSection! @aws_cognito_user_pools
     deleteSection(input: DeleteSectionInput!): SheetSection! @aws_cognito_user_pools
@@ -66,8 +67,7 @@ input CreateGameInput {
 }
 
 input JoinGameInput {
-  gameId: ID!
-  joinToken: ID!
+  joinCode: String!
 }
 
 input DeleteGameInput {
@@ -78,6 +78,10 @@ input UpdateGameInput {
   gameId: ID!
   name: String!
   description: String
+}
+
+input UpdateJoinCodeInput {
+  gameId: ID!
 }
 
 input DeletePlayerInput {
@@ -112,6 +116,7 @@ type GameSummary @aws_cognito_user_pools {
   gameName: String!
   gameType: String!
   gameDescription: String
+  joinCode: String
   fireflyUserId: String!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -125,7 +130,7 @@ type Game @aws_cognito_user_pools {
   gameType: String!
   gameDescription: String
   playerSheets: [PlayerSheet!]!
-  joinToken: String
+  joinCode: String
   fireflyUserId: String!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!

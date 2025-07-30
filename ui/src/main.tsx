@@ -112,11 +112,11 @@ export function AppContent() {
             }
             const id = getGameId();
             setGameId(id);
-            const token = getJoinToken();
+            const joinCode = getJoinCode();
 
-            if (id && token) {
+            if (joinCode) {
                 try {
-                    await joinGame(id, token);
+                    await joinGame(joinCode);
                 }
                 catch (error) {
                     console.error(error);
@@ -170,25 +170,46 @@ export function getGameId(location: Location = window.location): string | null {
     return urlParams.get('gameId');
 }
 
-export function getJoinToken(): string | null {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('joinToken');
+export function getJoinCode(): string | null {
+    const path = window.location.pathname;
+    
+    // Check if path starts with '/join/' and has exactly 6 characters after
+    if (path.startsWith('/join/') && path.length === 12) {
+        const code = path.substring(6); // Extract characters after '/join/'
+        
+        // Validate that all characters are valid (A-Z, 2-9, no confusing chars)
+        const validChars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+        for (const char of code) {
+            if (validChars.indexOf(char) === -1) {
+                return null;
+            }
+        }
+
+        return code;
+    }
+    
+    return null;
 }
 
-async function joinGame(gameId: string, joinToken: string) {
+async function joinGame(joinCode: string) {
     const client = generateClient();
     try {
         const response = await client.graphql({
             query: joinGameMutation,
             variables: {
                 input: {
-                    gameId: gameId,
-                    joinToken: joinToken,
+                    joinCode: joinCode,
                 }
             }
         }) as GraphQLResult<{ joinGame: PlayerSheetSummary }>;
         if (response.errors) {
             throw new Error(response.errors[0].message);
+        }
+        
+        // Redirect to the game using the gameId from the response
+        const gameId = response.data?.joinGame?.gameId;
+        if (gameId) {
+            window.location.href = `${window.location.origin}/?gameId=${gameId}`;
         }
     }
     catch(error) {
@@ -197,7 +218,6 @@ async function joinGame(gameId: string, joinToken: string) {
         throw error;
       }
     }
-    window.location.href = `${window.location.origin}/?gameId=${gameId}`;
 }
 
 interface CustomError extends Error {

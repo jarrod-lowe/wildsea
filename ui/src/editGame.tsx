@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { generateClient } from "aws-amplify/api";
@@ -26,6 +26,12 @@ export const EditGameModal: React.FC<EditGameModalProps> = ({
   const intl = useIntl();
   const toast = useToast();
 
+  // Update state when game prop changes (e.g., when modal reopens with different game)
+  useEffect(() => {
+    setGameName(game.gameName);
+    setGameDescription(game.gameDescription || '');
+  }, [game]);
+
   const handleSave = async () => {
     try {
       const input: UpdateGameInput = {
@@ -46,6 +52,8 @@ export const EditGameModal: React.FC<EditGameModalProps> = ({
       toast.addToast(intl.formatMessage({ id: "editGameModal.updateError" }), 'error');
     }
   };
+
+
 
   return (
     <Modal
@@ -71,6 +79,7 @@ export const EditGameModal: React.FC<EditGameModalProps> = ({
         placeholder={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
         ariaLabel={intl.formatMessage({ id: "editGameModal.descriptionPlaceholder" })}
       />
+      
       <div className="modal-buttons">
         <button onClick={onRequestClose} className="btn-secondary btn-small"><FormattedMessage id="cancel" /></button>
         <button onClick={handleSave} className="btn-standard btn-small"><FormattedMessage id="save" /></button>

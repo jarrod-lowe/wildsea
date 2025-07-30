@@ -431,7 +431,6 @@ const SheetHeader: React.FC<{
     }
   };
 
-  const joinUrl = game.joinToken ? getJoinUrl(game.joinToken) : null;
 
   return (
     <div className="sheet-header">
@@ -471,21 +470,10 @@ const SheetHeader: React.FC<{
           </h2>
         </div>
       )}
-      {sheet.type === TypeFirefly && joinUrl && (
-        <p>
-          <FormattedMessage id="joinToken" />: <a href={joinUrl}>{joinUrl}</a>
-        </p>
-      )}
     </div>
   );
 };
 
-// Helper function to generate the join URL
-const getJoinUrl = (joinToken: string): string => {
-  const currentUrl = new URL(window.location.href);
-  currentUrl.searchParams.set('joinToken', joinToken);
-  return currentUrl.toString();
-};
 
 interface DeleteSectionModalProps {
   isOpen: boolean;
