@@ -163,7 +163,7 @@ function resolveLanguage(languagePreference: SupportedLanguage): Exclude<Support
     if (languagePreference === 'auto') {
         return detectBrowserLanguage();
     }
-    return languagePreference as Exclude<SupportedLanguage, 'auto'>;
+    return languagePreference;
 }
 
 function AppWithIntl() {
