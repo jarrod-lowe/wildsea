@@ -1,6 +1,6 @@
 import md5 from 'md5';
 import { signInWithRedirect, signOut } from "@aws-amplify/auth";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FormattedMessage, useIntl } from 'react-intl';
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
@@ -30,6 +30,23 @@ interface TopBarProps {
 export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isFirefly, onEditGame, onShareGame, currentLanguage = 'en', onLanguageChange }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const intl = useIntl();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
 
   const renderTitle = () => (
     <h1>
@@ -74,7 +91,7 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
     return (
       <div className="top-bar">
         {renderTitle()}
-        <div className="user-menu">
+        <div className="user-menu" ref={dropdownRef}>
           <button 
             className="user-menu-button"
             onClick={() => setShowDropdown(!showDropdown)}
