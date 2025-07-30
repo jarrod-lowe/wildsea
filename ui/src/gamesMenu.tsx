@@ -3,8 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { createGameMutation, getGamesQuery } from "../../appsync/schema";
 import { PlayerSheetSummary, CreateGameInput, Game } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
-import { messages } from './translations';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { TopBar } from "./frame";
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
@@ -207,9 +206,7 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
 };
 
 export const GamesMenu: React.FC<{ userEmail: string }> = (props) => (
-    <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
-        <GamesMenuContent {...props} />
-    </IntlProvider>
+    <GamesMenuContent {...props} />
 );
 
 export default GamesMenu;

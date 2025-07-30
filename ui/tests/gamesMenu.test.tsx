@@ -1,9 +1,11 @@
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { IntlProvider } from 'react-intl';
 import { GamesMenu } from '../src/gamesMenu';
 import { generateClient } from "aws-amplify/api";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { PlayerSheetSummary } from "../../appsync/graphql";
 import { fetchAuthSession } from 'aws-amplify/auth';
+import { messages } from '../src/translations';
 
 jest.mock("aws-amplify/api", () => ({
   generateClient: jest.fn(),
@@ -23,6 +25,14 @@ jest.mock("../src/gamesMenu", () => {
   };
 })
 
+const renderWithIntl = (component: React.ReactElement) => {
+  return render(
+    <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
+      {component}
+    </IntlProvider>
+  );
+};
+
 describe('GamesMenu', () => {
   let mockGraphql: jest.Mock;
 
@@ -34,7 +44,7 @@ describe('GamesMenu', () => {
 
   it('renders without crashing', async () => {
     await act(async () => {
-      render(<GamesMenu userEmail="email"/>);
+      renderWithIntl(<GamesMenu userEmail="email"/>);
     });
     expect(screen.getByText('Available Games')).toBeInTheDocument();
     expect(screen.getByText('Create New Game')).toBeInTheDocument();
@@ -67,7 +77,7 @@ describe('GamesMenu', () => {
     mockGraphql.mockResolvedValueOnce({ data: { getGames: mockGames } } as GraphQLResult<{ getGames: PlayerSheetSummary[] }>);
 
     await act(async () => {
-      render(<GamesMenu userEmail="email"/>);
+      renderWithIntl(<GamesMenu userEmail="email"/>);
     });
 
     await act(async () => {
@@ -82,7 +92,7 @@ describe('GamesMenu', () => {
     mockGraphql.mockRejectedValueOnce(new Error('Fetch error'));
 
     await act(async () => {
-      render(<GamesMenu userEmail="email"/>);
+      renderWithIntl(<GamesMenu userEmail="email"/>);
     });
 
     await act(async () => {
@@ -96,7 +106,7 @@ describe('GamesMenu', () => {
     mockGraphql.mockRejectedValueOnce(new Error('Create error'));
 
     await act(async () => {
-      render(<GamesMenu userEmail="email"/>);
+      renderWithIntl(<GamesMenu userEmail="email"/>);
     });
 
     fireEvent.change(screen.getByLabelText('Game Name:'), { target: { value: 'New Game' } });
@@ -117,7 +127,7 @@ describe('GamesMenu', () => {
     mockGraphql.mockRejectedValueOnce(new Error('Fetch error'));
 
     await act(async () => {
-      render(<GamesMenu userEmail="email"/>);
+      renderWithIntl(<GamesMenu userEmail="email"/>);
     });
 
     await act(async () => {
