@@ -266,7 +266,7 @@ const useGameUpdates = (
               ...currentGame,
               gameName: updatedGame.gameName,
               gameDescription: updatedGame.gameDescription,
-              joinCode: updatedGame.joinCode,
+              joinCode: updatedGame.joinCode ?? currentGame.joinCode,
             }
             setGame(updatedGameData);
             gameRef.current = updatedGameData;
