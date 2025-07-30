@@ -2,9 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { Game, PlayerSheetSummary, Subscription as GQLSubscription, SheetSection, GameSummary } from "../../appsync/graphql";
 import { getGameQuery, updatedPlayerSubscription, updatedSectionSubscription, updatedGameSubscription } from "../../appsync/schema";
-import { IntlProvider, FormattedMessage, useIntl, IntlShape } from 'react-intl';
+import { FormattedMessage, useIntl, IntlShape } from 'react-intl';
 import { GraphQLResult, GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
-import { messages } from './translations';
 import { TopBar } from "./frame";
 import { fetchUserAttributes } from 'aws-amplify/auth';
 import { PlayerSheetTab } from './playerSheetTab';
@@ -426,9 +425,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
 };
 
 const AppGame: React.FC<{ id: string, userEmail: string }> = (props) => (
-  <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
-    <GameContent {...props} />
-  </IntlProvider>
+  <GameContent {...props} />
 );
 
 async function fetchUserSubject(): Promise<string> {

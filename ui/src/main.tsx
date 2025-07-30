@@ -4,11 +4,12 @@ import { Amplify } from "aws-amplify";
 import { fetchUserAttributes } from 'aws-amplify/auth';
 import amplifyconfig from "./amplifyconfiguration.json";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
-import { messages } from './translations';
+import { messages, supportedLanguages, type SupportedLanguage } from './translations';
 import { TopBar } from "./frame";
 import { generateClient, GraphQLResult } from "aws-amplify/api";
-import { joinGameMutation } from "../../appsync/schema";
-import type { PlayerSheetSummary } from "../../appsync/graphql";
+import { GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
+import { joinGameMutation, getUserSettingsQuery, updatedUserSettingsSubscription } from "../../appsync/schema";
+import type { PlayerSheetSummary, UserSettings, Subscription as GQLSubscription } from "../../appsync/graphql";
 import { ToastProvider, useToast } from "./notificationToast";
 import Modal from 'react-modal';
 import FooterBar from './footerBar';
@@ -89,81 +90,6 @@ export async function amplifySetup() {
     Amplify.configure(config);
 }
 
-export function AppContent() {
-    const [gameId, setGameId] = useState<string | null>(null);
-    const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
-    const [userEmail, setUserEmail] = useState<string | undefined | null>(null);
-    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-    const toast = useToast();
-    const intl = useIntl();
-
-    useEffect(() => {
-        async function setup() {
-            await amplifySetup();
-            setIsAmplifyConfigured(true);
-            try {
-                const email = await getUserEmail();
-                setUserEmail(email);
-            } catch (error) {
-                console.error(error);
-                toast.addToast(intl.formatMessage({ id: "getUserEmailError" }), 'error')
-            } finally {
-                setIsCheckingAuth(false);
-            }
-            const id = getGameId();
-            setGameId(id);
-            const joinCode = getJoinCode();
-
-            if (joinCode) {
-                try {
-                    await joinGame(joinCode);
-                }
-                catch (error) {
-                    console.error(error);
-                    toast.addToast(intl.formatMessage({ id: 'unableToJoin' }), 'error');
-                }
-            }
-        }
-        setup();
-    }, []);
-
-    if (!isAmplifyConfigured || isCheckingAuth ) {
-        return <div data-testid="loading"><FormattedMessage id="loading" /></div>;
-    }
-
-    if (!userEmail) {
-        // Load default theme for login screen
-        loadDefaultTheme();
-        
-        return (
-            <div>
-                <header>
-                    <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} gameDescription="" isFirefly={false}/>
-                </header>
-                <main>
-                    <div><FormattedMessage id="pleaseLogin" /></div>
-                </main>
-                <FooterBar />
-            </div>
-        )
-    }
-
-    // Load default theme for non-game screens
-    if (!gameId) {
-        loadDefaultTheme();
-    }
-
-    return (
-        <div>
-            <main>
-                <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
-                    {gameId ? <AppGame id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
-                </Suspense>
-            </main>
-            <FooterBar />
-        </div>
-    );
-}
 
 export function getGameId(location: Location = window.location): string | null {
     const urlParams = new URLSearchParams(location.search);
@@ -226,11 +152,164 @@ interface CustomError extends Error {
 
 export function App() {
     return (
-        <IntlProvider messages={messages['en']} locale="en" defaultLocale="en">
-            <ToastProvider>
-                <AppContent />
-            </ToastProvider>
+        <ToastProvider>
+            <AppWithIntl />
+        </ToastProvider>
+    );
+}
+
+function AppWithIntl() {
+    const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
+
+    const handleLanguageChange = (lang: SupportedLanguage) => {
+        setCurrentLanguage(lang);
+    };
+
+    // For non-standard locales like Klingon, use 'en' as the locale but keep our custom messages
+    const localeForIntl = currentLanguage === 'tlh' ? 'en' : currentLanguage;
+
+    return (
+        <IntlProvider key={currentLanguage} messages={messages[currentLanguage]} locale={localeForIntl} defaultLocale="en">
+            <AppContentWrapper onLanguageChange={handleLanguageChange} />
         </IntlProvider>
+    );
+}
+
+function AppContentWrapper({ onLanguageChange }: { onLanguageChange: (lang: SupportedLanguage) => void }) {
+    const [gameId, setGameId] = useState<string | null>(null);
+    const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
+    const [userEmail, setUserEmail] = useState<string | undefined | null>(null);
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+    const toast = useToast();
+    const intl = useIntl();
+
+    const updateLanguageFromSettings = (settings: UserSettings | null) => {
+        if (settings?.settings) {
+            try {
+                const parsedSettings = JSON.parse(settings.settings as string);
+                const language = parsedSettings?.language as SupportedLanguage;
+                if (language && language in supportedLanguages) {
+                    onLanguageChange(language);
+                }
+            } catch (error) {
+                console.error('Error parsing user settings:', error);
+            }
+        }
+    };
+
+    const fetchUserSettings = async () => {
+        try {
+            const client = generateClient();
+            const response = await client.graphql({
+                query: getUserSettingsQuery
+            }) as GraphQLResult<{ getUserSettings: UserSettings }>;
+            
+            if (response.errors) {
+                console.error('Error fetching user settings:', response.errors);
+                return;
+            }
+            
+            const settings = response.data?.getUserSettings || null;
+            updateLanguageFromSettings(settings);
+        } catch (error) {
+            console.error('Error fetching user settings:', error);
+        }
+    };
+
+    useEffect(() => {
+        async function setup() {
+            await amplifySetup();
+            setIsAmplifyConfigured(true);
+            try {
+                const email = await getUserEmail();
+                setUserEmail(email);
+                
+                // Fetch user settings after successful auth
+                if (email) {
+                    await fetchUserSettings();
+                }
+            } catch (error) {
+                console.error(error);
+                toast.addToast(intl.formatMessage({ id: "getUserEmailError" }), 'error')
+            } finally {
+                setIsCheckingAuth(false);
+            }
+            const id = getGameId();
+            setGameId(id);
+            const joinCode = getJoinCode();
+
+            if (joinCode) {
+                try {
+                    await joinGame(joinCode);
+                }
+                catch (error) {
+                    console.error(error);
+                    toast.addToast(intl.formatMessage({ id: 'unableToJoin' }), 'error');
+                }
+            }
+        }
+        setup();
+    }, []);
+
+    // Set up subscription for user settings changes
+    useEffect(() => {
+        if (!userEmail || !isAmplifyConfigured) return;
+
+        const client = generateClient();
+        const subscription = (client.graphql<GraphQLSubscription<GQLSubscription>>({
+            query: updatedUserSettingsSubscription
+        }) as GraphqlSubscriptionResult<GQLSubscription>).subscribe({
+            next: ({ data }) => {
+                const updatedSettings = data?.updatedUserSettings;
+                if (updatedSettings) {
+                    updateLanguageFromSettings(updatedSettings);
+                }
+            },
+            error: (error: any) => {
+                console.error('User settings subscription error:', error);
+            }
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [userEmail, isAmplifyConfigured]);
+
+    if (!isAmplifyConfigured || isCheckingAuth ) {
+        return <div data-testid="loading"><FormattedMessage id="loading" /></div>;
+    }
+
+    if (!userEmail) {
+        // Load default theme for login screen
+        loadDefaultTheme();
+        
+        return (
+            <div>
+                <header>
+                    <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} gameDescription="" isFirefly={false}/>
+                </header>
+                <main>
+                    <div><FormattedMessage id="pleaseLogin" /></div>
+                </main>
+                <FooterBar />
+            </div>
+        )
+    }
+
+    // Load default theme for non-game screens
+    if (!gameId) {
+        loadDefaultTheme();
+    }
+
+    return (
+        <div>
+            <main>
+                <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
+                    {gameId ? <AppGame id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
+                </Suspense>
+            </main>
+            <FooterBar />
+        </div>
     );
 }
 
