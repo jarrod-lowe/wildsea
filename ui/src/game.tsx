@@ -3,6 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { Game, PlayerSheetSummary, Subscription as GQLSubscription, SheetSection, GameSummary } from "../../appsync/graphql";
 import { getGameQuery, updatedPlayerSubscription, updatedSectionSubscription, updatedGameSubscription } from "../../appsync/schema";
 import { FormattedMessage, useIntl, IntlShape } from 'react-intl';
+import { type SupportedLanguage } from './translations';
 import { GraphQLResult, GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
 import { TopBar } from "./frame";
 import { fetchUserAttributes } from 'aws-amplify/auth';
@@ -287,7 +288,12 @@ const useGameUpdates = (
 };
 
 // Main Game component
-const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmail }) => {
+const GameContent: React.FC<{ 
+  id: string; 
+  userEmail: string;
+  currentLanguage?: SupportedLanguage;
+  onLanguageChange?: (language: SupportedLanguage) => void;
+}> = ({ id, userEmail, currentLanguage, onLanguageChange }) => {
   const [game, setGame] = useState<Game | null>(null);
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [userSubject, setUserSubject] = useState<string>("");
@@ -364,6 +370,8 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         isFirefly={userSubject === game.fireflyUserId}
         onEditGame={() => setShowEditModal(true)}
         onShareGame={() => setShowJoinCodeModal(true)}
+        currentLanguage={currentLanguage}
+        onLanguageChange={onLanguageChange}
       />
       <div className="tab-bar" role="tablist" aria-label={intl.formatMessage({ id: 'game.characterTabs' })}>
         {game.playerSheets
@@ -424,7 +432,12 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
   );
 };
 
-const AppGame: React.FC<{ id: string, userEmail: string }> = (props) => (
+const AppGame: React.FC<{ 
+  id: string; 
+  userEmail: string;
+  currentLanguage?: SupportedLanguage;
+  onLanguageChange?: (language: SupportedLanguage) => void;
+}> = (props) => (
   <GameContent {...props} />
 );
 

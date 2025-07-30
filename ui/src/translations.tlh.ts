@@ -29,6 +29,7 @@ export const messagesKlingon = {
     'loading': 'DIch...',
     'login': 'naDev',
     'logout': 'DIch mI\'',
+    'language': 'Hol',
     'loadingGamesMenu': 'DIch Dub naDev DIch menu...',
     'errorFetchingGameData': 'DIch Dub DIch naDev DIch',
     'error': 'DIch',
@@ -41,6 +42,7 @@ export const messagesKlingon = {
     'noGame': 'DIch Dub DIch pagh, DIch DIch lo\'wI\' DIch.',
     'createGamePermissionDenied': 'DIch Dub chenmoH DIch DIch.',
     'errorCheckingPermissions': 'DIch DIch naDev DIch.',
+    'errorUpdatingLanguage': 'Hol choq DIch DIch.',
 
     'gameType.wildsea.name': 'yoD DIch',
     'gameType.deltaGreen.name': 'Delta DIch',

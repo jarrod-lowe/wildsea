@@ -19,7 +19,7 @@ export const supportedLanguages = {
   en: {
     code: 'en',
     name: 'English',
-    flag: '🇺🇸',
+    flag: '🇬🇧',
     nativeName: 'English',
   },
   tlh: {

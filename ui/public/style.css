@@ -432,7 +432,7 @@ body {
   padding: var(--space-md);
   z-index: 1001;
   box-shadow: var(--shadow-medium);
-  min-width: 120px;
+  min-width: 200px;
 }
 
 .dropdown button {
@@ -457,6 +457,35 @@ body {
 
 .dropdown button:active {
   transform: translateY(0);
+}
+
+.dropdown-separator {
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-sm) 0;
+}
+
+.language-selector {
+  margin-bottom: var(--space-sm);
+}
+
+.language-selector label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text);
+}
+
+.language-selector select {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 .top-bar h1 {

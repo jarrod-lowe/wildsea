@@ -8,7 +8,7 @@ import { messages, supportedLanguages, type SupportedLanguage } from './translat
 import { TopBar } from "./frame";
 import { generateClient, GraphQLResult } from "aws-amplify/api";
 import { GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
-import { joinGameMutation, getUserSettingsQuery, updatedUserSettingsSubscription } from "../../appsync/schema";
+import { joinGameMutation, getUserSettingsQuery, updatedUserSettingsSubscription, updateUserSettingsMutation } from "../../appsync/schema";
 import type { PlayerSheetSummary, UserSettings, Subscription as GQLSubscription } from "../../appsync/graphql";
 import { ToastProvider, useToast } from "./notificationToast";
 import Modal from 'react-modal';
@@ -169,13 +169,13 @@ function AppWithIntl() {
     const localeForIntl = currentLanguage === 'tlh' ? 'en' : currentLanguage;
 
     return (
-        <IntlProvider key={currentLanguage} messages={messages[currentLanguage]} locale={localeForIntl} defaultLocale="en">
-            <AppContentWrapper onLanguageChange={handleLanguageChange} />
+        <IntlProvider messages={messages[currentLanguage]} locale={localeForIntl} defaultLocale="en">
+            <AppContentWrapper onLanguageChange={handleLanguageChange} currentLanguage={currentLanguage} />
         </IntlProvider>
     );
 }
 
-function AppContentWrapper({ onLanguageChange }: { readonly onLanguageChange: (lang: SupportedLanguage) => void }) {
+function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onLanguageChange: (lang: SupportedLanguage) => void; readonly currentLanguage: SupportedLanguage }) {
     const [gameId, setGameId] = useState<string | null>(null);
     const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
     const [userEmail, setUserEmail] = useState<string | undefined | null>(null);
@@ -190,10 +190,58 @@ function AppContentWrapper({ onLanguageChange }: { readonly onLanguageChange: (l
                 const language = parsedSettings?.language as SupportedLanguage;
                 if (language && language in supportedLanguages) {
                     onLanguageChange(language);
+                } else {
+                    // Default to English if no valid language is set
+                    onLanguageChange('en');
                 }
             } catch (error) {
                 console.error('Error parsing user settings:', error);
+                onLanguageChange('en');
             }
+        } else {
+            // Default to English if no settings exist
+            onLanguageChange('en');
+        }
+    };
+
+    const handleLanguageChangeFromUI = async (newLanguage: SupportedLanguage) => {
+        try {
+            const client = generateClient();
+            // Get current settings or create new ones
+            const currentSettingsResponse = await client.graphql({
+                query: getUserSettingsQuery
+            }) as GraphQLResult<{ getUserSettings: UserSettings }>;
+            
+            let currentSettings = {};
+            if (currentSettingsResponse.data?.getUserSettings?.settings) {
+                try {
+                    currentSettings = JSON.parse(currentSettingsResponse.data.getUserSettings.settings);
+                } catch (error) {
+                    console.error('Error parsing current settings:', error);
+                }
+            }
+            
+            // Update settings with new language
+            const updatedSettings = {
+                ...currentSettings,
+                language: newLanguage
+            };
+            
+            // Save updated settings
+            await client.graphql({
+                query: updateUserSettingsMutation,
+                variables: {
+                    input: {
+                        settings: JSON.stringify(updatedSettings)
+                    }
+                }
+            });
+            
+            // Update UI immediately (subscription will also fire but this gives immediate feedback)
+            onLanguageChange(newLanguage);
+        } catch (error) {
+            console.error('Error updating language settings:', error);
+            toast.addToast(intl.formatMessage({ id: 'errorUpdatingLanguage' }), 'error');
         }
     };
 
@@ -286,7 +334,14 @@ function AppContentWrapper({ onLanguageChange }: { readonly onLanguageChange: (l
         return (
             <div>
                 <header>
-                    <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={undefined} gameDescription="" isFirefly={false}/>
+                    <TopBar 
+                        title={intl.formatMessage({ id: 'wildsea' })} 
+                        userEmail={undefined} 
+                        gameDescription="" 
+                        isFirefly={false}
+                        currentLanguage={currentLanguage}
+                        onLanguageChange={handleLanguageChangeFromUI}
+                    />
                 </header>
                 <main>
                     <div><FormattedMessage id="pleaseLogin" /></div>
@@ -305,7 +360,19 @@ function AppContentWrapper({ onLanguageChange }: { readonly onLanguageChange: (l
         <div>
             <main>
                 <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
-                    {gameId ? <AppGame id={gameId} userEmail={userEmail}/> : <GamesMenu userEmail={userEmail}/>}
+                    {gameId ? 
+                        <AppGame 
+                            id={gameId} 
+                            userEmail={userEmail}
+                            currentLanguage={currentLanguage}
+                            onLanguageChange={handleLanguageChangeFromUI}
+                        /> : 
+                        <GamesMenu 
+                            userEmail={userEmail}
+                            currentLanguage={currentLanguage}
+                            onLanguageChange={handleLanguageChangeFromUI}
+                        />
+                    }
                 </Suspense>
             </main>
             <FooterBar />
