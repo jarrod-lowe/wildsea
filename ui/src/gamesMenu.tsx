@@ -4,13 +4,18 @@ import { createGameMutation, getGamesQuery } from "../../appsync/schema";
 import { PlayerSheetSummary, CreateGameInput, Game } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
+import { type SupportedLanguage } from './translations';
 import { TopBar } from "./frame";
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { GameTypes, DefaultNewGameType } from "../../graphql/lib/constants/gameTypes";
 
-export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) => {
+export const GamesMenuContent: React.FC<{ 
+    userEmail: string;
+    currentLanguage?: SupportedLanguage;
+    onLanguageChange?: (language: SupportedLanguage) => void;
+}> = ({ userEmail, currentLanguage, onLanguageChange }) => {
     const client = generateClient();
     const [games, setGames] = useState<PlayerSheetSummary[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -80,7 +85,14 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
 
     return (
         <div className="gameslist">
-            <TopBar title={intl.formatMessage({ id: 'wildsea' })} userEmail={ userEmail } gameDescription="" isFirefly={false}/>
+            <TopBar 
+                title={intl.formatMessage({ id: 'wildsea' })} 
+                userEmail={userEmail} 
+                gameDescription="" 
+                isFirefly={false}
+                currentLanguage={currentLanguage}
+                onLanguageChange={onLanguageChange}
+            />
             <div className="allgames">
                 <section className="joingame" role="region" aria-labelledby="available-games-heading">
                     <h2 id="available-games-heading"><FormattedMessage id="availableGames" /></h2>
@@ -205,7 +217,11 @@ export const GamesMenuContent: React.FC<{ userEmail: string}> = ({ userEmail }) 
     );
 };
 
-export const GamesMenu: React.FC<{ userEmail: string }> = (props) => (
+export const GamesMenu: React.FC<{ 
+    userEmail: string;
+    currentLanguage?: SupportedLanguage;
+    onLanguageChange?: (language: SupportedLanguage) => void;
+}> = (props) => (
     <GamesMenuContent {...props} />
 );
 

@@ -29,6 +29,7 @@ export const messagesEnglish = {
     'loading': 'Loading...',
     'login': 'Login',
     'logout': 'Logout',
+    'language': 'Language',
     'loadingGamesMenu': 'Loading games menu...',
     'errorFetchingGameData': 'Error fetching game data',
     'error': 'Error',
@@ -41,6 +42,7 @@ export const messagesEnglish = {
     'noGame': 'This game does not exist, or you are not a player in it.',
     'createGamePermissionDenied': 'You cannot create new games.',
     'errorCheckingPermissions': 'Failed to get permissions information.',
+    'errorUpdatingLanguage': 'Error updating language settings.',
 
     'gameType.wildsea.name': 'Wildsea',
     'gameType.deltaGreen.name': 'Delta Green',

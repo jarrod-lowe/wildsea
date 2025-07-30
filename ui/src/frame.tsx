@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { FormattedMessage, useIntl } from 'react-intl';
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
+import { supportedLanguages, type SupportedLanguage } from './translations';
 
 function handleSignInClick() {
     signOut(); // sometimes Cognito gets confused; and things you are both logged in, but can't retrieve your email address
@@ -21,10 +22,12 @@ interface TopBarProps {
   isFirefly?: boolean;
   onEditGame?: () => void;
   onShareGame?: () => void;
+  currentLanguage?: SupportedLanguage;
+  onLanguageChange?: (language: SupportedLanguage) => void;
 }
 
 // TopBar component
-export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isFirefly, onEditGame, onShareGame }) => {
+export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isFirefly, onEditGame, onShareGame, currentLanguage = 'en', onLanguageChange }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const intl = useIntl();
 
@@ -81,6 +84,28 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
           </button>
           {showDropdown && (
             <div className="dropdown">
+              {onLanguageChange && (
+                <>
+                  <div className="language-selector">
+                    <label htmlFor="language-select">
+                      <FormattedMessage id="language" />:
+                    </label>
+                    <select
+                      id="language-select"
+                      value={currentLanguage}
+                      onChange={(e) => onLanguageChange(e.target.value as SupportedLanguage)}
+                      className="language-select"
+                    >
+                      {Object.values(supportedLanguages).map((lang) => (
+                        <option key={lang.code} value={lang.code}>
+                          {lang.flag} {lang.nativeName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="dropdown-separator" />
+                </>
+              )}
               <button onClick={() => { handleSignOutClick(); }} className="btn-standard btn-small">
                 <FormattedMessage id="logout" />
               </button>
