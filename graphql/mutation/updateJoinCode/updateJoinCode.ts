@@ -12,7 +12,7 @@ export function request(
 ): DynamoDBUpdateItemRequest {
   if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
-  if (!identity || !identity.sub) util.unauthorized();
+  if (!identity?.sub) util.unauthorized();
 
   const { gameId } = context.arguments.input;
   const newJoinCode: string = generateJoinCode();

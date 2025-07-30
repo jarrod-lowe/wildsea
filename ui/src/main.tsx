@@ -172,8 +172,23 @@ export function getGameId(location: Location = window.location): string | null {
 
 export function getJoinCode(): string | null {
     const path = window.location.pathname;
-    const joinMatch = path.match(/^\/join\/([A-Z0-9]{6})$/);
-    return joinMatch ? joinMatch[1] : null;
+    
+    // Check if path starts with '/join/' and has exactly 6 characters after
+    if (path.startsWith('/join/') && path.length === 12) {
+        const code = path.substring(6); // Extract characters after '/join/'
+        
+        // Validate that all characters are valid (A-Z, 2-9, no confusing chars)
+        const validChars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+        for (let i = 0; i < code.length; i++) {
+            if (validChars.indexOf(code[i]) === -1) {
+                return null;
+            }
+        }
+        
+        return code;
+    }
+    
+    return null;
 }
 
 async function joinGame(joinCode: string) {

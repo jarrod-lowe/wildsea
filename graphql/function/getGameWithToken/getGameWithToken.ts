@@ -34,7 +34,7 @@ export function response(context: Context<{ input: JoinGameInput }>): Game {
   }
 
   const result = context.result as QueryResult;
-  if (!result || !result.items || result.items.length === 0) {
+  if (!result?.items?.length) {
     util.unauthorized();
   }
 
