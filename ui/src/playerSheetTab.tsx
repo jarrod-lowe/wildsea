@@ -346,6 +346,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         onConfirm={handleDeletePlayer}
         isOwnSheet={userSubject === sheet.userId}
         sheetType={sheet.type}
+        gameType={game.gameType || 'wildsea'}
       />
 
       <DeleteGameModal

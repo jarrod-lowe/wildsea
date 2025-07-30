@@ -9,6 +9,7 @@ interface DeletePlayerModalProps {
   onConfirm: () => void;
   isOwnSheet: boolean;
   sheetType: string;
+  gameType: string;
 }
 
 export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
@@ -17,6 +18,7 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
   onConfirm,
   isOwnSheet,
   sheetType,
+  gameType,
 }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const intl = useIntl();
@@ -44,7 +46,7 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
 
   const labelId = `playerSheetTab.${translationInset}Label`;
   const confirmId = `playerSheetTab.${translationInset}Confirmation`;
-  const warningId = `playerSheetTab.${translationInset}Warning`;
+  const warningId = `playerSheetTab.${translationInset}Warning.${gameType}`;
   const buttonId = `playerSheetTab.${translationInset}Confirm`;
 
   return (
