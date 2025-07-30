@@ -30,6 +30,7 @@ export const messagesKlingon = {
     'login': 'naDev',
     'logout': 'DIch mI\'',
     'language': 'Hol',
+    'language.auto': 'Hol DIch nugh',
     'loadingGamesMenu': 'DIch Dub naDev DIch menu...',
     'errorFetchingGameData': 'DIch Dub DIch naDev DIch',
     'error': 'DIch',

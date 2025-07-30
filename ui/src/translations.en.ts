@@ -30,6 +30,7 @@ export const messagesEnglish = {
     'login': 'Login',
     'logout': 'Logout',
     'language': 'Language',
+    'language.auto': 'Auto-detect',
     'loadingGamesMenu': 'Loading games menu...',
     'errorFetchingGameData': 'Error fetching game data',
     'error': 'Error',

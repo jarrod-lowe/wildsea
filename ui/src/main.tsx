@@ -4,7 +4,7 @@ import { Amplify } from "aws-amplify";
 import { fetchUserAttributes } from 'aws-amplify/auth';
 import amplifyconfig from "./amplifyconfiguration.json";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
-import { messages, supportedLanguages, type SupportedLanguage } from './translations';
+import { messages, supportedLanguages, type SupportedLanguage, detectBrowserLanguage } from './translations';
 import { TopBar } from "./frame";
 import { generateClient, GraphQLResult } from "aws-amplify/api";
 import { GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
@@ -158,18 +158,29 @@ export function App() {
     );
 }
 
+// Resolve actual language from preference (handling auto-detect)
+function resolveLanguage(languagePreference: SupportedLanguage): Exclude<SupportedLanguage, 'auto'> {
+    if (languagePreference === 'auto') {
+        return detectBrowserLanguage();
+    }
+    return languagePreference as Exclude<SupportedLanguage, 'auto'>;
+}
+
 function AppWithIntl() {
-    const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
+    const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('auto');
 
     const handleLanguageChange = (lang: SupportedLanguage) => {
         setCurrentLanguage(lang);
     };
 
+    // Resolve the actual language to use (handling auto-detect)
+    const actualLanguage = resolveLanguage(currentLanguage);
+    
     // For non-standard locales like Klingon, use 'en' as the locale but keep our custom messages
-    const localeForIntl = currentLanguage === 'tlh' ? 'en' : currentLanguage;
+    const localeForIntl = actualLanguage === 'tlh' ? 'en' : actualLanguage;
 
     return (
-        <IntlProvider messages={messages[currentLanguage]} locale={localeForIntl} defaultLocale="en">
+        <IntlProvider messages={messages[actualLanguage]} locale={localeForIntl} defaultLocale="en">
             <AppContentWrapper onLanguageChange={handleLanguageChange} currentLanguage={currentLanguage} />
         </IntlProvider>
     );
@@ -191,16 +202,16 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
                 if (language && language in supportedLanguages) {
                     onLanguageChange(language);
                 } else {
-                    // Default to English if no valid language is set
-                    onLanguageChange('en');
+                    // Default to auto-detect if no valid language is set
+                    onLanguageChange('auto');
                 }
             } catch (error) {
                 console.error('Error parsing user settings:', error);
-                onLanguageChange('en');
+                onLanguageChange('auto');
             }
         } else {
-            // Default to English if no settings exist
-            onLanguageChange('en');
+            // Default to auto-detect if no settings exist
+            onLanguageChange('auto');
         }
     };
 
