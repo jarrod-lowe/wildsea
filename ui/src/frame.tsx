@@ -101,6 +101,11 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
           </button>
           {showDropdown && (
             <div className="dropdown">
+              <div className="user-info">
+                <img src={gravatarUrl} alt="User avatar" className="user-avatar-small" />
+                <span className="user-email">{userEmail}</span>
+              </div>
+              <div className="dropdown-separator" />
               {onLanguageChange && (
                 <>
                   <div className="language-selector">
