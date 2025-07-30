@@ -135,9 +135,9 @@ function addSheetsToGame(
 }
 
 export function makeGameData(data: DataGame, sub: string): Game {
-  let joinToken = null;
+  let joinCode = null;
   if (data.fireflyUserId == sub) {
-    joinToken = data.joinToken;
+    joinCode = data.joinCode;
   }
   return {
     gameId: data.gameId,
@@ -145,7 +145,7 @@ export function makeGameData(data: DataGame, sub: string): Game {
     gameType: data.gameType,
     gameDescription: data.gameDescription,
     playerSheets: [],
-    joinToken: joinToken,
+    joinCode: joinCode,
     fireflyUserId: data.fireflyUserId,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,

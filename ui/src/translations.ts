@@ -50,7 +50,7 @@ export const messages = {
     'gameType.unknown.name': 'Unknown Game Type',
 
     'create': '✚ Add',
-    'joinToken': 'Join Token',
+    'joinCode': 'Join Code',
 
     'error.retry': 'Retry',
 
@@ -58,6 +58,24 @@ export const messages = {
     'editGameModal.namePlaceholder': 'Game Name',
     'editGameModal.descriptionPlaceholder': 'Game Description',
     'editGameModal.updateError': 'Failed to update the game. Please try again.',
+    'editGameModal.joinCodeLabel': 'Join Code:',
+    'editGameModal.copyJoinCode': '📋 Copy',
+    'editGameModal.refreshJoinCode': '🔄 New Code',
+    'editGameModal.joinCodeCopied': 'Join code copied to clipboard',
+    'editGameModal.joinCodeRefreshed': 'New join code generated',
+    'editGameModal.joinCodeError': 'Failed to update join code. Please try again.',
+
+    // Join Code Modal
+    'joinCodeModal.title': 'Share Game',
+    'joinCodeModal.description': 'Share this URL with players so they can join your game.',
+    'joinCodeModal.urlLabel': 'Join URL',
+    'joinCodeModal.noUrl': 'No join URL available',
+    'joinCodeModal.copyUrl': '📋 Copy URL',
+    'joinCodeModal.refreshUrl': '🔄 New URL',
+    'joinCodeModal.urlCopied': 'Join URL copied to clipboard',
+    'joinCodeModal.codeRefreshed': 'New join URL generated',
+    'joinCodeModal.copyError': 'Failed to copy to clipboard',
+    'joinCodeModal.refreshError': 'Failed to generate new join URL',
 
     'deleteGameModal.deleteGame': '🗑 Delete Game',
     'deleteGameModal.confirmation': 'Are you sure you want to delete this game?',
@@ -70,6 +88,7 @@ export const messages = {
     'cancel': '❌ Cancel',
     'close': '✖ Close',
     'edit': '✎ Edit',
+    'share': '🔗 Share',
     'editingMode': '✏️ Editing',
     'showInfo': 'ℹ',
     'showInfo.gameDescription': 'Show game description',

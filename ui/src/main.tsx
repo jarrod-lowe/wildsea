@@ -112,11 +112,11 @@ export function AppContent() {
             }
             const id = getGameId();
             setGameId(id);
-            const token = getJoinToken();
+            const joinCode = getJoinCode();
 
-            if (id && token) {
+            if (joinCode) {
                 try {
-                    await joinGame(id, token);
+                    await joinGame(joinCode);
                 }
                 catch (error) {
                     console.error(error);
@@ -170,25 +170,31 @@ export function getGameId(location: Location = window.location): string | null {
     return urlParams.get('gameId');
 }
 
-export function getJoinToken(): string | null {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('joinToken');
+export function getJoinCode(): string | null {
+    const path = window.location.pathname;
+    const joinMatch = path.match(/^\/join\/([A-Z0-9]{6})$/);
+    return joinMatch ? joinMatch[1] : null;
 }
 
-async function joinGame(gameId: string, joinToken: string) {
+async function joinGame(joinCode: string) {
     const client = generateClient();
     try {
         const response = await client.graphql({
             query: joinGameMutation,
             variables: {
                 input: {
-                    gameId: gameId,
-                    joinToken: joinToken,
+                    joinCode: joinCode,
                 }
             }
         }) as GraphQLResult<{ joinGame: PlayerSheetSummary }>;
         if (response.errors) {
             throw new Error(response.errors[0].message);
+        }
+        
+        // Redirect to the game using the gameId from the response
+        const gameId = response.data?.joinGame?.gameId;
+        if (gameId) {
+            window.location.href = `${window.location.origin}/?gameId=${gameId}`;
         }
     }
     catch(error) {
@@ -197,7 +203,6 @@ async function joinGame(gameId: string, joinToken: string) {
         throw error;
       }
     }
-    window.location.href = `${window.location.origin}/?gameId=${gameId}`;
 }
 
 interface CustomError extends Error {

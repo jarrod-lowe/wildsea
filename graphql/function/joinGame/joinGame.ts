@@ -15,7 +15,7 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
 
-  const id = context.arguments.input.gameId;
+  const id = context.prev.result.gameId;
   const timestamp = util.time.nowISO8601();
 
   const gameItem = {

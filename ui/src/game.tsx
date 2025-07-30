@@ -10,6 +10,7 @@ import { fetchUserAttributes } from 'aws-amplify/auth';
 import { PlayerSheetTab } from './playerSheetTab';
 import { useToast } from './notificationToast';
 import { EditGameModal } from './editGame';
+import { JoinCodeModal } from './joinCodeModal';
 import { DiceRollPanel } from './diceRollPanel';
 import { loadTheme } from './themeLoader';
 
@@ -265,6 +266,7 @@ const useGameUpdates = (
               ...currentGame,
               gameName: updatedGame.gameName,
               gameDescription: updatedGame.gameDescription,
+              joinCode: updatedGame.joinCode,
             }
             setGame(updatedGameData);
             gameRef.current = updatedGameData;
@@ -293,6 +295,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
   const [forceBackToList, setForceBackToList] = useState<boolean>(false);
   const [isGameFetched, setIsGameFetched] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showJoinCodeModal, setShowJoinCodeModal] = useState(false);
   const gameRef = useRef<Game | null>(null);
   const toast = useToast();
   const intl = useIntl();
@@ -361,6 +364,7 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
         gameDescription={game.gameDescription}
         isFirefly={userSubject === game.fireflyUserId}
         onEditGame={() => setShowEditModal(true)}
+        onShareGame={() => setShowJoinCodeModal(true)}
       />
       <div className="tab-bar" role="tablist" aria-label={intl.formatMessage({ id: 'game.characterTabs' })}>
         {game.playerSheets
@@ -407,6 +411,12 @@ const GameContent: React.FC<{ id: string, userEmail: string }> = ({ id, userEmai
       <EditGameModal
         isOpen={showEditModal}
         onRequestClose={() => setShowEditModal(false)}
+        game={game}
+        onUpdate={(updatedGame => setGame({ ...game, ...updatedGame }))}
+      />
+      <JoinCodeModal
+        isOpen={showJoinCodeModal}
+        onRequestClose={() => setShowJoinCodeModal(false)}
         game={game}
         onUpdate={(updatedGame => setGame({ ...game, ...updatedGame }))}
       />

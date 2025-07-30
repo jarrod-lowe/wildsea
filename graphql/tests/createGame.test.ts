@@ -4,6 +4,9 @@ jest.mock("@aws-appsync/utils", () => awsAppsyncUtilsMock);
 jest.mock("../environment.json", () => ({
   name: "MOCK",
 }));
+jest.mock("../lib/joinCode", () => ({
+  generateJoinCode: jest.fn(() => "7A8CV2"),
+}));
 
 import { request, response } from "../mutation/createGame/createGame";
 import {
@@ -60,13 +63,11 @@ describe("request function", () => {
     };
 
     const mockId = "unique-id";
-    const mockJoinToken = "unique-join-token";
     const mockTimestamp = "2024-08-17T00:00:00Z";
     const mockShipId = "unique-ship-id";
 
     (util.autoId as jest.Mock)
       .mockReturnValueOnce(mockId)
-      .mockReturnValueOnce(mockJoinToken)
       .mockReturnValueOnce(mockShipId);
     (util.time.nowISO8601 as jest.Mock).mockReturnValue(mockTimestamp);
 
@@ -89,8 +90,9 @@ describe("request function", () => {
             gameDescription: { S: "Test Description" },
             gameType: { S: "wildsea" },
             gameId: { S: mockId },
+            GSI1PK: { S: "JOIN#7A8CV2" },
             fireflyUserId: { S: "1234-5678-91011" },
-            joinToken: { S: mockJoinToken },
+            joinCode: { S: "7A8CV2" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
             type: { S: "GAME" },
@@ -263,6 +265,7 @@ describe("response function", () => {
           gameDescription: "testGameDescription",
           gameType: "wildsea",
           gameId: "testGameId",
+          joinCode: "7A8CV2",
           fireflyUserId: "testFireflyUserId",
           createdAt: "testCreatedAt",
           updatedAt: "testUpdatedAt",
@@ -285,6 +288,7 @@ describe("response function", () => {
       gameDescription: "testGameDescription",
       gameType: "wildsea",
       gameId: "testGameId",
+      joinCode: "7A8CV2",
       fireflyUserId: "testFireflyUserId",
       createdAt: "testCreatedAt",
       updatedAt: "testUpdatedAt",

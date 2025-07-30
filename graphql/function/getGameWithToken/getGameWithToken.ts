@@ -1,49 +1,53 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
-import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
+import type { DynamoDBQueryRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import type { Game, JoinGameInput } from "../../../appsync/graphql";
-import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
+import { DDBPrefixJoin } from "../../lib/constants/dbPrefixes";
 
 export function request(
   context: Context<{ input: JoinGameInput }>,
-): DynamoDBGetItemRequest {
+): DynamoDBQueryRequest {
   if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
 
-  const id = context.arguments.input.gameId;
-  const key = {
-    PK: DDBPrefixGame + "#" + id,
-    SK: DDBPrefixGame,
-  };
+  const { joinCode } = context.arguments.input;
 
   return {
-    operation: "GetItem",
-    key: util.dynamodb.toMapValues(key),
+    operation: "Query",
+    index: "GSI1",
+    query: {
+      expression: "GSI1PK = :gsi1pk",
+      expressionValues: util.dynamodb.toMapValues({
+        ":gsi1pk": `${DDBPrefixJoin}#${joinCode}`,
+      }),
+    },
   };
 }
 
-export function response(
-  context: Context<{ input: JoinGameInput }>,
-): Game | undefined {
+interface QueryResult {
+  items: Game[];
+}
+
+export function response(context: Context<{ input: JoinGameInput }>): Game {
   if (context.error) {
     util.error(context.error.message, context.error.type, context.result);
   }
 
-  if (
-    context.result === null ||
-    context.result.joinToken !== context.arguments.input.joinToken
-  ) {
+  const result = context.result as QueryResult;
+  if (!result || !result.items || result.items.length === 0) {
     util.unauthorized();
   }
 
+  const game: Game = result.items[0];
   const identity = context.identity as AppSyncIdentityCognito;
-  if (identity.sub === context.result.fireflyUserId) {
-    util.error("You cannot join your own game" as string, "Conflict");
+
+  if (identity.sub === game.fireflyUserId) {
+    util.error("You cannot join your own game", "Conflict");
   }
 
-  if (context.result.players?.includes(identity.sub)) {
-    util.error("You are already a player in this game" as string, "Conflict");
+  if (game.playerSheets?.some((sheet) => sheet.userId === identity.sub)) {
+    util.error("You are already a player in this game", "Conflict");
   }
 
-  return context.result;
+  return game;
 }
