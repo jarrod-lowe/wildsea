@@ -3,6 +3,8 @@ import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } f
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
+import { getDeltaGreenDerivedSeed } from './seed';
+import { SupportedLanguage } from './translations';
 
 interface DeltaGreenDerivedItem extends BaseSectionItem {
   attributeType: 'HP' | 'WP' | 'SAN' | 'BP';
@@ -217,42 +219,33 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
   return <BaseSection<DeltaGreenDerivedItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
 };
 
-export const createDefaultDeltaGreenDerivedContent = (_sheet?: any): SectionTypeDeltaGreenDerived => {
+export const createDefaultDeltaGreenDerivedContent = (_sheet?: any, language?: SupportedLanguage): SectionTypeDeltaGreenDerived => {
   // Try to get stats from data attributes (will be null on initial creation)
   const stats = getStatsFromDataAttributes();
   const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
+  const derivedData = getDeltaGreenDerivedSeed(language || 'en');
 
   return {
     showEmpty: false,
-    items: [
-      {
+    items: derivedData.map(derived => {
+      let defaultCurrent = 10; // fallback default
+      
+      // Set appropriate defaults based on attribute type
+      if (derivedCalcs) {
+        const calc = derivedCalcs[derived.attributeType];
+        defaultCurrent = calc?.current || (calc && 'max' in calc ? calc.max : derived.defaultCurrent);
+      } else {
+        // Use seed data default when stats aren't available
+        defaultCurrent = derived.defaultCurrent;
+      }
+
+      return {
         id: uuidv4(),
-        name: 'Hit Points (HP)',
+        name: derived.name,
         description: '',
-        attributeType: 'HP',
-        current: derivedCalcs?.HP?.current || 10,
-      },
-      {
-        id: uuidv4(),
-        name: 'Willpower Points (WP)',
-        description: '',
-        attributeType: 'WP',
-        current: derivedCalcs?.WP?.current || 10,
-      },
-      {
-        id: uuidv4(),
-        name: 'Sanity Points (SAN)',
-        description: '',
-        attributeType: 'SAN',
-        current: derivedCalcs?.SAN?.current || 50,
-      },
-      {
-        id: uuidv4(),
-        name: 'Breaking Point (BP)',
-        description: '',
-        attributeType: 'BP',
-        current: derivedCalcs?.BP?.current || 40,
-      },
-    ]
+        attributeType: derived.attributeType,
+        current: defaultCurrent,
+      };
+    })
   };
 };
