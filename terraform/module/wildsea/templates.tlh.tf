@@ -1,27 +1,27 @@
-# Character templates for auto-populate feature
-resource "aws_dynamodb_table_item" "template_wildsea_basic" {
+# Character templates for auto-populate feature - Klingon (tlh)
+resource "aws_dynamodb_table_item" "template_wildsea_basic_tlh" {
   table_name = aws_dynamodb_table.table.name
   hash_key   = aws_dynamodb_table.table.hash_key
   range_key  = aws_dynamodb_table.table.range_key
 
   item = jsonencode({
     PK = {
-      S = "TEMPLATE#wildsea#en"
+      S = "TEMPLATE#wildsea#tlh"
     }
     SK = {
-      S = "TEMPLATE#Basic Character"
+      S = "TEMPLATE#motlhbe' jup"
     }
     templateName = {
-      S = "Basic Character"
+      S = "motlhbe' jup"
     }
     displayName = {
-      S = "Basic Character"
+      S = "motlhbe' jup"
     }
     gameType = {
       S = "wildsea"
     }
     language = {
-      S = "en"
+      S = "tlh"
     }
     type = {
       S = "TEMPLATE"
@@ -29,28 +29,28 @@ resource "aws_dynamodb_table_item" "template_wildsea_basic" {
     sections = {
       S = jsonencode([
         {
-          sectionName = "Character Details"
+          sectionName = "jup nav"
           sectionType = "KEYVALUE"
           content = jsonencode({
             items = [
               {
                 id          = "name"
-                name        = "Name"
+                name        = "pagh"
                 description = ""
               },
               {
                 id          = "origin"
-                name        = "Origin"
+                name        = "mI'"
                 description = ""
               },
               {
                 id          = "post"
-                name        = "Post"
+                name        = "Daq"
                 description = ""
               },
               {
                 id          = "call"
-                name        = "Call"
+                name        = "DIch"
                 description = ""
               }
             ]
@@ -59,27 +59,27 @@ resource "aws_dynamodb_table_item" "template_wildsea_basic" {
           position = 0
         },
         {
-          sectionName = "Edges"
+          sectionName = "jup"
           sectionType = "TRACKABLE"
           content = jsonencode({
             items = [
               {
                 id          = "iron"
-                name        = "Iron"
+                name        = "baS"
                 description = ""
                 current     = 2
                 maximum     = 5
               },
               {
                 id          = "teeth"
-                name        = "Teeth"
+                name        = "DIrgh"
                 description = ""
                 current     = 2
                 maximum     = 5
               },
               {
                 id          = "veils"
-                name        = "Veils"
+                name        = "Sor"
                 description = ""
                 current     = 2
                 maximum     = 5
@@ -90,48 +90,48 @@ resource "aws_dynamodb_table_item" "template_wildsea_basic" {
           position = 1
         },
         {
-          sectionName = "Skills"
+          sectionName = "nugh"
           sectionType = "TRACKABLE"
           content = jsonencode({
             items = [
               {
                 id          = "break"
-                name        = "Break"
+                name        = "DIch"
                 description = ""
                 current     = 0
                 maximum     = 3
               },
               {
                 id          = "delve"
-                name        = "Delve"
+                name        = "nej"
                 description = ""
                 current     = 0
                 maximum     = 3
               },
               {
                 id          = "hunt"
-                name        = "Hunt"
+                name        = "DIch"
                 description = ""
                 current     = 0
                 maximum     = 3
               },
               {
                 id          = "outwit"
-                name        = "Outwit"
+                name        = "val"
                 description = ""
                 current     = 0
                 maximum     = 3
               },
               {
                 id          = "study"
-                name        = "Study"
+                name        = "ghoj"
                 description = ""
                 current     = 0
                 maximum     = 3
               },
               {
                 id          = "sway"
-                name        = "Sway"
+                name        = "DIch"
                 description = ""
                 current     = 0
                 maximum     = 3
@@ -142,34 +142,34 @@ resource "aws_dynamodb_table_item" "template_wildsea_basic" {
           position = 2
         },
         {
-          sectionName = "Resources"
+          sectionName = "nugh"
           sectionType = "BURNABLE"
           content = jsonencode({
             items = [
               {
                 id          = "salvage"
-                name        = "Salvage"
+                name        = "choq"
                 description = ""
                 length      = 3
                 states      = ["unticked", "unticked", "unticked"]
               },
               {
                 id          = "specimens"
-                name        = "Specimens"
+                name        = "naDev"
                 description = ""
                 length      = 3
                 states      = ["unticked", "unticked", "unticked"]
               },
               {
                 id          = "whispers"
-                name        = "Whispers"
+                name        = "jach"
                 description = ""
                 length      = 3
                 states      = ["unticked", "unticked", "unticked"]
               },
               {
                 id          = "charts"
-                name        = "Charts"
+                name        = "pu'jIn"
                 description = ""
                 length      = 3
                 states      = ["unticked", "unticked", "unticked"]
@@ -184,30 +184,30 @@ resource "aws_dynamodb_table_item" "template_wildsea_basic" {
   })
 }
 
-# Delta Green Basic Character Template
-resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
+# Delta Green Basic Character Template - Klingon (tlh)
+resource "aws_dynamodb_table_item" "template_deltagreen_basic_tlh" {
   table_name = aws_dynamodb_table.table.name
   hash_key   = aws_dynamodb_table.table.hash_key
   range_key  = aws_dynamodb_table.table.range_key
 
   item = jsonencode({
     PK = {
-      S = "TEMPLATE#deltaGreen#en"
+      S = "TEMPLATE#deltaGreen#tlh"
     }
     SK = {
-      S = "TEMPLATE#Basic Agent"
+      S = "TEMPLATE#motlhbe' jup"
     }
     templateName = {
-      S = "Basic Agent"
+      S = "motlhbe' jup"
     }
     displayName = {
-      S = "Basic Agent"
+      S = "motlhbe' jup"
     }
     gameType = {
       S = "deltaGreen"
     }
     language = {
-      S = "en"
+      S = "tlh"
     }
     type = {
       S = "TEMPLATE"
@@ -215,38 +215,38 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
     sections = {
       S = jsonencode([
         {
-          sectionName = "Personal Data"
+          sectionName = "nugh naDev"
           sectionType = "KEYVALUE"
           content = jsonencode({
             items = [
               {
                 id          = "profession"
-                name        = "Profession"
+                name        = "DIlo'"
                 description = ""
               },
               {
                 id          = "employer"
-                name        = "Employer"
+                name        = "DIch"
                 description = ""
               },
               {
                 id          = "nationality"
-                name        = "Nationality"
+                name        = "Hol"
                 description = ""
               },
               {
                 id          = "gender",
-                name        = "Gender"
+                name        = "DIch"
                 description = ""
               },
               {
                 id          = "age",
-                name        = "Age and D.O.B."
+                name        = "DIch 'ej jup"
                 description = ""
               },
               {
                 id          = "education",
-                name        = "Education and Occupational History",
+                name        = "ghojmeH mI' 'ej DIlo' mI'",
                 description = ""
               },
             ]
@@ -255,12 +255,12 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 0
         },
         {
-          sectionName = "Statistics"
+          sectionName = "naDev"
           sectionType = "DELTAGREENSTATS"
           content = jsonencode({
             showEmpty = false
             items = [
-              for stat in local.delta_green_stats : {
+              for stat in local.delta_green_stats_tlh : {
                 id                     = "stat-${lower(stat.abbreviation)}"
                 name                   = stat.name
                 description            = ""
@@ -273,12 +273,12 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 1
         },
         {
-          sectionName = "Derived Attributes"
+          sectionName = "chenmoH naDev"
           sectionType = "DELTAGREENDERED"
           content = jsonencode({
             showEmpty = false
             items = [
-              for derived in local.delta_green_derived : {
+              for derived in local.delta_green_derived_tlh : {
                 id            = "${lower(derived.attributeType)}-item"
                 name          = derived.name
                 description   = ""
@@ -290,12 +290,12 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 2
         },
         {
-          sectionName = "Skills"
+          sectionName = "nugh"
           sectionType = "DELTAGREENSKILLS"
           content = jsonencode({
             showEmpty = false
             items = [
-              for skill in local.delta_green_skills : {
+              for skill in local.delta_green_skills_tlh : {
                 id          = "skill-${replace(lower(skill.name), " ", "-")}"
                 name        = skill.name
                 description = lookup(skill, "description", "")
@@ -308,15 +308,15 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 3
         },
         {
-          sectionName = "Bonds"
+          sectionName = "jup"
           sectionType = "RICHTEXT"
           content = jsonencode({
             items = [
               {
                 id          = "bonds"
-                name        = "Bonds"
+                name        = "jup"
                 description = ""
-                markdown    = "Add your bonds here"
+                markdown    = "naDev chel"
               }
             ]
             showEmpty = false
@@ -324,15 +324,15 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 4
         },
         {
-          sectionName = "Motivations and Mental Disorders"
+          sectionName = "nugh 'ej valwI' DIch"
           sectionType = "RICHTEXT"
           content = jsonencode({
             items = [
               {
                 id          = "motivations"
-                name        = "Motivations and Mental Disorders"
+                name        = "nugh 'ej valwI' DIch"
                 description = ""
-                markdown    = "None"
+                markdown    = "pagh"
               }
             ]
             showEmpty = false
@@ -340,20 +340,20 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 5
         },
         {
-          sectionName = "Incidents of SAN loss without going insane"
+          sectionName = "SAN Huj 'e' DIch"
           sectionType = "TRACKABLE"
           content = jsonencode({
             items = [
               {
                 id          = "violence"
-                name        = "Violence"
+                name        = "HIv"
                 description = ""
                 length      = 3
                 ticked      = 0
               },
               {
                 id          = "helplessness"
-                name        = "Helplessness"
+                name        = "jagh"
                 description = ""
                 length      = 3
                 ticked      = 0
@@ -364,15 +364,15 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 6
         },
         {
-          sectionName = "Wounds and Ailments"
+          sectionName = "DIch 'ej naDev"
           sectionType = "RICHTEXT"
           content = jsonencode({
             items = [
               {
                 id          = "wounds"
-                name        = "Wounds and Ailments"
+                name        = "DIch 'ej naDev"
                 description = ""
-                markdown    = "None"
+                markdown    = "pagh"
               }
             ]
             showEmpty = false
@@ -380,15 +380,15 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 7
         },
         {
-          sectionName = "Armor and Gear"
+          sectionName = "So' 'ej nugh"
           sectionType = "RICHTEXT"
           content = jsonencode({
             items = [
               {
                 id          = "armor"
-                name        = "Armor and Gear"
+                name        = "So' 'ej nugh"
                 description = ""
-                markdown    = "None"
+                markdown    = "pagh"
               }
             ]
             showEmpty = false
@@ -396,15 +396,15 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 8
         },
         {
-          sectionName = "Weapons"
+          sectionName = "nuH"
           sectionType = "RICHTEXT"
           content = jsonencode({
             items = [
               {
                 id          = "weapons"
-                name        = "Weapons"
+                name        = "nuH"
                 description = ""
-                markdown    = "None"
+                markdown    = "pagh"
               }
             ]
             showEmpty = false
@@ -412,15 +412,15 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 9
         },
         {
-          sectionName = "Personal Details and Notes"
+          sectionName = "nugh naDev 'ej chup"
           sectionType = "RICHTEXT"
           content = jsonencode({
             items = [
               {
                 id          = "personal"
-                name        = "Personal Details and Notes"
+                name        = "nugh naDev 'ej chup"
                 description = ""
-                markdown    = "Describe your character here"
+                markdown    = "jup DIch"
               }
             ]
             showEmpty = false
@@ -428,15 +428,15 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 10
         },
         {
-          sectionName = "Developments which affect Home and Family"
+          sectionName = "juH 'ej DIch DIch"
           sectionType = "RICHTEXT"
           content = jsonencode({
             items = [
               {
                 id          = "family"
-                name        = "Developments which affect Home and Family"
+                name        = "juH 'ej DIch DIch"
                 description = ""
-                markdown    = "None"
+                markdown    = "pagh"
               }
             ]
             showEmpty = false
@@ -444,15 +444,15 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           position = 11
         },
         {
-          sectionName = "Special Training"
+          sectionName = "nugh DIch"
           sectionType = "RICHTEXT"
           content = jsonencode({
             items = [
               {
                 id          = "training"
-                name        = "Special Training"
+                name        = "nugh DIch"
                 description = ""
-                markdown    = "None"
+                markdown    = "pagh"
               }
             ]
             showEmpty = false
@@ -465,7 +465,7 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
 }
 
 locals {
-  delta_green_skills  = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenSkills.en.json"))
-  delta_green_stats   = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenStats.en.json"))
-  delta_green_derived = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenDerived.en.json"))
+  delta_green_skills_tlh  = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenSkills.tlh.json"))
+  delta_green_stats_tlh   = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenStats.tlh.json"))
+  delta_green_derived_tlh = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenDerived.tlh.json"))
 }
