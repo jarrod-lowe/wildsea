@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Hit Points (HP)",
+    "attributeType": "HP",
+    "defaultCurrent": 10
+  },
+  {
+    "name": "Willpower Points (WP)",
+    "attributeType": "WP",
+    "defaultCurrent": 10
+  },
+  {
+    "name": "Sanity Points (SAN)",
+    "attributeType": "SAN",
+    "defaultCurrent": 50
+  },
+  {
+    "name": "Breaking Point (BP)",
+    "attributeType": "BP",
+    "defaultCurrent": 40
+  }
+]

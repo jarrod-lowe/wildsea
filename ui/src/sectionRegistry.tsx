@@ -22,7 +22,7 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue', seed: () => ({showEmpty: false, items: []}) },
   'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: () => ({items: [{content: ""}]}) },
   'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: (sheet, language) => createDefaultDeltaGreenStatsContent(language) },
-  'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet) => createDefaultDeltaGreenDerivedContent(sheet) },
+  'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet, language) => createDefaultDeltaGreenDerivedContent(sheet, language) },
   'DELTAGREENSKILLS': { component: SectionDeltaGreenSkills, label: 'sectionType.deltagreenskills', seed: (sheet, language) => createDefaultDeltaGreenSkillsContent(language) }
 };
 

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "yoD DIch (HP)",
+    "attributeType": "HP",
+    "defaultCurrent": 10
+  },
+  {
+    "name": "chup HoS (WP)",
+    "attributeType": "WP",
+    "defaultCurrent": 10
+  },
+  {
+    "name": "valwI' DIch (SAN)",
+    "attributeType": "SAN",
+    "defaultCurrent": 50
+  },
+  {
+    "name": "DIch nugh (BP)",
+    "attributeType": "BP",
+    "defaultCurrent": 40
+  }
+]

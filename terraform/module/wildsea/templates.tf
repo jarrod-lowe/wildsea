@@ -278,33 +278,12 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           content = jsonencode({
             showEmpty = false
             items = [
-              {
-                id            = "hp-item"
-                name          = "Hit Points (HP)"
+              for derived in local.delta_green_derived : {
+                id            = "${lower(derived.attributeType)}-item"
+                name          = derived.name
                 description   = ""
-                attributeType = "HP"
-                current       = 10
-              },
-              {
-                id            = "wp-item"
-                name          = "Willpower Points (WP)"
-                description   = ""
-                attributeType = "WP"
-                current       = 10
-              },
-              {
-                id            = "san-item"
-                name          = "Sanity Points (SAN)"
-                description   = ""
-                attributeType = "SAN"
-                current       = 50
-              },
-              {
-                id            = "bp-item"
-                name          = "Breaking Point (BP)"
-                description   = ""
-                attributeType = "BP"
-                current       = 40
+                attributeType = derived.attributeType
+                current       = derived.defaultCurrent
               }
             ]
           })
@@ -486,6 +465,7 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
 }
 
 locals {
-  delta_green_skills = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenSkills.en.json"))
-  delta_green_stats  = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenStats.en.json"))
+  delta_green_skills  = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenSkills.en.json"))
+  delta_green_stats   = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenStats.en.json"))
+  delta_green_derived = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenDerived.en.json"))
 }
