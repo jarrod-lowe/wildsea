@@ -136,6 +136,7 @@ export type GetGameInput = {
 
 export type JoinGameInput = {
   joinCode: Scalars['String']['input'];
+  language: Scalars['String']['input'];
 };
 
 export type Mutation = {

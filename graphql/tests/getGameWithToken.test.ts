@@ -15,11 +15,13 @@ describe("joinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: undefined,
@@ -50,11 +52,13 @@ describe("joinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {} as AppSyncIdentityCognito,
@@ -85,11 +89,13 @@ describe("joinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -135,11 +141,13 @@ describe("joinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -174,11 +182,13 @@ describe("joinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -215,11 +225,13 @@ describe("joinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -252,11 +264,13 @@ describe("joinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -302,11 +316,13 @@ describe("joinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -353,11 +369,13 @@ describe("joinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {

@@ -19,11 +19,13 @@ describe("fnJoinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: undefined,
@@ -54,11 +56,13 @@ describe("fnJoinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {} as AppSyncIdentityCognito,
@@ -89,11 +93,13 @@ describe("fnJoinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -187,11 +193,13 @@ describe("fnJoinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -228,11 +236,13 @@ describe("fnJoinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {

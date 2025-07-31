@@ -117,7 +117,7 @@ export function getJoinCode(): string | null {
     return null;
 }
 
-async function joinGame(joinCode: string) {
+async function joinGame(joinCode: string, language: SupportedLanguage) {
     const client = generateClient();
     try {
         const response = await client.graphql({
@@ -125,6 +125,7 @@ async function joinGame(joinCode: string) {
             variables: {
                 input: {
                     joinCode: joinCode,
+                    language: resolveLanguage(language),
                 }
             }
         }) as GraphQLResult<{ joinGame: PlayerSheetSummary }>;
@@ -297,7 +298,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
 
             if (joinCode) {
                 try {
-                    await joinGame(joinCode);
+                    await joinGame(joinCode, currentLanguage);
                 }
                 catch (error) {
                     console.error(error);

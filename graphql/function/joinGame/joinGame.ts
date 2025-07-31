@@ -7,8 +7,8 @@ import type {
 } from "../../../appsync/graphql";
 import { TypeCharacter } from "../../lib/constants/entityTypes";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
-import { DefaultPlayerCharacterName } from "../../lib/constants/defaults";
 import { DataPlayerSheet } from "../../lib/dataTypes";
+import { generateCharacterName } from "../../lib/utils/characterNames";
 
 export function request(context: Context<{ input: JoinGameInput }>): unknown {
   if (!context.identity) util.unauthorized();
@@ -38,6 +38,11 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     },
   } as PutItemInputAttributeMap;
 
+  const characterName = generateCharacterName(
+    context.prev.result.gameType,
+    context.arguments.input.language,
+  );
+
   const playerData = {
     gameId: id,
     userId: identity.sub,
@@ -45,7 +50,7 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     gameName: context.prev.result.gameName,
     gameType: context.prev.result.gameType,
     gameDescription: context.prev.result.gameDescription,
-    characterName: DefaultPlayerCharacterName,
+    characterName: characterName,
     fireflyUserId: context.prev.result.fireflyUserId,
     type: TypeCharacter,
     createdAt: timestamp,
