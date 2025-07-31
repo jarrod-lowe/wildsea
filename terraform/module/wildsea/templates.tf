@@ -520,5 +520,5 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
 }
 
 locals {
-  delta_green_skills = jsondecode(file("${path.module}/../../../ui/deltaGreenSkillsSeed.json"))
+  delta_green_skills = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenSkills.en.json"))
 }

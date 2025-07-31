@@ -406,6 +406,7 @@ const GameContent: React.FC<{
             game={game}
             sheet={game.playerSheets.find(s => s.userId === activeSheet)!}
             userSubject={userSubject}
+            currentLanguage={currentLanguage}
             onUpdate={(updatedSheet) => {
               const updatedSheets = game.playerSheets.map(s =>
                 s.userId === updatedSheet.userId ? updatedSheet : s

@@ -7,11 +7,12 @@ import { SectionRichText } from './sectionRichText';
 import { SectionDeltaGreenStats, createDefaultDeltaGreenStatsContent } from './sectionDeltaGreenStats';
 import { SectionDeltaGreenDerived, createDefaultDeltaGreenDerivedContent } from './sectionDeltaGreenDerived';
 import { SectionDeltaGreenSkills, createDefaultDeltaGreenSkillsContent } from './sectionDeltaGreenSkills';
+import { SupportedLanguage } from './translations';
 
 type SectionTypeConfig = {
   component: React.FC<{ section: SheetSection, mayEditSheet: boolean, onUpdate: (updatedSection: SheetSection) => void, userSubject: string }>;
   label: string; // i18n key for translation
-  seed: (sheet?: any) => any;
+  seed: (sheet?: any, language?: SupportedLanguage) => any;
 };
 
 // Section type registry to map types to components and labels
@@ -22,7 +23,7 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: () => ({items: [{content: ""}]}) },
   'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: () => createDefaultDeltaGreenStatsContent() },
   'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet) => createDefaultDeltaGreenDerivedContent(sheet) },
-  'DELTAGREENSKILLS': { component: SectionDeltaGreenSkills, label: 'sectionType.deltagreenskills', seed: () => createDefaultDeltaGreenSkillsContent() }
+  'DELTAGREENSKILLS': { component: SectionDeltaGreenSkills, label: 'sectionType.deltagreenskills', seed: (sheet, language) => createDefaultDeltaGreenSkillsContent(language) }
 };
 
 // Function to get the component for a section type
@@ -30,9 +31,9 @@ export const getSectionComponent = (sectionType: string) => {
   return sectionRegistry[sectionType]?.component || null;
 };
 
-export const getSectionSeed = (sectionType: string, sheet?: any) => {
+export const getSectionSeed = (sectionType: string, sheet?: any, language?: SupportedLanguage) => {
   const seedFunction = sectionRegistry[sectionType]?.seed;
-  return seedFunction ? seedFunction(sheet) : {};
+  return seedFunction ? seedFunction(sheet, language) : {};
 }
 
 // Function to get all supported section types and their labels (for dropdowns or validation)
