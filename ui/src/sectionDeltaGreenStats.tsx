@@ -5,10 +5,13 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
 import { SectionEditForm } from './components/SectionEditForm';
+import { getDeltaGreenStatsSeed } from './seed';
+import { SupportedLanguage } from './translations';
 
 interface DeltaGreenStatItem extends BaseSectionItem {
   score: number | string;
   distinguishingFeatures: string;
+  abbreviation: string;
 };
 
 type SectionTypeDeltaGreenStats = BaseSectionContent<DeltaGreenStatItem>;
@@ -56,14 +59,10 @@ const ScoreInlineControls: React.FC<{
   );
 };
 
-const DEFAULT_STATS = [
-  { name: 'Strength (STR)', abbreviation: 'STR' },
-  { name: 'Constitution (CON)', abbreviation: 'CON' },
-  { name: 'Dexterity (DEX)', abbreviation: 'DEX' },
-  { name: 'Intelligence (INT)', abbreviation: 'INT' },
-  { name: 'Power (POW)', abbreviation: 'POW' },
-  { name: 'Charisma (CHA)', abbreviation: 'CHA' },
-];
+// This function will be used to get the language-appropriate stats
+const getDefaultStats = (language?: SupportedLanguage) => {
+  return getDeltaGreenStatsSeed(language || 'en');
+};
 
 export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
   const { section, userSubject } = props;
@@ -87,11 +86,9 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
     // Create data attributes from current stats for derived attributes to read
     const statsDataAttributes: { [key: string]: number } = {};
     content.items.forEach(item => {
-      // Find the corresponding stat definition to get the abbreviation
-      const statDef = DEFAULT_STATS.find(stat => stat.name === item.name);
-      if (statDef) {
+      if (item.abbreviation) {
         const numericScore = typeof item.score === 'string' ? parseInt(item.score) || 0 : item.score;
-        statsDataAttributes[`data-stat-${statDef.abbreviation.toLowerCase()}`] = numericScore;
+        statsDataAttributes[`data-stat-${item.abbreviation.toLowerCase()}`] = numericScore;
       }
     });
 
@@ -142,7 +139,8 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
         name: '', 
         description: '', 
         score: 10, 
-        distinguishingFeatures: '' 
+        distinguishingFeatures: '',
+        abbreviation: ''
       }];
       setContent({ ...content, items: newItems });
     };
@@ -249,13 +247,17 @@ export const SectionDeltaGreenStats: React.FC<SectionDefinition> = (props) => {
   );
 };
 
-export const createDefaultDeltaGreenStatsContent = (): SectionTypeDeltaGreenStats => ({
-  showEmpty: false,
-  items: DEFAULT_STATS.map(stat => ({
-    id: uuidv4(),
-    name: stat.name,
-    description: '',
-    score: 10,
-    distinguishingFeatures: '',
-  }))
-});
+export const createDefaultDeltaGreenStatsContent = (language?: SupportedLanguage): SectionTypeDeltaGreenStats => {
+  const stats = getDefaultStats(language);
+  return {
+    showEmpty: false,
+    items: stats.map(stat => ({
+      id: uuidv4(),
+      name: stat.name,
+      description: '',
+      score: 10,
+      distinguishingFeatures: '',
+      abbreviation: stat.abbreviation,
+    }))
+  };
+};
