@@ -5,11 +5,13 @@ import { CharacterTemplateMetadata, TemplateSectionData, CreateSectionInput } fr
 import { getCharacterTemplatesQuery, getCharacterTemplateQuery, createSectionMutation } from "../../appsync/schema";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { useToast } from './notificationToast';
+import { SupportedLanguage, resolveLanguage } from './translations';
 
 interface AutoPopulateProps {
   gameType: string;
   gameId: string;
   userId: string;
+  currentLanguage?: SupportedLanguage;
   onSectionsAdded: () => void;
 }
 
@@ -17,6 +19,7 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
   gameType,
   gameId,
   userId,
+  currentLanguage,
   onSectionsAdded,
 }) => {
   const [templates, setTemplates] = useState<CharacterTemplateMetadata[]>([]);
@@ -28,22 +31,41 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
 
   useEffect(() => {
     fetchTemplates();
-  }, [gameType]);
+  }, [gameType, currentLanguage]);
 
   const fetchTemplates = async () => {
     try {
       const client = generateClient();
+      const language = resolveLanguage(currentLanguage);
       const response = await client.graphql({
         query: getCharacterTemplatesQuery,
         variables: {
           input: {
             gameType: gameType,
-            language: intl.locale || 'en',
+            language: language,
           },
         },
       }) as GraphQLResult<{ getCharacterTemplates: CharacterTemplateMetadata[] }>;
 
-      setTemplates(response.data?.getCharacterTemplates || []);
+      let templates = response.data?.getCharacterTemplates || [];
+      
+      // Fallback to English if no templates found for current language
+      if (templates.length === 0 && language !== 'en') {
+        console.log(`No templates found for language '${language}', falling back to English`);
+        const fallbackResponse = await client.graphql({
+          query: getCharacterTemplatesQuery,
+          variables: {
+            input: {
+              gameType: gameType,
+              language: 'en',
+            },
+          },
+        }) as GraphQLResult<{ getCharacterTemplates: CharacterTemplateMetadata[] }>;
+        
+        templates = fallbackResponse.data?.getCharacterTemplates || [];
+      }
+
+      setTemplates(templates);
     } catch (error) {
       console.error('Error fetching templates:', error);
       toast.addToast(intl.formatMessage({ id: "autoPopulate.fetchTemplatesError" }), 'error');
@@ -58,20 +80,38 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
     setLoading(true);
     try {
       const client = generateClient();
+      const language = resolveLanguage(currentLanguage);
       
       // Fetch template sections
-      const templateResponse = await client.graphql({
+      let templateResponse = await client.graphql({
         query: getCharacterTemplateQuery,
         variables: {
           input: {
             templateName: selectedTemplate,
             gameType: gameType,
-            language: intl.locale || 'en',
+            language: language,
           },
         },
       }) as GraphQLResult<{ getCharacterTemplate: TemplateSectionData[] }>;
 
-      const templateSections = templateResponse.data?.getCharacterTemplate || [];
+      let templateSections = templateResponse.data?.getCharacterTemplate || [];
+      
+      // Fallback to English if no template found for current language
+      if (templateSections.length === 0 && language !== 'en') {
+        console.log(`No template sections found for language '${language}', falling back to English`);
+        templateResponse = await client.graphql({
+          query: getCharacterTemplateQuery,
+          variables: {
+            input: {
+              templateName: selectedTemplate,
+              gameType: gameType,
+              language: 'en',
+            },
+          },
+        }) as GraphQLResult<{ getCharacterTemplate: TemplateSectionData[] }>;
+        
+        templateSections = templateResponse.data?.getCharacterTemplate || [];
+      }
 
       // Create all sections in order
       for (const section of templateSections) {

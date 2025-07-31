@@ -269,6 +269,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           gameType={game.gameType || 'wildsea'}
           gameId={sheet.gameId}
           userId={sheet.userId}
+          currentLanguage={currentLanguage}
           onSectionsAdded={() => {
             // The sections will be updated automatically via GraphQL subscriptions
             // so we don't need to do anything here
