@@ -3,6 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateShipInput } from "../../appsync/graphql";
 import { createSectionMutation, createShipMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
+import { SupportedLanguage, resolveLanguage } from './translations';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { TypeFirefly, TypeShip } from "../../graphql/lib/constants/entityTypes";
 import { Section } from './section';
@@ -25,7 +26,7 @@ const reorderSections = (sections: SheetSection[], startIndex: number, endIndex:
 
 
 // PlayerSheetTab component
-export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void }> = ({ sheet, userSubject, game, onUpdate }) => {
+export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string, game: Game, onUpdate: (updatedSheet: PlayerSheet) => void, currentLanguage?: SupportedLanguage }> = ({ sheet, userSubject, game, onUpdate, currentLanguage }) => {
   const [newSectionName, setNewSectionName] = useState('');
   const [newSectionType, setNewSectionType] = useState('KEYVALUE');
   const [showNewSection, setShowNewSection] = useState(false);
@@ -92,7 +93,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         gameId: sheet.gameId,
         sectionName: newSectionName,
         sectionType: newSectionType,
-        content: JSON.stringify(getSectionSeed(newSectionType, sheet)),
+        content: JSON.stringify(getSectionSeed(newSectionType, sheet, resolveLanguage(currentLanguage))),
         position: newPosition,
       }
       const client = generateClient();

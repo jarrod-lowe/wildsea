@@ -56,3 +56,11 @@ export function detectBrowserLanguage(): Exclude<SupportedLanguage, 'auto'> {
   // Default to English if no supported language found
   return 'en';
 }
+
+// Resolve actual language from preference (handling auto-detect)
+export function resolveLanguage(languagePreference?: SupportedLanguage): Exclude<SupportedLanguage, 'auto'> {
+  if (!languagePreference || languagePreference === 'auto') {
+    return detectBrowserLanguage();
+  }
+  return languagePreference;
+}

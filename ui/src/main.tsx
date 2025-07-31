@@ -4,7 +4,7 @@ import { Amplify } from "aws-amplify";
 import { fetchUserAttributes } from 'aws-amplify/auth';
 import amplifyconfig from "./amplifyconfiguration.json";
 import { IntlProvider, FormattedMessage, useIntl } from 'react-intl';
-import { messages, supportedLanguages, type SupportedLanguage, detectBrowserLanguage } from './translations';
+import { messages, supportedLanguages, type SupportedLanguage, resolveLanguage } from './translations';
 import { TopBar } from "./frame";
 import { generateClient, GraphQLResult } from "aws-amplify/api";
 import { GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
@@ -158,13 +158,6 @@ export function App() {
     );
 }
 
-// Resolve actual language from preference (handling auto-detect)
-function resolveLanguage(languagePreference: SupportedLanguage): Exclude<SupportedLanguage, 'auto'> {
-    if (languagePreference === 'auto') {
-        return detectBrowserLanguage();
-    }
-    return languagePreference;
-}
 
 function AppWithIntl() {
     const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('auto');

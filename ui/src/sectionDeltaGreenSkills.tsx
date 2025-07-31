@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
 import { SectionEditForm } from './components/SectionEditForm';
 import { Grades } from "../../graphql/lib/constants/rollTypes";
-import deltaGreenSkillsSeed from '../deltaGreenSkillsSeed.json';
+import { getDeltaGreenSkillsSeed } from './seed';
+import { SupportedLanguage } from './translations';
 
 // Get CSS class name for skill proficiency level
 const getSkillProficiencyClass = (rollValue: number): string => {
@@ -357,14 +358,19 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   );
 };
 
-export const createDefaultDeltaGreenSkillsContent = (): SectionTypeDeltaGreenSkills => ({
-  showEmpty: false,
-  items: deltaGreenSkillsSeed.map((skill: any) => ({
-    id: uuidv4(),
-    name: skill.name,
-    description: skill.description || '',
-    roll: skill.roll,
-    used: false,
-    hasUsedFlag: skill.hasUsedFlag !== false,
-  }))
-});
+export const createDefaultDeltaGreenSkillsContent = (language?: SupportedLanguage): SectionTypeDeltaGreenSkills => {
+  const currentLanguage = language || 'en'; // Default to English if no language provided
+  const skillsData = getDeltaGreenSkillsSeed(currentLanguage);
+  
+  return {
+    showEmpty: false,
+    items: skillsData.map((skill) => ({
+      id: uuidv4(),
+      name: skill.name,
+      description: skill.description || '',
+      roll: skill.roll,
+      used: false,
+      hasUsedFlag: skill.hasUsedFlag !== false,
+    }))
+  };
+};
