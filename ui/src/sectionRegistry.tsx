@@ -21,7 +21,7 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'BURNABLE': { component: SectionBurnable, label: 'sectionType.burnable', seed: () => ({showEmpty: false, items: []}) },
   'KEYVALUE': { component: SectionKeyValue, label: 'sectionType.keyvalue', seed: () => ({showEmpty: false, items: []}) },
   'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: () => ({items: [{content: ""}]}) },
-  'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: () => createDefaultDeltaGreenStatsContent() },
+  'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: (sheet, language) => createDefaultDeltaGreenStatsContent(language) },
   'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet) => createDefaultDeltaGreenDerivedContent(sheet) },
   'DELTAGREENSKILLS': { component: SectionDeltaGreenSkills, label: 'sectionType.deltagreenskills', seed: (sheet, language) => createDefaultDeltaGreenSkillsContent(language) }
 };

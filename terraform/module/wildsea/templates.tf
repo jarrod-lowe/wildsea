@@ -260,47 +260,13 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
           content = jsonencode({
             showEmpty = false
             items = [
-              {
-                id                     = "stat-str"
-                name                   = "Strength (STR)"
+              for stat in local.delta_green_stats : {
+                id                     = "stat-${lower(stat.abbreviation)}"
+                name                   = stat.name
                 description            = ""
                 score                  = 10
                 distinguishingFeatures = ""
-              },
-              {
-                id                     = "stat-con"
-                name                   = "Constitution (CON)"
-                description            = ""
-                score                  = 10
-                distinguishingFeatures = ""
-              },
-              {
-                id                     = "stat-dex"
-                name                   = "Dexterity (DEX)"
-                description            = ""
-                score                  = 10
-                distinguishingFeatures = ""
-              },
-              {
-                id                     = "stat-int"
-                name                   = "Intelligence (INT)"
-                description            = ""
-                score                  = 10
-                distinguishingFeatures = ""
-              },
-              {
-                id                     = "stat-pow"
-                name                   = "Power (POW)"
-                description            = ""
-                score                  = 10
-                distinguishingFeatures = ""
-              },
-              {
-                id                     = "stat-cha"
-                name                   = "Charisma (CHA)"
-                description            = ""
-                score                  = 10
-                distinguishingFeatures = ""
+                abbreviation           = stat.abbreviation
               }
             ]
           })
@@ -521,4 +487,5 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic" {
 
 locals {
   delta_green_skills = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenSkills.en.json"))
+  delta_green_stats  = jsondecode(file("${path.module}/../../../ui/src/seed/deltaGreenStats.en.json"))
 }

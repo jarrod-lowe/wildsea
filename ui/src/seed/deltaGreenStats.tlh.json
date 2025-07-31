@@ -1,0 +1,8 @@
+[
+  { "name": "HoS (STR)", "abbreviation": "STR" },
+  { "name": "rur (CON)", "abbreviation": "CON" },
+  { "name": "nugh (DEX)", "abbreviation": "DEX" },
+  { "name": "valwI' (INT)", "abbreviation": "INT" },
+  { "name": "HoS DIch (POW)", "abbreviation": "POW" },
+  { "name": "naDev (CHA)", "abbreviation": "CHA" }
+]
