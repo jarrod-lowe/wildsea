@@ -127,6 +127,10 @@ The application uses a modular section system for character sheets:
 ### CSS and Styling
 
 - Global styles in `ui/public/style.css`
+- **Theme System**: Database-driven themes loaded dynamically via `ui/src/themeLoader.ts`
+  - Theme files located in `ui/public/themes/` (wildsea.css, deltaGreen.css, default.css)
+  - Themes are stored in GAMEDEFAULTS database records and loaded per game
+  - Use `loadTheme(themeName)` to dynamically load CSS themes
 - Uses CSS Grid for complex layouts (prefer over HTML tables)
 - Section items use grid layout that may need overrides: `.section-items .custom-grid { grid-column: 1 / -1; }`
 - Modern CSS patterns: `minmax()`, flexbox, grid for responsive design
@@ -144,11 +148,15 @@ The IAC roles and github setup:
 
 Code is stored in github, and issues are tracked there too.
 
-## Game Types
+## Game Types and Configuration
 
-The application supports multiple TTRPG systems with specific character types
-and default NPCs configured in `gameTypes.ts`. When adding new game support,
-update this configuration file.
+The application supports multiple TTRPG systems with database-driven configuration:
+
+- **Game Types**: Available via `getGameTypes` GraphQL query from GAMEDEFAULTS database records
+- **Game Configuration**: Character names, GM names, NPCs, and themes stored in database
+- **Adding New Games**: Update `terraform/module/wildsea/gamedefaults.tf` with new GAMEDEFAULTS entries
+- **Theme Assignment**: Each game type has a theme field that determines CSS theme loading
+- **No Hardcoded Lists**: All game type configuration is database-driven, not hardcoded in code
 
 ## Authentication
 
