@@ -71,6 +71,7 @@ input CreateGameInput {
 
 input JoinGameInput {
   joinCode: String!
+  language: String!
 }
 
 input DeleteGameInput {

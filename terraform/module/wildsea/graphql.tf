@@ -277,7 +277,7 @@ locals {
   pipelines_map = {
     joinGame = {
       type : "Mutation",
-      functions = ["getGameWithToken", "joinGame"]
+      functions = ["getGameWithToken", "getGameDefaults", "joinGame"]
     }
     getGame = {
       type : "Query",
