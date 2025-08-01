@@ -88,6 +88,7 @@ export function response(
     defaultCharacterName: gameDefaults.defaultCharacterName,
     defaultGMName: gameDefaults.defaultGMName,
     defaultNPCs: defaultNPCs,
+    theme: gameDefaults.theme,
   };
 
   // Store the defaults in stash for the next function to use

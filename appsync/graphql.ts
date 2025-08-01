@@ -102,6 +102,7 @@ export type Game = {
   gameType: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
+  theme?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
 };
@@ -116,6 +117,7 @@ export type GameSummary = {
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
+  theme?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
 };

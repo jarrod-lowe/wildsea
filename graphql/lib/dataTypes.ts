@@ -47,6 +47,7 @@ export interface DynamoDBGameDefaults {
   defaultCharacterName: string;
   defaultGMName: string;
   defaultNPCs: DynamoDBNPCConfig[];
+  theme: string;
 }
 
 // Type for game defaults from database
@@ -54,4 +55,5 @@ export interface GameDefaults {
   defaultCharacterName: string;
   defaultGMName: string;
   defaultNPCs: NPCConfig[];
+  theme: string;
 }
