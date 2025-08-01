@@ -279,10 +279,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
       {mayEditSheet && !showNewSection && (
         <>
-          <button onClick={() => {
-            setShowNewSection(true);
-            setEditingSheetId(sheet.userId);
-          }} className="btn-standard btn-small">
+          <button onClick={() => setShowNewSection(true)} className="btn-standard btn-small">
             <FormattedMessage id="playerSheetTab.addSection" />
           </button>
           <button onClick={() => setShowDeleteSectionModal(true)} className="btn-danger btn-small">
@@ -291,7 +288,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         </>
       )}
 
-      {mayEditSheet && showNewSection && editingSheetId === sheet.userId && (
+      {mayEditSheet && showNewSection && (
         <div className="new-section">
           <input
             id="new-section-name"
