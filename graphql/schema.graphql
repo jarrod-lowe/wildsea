@@ -67,6 +67,7 @@ input CreateGameInput {
     name: String!
     gameType: String!
     description: String
+    language: String!
 }
 
 input JoinGameInput {

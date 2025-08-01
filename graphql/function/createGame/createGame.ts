@@ -2,11 +2,13 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
 import { GameSummary, CreateGameInput } from "../../../appsync/graphql";
+import type { GameDefaults } from "../../lib/dataTypes";
 import { TypeFirefly, TypeGame } from "../../lib/constants/entityTypes";
 import {
   DDBPrefixGame,
   DDBPrefixPlayer,
   DDBPrefixJoin,
+  DDBPrefixUser,
 } from "../../lib/constants/dbPrefixes";
 import {
   GameTypeConfig,
@@ -15,7 +17,11 @@ import {
 import { DataPlayerSheet } from "../../lib/dataTypes";
 import { generateJoinCode } from "../../lib/joinCode";
 
-export function request(context: Context<{ input: CreateGameInput }>): unknown {
+export function request(
+  context: Context<{ input: CreateGameInput }> & {
+    stash: { gameDefaults?: GameDefaults };
+  },
+): unknown {
   if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
@@ -26,6 +32,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
   const timestamp = util.time.nowISO8601();
 
   const config = GameTypeConfig[input.gameType] || DefaultGameConfig;
+  const gameDefaults = context.stash.gameDefaults;
 
   context.stash.record = {
     gameName: input.name,
@@ -66,8 +73,8 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
       gameName: input.name,
       gameType: input.gameType,
       gameDescription: input.description,
-      characterName: config.fireflyCharacterName,
-      GSI1PK: "USER#" + identity.sub,
+      characterName: gameDefaults?.defaultGMName || "Error: No GM Name",
+      GSI1PK: DDBPrefixUser + "#" + identity.sub,
       fireflyUserId: identity.sub,
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -93,7 +100,8 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
         gameName: input.name,
         gameDescription: input.description,
         gameType: input.gameType,
-        characterName: npcConfig.characterName,
+        characterName:
+          gameDefaults?.defaultCharacterName || npcConfig.characterName,
         fireflyUserId: identity.sub,
         createdAt: timestamp,
         updatedAt: timestamp,

@@ -6,10 +6,15 @@ import {
 } from "../../lib/constants/dbPrefixes";
 import { FallbackLanguage } from "../../lib/constants/defaults";
 import type { GameDefaults } from "../../lib/dataTypes";
-import type { JoinGameInput } from "../../../appsync/graphql";
+import type { JoinGameInput, CreateGameInput } from "../../../appsync/graphql";
 
-export function request(context: Context<{ input: JoinGameInput }>): unknown {
-  const gameType = context.prev.result.gameType;
+export function request(
+  context: Context<{ input: JoinGameInput | CreateGameInput }>,
+): unknown {
+  // Get gameType from previous result (joinGame) or from input (createGame)
+  const gameType =
+    context.prev?.result?.gameType ||
+    (context.arguments.input as CreateGameInput).gameType;
   const language = context.arguments.input.language;
 
   const keys = [
@@ -41,12 +46,17 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
   };
 }
 
-export function response(context: Context<{ input: JoinGameInput }>): unknown {
+export function response(
+  context: Context<{ input: JoinGameInput | CreateGameInput }>,
+): unknown {
   if (context.error) {
     util.error(context.error.message, context.error.type, context.result);
   }
 
-  const gameType = context.prev.result.gameType;
+  // Get gameType from previous result (joinGame) or from input (createGame)
+  const gameType =
+    context.prev?.result?.gameType ||
+    (context.arguments.input as CreateGameInput).gameType;
   const language = context.arguments.input.language;
 
   const tableName = "Wildsea-" + environment.name;
@@ -76,22 +86,12 @@ export function response(context: Context<{ input: JoinGameInput }>): unknown {
       defaultGMName: gameDefaults.defaultGMName as string,
     };
   } else {
-    // Final fallback to hardcoded defaults
-    defaults =
-      gameType === "wildsea"
-        ? {
-            defaultCharacterName: "Unnamed Character",
-            defaultGMName: "Firefly",
-          }
-        : {
-            defaultCharacterName: "Unidentified Agent",
-            defaultGMName: "Handler",
-          };
+    util.error(`Invalid game type: ${gameType}`, "InvalidGameType");
   }
 
   // Store the defaults in stash for the next function to use
   context.stash.gameDefaults = defaults;
 
-  // Pass through the previous result (game data from getGameWithToken)
-  return context.prev.result;
+  // Pass through the previous result (game data from getGameWithToken) or empty object for createGame
+  return context.prev?.result || {};
 }
