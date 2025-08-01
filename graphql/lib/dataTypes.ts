@@ -32,14 +32,26 @@ export interface NPCConfig {
   characterName: string;
 }
 
-// Type for game type configuration
-export interface GameTypeConfigType {
-  fireflyCharacterName: string;
-  defaultNPCs: NPCConfig[];
+// Type for DynamoDB NPC configuration (as stored in database)
+export interface DynamoDBNPCConfig {
+  type: string;
+  characterName: string;
+}
+
+// Type for DynamoDB GameDefaults (as returned from database)
+export interface DynamoDBGameDefaults {
+  PK: string;
+  SK: string;
+  gameType: string;
+  displayName: string;
+  defaultCharacterName: string;
+  defaultGMName: string;
+  defaultNPCs: DynamoDBNPCConfig[];
 }
 
 // Type for game defaults from database
 export interface GameDefaults {
   defaultCharacterName: string;
   defaultGMName: string;
+  defaultNPCs: NPCConfig[];
 }

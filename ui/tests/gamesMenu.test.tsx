@@ -43,6 +43,11 @@ describe('GamesMenu', () => {
   });
 
   it('renders without crashing', async () => {
+    // Mock both GraphQL calls
+    mockGraphql
+      .mockResolvedValueOnce({ data: { getGames: [] } })
+      .mockResolvedValueOnce({ data: { getGameTypes: [] } });
+
     await act(async () => {
       renderWithIntl(<GamesMenu userEmail="email"/>);
     });
@@ -55,6 +60,7 @@ describe('GamesMenu', () => {
       { 
         gameId: '1', 
         gameName: 'Test Game 1', 
+        gameType: 'wildsea',
         gameDescription: 'Description 1',
         characterName: "char1",
         userId: "user1",
@@ -65,6 +71,7 @@ describe('GamesMenu', () => {
       { 
         gameId: '2', 
         gameName: 'Test Game 2', 
+        gameType: 'deltaGreen',
         gameDescription: 'Description 2',
         characterName: "char1",
         userId: "user1",
@@ -74,7 +81,9 @@ describe('GamesMenu', () => {
       },
     ];
 
-    mockGraphql.mockResolvedValueOnce({ data: { getGames: mockGames } } as GraphQLResult<{ getGames: PlayerSheetSummary[] }>);
+    mockGraphql
+      .mockResolvedValueOnce({ data: { getGames: mockGames } } as GraphQLResult<{ getGames: PlayerSheetSummary[] }>)
+      .mockResolvedValueOnce({ data: { getGameTypes: [] } });
 
     await act(async () => {
       renderWithIntl(<GamesMenu userEmail="email"/>);
@@ -89,7 +98,10 @@ describe('GamesMenu', () => {
   });
 
   it('displays error message when fetching games fails', async () => {
-    mockGraphql.mockRejectedValueOnce(new Error('Fetch error'));
+    // Mock failed getGames call (first) and successful getGameTypes call (second)
+    mockGraphql
+      .mockRejectedValueOnce(new Error('Fetch error')) // First call (getGames) fails
+      .mockResolvedValueOnce({ data: { getGameTypes: [] } }); // Second call (getGameTypes) succeeds
 
     await act(async () => {
       renderWithIntl(<GamesMenu userEmail="email"/>);
@@ -103,7 +115,11 @@ describe('GamesMenu', () => {
   });
 
   it('displays error message when creating game fails', async () => {
-    mockGraphql.mockRejectedValueOnce(new Error('Create error'));
+    // Mock successful getGames and getGameTypes calls, then failed createGame call
+    mockGraphql
+      .mockResolvedValueOnce({ data: { getGames: [] } })
+      .mockResolvedValueOnce({ data: { getGameTypes: [{ gameType: 'wildsea', displayName: 'Wildsea', language: 'en' }] } })
+      .mockRejectedValueOnce(new Error('Create error'));
 
     await act(async () => {
       renderWithIntl(<GamesMenu userEmail="email"/>);
@@ -124,7 +140,10 @@ describe('GamesMenu', () => {
   });
 
   it('allows dismissing error messages', async () => {
-    mockGraphql.mockRejectedValueOnce(new Error('Fetch error'));
+    // Mock failed getGames call (first) and successful getGameTypes call (second)
+    mockGraphql
+      .mockRejectedValueOnce(new Error('Fetch error'))
+      .mockResolvedValueOnce({ data: { getGameTypes: [] } });
 
     await act(async () => {
       renderWithIntl(<GamesMenu userEmail="email"/>);

@@ -1,11 +1,8 @@
 import { util, Context } from "@aws-appsync/utils";
 import environment from "../../environment.json";
-import {
-  DDBPrefixGameDefaults,
-  DDBPrefixLanguage,
-} from "../../lib/constants/dbPrefixes";
+import { DDBPrefixGameDefaults } from "../../lib/constants/dbPrefixes";
 import { FallbackLanguage } from "../../lib/constants/defaults";
-import type { GameDefaults } from "../../lib/dataTypes";
+import type { GameDefaults, DynamoDBGameDefaults } from "../../lib/dataTypes";
 import type { JoinGameInput, CreateGameInput } from "../../../appsync/graphql";
 
 export function request(
@@ -19,8 +16,8 @@ export function request(
 
   const keys = [
     util.dynamodb.toMapValues({
-      PK: `${DDBPrefixGameDefaults}#${gameType}`,
-      SK: `${DDBPrefixLanguage}#${language}`,
+      PK: `${DDBPrefixGameDefaults}#${language}`,
+      SK: `${DDBPrefixGameDefaults}#${gameType}`,
     }),
   ];
 
@@ -28,8 +25,8 @@ export function request(
   if (language !== FallbackLanguage) {
     keys.push(
       util.dynamodb.toMapValues({
-        PK: `${DDBPrefixGameDefaults}#${gameType}`,
-        SK: `${DDBPrefixLanguage}#${FallbackLanguage}`,
+        PK: `${DDBPrefixGameDefaults}#${FallbackLanguage}`,
+        SK: `${DDBPrefixGameDefaults}#${gameType}`,
       }),
     );
   }
@@ -65,29 +62,33 @@ export function response(
 
   // Try to find the result for the requested language first
   let gameDefaults = results.find(
-    (item: Record<string, unknown>) =>
-      item && item.SK === `${DDBPrefixLanguage}#${language}`,
-  );
+    (item: DynamoDBGameDefaults) =>
+      item && item.PK === `${DDBPrefixGameDefaults}#${language}`,
+  ) as DynamoDBGameDefaults | undefined;
 
   // If not found and language is not English, try English fallback
   if (!gameDefaults && language !== FallbackLanguage) {
     gameDefaults = results.find(
-      (item: Record<string, unknown>) =>
-        item && item.SK === `${DDBPrefixLanguage}#${FallbackLanguage}`,
-    );
+      (item: DynamoDBGameDefaults) =>
+        item && item.PK === `${DDBPrefixGameDefaults}#${FallbackLanguage}`,
+    ) as DynamoDBGameDefaults | undefined;
   }
 
-  let defaults: GameDefaults;
-
-  // If we have a result from database, use it
-  if (gameDefaults) {
-    defaults = {
-      defaultCharacterName: gameDefaults.defaultCharacterName as string,
-      defaultGMName: gameDefaults.defaultGMName as string,
-    };
-  } else {
+  // If we don't have a result from database, error out
+  if (!gameDefaults) {
     util.error(`Invalid game type: ${gameType}`, "InvalidGameType");
   }
+
+  const defaultNPCs = gameDefaults.defaultNPCs.map((npcItem) => ({
+    type: npcItem.type,
+    characterName: npcItem.characterName,
+  }));
+
+  const defaults: GameDefaults = {
+    defaultCharacterName: gameDefaults.defaultCharacterName,
+    defaultGMName: gameDefaults.defaultGMName,
+    defaultNPCs: defaultNPCs,
+  };
 
   // Store the defaults in stash for the next function to use
   context.stash.gameDefaults = defaults;

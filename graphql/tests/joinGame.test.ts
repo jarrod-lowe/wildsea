@@ -190,7 +190,7 @@ describe("fnJoinGame request function", () => {
             gameName: { S: "Test Game" },
             gameType: { S: "wildsea" },
             gameDescription: { S: "Test Description" },
-            characterName: { S: "Unnamed Character" },
+            characterName: { S: "Error: No Character Name" },
             fireflyUserId: { S: "firefly" },
             type: { S: "CHARACTER" },
             createdAt: { S: mockTimestamp },

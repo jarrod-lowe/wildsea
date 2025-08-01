@@ -16,6 +16,14 @@
         }
       `;
     
+      export const getGameTypesQuery = `
+        query getGameTypes($input: GetGameTypesInput!) {
+          getGameTypes(input: $input) {
+            gameType displayName language
+          }
+        }
+      `;
+    
       export const getCharacterTemplatesQuery = `
         query getCharacterTemplates($input: GetCharacterTemplatesInput!) {
           getCharacterTemplates(input: $input) {

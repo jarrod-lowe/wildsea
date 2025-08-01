@@ -120,6 +120,13 @@ export type GameSummary = {
   updatedAt: Scalars['AWSDateTime']['output'];
 };
 
+export type GameTypeMetadata = {
+  __typename?: 'GameTypeMetadata';
+  displayName: Scalars['String']['output'];
+  gameType: Scalars['String']['output'];
+  language: Scalars['String']['output'];
+};
+
 export type GetCharacterTemplateInput = {
   gameType: Scalars['String']['input'];
   language: Scalars['String']['input'];
@@ -133,6 +140,10 @@ export type GetCharacterTemplatesInput = {
 
 export type GetGameInput = {
   gameId: Scalars['ID']['input'];
+};
+
+export type GetGameTypesInput = {
+  language: Scalars['String']['input'];
 };
 
 export type JoinGameInput = {
@@ -253,6 +264,7 @@ export type Query = {
   getCharacterTemplate: Array<TemplateSectionData>;
   getCharacterTemplates: Array<CharacterTemplateMetadata>;
   getGame: Game;
+  getGameTypes: Array<GameTypeMetadata>;
   getGames?: Maybe<Array<PlayerSheetSummary>>;
   getUserSettings?: Maybe<UserSettings>;
 };
@@ -270,6 +282,11 @@ export type QueryGetCharacterTemplatesArgs = {
 
 export type QueryGetGameArgs = {
   input?: InputMaybe<GetGameInput>;
+};
+
+
+export type QueryGetGameTypesArgs = {
+  input: GetGameTypesInput;
 };
 
 export type RollDiceInput = {

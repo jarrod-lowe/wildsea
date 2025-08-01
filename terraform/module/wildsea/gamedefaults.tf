@@ -14,16 +14,36 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_en" {
 
   item = jsonencode({
     PK = {
-      S = "${local.db_prefix_gamedefaults}#wildsea"
+      S = "${local.db_prefix_gamedefaults}#${local.fallback_language}"
     }
     SK = {
-      S = "${local.db_prefix_language}#${local.fallback_language}"
+      S = "${local.db_prefix_gamedefaults}#wildsea"
+    }
+    gameType = {
+      S = "wildsea"
+    }
+    displayName = {
+      S = "Wildsea"
     }
     defaultCharacterName = {
       S = "Unnamed Character"
     }
     defaultGMName = {
       S = "Firefly"
+    }
+    defaultNPCs = {
+      L = [
+        {
+          M = {
+            type = {
+              S = "SHIP"
+            }
+            characterName = {
+              S = "Unnamed Ship"
+            }
+          }
+        }
+      ]
     }
     type = {
       S = local.db_prefix_gamedefaults
@@ -38,16 +58,25 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_en" {
 
   item = jsonencode({
     PK = {
-      S = "${local.db_prefix_gamedefaults}#deltaGreen"
+      S = "${local.db_prefix_gamedefaults}#${local.fallback_language}"
     }
     SK = {
-      S = "${local.db_prefix_language}#${local.fallback_language}"
+      S = "${local.db_prefix_gamedefaults}#deltaGreen"
+    }
+    gameType = {
+      S = "deltaGreen"
+    }
+    displayName = {
+      S = "Delta Green"
     }
     defaultCharacterName = {
       S = "Unidentified Agent"
     }
     defaultGMName = {
       S = "Handler"
+    }
+    defaultNPCs = {
+      L = []
     }
     type = {
       S = local.db_prefix_gamedefaults
@@ -63,16 +92,36 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_tlh" {
 
   item = jsonencode({
     PK = {
-      S = "${local.db_prefix_gamedefaults}#wildsea"
+      S = "${local.db_prefix_gamedefaults}#tlh"
     }
     SK = {
-      S = "${local.db_prefix_language}#tlh"
+      S = "${local.db_prefix_gamedefaults}#wildsea"
+    }
+    gameType = {
+      S = "wildsea"
+    }
+    displayName = {
+      S = "TODO$Wildsea$tlh"
     }
     defaultCharacterName = {
       S = "motlhbe' jup"
     }
     defaultGMName = {
       S = "yoDwI'"
+    }
+    defaultNPCs = {
+      L = [
+        {
+          M = {
+            type = {
+              S = "SHIP"
+            }
+            characterName = {
+              S = "motlhbe' DIch"
+            }
+          }
+        }
+      ]
     }
     type = {
       S = local.db_prefix_gamedefaults
@@ -87,16 +136,25 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_tlh" {
 
   item = jsonencode({
     PK = {
-      S = "${local.db_prefix_gamedefaults}#deltaGreen"
+      S = "${local.db_prefix_gamedefaults}#tlh"
     }
     SK = {
-      S = "${local.db_prefix_language}#tlh"
+      S = "${local.db_prefix_gamedefaults}#deltaGreen"
+    }
+    gameType = {
+      S = "deltaGreen"
+    }
+    displayName = {
+      S = "TODO$Delta Green$tlh"
     }
     defaultCharacterName = {
       S = "Sovbe'ghach DIch"
     }
     defaultGMName = {
       S = "DIch SeHwI'"
+    }
+    defaultNPCs = {
+      L = []
     }
     type = {
       S = local.db_prefix_gamedefaults

@@ -6,7 +6,11 @@ import type {
   JoinGameInput,
 } from "../../../appsync/graphql";
 import { TypeCharacter } from "../../lib/constants/entityTypes";
-import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
+import {
+  DDBPrefixGame,
+  DDBPrefixPlayer,
+  DDBPrefixUser,
+} from "../../lib/constants/dbPrefixes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 
 export function request(context: Context<{ input: JoinGameInput }>): unknown {
@@ -40,12 +44,13 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
   const playerData = {
     gameId: id,
     userId: identity.sub,
-    GSI1PK: "USER#" + identity.sub,
+    GSI1PK: DDBPrefixUser + "#" + identity.sub,
     gameName: context.prev.result.gameName,
     gameType: context.prev.result.gameType,
     gameDescription: context.prev.result.gameDescription,
     characterName:
-      context.stash.gameDefaults?.defaultCharacterName || "Unnamed Character",
+      context.stash.gameDefaults?.defaultCharacterName ||
+      "Error: No Character Name",
     fireflyUserId: context.prev.result.fireflyUserId,
     type: TypeCharacter,
     createdAt: timestamp,

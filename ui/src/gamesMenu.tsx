@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { createGameMutation, getGamesQuery } from "../../appsync/schema";
-import { PlayerSheetSummary, CreateGameInput, Game } from "../../appsync/graphql";
+import { createGameMutation, getGamesQuery, getGameTypesQuery } from "../../appsync/schema";
+import { PlayerSheetSummary, CreateGameInput, Game, GameTypeMetadata } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { type SupportedLanguage } from './translations';
@@ -9,7 +9,6 @@ import { TopBar } from "./frame";
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import { GameTypes, DefaultNewGameType } from "../../graphql/lib/constants/gameTypes";
 
 export const GamesMenuContent: React.FC<{ 
     userEmail: string;
@@ -18,17 +17,19 @@ export const GamesMenuContent: React.FC<{
 }> = ({ userEmail, currentLanguage, onLanguageChange }) => {
     const client = generateClient();
     const [games, setGames] = useState<PlayerSheetSummary[]>([]);
+    const [gameTypes, setGameTypes] = useState<GameTypeMetadata[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [gameName, setGameName] = useState('');
     const [gameDescription, setGameDescription] = useState('');
     const [canCreateGame, setCanCreateGame] = useState(false);
-    const [gameType, setGameType] = useState(DefaultNewGameType);
+    const [gameType, setGameType] = useState('');
     const intl = useIntl();
 
     useEffect(() => {
         fetchGames();
+        fetchGameTypes();
         checkCreateGamePermission();
-    }, []);
+    }, [currentLanguage]);
 
     const fetchGames = async () => {
         try {
@@ -38,6 +39,28 @@ export const GamesMenuContent: React.FC<{
             setGames(response.data.getGames);
         } catch (error) {
             setError(intl.formatMessage({ id: 'errorFetchingGames' }) + JSON.stringify(error));
+        }
+    };
+
+    const fetchGameTypes = async () => {
+        try {
+            const response = await client.graphql({
+                query: getGameTypesQuery,
+                variables: {
+                    input: {
+                        language: currentLanguage || 'en'
+                    }
+                }
+            }) as GraphQLResult<{ getGameTypes: GameTypeMetadata[] }>;
+            const fetchedGameTypes = response.data.getGameTypes;
+            setGameTypes(fetchedGameTypes);
+            
+            // Set default game type to first available if not already set
+            if (fetchedGameTypes.length > 0 && !gameType) {
+                setGameType(fetchedGameTypes[0].gameType);
+            }
+        } catch (error) {
+            setError(intl.formatMessage({ id: 'errorFetchingGameTypes' }) + JSON.stringify(error));
         }
     };
 
@@ -80,8 +103,11 @@ export const GamesMenuContent: React.FC<{
     };
 
     const getGameTypeName = (gameType: string): string => {
-        const gameTypeRecord = GameTypes.find(gt => gt.id === gameType);
-        return intl.formatMessage({ id: gameTypeRecord?.name || 'gameType.unknown.name' }); 
+        const gameTypeRecord = gameTypes.find(gt => gt.gameType === gameType);
+        if (gameTypeRecord) {
+            return intl.formatMessage({ id: `gameType.${gameType}.name` }, { defaultMessage: gameTypeRecord.displayName });
+        }
+        return intl.formatMessage({ id: 'gameType.unknown.name' }, { defaultMessage: gameType }); 
     }
 
     return (
@@ -171,9 +197,9 @@ export const GamesMenuContent: React.FC<{
                                         onChange={(e) => setGameType(e.target.value)}
                                         required
                                     >
-                                        {GameTypes.filter(gt => gt.enabled).map(gameType => (
-                                            <option key={gameType.id} value={gameType.id}>
-                                                {intl.formatMessage({ id: gameType.name })}
+                                        {gameTypes.map(gameTypeOption => (
+                                            <option key={gameTypeOption.gameType} value={gameTypeOption.gameType}>
+                                                {intl.formatMessage({ id: `gameType.${gameTypeOption.gameType}.name` }, { defaultMessage: gameTypeOption.displayName })}
                                             </option>
                                         ))}
                                     </select>
