@@ -37,3 +37,9 @@ export interface GameTypeConfigType {
   fireflyCharacterName: string;
   defaultNPCs: NPCConfig[];
 }
+
+// Type for game defaults from database
+export interface GameDefaults {
+  defaultCharacterName: string;
+  defaultGMName: string;
+}

@@ -7,7 +7,6 @@ import type {
 } from "../../../appsync/graphql";
 import { TypeCharacter } from "../../lib/constants/entityTypes";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
-import { DefaultPlayerCharacterName } from "../../lib/constants/defaults";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 
 export function request(context: Context<{ input: JoinGameInput }>): unknown {
@@ -45,7 +44,8 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     gameName: context.prev.result.gameName,
     gameType: context.prev.result.gameType,
     gameDescription: context.prev.result.gameDescription,
-    characterName: DefaultPlayerCharacterName,
+    characterName:
+      context.stash.gameDefaults?.defaultCharacterName || "Unnamed Character",
     fireflyUserId: context.prev.result.fireflyUserId,
     type: TypeCharacter,
     createdAt: timestamp,
