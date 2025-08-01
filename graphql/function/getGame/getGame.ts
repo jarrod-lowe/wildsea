@@ -150,6 +150,7 @@ export function makeGameData(data: DataGame, sub: string): Game {
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     type: data.type,
+    theme: data.theme,
   };
 }
 

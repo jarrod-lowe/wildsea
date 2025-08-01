@@ -3,7 +3,7 @@
       export const getGameQuery = `
         query getGame($input: GetGameInput) {
           getGame(input: $input) {
-            gameId gameName gameType gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId } joinCode fireflyUserId createdAt updatedAt type deleted
+            gameId gameName gameType gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId } joinCode fireflyUserId createdAt updatedAt type deleted theme
           }
         }
       `;
@@ -53,7 +53,7 @@
       export const createGameMutation = `
         mutation createGame($input: CreateGameInput!) {
           createGame(input: $input) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
           }
         }
       `;
@@ -69,7 +69,7 @@
       export const updateGameMutation = `
         mutation updateGame($input: UpdateGameInput!) {
           updateGame(input: $input) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
           }
         }
       `;
@@ -77,7 +77,7 @@
       export const deleteGameMutation = `
         mutation deleteGame($input: DeleteGameInput!) {
           deleteGame(input: $input) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
           }
         }
       `;
@@ -85,7 +85,7 @@
       export const updateJoinCodeMutation = `
         mutation updateJoinCode($input: UpdateJoinCodeInput!) {
           updateJoinCode(input: $input) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
           }
         }
       `;
@@ -175,7 +175,7 @@
       export const updatedGameSubscription = `
         subscription updatedGame($gameId: ID!) {
           updatedGame(gameId: $gameId) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
           }
         }
       `;

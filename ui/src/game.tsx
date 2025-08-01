@@ -330,8 +330,8 @@ const GameContent: React.FC<{
         setIsGameFetched(true);
         setActiveSheet(sub);
         
-        // Load theme based on game type
-        loadTheme(response.data.getGame.gameType);
+        // Load theme based on game theme setting
+        loadTheme(response.data.getGame.theme);
       } catch (err: any) {
         if (err.errors?.some((e: any) => e.message.includes(NO_GAME))) {
           toast.addToast(intl.formatMessage({ id: "noGame" }), 'error');

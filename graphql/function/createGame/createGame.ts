@@ -44,6 +44,7 @@ export function request(
     createdAt: timestamp,
     updatedAt: timestamp,
     type: TypeGame,
+    theme: gameDefaults.theme,
   };
 
   const gameItem = {
@@ -130,5 +131,6 @@ export function response(context: Context): GameSummary | null {
     createdAt: context.stash.record.createdAt,
     updatedAt: context.stash.record.updatedAt,
     type: context.stash.record.type,
+    theme: context.stash.record.theme,
   };
 }

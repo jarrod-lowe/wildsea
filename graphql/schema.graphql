@@ -132,6 +132,7 @@ type GameSummary @aws_cognito_user_pools {
   updatedAt: AWSDateTime!
   type: String!
   deleted: Boolean
+  theme: String
 }
 
 type Game @aws_cognito_user_pools {
@@ -146,6 +147,7 @@ type Game @aws_cognito_user_pools {
   updatedAt: AWSDateTime!
   type: String!
   deleted: Boolean
+  theme: String
 }
 
 input UpdatePlayerInput {

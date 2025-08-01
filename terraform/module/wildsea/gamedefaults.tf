@@ -45,6 +45,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_en" {
         }
       ]
     }
+    theme = {
+      S = "wildsea"
+    }
     type = {
       S = local.db_prefix_gamedefaults
     }
@@ -77,6 +80,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_en" {
     }
     defaultNPCs = {
       L = []
+    }
+    theme = {
+      S = "deltaGreen"
     }
     type = {
       S = local.db_prefix_gamedefaults
@@ -123,6 +129,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_tlh" {
         }
       ]
     }
+    theme = {
+      S = "wildsea"
+    }
     type = {
       S = local.db_prefix_gamedefaults
     }
@@ -155,6 +164,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_tlh" {
     }
     defaultNPCs = {
       L = []
+    }
+    theme = {
+      S = "deltaGreen"
     }
     type = {
       S = local.db_prefix_gamedefaults
