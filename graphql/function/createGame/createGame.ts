@@ -10,10 +10,6 @@ import {
   DDBPrefixJoin,
   DDBPrefixUser,
 } from "../../lib/constants/dbPrefixes";
-import {
-  GameTypeConfig,
-  DefaultGameConfig,
-} from "../../lib/constants/gameTypes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 import { generateJoinCode } from "../../lib/joinCode";
 
@@ -31,8 +27,10 @@ export function request(
   const joinCode = generateJoinCode();
   const timestamp = util.time.nowISO8601();
 
-  const config = GameTypeConfig[input.gameType] || DefaultGameConfig;
   const gameDefaults = context.stash.gameDefaults;
+  if (!gameDefaults) {
+    util.error("Game defaults not found in stash", "MissingGameDefaults");
+  }
 
   context.stash.record = {
     gameName: input.name,
@@ -85,7 +83,7 @@ export function request(
   const transactItems = [gameItem, fireflyItem];
 
   // Create all configured default NPCs for this game type
-  config.defaultNPCs.forEach((npcConfig) => {
+  gameDefaults?.defaultNPCs.forEach((npcConfig) => {
     const npcId = util.autoId();
     const npcItem = {
       key: util.dynamodb.toMapValues({
@@ -100,8 +98,7 @@ export function request(
         gameName: input.name,
         gameDescription: input.description,
         gameType: input.gameType,
-        characterName:
-          gameDefaults?.defaultCharacterName || npcConfig.characterName,
+        characterName: npcConfig.characterName,
         fireflyUserId: identity.sub,
         createdAt: timestamp,
         updatedAt: timestamp,

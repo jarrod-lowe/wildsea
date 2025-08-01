@@ -19,6 +19,7 @@ export const messagesEnglish = {
     'noGamesAvailable': 'No Games Available',
 
     'errorFetchingGames': 'Error fetching games:',
+    'errorFetchingGameTypes': 'Error fetching game types:',
     'errorCreatingGame': 'Error creating game:',
     'dismiss': 'Dismiss',
     'dismissErrorMessage': 'Dismiss error message',

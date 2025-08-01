@@ -19,6 +19,7 @@ export const messagesKlingon = {
     'noGamesAvailable': 'DIch Dub naDev DIch',
 
     'errorFetchingGames': 'DIch Dub naDev DIch:',
+    'errorFetchingGameTypes': 'DIch Dub Segh naDev DIch:',
     'errorCreatingGame': 'DIch Dub chenmoH DIch:',
     'dismiss': 'DIch mI\'',
     'dismissErrorMessage': 'DIch mI\' DIch per',

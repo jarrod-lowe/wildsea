@@ -32,7 +32,11 @@ describe("request function", () => {
       };
     }> & {
       stash: {
-        gameDefaults?: { defaultCharacterName: string; defaultGMName: string };
+        gameDefaults?: {
+          defaultCharacterName: string;
+          defaultGMName: string;
+          defaultNPCs: { type: string; characterName: string }[];
+        };
       };
     } = {
       env: {},
@@ -69,6 +73,12 @@ describe("request function", () => {
         gameDefaults: {
           defaultCharacterName: "Test Character",
           defaultGMName: "Test Firefly",
+          defaultNPCs: [
+            {
+              type: "SHIP",
+              characterName: "Test Ship",
+            },
+          ],
         },
       },
       prev: undefined,
@@ -152,7 +162,7 @@ describe("request function", () => {
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
             type: { S: "SHIP" },
-            characterName: { S: "Test Character" },
+            characterName: { S: "Test Ship" },
           },
         },
       ],
@@ -170,7 +180,11 @@ describe("request function", () => {
       };
     }> & {
       stash: {
-        gameDefaults?: { defaultCharacterName: string; defaultGMName: string };
+        gameDefaults?: {
+          defaultCharacterName: string;
+          defaultGMName: string;
+          defaultNPCs: { type: string; characterName: string }[];
+        };
       };
     } = {
       env: {},
@@ -205,6 +219,12 @@ describe("request function", () => {
         gameDefaults: {
           defaultCharacterName: "Test Character",
           defaultGMName: "Test Firefly",
+          defaultNPCs: [
+            {
+              type: "SHIP",
+              characterName: "Test Ship",
+            },
+          ],
         },
       },
       prev: undefined,
@@ -229,7 +249,11 @@ describe("request function", () => {
       };
     }> & {
       stash: {
-        gameDefaults?: { defaultCharacterName: string; defaultGMName: string };
+        gameDefaults?: {
+          defaultCharacterName: string;
+          defaultGMName: string;
+          defaultNPCs: { type: string; characterName: string }[];
+        };
       };
     } = {
       env: {},
@@ -264,6 +288,12 @@ describe("request function", () => {
         gameDefaults: {
           defaultCharacterName: "Test Character",
           defaultGMName: "Test Firefly",
+          defaultNPCs: [
+            {
+              type: "SHIP",
+              characterName: "Test Ship",
+            },
+          ],
         },
       },
       prev: undefined,
