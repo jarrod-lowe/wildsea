@@ -59,6 +59,7 @@ export const GamesMenuContent: React.FC<{
             name: gameName,
             gameType: gameType,
             description: gameDescription,
+            language: currentLanguage || 'en',
         };
 
         try {

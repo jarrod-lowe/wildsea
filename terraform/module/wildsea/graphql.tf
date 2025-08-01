@@ -275,6 +275,10 @@ locals {
   resolvers = merge(local.mutations_map, local.queries_map, local.subscriptions_map)
 
   pipelines_map = {
+    createGame = {
+      type : "Mutation",
+      functions = ["getGameDefaults", "createGame"]
+    }
     joinGame = {
       type : "Mutation",
       functions = ["getGameWithToken", "getGameDefaults", "joinGame"]

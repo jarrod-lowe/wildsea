@@ -8,7 +8,7 @@ jest.mock("../lib/joinCode", () => ({
   generateJoinCode: jest.fn(() => "7A8CV2"),
 }));
 
-import { request, response } from "../mutation/createGame/createGame";
+import { request, response } from "../function/createGame/createGame";
 import {
   util,
   Context,
@@ -24,14 +24,24 @@ describe("request function", () => {
   it("should return a valid DynamoDBTransactWriteItem when context is valid", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string; gameType: string };
-    }> = {
+      input: {
+        name: string;
+        description?: string;
+        gameType: string;
+        language: string;
+      };
+    }> & {
+      stash: {
+        gameDefaults?: { defaultCharacterName: string; defaultGMName: string };
+      };
+    } = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       args: {
@@ -39,6 +49,7 @@ describe("request function", () => {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       identity: {
@@ -54,7 +65,12 @@ describe("request function", () => {
         selectionSetGraphQL: "",
       } as Info,
       result: {},
-      stash: {},
+      stash: {
+        gameDefaults: {
+          defaultCharacterName: "Test Character",
+          defaultGMName: "Test Firefly",
+        },
+      },
       prev: undefined,
       request: {
         headers: {},
@@ -116,7 +132,7 @@ describe("request function", () => {
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
             type: { S: "FIREFLY" },
-            characterName: { S: "Firefly" },
+            characterName: { S: "Test Firefly" },
           },
         },
         {
@@ -136,7 +152,7 @@ describe("request function", () => {
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
             type: { S: "SHIP" },
-            characterName: { S: "Unnamed Ship" },
+            characterName: { S: "Test Character" },
           },
         },
       ],
@@ -146,14 +162,24 @@ describe("request function", () => {
   it("should throw an error if context identity is missing", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string; gameType: string };
-    }> = {
+      input: {
+        name: string;
+        description?: string;
+        gameType: string;
+        language: string;
+      };
+    }> & {
+      stash: {
+        gameDefaults?: { defaultCharacterName: string; defaultGMName: string };
+      };
+    } = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       args: {
@@ -161,6 +187,7 @@ describe("request function", () => {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       identity: undefined,
@@ -174,7 +201,12 @@ describe("request function", () => {
         selectionSetGraphQL: "",
       } as Info,
       result: {},
-      stash: {},
+      stash: {
+        gameDefaults: {
+          defaultCharacterName: "Test Character",
+          defaultGMName: "Test Firefly",
+        },
+      },
       prev: undefined,
       request: {
         headers: {},
@@ -189,14 +221,24 @@ describe("request function", () => {
   it("should throw an error if user ID is missing", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string; gameType: string };
-    }> = {
+      input: {
+        name: string;
+        description?: string;
+        gameType: string;
+        language: string;
+      };
+    }> & {
+      stash: {
+        gameDefaults?: { defaultCharacterName: string; defaultGMName: string };
+      };
+    } = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       args: {
@@ -204,6 +246,7 @@ describe("request function", () => {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       identity: {} as AppSyncIdentityCognito,
@@ -217,7 +260,12 @@ describe("request function", () => {
         selectionSetGraphQL: "",
       } as Info,
       result: {},
-      stash: {},
+      stash: {
+        gameDefaults: {
+          defaultCharacterName: "Test Character",
+          defaultGMName: "Test Firefly",
+        },
+      },
       prev: undefined,
       request: {
         headers: {},

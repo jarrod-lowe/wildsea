@@ -33,6 +33,7 @@ export type CharacterTemplateMetadata = {
 export type CreateGameInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   gameType: Scalars['String']['input'];
+  language: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
 
