@@ -83,6 +83,7 @@ export const messagesKlingon = {
     'deleteGameModal.warning': 'DIch Terrapex\'! DIch mI\' DIch choHbe\'meH. Hoch DIch Dub DIch nugh DIch.',
     'deleteGameModal.understand': 'DIch mI\' motlhbe\' \'e\' DIch choHbe\'meH DIch vIl.',
     'deleteGameModal.confirm': '🗑 DIch DIch',
+    'gameDeleted': 'DIch Dub DIch DIch',
 
     'sectionName': 'pagh',
     'save': '💾 choq DIch',
