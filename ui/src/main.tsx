@@ -364,17 +364,21 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
         return (
             <div>
                 <header>
-                    <TopBar 
-                        title={intl.formatMessage({ id: 'wildsea' })} 
-                        userEmail={undefined} 
-                        gameDescription="" 
-                        isFirefly={false}
-                        currentLanguage={currentLanguage}
-                        onLanguageChange={handleLanguageChangeFromUI}
-                    />
+                    <div className="gameslist">
+                        <TopBar 
+                            title={intl.formatMessage({ id: 'wildsea' })} 
+                            userEmail={undefined} 
+                            gameDescription="" 
+                            isFirefly={false}
+                            currentLanguage={currentLanguage}
+                            onLanguageChange={handleLanguageChangeFromUI}
+                        />
+                    </div>
                 </header>
                 <main>
-                    <div><FormattedMessage id="pleaseLogin" /></div>
+                    <div className="gameslist">
+                        <div><FormattedMessage id="pleaseLogin" /></div>
+                    </div>
                 </main>
                 <FooterBar />
             </div>
