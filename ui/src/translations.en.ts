@@ -83,6 +83,7 @@ export const messagesEnglish = {
     'deleteGameModal.warning': 'Here by Terrapex\'s! This action cannot be undone. All game data will be permanently deleted.',
     'deleteGameModal.understand': 'I understand that this action is permanent and cannot be undone.',
     'deleteGameModal.confirm': '🗑 Confirm Delete',
+    'gameDeleted': 'Game deleted successfully',
 
     'sectionName': 'Name',
     'save': '💾 Save Changes',
