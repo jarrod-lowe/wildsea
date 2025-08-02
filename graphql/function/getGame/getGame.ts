@@ -21,7 +21,7 @@ import {
   TypeFirefly,
   TypeSection,
   TypeGame,
-  TypeShip,
+  TypeNPC,
 } from "../../lib/constants/entityTypes";
 import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
 import { getTranslatedMessage } from "../../lib/i18n";
@@ -97,7 +97,7 @@ function buildPlayerSheets(
     if (
       data.type === TypeCharacter ||
       data.type === TypeFirefly ||
-      data.type === TypeShip
+      data.type === TypeNPC
     ) {
       const sheet = makeCharacterSheetData(data as DataPlayerSheet);
       sheets[sheet.userId] = sheet;

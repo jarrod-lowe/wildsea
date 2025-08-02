@@ -2,7 +2,7 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBUpdateItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import { PlayerSheet, UpdatePlayerInput } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
-import { TypeShip } from "../../lib/constants/entityTypes";
+import { TypeNPC } from "../../lib/constants/entityTypes";
 
 export function request(
   context: Context<{ input: UpdatePlayerInput }>,
@@ -29,7 +29,7 @@ export function request(
       },
       expressionValues: util.dynamodb.toMapValues({
         ":userId": identity.sub,
-        ":type": TypeShip,
+        ":type": TypeNPC,
       }),
     },
     update: {
