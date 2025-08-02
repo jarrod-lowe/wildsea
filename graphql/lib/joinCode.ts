@@ -51,6 +51,5 @@ function hexToVal(c: string): number {
   if (lower === "c") return 12;
   if (lower === "d") return 13;
   if (lower === "e") return 14;
-  if (lower === "f") return 15;
-  return util.error(`Invalid hex character: '${c}'`);
+  return 15;
 }
