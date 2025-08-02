@@ -21,6 +21,8 @@ const translations: TranslationsByLanguage = {
     "sheet.notFound": "Sheet not found",
     "gameRecord.notFound": "Game record not found",
     "gameDefaults.missing": "Game defaults not found in stash",
+    "game.unknownType": "Unknown type",
+    "game.invalidType": "Invalid game type",
   },
   tlh: {
     // Klingon translations - these are placeholders and would need proper translation
@@ -32,31 +34,42 @@ const translations: TranslationsByLanguage = {
     "sheet.notFound": "naQ DIch tu'lu'be'",
     "gameRecord.notFound": "nugh DIch teywI' tu'lu'be'",
     "gameDefaults.missing": "nugh DIch nugh DIch polmeH DIch tu'lu'be'",
+    "game.unknownType": "Sovbe'ghach Segh",
+    "game.invalidType": "nugh DIch lo'taHbe'",
   },
 };
 
 /**
- * Get a translated error message
+ * Get a translated error message with optional value concatenation
  * @param messageKey - The message key to translate
  * @param language - The target language (defaults to 'en' if not supported)
+ * @param value - Optional value to append after ": " (e.g. "Invalid game type: someValue")
  * @returns The translated message, falling back to English if translation not found
  */
 export function getTranslatedMessage(
   messageKey: string,
   language: string = defaultLanguage,
+  value?: string,
 ): string {
   // Try to get the requested language
-  if (translations[language]?.[messageKey]) {
-    return translations[language][messageKey];
-  }
+  let message = translations[language]?.[messageKey];
 
-  // Fall back to English
-  if (translations[defaultLanguage]?.[messageKey]) {
-    return translations[defaultLanguage][messageKey];
+  // Fall back to English if not found
+  if (!message) {
+    message = translations[defaultLanguage]?.[messageKey];
   }
 
   // Ultimate fallback - return the message key
-  return messageKey;
+  if (!message) {
+    return messageKey;
+  }
+
+  // Append value if provided (format: "message: value")
+  if (value) {
+    message = message + ": " + value;
+  }
+
+  return message;
 }
 
 /**

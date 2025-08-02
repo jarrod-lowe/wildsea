@@ -12,6 +12,7 @@ import {
 } from "../../lib/constants/dbPrefixes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 import { generateJoinCode } from "../../lib/joinCode";
+import { getTranslatedMessage } from "../../lib/i18n";
 
 export function request(
   context: Context<{ input: CreateGameInput }> & {
@@ -29,7 +30,10 @@ export function request(
 
   const gameDefaults = context.stash.gameDefaults;
   if (!gameDefaults) {
-    util.error("Game defaults not found in stash", "MissingGameDefaults");
+    util.error(
+      getTranslatedMessage("gameDefaults.missing", input.language),
+      "MissingGameDefaults",
+    );
   }
 
   context.stash.record = {

@@ -4,6 +4,7 @@ import { DDBPrefixGameDefaults } from "../../lib/constants/dbPrefixes";
 import { FallbackLanguage } from "../../lib/constants/defaults";
 import type { GameDefaults, DynamoDBGameDefaults } from "../../lib/dataTypes";
 import type { JoinGameInput, CreateGameInput } from "../../../appsync/graphql";
+import { getTranslatedMessage } from "../../lib/i18n";
 
 export function request(
   context: Context<{ input: JoinGameInput | CreateGameInput }>,
@@ -76,7 +77,10 @@ export function response(
 
   // If we don't have a result from database, error out
   if (!gameDefaults) {
-    util.error(`Invalid game type: ${gameType}`, "InvalidGameType");
+    util.error(
+      getTranslatedMessage("game.invalidType", language, gameType),
+      "InvalidGameType",
+    );
   }
 
   const defaultNPCs = gameDefaults.defaultNPCs.map((npcItem) => ({
