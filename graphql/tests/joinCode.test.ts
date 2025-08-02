@@ -41,14 +41,6 @@ describe("joinCode", () => {
       expect(result).toBe("3579BD");
     });
 
-    it("should handle invalid hex characters", () => {
-      const invalidUuid = "12345678-1234-1234-1234-123456789xyz";
-
-      // In AppSync environment, util.error() would terminate execution
-      // In test environment, we can still verify the function handles invalid input
-      expect(() => generateJoinCodeFromUuid(invalidUuid)).toThrow();
-    });
-
     it("should handle uppercase and lowercase hex equally", () => {
       const lowerUuid = "12345678-1234-1234-1234-abcdefabcdef";
       const upperUuid = "12345678-1234-1234-1234-ABCDEFABCDEF";

@@ -71,6 +71,8 @@ make terraform-format
 
 ```bash
 # Build GraphQL auto-generated javascript files used by appsync query, mutations and subscriptions
+# It does not deploy the API, or do anything to the query/mutation/subscription code
+# To actually deploy, use AWS_PROFILE=wildsea make dev
 make graphql
 ```
 

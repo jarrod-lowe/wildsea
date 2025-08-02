@@ -2,6 +2,7 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { DynamoDBQueryRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import type { Game, JoinGameInput } from "../../../appsync/graphql";
 import { DDBPrefixJoin } from "../../lib/constants/dbPrefixes";
+import { getTranslatedMessage } from "../../lib/i18n";
 
 export function request(
   context: Context<{ input: JoinGameInput }>,
@@ -40,13 +41,20 @@ export function response(context: Context<{ input: JoinGameInput }>): Game {
 
   const game: Game = result.items[0];
   const identity = context.identity as AppSyncIdentityCognito;
+  const language = context.arguments.input.language;
 
   if (identity.sub === game.fireflyUserId) {
-    util.error("You cannot join your own game", "Conflict");
+    util.error(
+      getTranslatedMessage("joinGame.cannotJoinOwnGame", language),
+      "Conflict",
+    );
   }
 
   if (game.playerSheets?.some((sheet) => sheet.userId === identity.sub)) {
-    util.error("You are already a player in this game", "Conflict");
+    util.error(
+      getTranslatedMessage("joinGame.alreadyPlayer", language),
+      "Conflict",
+    );
   }
 
   return game;

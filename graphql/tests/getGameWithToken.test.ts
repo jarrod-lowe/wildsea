@@ -363,6 +363,160 @@ describe("joinGame response function", () => {
     );
   });
 
+  it("should throw localized error in Klingon for own game", () => {
+    const mockContext: Context<{ input: JoinGameInput }> = {
+      env: {},
+      arguments: {
+        input: {
+          joinCode: "ABC123",
+          language: "tlh",
+        },
+      },
+      args: {
+        input: {
+          joinCode: "ABC123",
+          language: "tlh",
+        },
+      },
+      identity: {
+        sub: "user123",
+      } as AppSyncIdentityCognito,
+      source: undefined,
+      error: undefined,
+      info: {
+        fieldName: "joinGame",
+        parentTypeName: "Mutation",
+        variables: {},
+        selectionSetList: [],
+        selectionSetGraphQL: "",
+      },
+      result: {
+        items: [
+          {
+            joinToken: "token123",
+            fireflyUserId: "user123",
+            playerSheets: [],
+          },
+        ],
+      },
+      stash: {},
+      prev: undefined,
+      request: {
+        headers: {},
+        domainName: null,
+      },
+    };
+
+    expect(() => response(mockContext)).toThrow(
+      "nugh DIch DIch DIlo'meH DIch DIch",
+    );
+    expect(util.error).toHaveBeenCalledWith(
+      "nugh DIch DIch DIlo'meH DIch DIch",
+      "Conflict",
+    );
+  });
+
+  it("should throw localized error in Klingon for already player", () => {
+    const mockContext: Context<{ input: JoinGameInput }> = {
+      env: {},
+      arguments: {
+        input: {
+          joinCode: "ABC123",
+          language: "tlh",
+        },
+      },
+      args: {
+        input: {
+          joinCode: "ABC123",
+          language: "tlh",
+        },
+      },
+      identity: {
+        sub: "user123",
+      } as AppSyncIdentityCognito,
+      source: undefined,
+      error: undefined,
+      info: {
+        fieldName: "joinGame",
+        parentTypeName: "Mutation",
+        variables: {},
+        selectionSetList: [],
+        selectionSetGraphQL: "",
+      },
+      result: {
+        items: [
+          {
+            joinToken: "token123",
+            fireflyUserId: "user456",
+            playerSheets: [{ userId: "user123" }],
+          },
+        ],
+      },
+      stash: {},
+      prev: undefined,
+      request: {
+        headers: {},
+        domainName: null,
+      },
+    };
+
+    expect(() => response(mockContext)).toThrow("DIch naQ DIch DIch");
+    expect(util.error).toHaveBeenCalledWith("DIch naQ DIch DIch", "Conflict");
+  });
+
+  it("should fall back to English for unsupported language", () => {
+    const mockContext: Context<{ input: JoinGameInput }> = {
+      env: {},
+      arguments: {
+        input: {
+          joinCode: "ABC123",
+          language: "fr", // French - not supported
+        },
+      },
+      args: {
+        input: {
+          joinCode: "ABC123",
+          language: "fr",
+        },
+      },
+      identity: {
+        sub: "user123",
+      } as AppSyncIdentityCognito,
+      source: undefined,
+      error: undefined,
+      info: {
+        fieldName: "joinGame",
+        parentTypeName: "Mutation",
+        variables: {},
+        selectionSetList: [],
+        selectionSetGraphQL: "",
+      },
+      result: {
+        items: [
+          {
+            joinToken: "token123",
+            fireflyUserId: "user123",
+            playerSheets: [],
+          },
+        ],
+      },
+      stash: {},
+      prev: undefined,
+      request: {
+        headers: {},
+        domainName: null,
+      },
+    };
+
+    expect(() => response(mockContext)).toThrow(
+      "You cannot join your own game",
+    );
+    expect(util.error).toHaveBeenCalledWith(
+      "You cannot join your own game",
+      "Conflict",
+    );
+  });
+
   it("should return the game data if no errors", () => {
     const mockContext: Context<{ input: JoinGameInput }> = {
       env: {},
