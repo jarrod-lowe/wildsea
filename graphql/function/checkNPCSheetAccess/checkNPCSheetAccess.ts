@@ -8,10 +8,10 @@ import type { DynamoDBGetItemRequest } from "@aws-appsync/utils/lib/resolver-ret
 import type { DataPlayerSheet } from "../../lib/dataTypes";
 import type { MutationCreateSectionArgs } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
-import { TypeShip } from "../../lib/constants/entityTypes";
+import { TypeNPC } from "../../lib/constants/entityTypes";
 
-/* If the request is for a different userId than the subject, check that it is a
- * ship sheet in the current game */
+/* If the request is for a different userId than the subject, check that it is an
+ * NPC sheet in the current game */
 
 export function request(
   context: Context<MutationCreateSectionArgs>,
@@ -55,7 +55,7 @@ export function response(
   }
 
   if (!context.result) util.unauthorized();
-  if (context.result.type !== TypeShip) util.unauthorized();
+  if (context.result.type !== TypeNPC) util.unauthorized();
 
   context.stash.playerType = context.result.type;
 

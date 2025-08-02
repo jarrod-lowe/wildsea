@@ -16,7 +16,7 @@ export function request(
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
 
-  const { settings } = context.arguments.input;
+  const { settings, language } = context.arguments.input;
 
   // Validate size limit (settings is already a JSON string)
   const settingsSize = settings.length;
@@ -24,7 +24,7 @@ export function request(
     util.error(
       getTranslatedMessage(
         "settings.sizeExceeded",
-        "en",
+        language,
         `${settingsSize} bytes`,
       ),
       "SettingsSizeExceededException",

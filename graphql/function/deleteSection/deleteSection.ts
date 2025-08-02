@@ -5,7 +5,7 @@ import {
   DDBPrefixGame,
   DDBPrefixSection,
 } from "../../lib/constants/dbPrefixes";
-import { TypeShip } from "../../lib/constants/entityTypes";
+import { TypeNPC } from "../../lib/constants/entityTypes";
 
 export function request(
   context: Context<{ input: DeleteSectionInput }>,
@@ -30,7 +30,7 @@ export function request(
       },
       expressionValues: util.dynamodb.toMapValues({
         ":userId": identity.sub,
-        ":playerType": TypeShip,
+        ":playerType": TypeNPC,
       }),
     },
   };

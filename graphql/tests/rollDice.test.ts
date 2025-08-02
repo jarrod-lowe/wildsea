@@ -29,11 +29,11 @@ const mockPlayerSheet = {
   type: "CHARACTER",
 };
 
-const mockShipSheet = {
-  userId: "ship-id",
+const mockNPCSheet = {
+  userId: "npc-id",
   gameId: "test-game-id",
-  characterName: "Test Ship",
-  type: "SHIP",
+  characterName: "Test NPC",
+  type: "NPC",
 };
 
 interface MockContextOverrides {
@@ -108,10 +108,10 @@ describe("rollDice resolver", () => {
       });
     });
 
-    it("should include ship key when onBehalfOf is provided", () => {
+    it("should include NPC key when onBehalfOf is provided", () => {
       const tableName = "Wildsea-" + environment.name;
       const contextWithOnBehalfOf = createMockContext({
-        input: { onBehalfOf: "ship-id" },
+        input: { onBehalfOf: "npc-id" },
       });
 
       const result = request(contextWithOnBehalfOf);
@@ -127,7 +127,7 @@ describe("rollDice resolver", () => {
               },
               {
                 PK: "GAME#test-game-id",
-                SK: "PLAYER#ship-id",
+                SK: "PLAYER#npc-id",
               },
             ],
           },
@@ -296,9 +296,9 @@ describe("rollDice resolver", () => {
     });
   });
 
-  describe("response function - onBehalfOf ship rolls", () => {
-    it("should return ship name when rolling on behalf of ship", () => {
-      const contextWithShip = createMockContext({
+  describe("response function - onBehalfOf NPC rolls", () => {
+    it("should return NPC name when rolling on behalf of NPC", () => {
+      const contextWithNPC = createMockContext({
         stash: {
           input: {
             gameId: "test-game-id",
@@ -307,23 +307,23 @@ describe("rollDice resolver", () => {
             target: 50,
           },
           playerId: "test-user-id",
-          onBehalfOf: "ship-id",
+          onBehalfOf: "npc-id",
         },
-        result: [mockPlayerSheet, mockShipSheet],
+        result: [mockPlayerSheet, mockNPCSheet],
       });
 
       jest.spyOn(Math, "random").mockReturnValue(0.24);
 
-      const result = response(contextWithShip);
+      const result = response(contextWithNPC);
 
       expect(result.grade).toBe(Grades.SUCCESS);
-      expect(result.playerName).toBe("Test Ship");
-      expect(result.playerId).toBe("ship-id");
+      expect(result.playerName).toBe("Test NPC");
+      expect(result.playerId).toBe("npc-id");
     });
 
-    it("should error if onBehalfOf record is not a ship", () => {
+    it("should error if onBehalfOf record is not an NPC", () => {
       const mockNonShip = {
-        userId: "non-ship-id",
+        userId: "non-npc-id",
         gameId: "test-game-id",
         characterName: "Not A Ship",
         type: "CHARACTER",
@@ -338,7 +338,7 @@ describe("rollDice resolver", () => {
             target: 50,
           },
           playerId: "test-user-id",
-          onBehalfOf: "non-ship-id",
+          onBehalfOf: "non-npc-id",
         },
         result: [mockPlayerSheet, mockNonShip],
       });
@@ -358,7 +358,7 @@ describe("rollDice resolver", () => {
           playerId: "test-user-id",
           onBehalfOf: "non-existent-id",
         },
-        result: [mockPlayerSheet], // Only player, no ship
+        result: [mockPlayerSheet], // Only player, no NPC
       });
 
       expect(() => response(contextWithMissingShip)).toThrow("Unauthorized");

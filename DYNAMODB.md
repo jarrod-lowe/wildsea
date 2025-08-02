@@ -36,7 +36,7 @@ The application uses a single-table design with the following entity types:
 | `CHARACTER` | Player characters | Persistent |
 | `SECTION` | Character sheet sections | Persistent |
 | `FIREFLY` | Game masters/handlers | Persistent |
-| `SHIP` | NPCs/ships (Wildsea game type) | Persistent |
+| `NPC` | NPCs | Persistent |
 | `TEMPLATE` | Character sheet templates | Persistent |
 | `DICEROLL` | Dice roll events | Subscription-only, not stored |
 
@@ -61,7 +61,7 @@ PK: GAME#{gameId}
 SK: PLAYER#{userId}
 ```
 
-**Attributes**: `characterName`, `userEmail`, `type` (CHARACTER/FIREFLY/SHIP),
+**Attributes**: `characterName`, `userEmail`, `type` (CHARACTER/FIREFLY/NPC),
 `sections` (StringSet), etc.
 
 #### Section Records
