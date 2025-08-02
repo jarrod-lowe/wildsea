@@ -130,9 +130,9 @@
         }
       `;
     
-      export const createShipMutation = `
-        mutation createShip($input: CreateShipInput!) {
-          createShip(input: $input) {
+      export const createNPCMutation = `
+        mutation createNPC($input: CreateNPCInput!) {
+          createNPC(input: $input) {
             userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted
           }
         }

@@ -4,15 +4,15 @@ import {
   DynamoDBPutItemRequest,
   PutItemInputAttributeMap,
 } from "@aws-appsync/utils";
-import { CreateShipInput, PlayerSheetSummary } from "../../../appsync/graphql";
+import { CreateNPCInput, PlayerSheetSummary } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
-import { TypeShip } from "../../lib/constants/entityTypes";
+import { TypeNPC } from "../../lib/constants/entityTypes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 
 // CheckGameFireflyAccess has already confirmed we are the firefly for this game
 
 export function request(
-  context: Context<{ input: CreateShipInput }>,
+  context: Context<{ input: CreateNPCInput }>,
 ): DynamoDBPutItemRequest {
   const input = context.arguments.input;
   const id = util.autoId();
@@ -34,7 +34,7 @@ export function request(
       fireflyUserId: context.prev.result.fireflyUserId,
       createdAt: timestamp,
       updatedAt: timestamp,
-      type: TypeShip,
+      type: TypeNPC,
     } as DataPlayerSheet) as PutItemInputAttributeMap,
   };
 }
