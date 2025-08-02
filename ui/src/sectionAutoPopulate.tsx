@@ -28,6 +28,9 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const intl = useIntl();
   const toast = useToast();
+  
+  // Resolve the current language (handle 'auto' case)
+  const actualLanguage = resolveLanguage(currentLanguage);
 
   useEffect(() => {
     fetchTemplates();
@@ -36,13 +39,12 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
   const fetchTemplates = async () => {
     try {
       const client = generateClient();
-      const language = resolveLanguage(currentLanguage);
       const response = await client.graphql({
         query: getCharacterTemplatesQuery,
         variables: {
           input: {
             gameType: gameType,
-            language: language,
+            language: actualLanguage,
           },
         },
       }) as GraphQLResult<{ getCharacterTemplates: CharacterTemplateMetadata[] }>;
@@ -50,8 +52,8 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
       let templates = response.data?.getCharacterTemplates || [];
       
       // Fallback to English if no templates found for current language
-      if (templates.length === 0 && language !== 'en') {
-        console.log(`No templates found for language '${language}', falling back to English`);
+      if (templates.length === 0 && actualLanguage !== 'en') {
+        console.log(`No templates found for language '${actualLanguage}', falling back to English`);
         const fallbackResponse = await client.graphql({
           query: getCharacterTemplatesQuery,
           variables: {
@@ -80,7 +82,6 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
     setLoading(true);
     try {
       const client = generateClient();
-      const language = resolveLanguage(currentLanguage);
       
       // Fetch template sections
       let templateResponse = await client.graphql({
@@ -89,7 +90,7 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
           input: {
             templateName: selectedTemplate,
             gameType: gameType,
-            language: language,
+            language: actualLanguage,
           },
         },
       }) as GraphQLResult<{ getCharacterTemplate: TemplateSectionData[] }>;
@@ -97,8 +98,8 @@ export const SectionAutoPopulate: React.FC<AutoPopulateProps> = ({
       let templateSections = templateResponse.data?.getCharacterTemplate || [];
       
       // Fallback to English if no template found for current language
-      if (templateSections.length === 0 && language !== 'en') {
-        console.log(`No template sections found for language '${language}', falling back to English`);
+      if (templateSections.length === 0 && actualLanguage !== 'en') {
+        console.log(`No template sections found for language '${actualLanguage}', falling back to English`);
         templateResponse = await client.graphql({
           query: getCharacterTemplateQuery,
           variables: {

@@ -5,7 +5,7 @@ import {
   DDBPrefixGame,
   DDBPrefixSection,
 } from "../../lib/constants/dbPrefixes";
-import { TypeShip } from "../../lib/constants/entityTypes";
+import { TypeNPC } from "../../lib/constants/entityTypes";
 
 interface UpdateType {
   updatedAt: string;
@@ -66,7 +66,7 @@ export function request(
       },
       expressionValues: util.dynamodb.toMapValues({
         ":userId": identity.sub,
-        ":playerType": TypeShip,
+        ":playerType": TypeNPC,
       }),
     },
     update: {

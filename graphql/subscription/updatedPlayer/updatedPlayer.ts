@@ -1,7 +1,7 @@
 import {
   TypeCharacter,
   TypeFirefly,
-  TypeShip,
+  TypeNPC,
 } from "../../lib/constants/entityTypes";
 import {
   ContextType,
@@ -14,6 +14,6 @@ export function request(context: ContextType) {
 }
 
 export function response(context: ContextType) {
-  const objectTypes = [TypeCharacter, TypeFirefly, TypeShip];
+  const objectTypes = [TypeCharacter, TypeFirefly, TypeNPC];
   return subscriptionResponse(context, objectTypes);
 }

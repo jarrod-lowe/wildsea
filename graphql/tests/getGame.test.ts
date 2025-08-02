@@ -92,6 +92,12 @@ describe("response", () => {
 
   it("should throw an error if no results are found", () => {
     const context = {
+      arguments: {
+        input: {
+          gameId: "game1",
+          language: "en",
+        },
+      },
       result: [],
     } as unknown as Context<
       { input: GetGameInput },
@@ -106,6 +112,12 @@ describe("response", () => {
 
   it("should return a game object with playerSheets when data is valid", () => {
     const context = {
+      arguments: {
+        input: {
+          gameId: "game1",
+          language: "en",
+        },
+      },
       identity: { sub: "notfirefly" } as AppSyncIdentityCognito,
       result: {
         items: [
@@ -213,6 +225,12 @@ describe("response", () => {
 
   it("should return a game object with playerSheets and joinToken when data is valid and user is firefly", () => {
     const context = {
+      arguments: {
+        input: {
+          gameId: "game1",
+          language: "en",
+        },
+      },
       identity: { sub: "user2" } as AppSyncIdentityCognito,
       result: {
         items: [
@@ -320,6 +338,12 @@ describe("response", () => {
 
   it("should throw an error when game record is not found", () => {
     const context = {
+      arguments: {
+        input: {
+          gameId: "game1",
+          language: "en",
+        },
+      },
       identity: { sub: "user1" } as AppSyncIdentityCognito,
       result: {
         items: [
@@ -346,6 +370,12 @@ describe("response", () => {
 
   it("should throw an error when an unknown type is encountered", () => {
     const context = {
+      arguments: {
+        input: {
+          gameId: "game1",
+          language: "en",
+        },
+      },
       identity: { sub: "user1" } as AppSyncIdentityCognito,
       result: {
         items: [

@@ -9,7 +9,7 @@ import type {
   Dice,
 } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
-import { TypeDiceRoll, TypeShip } from "../../lib/constants/entityTypes";
+import { TypeDiceRoll, TypeNPC } from "../../lib/constants/entityTypes";
 import { RollTypes, Grades } from "../../lib/constants/rollTypes";
 
 export function request(
@@ -34,7 +34,7 @@ export function request(
     }),
   ];
 
-  // Add ship record to batch if rolling on behalf of ship (and it's different from current user)
+  // Add NPC record to batch if rolling on behalf of NPC (and it's different from current user)
   if (input.onBehalfOf && input.onBehalfOf !== identity.sub) {
     keys.push(
       util.dynamodb.toMapValues({
@@ -86,17 +86,17 @@ export function response(context: Context): DiceRoll {
   let proxyRoll: boolean;
 
   if (onBehalfOf && onBehalfOf !== identity.sub) {
-    // Find ship record
-    const shipSheet = results.find(
-      (record) => record.userId === onBehalfOf && record.type == TypeShip,
+    // Find NPC record
+    const npcSheet = results.find(
+      (record) => record.userId === onBehalfOf && record.type == TypeNPC,
     );
-    if (!shipSheet) {
+    if (!npcSheet) {
       util.unauthorized();
     }
 
-    // Use ship's details for the roll
-    rollerName = shipSheet.characterName;
-    actualPlayerId = shipSheet.userId;
+    // Use NPC's details for the roll
+    rollerName = npcSheet.characterName;
+    actualPlayerId = npcSheet.userId;
     rolledBy = playerSheet.characterName;
     proxyRoll = true;
   } else {

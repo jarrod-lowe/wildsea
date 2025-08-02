@@ -36,7 +36,7 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_en" {
         {
           M = {
             type = {
-              S = "SHIP"
+              S = "NPC"
             }
             characterName = {
               S = "Unnamed Ship"
@@ -107,7 +107,7 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_tlh" {
       S = "wildsea"
     }
     displayName = {
-      S = "TODO$Wildsea$tlh"
+      S = "mI'lugh bIQ"
     }
     defaultCharacterName = {
       S = "motlhbe' jup"
@@ -120,7 +120,7 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_tlh" {
         {
           M = {
             type = {
-              S = "SHIP"
+              S = "NPC"
             }
             characterName = {
               S = "motlhbe' DIch"
@@ -154,7 +154,7 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_tlh" {
       S = "deltaGreen"
     }
     displayName = {
-      S = "TODO$Delta Green$tlh"
+      S = "mI'lugh SuD"
     }
     defaultCharacterName = {
       S = "Sovbe'ghach DIch"

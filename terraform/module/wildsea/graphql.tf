@@ -301,7 +301,7 @@ locals {
     }
     createSection = {
       type : "Mutation",
-      functions = ["checkPlayerSheetAccess", "checkShipSheetAccess", "createSection"]
+      functions = ["checkPlayerSheetAccess", "checkNPCSheetAccess", "createSection"]
     }
     updateSection = {
       type : "Mutation",
@@ -311,9 +311,9 @@ locals {
       type : "Mutation",
       functions = ["checkGameAccess", "deleteSection"]
     }
-    createShip = {
+    createNPC = {
       type : "Mutation",
-      functions = ["checkGameFireflyAccess", "createShip"]
+      functions = ["checkGameFireflyAccess", "createNPC"]
     }
   }
 }
