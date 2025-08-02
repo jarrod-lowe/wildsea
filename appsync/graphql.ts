@@ -142,6 +142,7 @@ export type GetCharacterTemplatesInput = {
 
 export type GetGameInput = {
   gameId: Scalars['ID']['input'];
+  language: Scalars['String']['input'];
 };
 
 export type GetGameTypesInput = {
@@ -252,7 +253,7 @@ export type PlayerSheetSummary = {
   characterName: Scalars['String']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
   deleted?: Maybe<Scalars['Boolean']['output']>;
-  gameDescription: Scalars['String']['output'];
+  gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
@@ -283,7 +284,7 @@ export type QueryGetCharacterTemplatesArgs = {
 
 
 export type QueryGetGameArgs = {
-  input?: InputMaybe<GetGameInput>;
+  input: GetGameInput;
 };
 
 
@@ -384,6 +385,7 @@ export type UpdateSectionInput = {
 };
 
 export type UpdateUserSettingsInput = {
+  language: Scalars['String']['input'];
   settings: Scalars['AWSJSON']['input'];
 };
 
