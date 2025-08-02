@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { TypeShip } from '../../graphql/lib/constants/entityTypes';
+import { TypeNPC } from '../../graphql/lib/constants/entityTypes';
 
 interface DeletePlayerModalProps {
   isOpen: boolean;
@@ -42,7 +42,7 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
 
   let translationInset = "quit";
   if (!isOwnSheet) translationInset = "kickPlayer";
-  if (sheetType === TypeShip) translationInset = "kickShip"
+  if (sheetType === TypeNPC) translationInset = "kickShip"
 
   const labelId = `playerSheetTab.${translationInset}Label`;
   const confirmId = `playerSheetTab.${translationInset}Confirmation`;

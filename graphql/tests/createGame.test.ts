@@ -76,7 +76,7 @@ describe("request function", () => {
           defaultGMName: "Test Firefly",
           defaultNPCs: [
             {
-              type: "SHIP",
+              type: "NPC",
               characterName: "Test Ship",
             },
           ],
@@ -92,11 +92,11 @@ describe("request function", () => {
 
     const mockId = "unique-id";
     const mockTimestamp = "2024-08-17T00:00:00Z";
-    const mockShipId = "unique-ship-id";
+    const mockNPCId = "unique-npc-id";
 
     (util.autoId as jest.Mock)
       .mockReturnValueOnce(mockId)
-      .mockReturnValueOnce(mockShipId);
+      .mockReturnValueOnce(mockNPCId);
     (util.time.nowISO8601 as jest.Mock).mockReturnValue(mockTimestamp);
 
     // Act
@@ -152,11 +152,11 @@ describe("request function", () => {
           operation: "PutItem",
           key: {
             PK: { S: `GAME#${mockId}` },
-            SK: { S: `PLAYER#${mockShipId}` },
+            SK: { S: `PLAYER#${mockNPCId}` },
           },
           table: "Wildsea-MOCK",
           attributeValues: {
-            userId: { S: mockShipId },
+            userId: { S: mockNPCId },
             gameId: { S: mockId },
             gameName: { S: "Test Game" },
             gameType: { S: "wildsea" },
@@ -164,7 +164,7 @@ describe("request function", () => {
             fireflyUserId: { S: "1234-5678-91011" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
-            type: { S: "SHIP" },
+            type: { S: "NPC" },
             characterName: { S: "Test Ship" },
           },
         },
@@ -225,7 +225,7 @@ describe("request function", () => {
           defaultGMName: "Test Firefly",
           defaultNPCs: [
             {
-              type: "SHIP",
+              type: "NPC",
               characterName: "Test Ship",
             },
           ],
@@ -296,7 +296,7 @@ describe("request function", () => {
           defaultGMName: "Test Firefly",
           defaultNPCs: [
             {
-              type: "SHIP",
+              type: "NPC",
               characterName: "Test Ship",
             },
           ],

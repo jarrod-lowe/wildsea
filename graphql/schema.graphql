@@ -27,13 +27,13 @@ type Mutation {
     deleteSection(input: DeleteSectionInput!): SheetSection! @aws_cognito_user_pools
     updatePlayer(input: UpdatePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools
     deletePlayer(input: DeletePlayerInput!): PlayerSheetSummary @aws_cognito_user_pools @aws_iam
-    createShip(input: CreateShipInput!): PlayerSheetSummary! @aws_cognito_user_pools
+    createNPC(input: CreateNPCInput!): PlayerSheetSummary! @aws_cognito_user_pools
     rollDice(input: RollDiceInput!): DiceRoll! @aws_cognito_user_pools
     updateUserSettings(input: UpdateUserSettingsInput!): UserSettings! @aws_cognito_user_pools
 }
 
 type Query {
-    getGame(input: GetGameInput): Game! @aws_cognito_user_pools
+    getGame(input: GetGameInput!): Game! @aws_cognito_user_pools
     getGames: [PlayerSheetSummary!] @aws_cognito_user_pools
     getGameTypes(input: GetGameTypesInput!): [GameTypeMetadata!]! @aws_cognito_user_pools
     getCharacterTemplates(input: GetCharacterTemplatesInput!): [CharacterTemplateMetadata!]! @aws_cognito_user_pools
@@ -42,7 +42,7 @@ type Query {
 }
 
 type Subscription @aws_cognito_user_pools {
-  updatedPlayer(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayer", "deletePlayer", "createShip", "joinGame"])
+  updatedPlayer(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayer", "deletePlayer", "createNPC", "joinGame"])
   updatedSection(gameId: ID!): SheetSection @aws_subscribe(mutations: ["createSection", "updateSection", "deleteSection"])
   updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "deleteGame"])
   diceRolled(gameId: ID!): DiceRoll @aws_subscribe(mutations: ["rollDice"])
@@ -51,6 +51,7 @@ type Subscription @aws_cognito_user_pools {
 
 input GetGameInput {
   gameId: ID!
+  language: String!
 }
 
 input GetGameTypesInput {
@@ -156,7 +157,7 @@ input UpdatePlayerInput {
   characterName: String!
 }
 
-input CreateShipInput {
+input CreateNPCInput {
   gameId: ID!
   characterName: String!
 }
@@ -166,7 +167,7 @@ type PlayerSheetSummary @aws_cognito_user_pools @aws_iam {
   gameId: ID!
   gameName: String!
   gameType: String!
-  gameDescription: String!
+  gameDescription: String
   characterName: String!
   type: String!
   createdAt: AWSDateTime!
@@ -269,4 +270,5 @@ type UserSettings @aws_cognito_user_pools {
 
 input UpdateUserSettingsInput {
   settings: AWSJSON!
+  language: String!
 }

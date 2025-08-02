@@ -37,6 +37,11 @@ export type CreateGameInput = {
   name: Scalars['String']['input'];
 };
 
+export type CreateNpcInput = {
+  characterName: Scalars['String']['input'];
+  gameId: Scalars['ID']['input'];
+};
+
 export type CreateSectionInput = {
   content?: InputMaybe<Scalars['AWSJSON']['input']>;
   gameId: Scalars['ID']['input'];
@@ -44,11 +49,6 @@ export type CreateSectionInput = {
   sectionName: Scalars['String']['input'];
   sectionType: Scalars['String']['input'];
   userId?: InputMaybe<Scalars['ID']['input']>;
-};
-
-export type CreateShipInput = {
-  characterName: Scalars['String']['input'];
-  gameId: Scalars['ID']['input'];
 };
 
 export type DeleteGameInput = {
@@ -142,6 +142,7 @@ export type GetCharacterTemplatesInput = {
 
 export type GetGameInput = {
   gameId: Scalars['ID']['input'];
+  language: Scalars['String']['input'];
 };
 
 export type GetGameTypesInput = {
@@ -156,8 +157,8 @@ export type JoinGameInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createGame: GameSummary;
+  createNPC: PlayerSheetSummary;
   createSection: SheetSection;
-  createShip: PlayerSheetSummary;
   deleteGame: GameSummary;
   deletePlayer?: Maybe<PlayerSheetSummary>;
   deleteSection: SheetSection;
@@ -176,13 +177,13 @@ export type MutationCreateGameArgs = {
 };
 
 
-export type MutationCreateSectionArgs = {
-  input: CreateSectionInput;
+export type MutationCreateNpcArgs = {
+  input: CreateNpcInput;
 };
 
 
-export type MutationCreateShipArgs = {
-  input: CreateShipInput;
+export type MutationCreateSectionArgs = {
+  input: CreateSectionInput;
 };
 
 
@@ -252,7 +253,7 @@ export type PlayerSheetSummary = {
   characterName: Scalars['String']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
   deleted?: Maybe<Scalars['Boolean']['output']>;
-  gameDescription: Scalars['String']['output'];
+  gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
@@ -283,7 +284,7 @@ export type QueryGetCharacterTemplatesArgs = {
 
 
 export type QueryGetGameArgs = {
-  input?: InputMaybe<GetGameInput>;
+  input: GetGameInput;
 };
 
 
@@ -384,6 +385,7 @@ export type UpdateSectionInput = {
 };
 
 export type UpdateUserSettingsInput = {
+  language: Scalars['String']['input'];
   settings: Scalars['AWSJSON']['input'];
 };
 

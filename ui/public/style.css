@@ -1091,7 +1091,7 @@ body {
 }
 
 
-.create-ship-modal {
+.create-npc-modal {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -1104,12 +1104,12 @@ body {
   width: 90%;
 }
 
-.create-ship-modal h2 {
+.create-npc-modal h2 {
   margin-top: 0;
   margin-bottom: 20px;
 }
 
-.create-ship-modal input {
+.create-npc-modal input {
   width: 90%;
   padding: 10px;
   margin-bottom: 20px;

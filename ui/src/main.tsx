@@ -242,7 +242,8 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
                 query: updateUserSettingsMutation,
                 variables: {
                     input: {
-                        settings: JSON.stringify(updatedSettings)
+                        settings: JSON.stringify(updatedSettings),
+                        language: newLanguage
                     }
                 }
             });
