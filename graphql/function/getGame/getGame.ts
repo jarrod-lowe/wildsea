@@ -24,6 +24,7 @@ import {
   TypeShip,
 } from "../../lib/constants/entityTypes";
 import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
+import { getTranslatedMessage } from "../../lib/i18n";
 
 export function request(
   context: Context<{ input: GetGameInput }>,
@@ -81,7 +82,7 @@ function validateResponse(context: ResponseContext): void {
   }
 
   if (!context.result?.items?.length) {
-    util.error("Game not found");
+    util.error(getTranslatedMessage("game.notFound"));
   }
 }
 
@@ -98,7 +99,7 @@ function buildPlayerSheets(items: Data[]): Record<string, PlayerSheet> {
     } else if (data.type === TypeSection) {
       addSectionToSheet(sheets, data as DataSheetSection);
     } else if (data.type != TypeGame) {
-      util.error("Unknown type: " + data.type);
+      util.error(getTranslatedMessage("game.unknownType", "en", data.type));
     }
   });
   return sheets;
@@ -111,7 +112,7 @@ function addSectionToSheet(
   const section = makeSheetSection(data);
   const sheet = sheets[section.userId];
   if (sheet === undefined) {
-    util.error("Sheet not found");
+    util.error(getTranslatedMessage("sheet.notFound"));
   }
   sheet.sections.push(section);
 }
@@ -119,7 +120,7 @@ function addSectionToSheet(
 function findAndBuildGame(items: Data[], sub: string): Game {
   const gameData = items.find((data) => data.type === TypeGame) as DataGame;
   if (!gameData) {
-    util.error("Game record not found");
+    util.error(getTranslatedMessage("gameRecord.notFound"));
   }
   return makeGameData(gameData, sub);
 }

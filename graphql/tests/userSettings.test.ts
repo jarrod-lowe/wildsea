@@ -273,7 +273,7 @@ describe("updateUserSettings", () => {
 
       // Act & Assert
       expect(() => updateUserSettingsRequest(mockContext)).toThrow(
-        "Settings exceed 1024 byte size limit",
+        "Settings exceed size limit: 2011 bytes",
       );
     });
 

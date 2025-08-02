@@ -23,6 +23,7 @@ const translations: TranslationsByLanguage = {
     "gameDefaults.missing": "Game defaults not found in stash",
     "game.unknownType": "Unknown type",
     "game.invalidType": "Invalid game type",
+    "settings.sizeExceeded": "Settings exceed size limit",
   },
   tlh: {
     // Klingon translations - these are placeholders and would need proper translation
@@ -36,6 +37,7 @@ const translations: TranslationsByLanguage = {
     "gameDefaults.missing": "nugh DIch nugh DIch polmeH DIch tu'lu'be'",
     "game.unknownType": "Sovbe'ghach Segh",
     "game.invalidType": "nugh DIch lo'taHbe'",
+    "settings.sizeExceeded": "nugh DIch nugh DIch lo'taHbe'",
   },
 };
 
