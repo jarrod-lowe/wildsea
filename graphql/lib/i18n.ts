@@ -59,9 +59,9 @@ export function getTranslatedMessage(
     message = translations[defaultLanguage]?.[messageKey];
   }
 
-  // Ultimate fallback - return the message key
+  // Ultimate fallback - return messageKey: value format
   if (!message) {
-    return messageKey;
+    return value ? messageKey + ": " + value : messageKey;
   }
 
   // Append value if provided (format: "message: value")
