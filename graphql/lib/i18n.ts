@@ -46,15 +46,13 @@ export function getTranslatedMessage(
   language: string = defaultLanguage,
 ): string {
   // Try to get the requested language
-  const languageTranslations = translations[language];
-  if (languageTranslations && languageTranslations[messageKey]) {
-    return languageTranslations[messageKey];
+  if (translations[language]?.[messageKey]) {
+    return translations[language][messageKey];
   }
 
   // Fall back to English
-  const defaultTranslations = translations[defaultLanguage];
-  if (defaultTranslations && defaultTranslations[messageKey]) {
-    return defaultTranslations[messageKey];
+  if (translations[defaultLanguage]?.[messageKey]) {
+    return translations[defaultLanguage][messageKey];
   }
 
   // Ultimate fallback - return the message key
