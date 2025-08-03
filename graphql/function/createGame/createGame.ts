@@ -55,6 +55,7 @@ export function request(
     type: TypeGame,
     theme: gameDefaults.theme,
     remainingCharacters: remainingCharacters,
+    remainingSections: gameDefaults.remainingSections,
   };
 
   const gameItem = {
@@ -88,6 +89,7 @@ export function request(
       createdAt: timestamp,
       updatedAt: timestamp,
       type: TypeFirefly,
+      remainingSections: gameDefaults.remainingSections,
     } as DataPlayerSheet) as PutItemInputAttributeMap,
   };
 
@@ -114,6 +116,7 @@ export function request(
         createdAt: timestamp,
         updatedAt: timestamp,
         type: npcConfig.type,
+        remainingSections: gameDefaults.remainingSections,
       } as DataPlayerSheet) as PutItemInputAttributeMap,
     };
 
@@ -143,5 +146,6 @@ export function response(context: Context): GameSummary | null {
     type: context.stash.record.type,
     theme: context.stash.record.theme,
     remainingCharacters: context.stash.record.remainingCharacters,
+    remainingSections: context.stash.record.remainingSections,
   };
 }

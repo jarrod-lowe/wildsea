@@ -23,6 +23,7 @@ export function request(context: Context<{ input: CreateNPCInput }>): unknown {
     createdAt: timestamp,
     updatedAt: timestamp,
     type: TypeNPC,
+    remainingSections: context.prev.result.remainingSections,
   } as DataPlayerSheet;
 
   const playerItem = {

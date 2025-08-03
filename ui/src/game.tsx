@@ -207,38 +207,53 @@ const useSectionUpdates = (
     setGame: (game: Game) => void,
     gameRef: React.MutableRefObject<Game | null>,
     isGameFetched: boolean,
+    actualLanguage: string,
   ) => {
   useEffect(() => {
     let unsubscribe: (() => void) | undefined = undefined;
 
     if (isGameFetched) {
       const subscribe = async () => {
-        unsubscribe = await subscribeToSectionUpdates(gameId, (updatedSection) => {
+        unsubscribe = await subscribeToSectionUpdates(gameId, async (updatedSection) => {
           const currentGame = gameRef.current;
           if (currentGame) {
+            // Check if section already exists
+            const existingSheet = currentGame.playerSheets.find(sheet => sheet.userId === updatedSection.userId);
+            const sectionExists = existingSheet?.sections.some(section => section.sectionId === updatedSection.sectionId);
+
+            // If this is a section creation or deletion, refetch game data to get updated remainingSections
+            if ((!sectionExists && !updatedSection.deleted) || (sectionExists && updatedSection.deleted)) {
+              try {
+                const client = generateClient();
+                const response = await client.graphql({
+                  query: getGameQuery,
+                  variables: { input: { gameId, language: actualLanguage } },
+                }) as GraphQLResult<{ getGame: Game }>;
+
+                if (response.data?.getGame) {
+                  setGame(response.data.getGame);
+                  gameRef.current = response.data.getGame;
+                }
+                return;
+              } catch (error) {
+                console.error("Error fetching updated game data after section change", error);
+                // Fall back to local update if refetch fails
+              }
+            }
+
+            // Handle section content updates (not creation/deletion)
             const updatedSheets = currentGame.playerSheets.map(sheet => {
               if (sheet.userId === updatedSection.userId) {
-                // Check if section already exists
-                const sectionExists = sheet.sections.some(section => section.sectionId === updatedSection.sectionId);
-
                 let updatedSections = [...sheet.sections];
 
                 if (sectionExists) {
-                  // Update or mark as deleted
+                  // Update existing section
                   updatedSections = updatedSections.map(section => {
                     if (section.sectionId === updatedSection.sectionId) {
-                      return updatedSection.deleted
-                        ? { ...updatedSection, deleted: true }
-                        : updatedSection;
+                      return updatedSection;
                     }
                     return section;
                   });
-
-                  // Remove deleted sections
-                  updatedSections = updatedSections.filter(section => !section.deleted);
-                } else {
-                  // Add new section
-                  updatedSections.push(updatedSection);
                 }
 
                 // Sort sections by position
@@ -266,7 +281,7 @@ const useSectionUpdates = (
         unsubscribe();
       }
     };
-  }, [gameId, setGame, gameRef, isGameFetched]);
+  }, [gameId, setGame, gameRef, isGameFetched, actualLanguage]);
 };
 
 const useGameUpdates = (
@@ -379,7 +394,7 @@ const GameContent: React.FC<{
   }, [id]);
 
   usePlayerSheetUpdates(id, setGame, gameRef, userSubject, setActiveSheet, isGameFetched, actualLanguage);
-  useSectionUpdates(id, setGame, gameRef, isGameFetched);
+  useSectionUpdates(id, setGame, gameRef, isGameFetched, actualLanguage);
   useGameUpdates(id, setGame, gameRef, isGameFetched);
 
   if (forceBackToList) {

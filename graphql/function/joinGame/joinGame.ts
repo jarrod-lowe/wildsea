@@ -67,6 +67,7 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     type: TypeCharacter,
     createdAt: timestamp,
     updatedAt: timestamp,
+    remainingSections: context.prev.result.remainingSections,
   } as DataPlayerSheet;
   const playerItem = {
     operation: "PutItem",

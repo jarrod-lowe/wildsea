@@ -78,6 +78,7 @@ export const messagesEnglish = {
     'joinCodeModal.copyError': 'Failed to copy to clipboard',
     'joinCodeModal.refreshError': 'Failed to generate new join URL',
     'characterQuota.available': '{count, plural, =0 {This game has no character slots available.} =1 {This game has 1 character slot available.} other {This game has # character slots available.}}',
+    'sectionQuota.available': '{count, plural, =0 {This character has no section slots available.} =1 {This character has 1 section slot available.} other {This character has # section slots available.}}',
 
     'deleteGameModal.deleteGame': '🗑 Delete Game',
     'deleteGameModal.confirmation': 'Are you sure you want to delete this game?',
