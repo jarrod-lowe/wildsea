@@ -160,10 +160,11 @@ When a game is deleted, the system cleans up all related data automatically.
 ### Background process
 
 The cleanup happens automatically using:
-- DynamoDB streams detect the game deletion
-- Step Function finds all characters in that game  
-- Each character gets deleted (including all their character sheet sections)
-- Takes a few seconds to complete
+
+* DynamoDB streams detect the game deletion
+* Step Function finds all characters in that game  
+* Each character gets deleted (including all their character sheet sections)
+* Takes a few seconds to complete
 
 ### If something goes wrong
 
