@@ -152,6 +152,8 @@ describe("permitted", () => {
     type: "GAME",
     fireflyUserId: "firefly-sub",
     players: [],
+    remainingCharacters: 20,
+    remainingSections: 50,
   };
 
   it("should return false if data is null", () => {

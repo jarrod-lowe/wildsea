@@ -29,14 +29,26 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
       SK: DDBPrefixGame,
     }),
     update: {
-      expression: "ADD #players :player SET #updatedAt = :updatedAt",
+      expression:
+        "ADD #players :player SET #updatedAt = :updatedAt, #remainingCharacters = #remainingCharacters - :one",
       expressionNames: {
         "#players": "players",
         "#updatedAt": "updatedAt",
+        "#remainingCharacters": "remainingCharacters",
       },
       expressionValues: {
         ":player": { SS: [identity.sub] },
         ":updatedAt": { S: timestamp },
+        ":one": { N: "1" },
+      },
+    },
+    condition: {
+      expression: "#remainingCharacters > :zero",
+      expressionNames: {
+        "#remainingCharacters": "remainingCharacters",
+      },
+      expressionValues: {
+        ":zero": { N: "0" },
       },
     },
   } as PutItemInputAttributeMap;
@@ -55,6 +67,7 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     type: TypeCharacter,
     createdAt: timestamp,
     updatedAt: timestamp,
+    remainingSections: context.prev.result.remainingSections,
   } as DataPlayerSheet;
   const playerItem = {
     operation: "PutItem",

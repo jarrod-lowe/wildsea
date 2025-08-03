@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateNPCInput } from "../../appsync/graphql";
+import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateNpcInput } from "../../appsync/graphql";
 import { createSectionMutation, createNPCMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { SupportedLanguage, resolveLanguage } from './translations';
@@ -150,7 +150,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
   const handleCreateNPC = async (npcName: string) => {
     try {
-      const input: CreateNPCInput = {
+      const input: CreateNpcInput = {
         gameId: game.gameId,
         characterName: npcName,
       };
@@ -279,7 +279,11 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
       {mayEditSheet && !showNewSection && (
         <>
-          <button onClick={() => setShowNewSection(true)} className="btn-standard btn-small">
+          <button 
+            onClick={() => setShowNewSection(true)} 
+            className="btn-standard btn-small"
+            disabled={sheet.remainingSections <= 0}
+          >
             <FormattedMessage id="playerSheetTab.addSection" />
           </button>
           <button onClick={() => setShowDeleteSectionModal(true)} className="btn-danger btn-small">
@@ -290,27 +294,35 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
       {mayEditSheet && showNewSection && (
         <div className="new-section">
-          <input
-            id="new-section-name"
-            name="newSectionName"
-            type="text"
-            value={newSectionName}
-            onChange={(e) => setNewSectionName(e.target.value)}
-            placeholder={intl.formatMessage({ id: "sectionName" })}
-          />
-          <select value={newSectionType} onChange={(e) => setNewSectionType(e.target.value)}>
-            {sectionTypes.map(({ type, label }) => (
-              <option key={type} value={type}>
-                {intl.formatMessage({ id: label })}
-              </option>
-            ))}
-          </select>
-          <button onClick={handleCreateSection} className="btn-standard btn-small">
-            <FormattedMessage id="create" />
-          </button>
-          <button onClick={handleCancelCreateSection} className="btn-secondary btn-small">
-            <FormattedMessage id="cancel" />
-          </button>
+          <div className="new-section-quota">
+            <FormattedMessage 
+              id="sectionQuota.available" 
+              values={{ count: sheet.remainingSections }} 
+            />
+          </div>
+          <div className="new-section-form">
+            <input
+              id="new-section-name"
+              name="newSectionName"
+              type="text"
+              value={newSectionName}
+              onChange={(e) => setNewSectionName(e.target.value)}
+              placeholder={intl.formatMessage({ id: "sectionName" })}
+            />
+            <select value={newSectionType} onChange={(e) => setNewSectionType(e.target.value)}>
+              {sectionTypes.map(({ type, label }) => (
+                <option key={type} value={type}>
+                  {intl.formatMessage({ id: label })}
+                </option>
+              ))}
+            </select>
+            <button onClick={handleCreateSection} className="btn-standard btn-small">
+              <FormattedMessage id="create" />
+            </button>
+            <button onClick={handleCancelCreateSection} className="btn-secondary btn-small">
+              <FormattedMessage id="cancel" />
+            </button>
+          </div>
         </div>
       )}
 
@@ -322,7 +334,11 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
       />
 
       {sheet.type === TypeFirefly && (
-        <button onClick={() => setShowCreateNPCModal(true)} className="btn-standard btn-small">
+        <button 
+          onClick={() => setShowCreateNPCModal(true)} 
+          className="btn-standard btn-small"
+          disabled={game.remainingCharacters <= 0}
+        >
           <FormattedMessage id="createShipModal.buttonLabel" />
         </button>
       )}
@@ -358,6 +374,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         isOpen={showCreateNPCModal}
         onRequestClose={() => setShowCreateNPCModal(false)}
         onConfirm={handleCreateNPC}
+        game={game}
       />
     </div>
   );
@@ -526,7 +543,8 @@ const CreateNPCModal: React.FC<{
   isOpen: boolean;
   onRequestClose: () => void;
   onConfirm: (npcName: string) => void;
-}> = ({ isOpen, onRequestClose, onConfirm }) => {
+  game: Game;
+}> = ({ isOpen, onRequestClose, onConfirm, game }) => {
   const [npcName, setNPCName] = useState('');
   const intl = useIntl();
 
@@ -545,6 +563,12 @@ const CreateNPCModal: React.FC<{
       overlayClassName="modal-overlay"
     >
       <h2><FormattedMessage id="createShipModal.title" /></h2>
+      <p>
+        <FormattedMessage 
+          id="characterQuota.available" 
+          values={{ count: game.remainingCharacters }} 
+        />
+      </p>
       <input
         id="npc-name"
         name="npcName"
@@ -559,7 +583,7 @@ const CreateNPCModal: React.FC<{
         </button>
         <button
           onClick={handleConfirm}
-          disabled={!npcName.trim()}
+          disabled={!npcName.trim() || game.remainingCharacters <= 0}
           className="btn-standard btn-small"
         >
           <FormattedMessage id="create" />

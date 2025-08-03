@@ -3,7 +3,7 @@
       export const getGameQuery = `
         query getGame($input: GetGameInput!) {
           getGame(input: $input) {
-            gameId gameName gameType gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId } joinCode fireflyUserId createdAt updatedAt type deleted theme
+            gameId gameName gameType gameDescription playerSheets { userId gameId characterName sections { userId gameId sectionId type sectionName sectionType content position createdAt updatedAt deleted } type createdAt updatedAt fireflyUserId remainingSections } joinCode fireflyUserId createdAt updatedAt type deleted theme remainingCharacters remainingSections
           }
         }
       `;
@@ -11,7 +11,7 @@
       export const getGamesQuery = `
         query getGames {
           getGames {
-            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted
+            games { userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted remainingSections } remainingGames totalQuota
           }
         }
       `;
@@ -53,7 +53,7 @@
       export const createGameMutation = `
         mutation createGame($input: CreateGameInput!) {
           createGame(input: $input) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme remainingCharacters remainingSections
           }
         }
       `;
@@ -61,7 +61,7 @@
       export const joinGameMutation = `
         mutation joinGame($input: JoinGameInput!) {
           joinGame(input: $input) {
-            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted
+            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted remainingSections
           }
         }
       `;
@@ -69,7 +69,7 @@
       export const updateGameMutation = `
         mutation updateGame($input: UpdateGameInput!) {
           updateGame(input: $input) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme remainingCharacters remainingSections
           }
         }
       `;
@@ -77,7 +77,7 @@
       export const deleteGameMutation = `
         mutation deleteGame($input: DeleteGameInput!) {
           deleteGame(input: $input) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme remainingCharacters remainingSections
           }
         }
       `;
@@ -85,7 +85,7 @@
       export const updateJoinCodeMutation = `
         mutation updateJoinCode($input: UpdateJoinCodeInput!) {
           updateJoinCode(input: $input) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme remainingCharacters remainingSections
           }
         }
       `;
@@ -117,7 +117,7 @@
       export const updatePlayerMutation = `
         mutation updatePlayer($input: UpdatePlayerInput!) {
           updatePlayer(input: $input) {
-            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted
+            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted remainingSections
           }
         }
       `;
@@ -125,7 +125,7 @@
       export const deletePlayerMutation = `
         mutation deletePlayer($input: DeletePlayerInput!) {
           deletePlayer(input: $input) {
-            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted
+            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted remainingSections
           }
         }
       `;
@@ -133,7 +133,7 @@
       export const createNPCMutation = `
         mutation createNPC($input: CreateNPCInput!) {
           createNPC(input: $input) {
-            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted
+            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted remainingSections
           }
         }
       `;
@@ -159,7 +159,7 @@
       export const updatedPlayerSubscription = `
         subscription updatedPlayer($gameId: ID!) {
           updatedPlayer(gameId: $gameId) {
-            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted
+            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted remainingSections
           }
         }
       `;
@@ -175,7 +175,7 @@
       export const updatedGameSubscription = `
         subscription updatedGame($gameId: ID!) {
           updatedGame(gameId: $gameId) {
-            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme
+            gameId gameName gameType gameDescription joinCode fireflyUserId createdAt updatedAt type deleted theme remainingCharacters remainingSections
           }
         }
       `;

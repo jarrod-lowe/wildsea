@@ -168,9 +168,10 @@ body {
 
 .newgame {
     height: fit-content;
-    max-height: 600px;
+    max-height: 700px;
     position: sticky;
     top: var(--space-lg);
+    overflow: visible;
 }
 
 /* Games Menu Typography */
@@ -365,6 +366,32 @@ body {
 .newgame .form-field .w-md-editor-text-input::placeholder {
     color: var(--color-text-muted);
     -webkit-text-fill-color: var(--color-text-muted);
+}
+
+/* Quota exceeded message styling */
+.quota-exceeded-message {
+    background-color: var(--color-surface-light);
+    border: 1px solid var(--color-error);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-top: var(--space-md);
+    color: var(--color-text);
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Game quota display styling */
+.game-quota {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+.quota-warning {
+    color: var(--color-text);
+    font-weight: 600;
 }
 
 .error-container {
@@ -651,6 +678,12 @@ body {
   padding: 10px;
   border: 1px solid var(--color-border);
   border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.new-section-form {
   display: flex;
   align-items: center;
   gap: 10px;

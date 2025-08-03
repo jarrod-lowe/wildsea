@@ -55,5 +55,8 @@ export function response(context: Context): GameSummary {
     updatedAt: util.time.nowISO8601(),
     type: TypeGame,
     deleted: true,
+    theme: context.result.theme || "default",
+    remainingCharacters: 0, // Game is deleted, no remaining characters
+    remainingSections: 0, // Game is deleted, no remaining sections
   };
 }

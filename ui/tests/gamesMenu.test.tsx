@@ -3,7 +3,7 @@ import { IntlProvider } from 'react-intl';
 import { GamesMenu } from '../src/gamesMenu';
 import { generateClient } from "aws-amplify/api";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { PlayerSheetSummary } from "../../appsync/graphql";
+import { PlayerSheetSummary, GamesWithQuota } from "../../appsync/graphql";
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { messages } from '../src/translations';
 
@@ -45,7 +45,7 @@ describe('GamesMenu', () => {
   it('renders without crashing', async () => {
     // Mock both GraphQL calls
     mockGraphql
-      .mockResolvedValueOnce({ data: { getGames: [] } })
+      .mockResolvedValueOnce({ data: { getGames: { games: [], remainingGames: 10, totalQuota: 10 } } })
       .mockResolvedValueOnce({ data: { getGameTypes: [] } });
 
     await act(async () => {
@@ -66,7 +66,8 @@ describe('GamesMenu', () => {
         userId: "user1",
         createdAt: '2023-01-01T00:00:00Z',
         updatedAt: '2023-01-01T00:00:00Z',
-        type: 'GAME'
+        type: 'GAME',
+        remainingSections: 50
       },
       { 
         gameId: '2', 
@@ -77,12 +78,19 @@ describe('GamesMenu', () => {
         userId: "user1",
         createdAt: '2023-01-02T00:00:00Z',
         updatedAt: '2023-01-02T00:00:00Z',
-        type: 'GAME'
+        type: 'GAME',
+        remainingSections: 50
       },
     ];
 
+    const mockGamesWithQuota: GamesWithQuota = {
+      games: mockGames,
+      remainingGames: 8,
+      totalQuota: 10
+    };
+
     mockGraphql
-      .mockResolvedValueOnce({ data: { getGames: mockGames } } as GraphQLResult<{ getGames: PlayerSheetSummary[] }>)
+      .mockResolvedValueOnce({ data: { getGames: mockGamesWithQuota } } as GraphQLResult<{ getGames: GamesWithQuota }>)
       .mockResolvedValueOnce({ data: { getGameTypes: [] } });
 
     await act(async () => {
@@ -117,7 +125,7 @@ describe('GamesMenu', () => {
   it('displays error message when creating game fails', async () => {
     // Mock successful getGames and getGameTypes calls, then failed createGame call
     mockGraphql
-      .mockResolvedValueOnce({ data: { getGames: [] } })
+      .mockResolvedValueOnce({ data: { getGames: { games: [], remainingGames: 10, totalQuota: 10 } } })
       .mockResolvedValueOnce({ data: { getGameTypes: [{ gameType: 'wildsea', displayName: 'Wildsea', language: 'en' }] } })
       .mockRejectedValueOnce(new Error('Create error'));
 

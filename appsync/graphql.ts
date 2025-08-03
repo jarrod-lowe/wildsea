@@ -102,6 +102,8 @@ export type Game = {
   gameType: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
+  remainingCharacters: Scalars['Int']['output'];
+  remainingSections: Scalars['Int']['output'];
   theme?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
@@ -117,6 +119,8 @@ export type GameSummary = {
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
+  remainingCharacters: Scalars['Int']['output'];
+  remainingSections: Scalars['Int']['output'];
   theme?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
@@ -127,6 +131,13 @@ export type GameTypeMetadata = {
   displayName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
   language: Scalars['String']['output'];
+};
+
+export type GamesWithQuota = {
+  __typename?: 'GamesWithQuota';
+  games: Array<PlayerSheetSummary>;
+  remainingGames: Scalars['Int']['output'];
+  totalQuota: Scalars['Int']['output'];
 };
 
 export type GetCharacterTemplateInput = {
@@ -242,6 +253,7 @@ export type PlayerSheet = {
   createdAt: Scalars['AWSDateTime']['output'];
   fireflyUserId: Scalars['ID']['output'];
   gameId: Scalars['ID']['output'];
+  remainingSections: Scalars['Int']['output'];
   sections: Array<SheetSection>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
@@ -257,6 +269,7 @@ export type PlayerSheetSummary = {
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
+  remainingSections: Scalars['Int']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
   userId: Scalars['ID']['output'];
@@ -268,7 +281,7 @@ export type Query = {
   getCharacterTemplates: Array<CharacterTemplateMetadata>;
   getGame: Game;
   getGameTypes: Array<GameTypeMetadata>;
-  getGames?: Maybe<Array<PlayerSheetSummary>>;
+  getGames: GamesWithQuota;
   getUserSettings?: Maybe<UserSettings>;
 };
 

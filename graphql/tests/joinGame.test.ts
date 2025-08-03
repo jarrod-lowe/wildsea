@@ -139,6 +139,7 @@ describe("fnJoinGame request function", () => {
           gameType: "wildsea",
           gameDescription: "Test Description",
           fireflyUserId: "firefly",
+          remainingSections: 50,
         },
       },
       request: {
@@ -165,14 +166,26 @@ describe("fnJoinGame request function", () => {
             SK: { S: "GAME" },
           },
           update: {
-            expression: "ADD #players :player SET #updatedAt = :updatedAt",
+            expression:
+              "ADD #players :player SET #updatedAt = :updatedAt, #remainingCharacters = #remainingCharacters - :one",
             expressionNames: {
               "#players": "players",
               "#updatedAt": "updatedAt",
+              "#remainingCharacters": "remainingCharacters",
             },
             expressionValues: {
               ":player": { SS: ["user123"] },
               ":updatedAt": { S: mockTimestamp },
+              ":one": { N: "1" },
+            },
+          },
+          condition: {
+            expression: "#remainingCharacters > :zero",
+            expressionNames: {
+              "#remainingCharacters": "remainingCharacters",
+            },
+            expressionValues: {
+              ":zero": { N: "0" },
             },
           },
         },
@@ -195,6 +208,7 @@ describe("fnJoinGame request function", () => {
             type: { S: "CHARACTER" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
+            remainingSections: { N: "50" },
           },
         },
       ],

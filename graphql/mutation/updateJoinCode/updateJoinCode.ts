@@ -69,5 +69,7 @@ export function response(
     createdAt: result.createdAt,
     updatedAt: result.updatedAt,
     type: result.type,
+    theme: result.theme,
+    remainingCharacters: result.remainingCharacters,
   };
 }

@@ -43,7 +43,7 @@ async function fetchWithBackoff<T>(
 }
 
 // Helper function to handle player deletion
-const handlePlayerDeletion = (
+const handlePlayerDeletion = async (
   updatedSheetSummary: PlayerSheetSummary,
   currentGame: Game,
   userSubject: string,
@@ -51,18 +51,42 @@ const handlePlayerDeletion = (
   gameRef: React.MutableRefObject<Game | null>,
   setActiveSheet: React.Dispatch<React.SetStateAction<string | null>>,
   toast: any,
-  intl: IntlShape
+  intl: IntlShape,
+  gameId: string,
+  language: string
 ) => {
-  const updatedSheets = currentGame.playerSheets.filter(sheet => sheet.userId !== updatedSheetSummary.userId);
-  const updatedGame = { ...currentGame, playerSheets: updatedSheets };
-  setGame(updatedGame);
-  gameRef.current = updatedGame;
-
   if (updatedSheetSummary.userId === userSubject) {
     const currentUrl = new URL(window.location.href);
     const newUrl = `${window.location.origin}${currentUrl.pathname}`;
     window.location.href = newUrl;
-  } else {
+    return;
+  }
+
+  // Refetch complete game data to get updated remainingCharacters
+  try {
+    const client = generateClient();
+    const response = await client.graphql({
+      query: getGameQuery,
+      variables: { input: { gameId, language } },
+    }) as GraphQLResult<{ getGame: Game }>;
+
+    if (response.data?.getGame) {
+      setGame(response.data.getGame);
+      gameRef.current = response.data.getGame;
+      
+      // Update active sheet if needed
+      setActiveSheet(prevActiveSheet => 
+        prevActiveSheet === updatedSheetSummary.userId ? userSubject : prevActiveSheet
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching updated game data after player deletion", error);
+    // Fallback to local state update if refetch fails
+    const updatedSheets = currentGame.playerSheets.filter(sheet => sheet.userId !== updatedSheetSummary.userId);
+    const updatedGame = { ...currentGame, playerSheets: updatedSheets };
+    setGame(updatedGame);
+    gameRef.current = updatedGame;
+    
     setActiveSheet(prevActiveSheet => 
       prevActiveSheet === updatedSheetSummary.userId ? userSubject : prevActiveSheet
     );
@@ -145,9 +169,9 @@ const usePlayerSheetUpdates = (
           if (!currentGame) return;
 
           if (updatedSheetSummary.deleted) {
-            handlePlayerDeletion(
+            await handlePlayerDeletion(
               updatedSheetSummary, currentGame, userSubject, setGame, 
-              gameRef, setActiveSheet, toast, intl
+              gameRef, setActiveSheet, toast, intl, gameId, actualLanguage
             );
             return;
           }
@@ -183,38 +207,53 @@ const useSectionUpdates = (
     setGame: (game: Game) => void,
     gameRef: React.MutableRefObject<Game | null>,
     isGameFetched: boolean,
+    actualLanguage: string,
   ) => {
   useEffect(() => {
     let unsubscribe: (() => void) | undefined = undefined;
 
     if (isGameFetched) {
       const subscribe = async () => {
-        unsubscribe = await subscribeToSectionUpdates(gameId, (updatedSection) => {
+        unsubscribe = await subscribeToSectionUpdates(gameId, async (updatedSection) => {
           const currentGame = gameRef.current;
           if (currentGame) {
+            // Check if section already exists
+            const existingSheet = currentGame.playerSheets.find(sheet => sheet.userId === updatedSection.userId);
+            const sectionExists = existingSheet?.sections.some(section => section.sectionId === updatedSection.sectionId);
+
+            // If this is a section creation or deletion, refetch game data to get updated remainingSections
+            if ((!sectionExists && !updatedSection.deleted) || (sectionExists && updatedSection.deleted)) {
+              try {
+                const client = generateClient();
+                const response = await client.graphql({
+                  query: getGameQuery,
+                  variables: { input: { gameId, language: actualLanguage } },
+                }) as GraphQLResult<{ getGame: Game }>;
+
+                if (response.data?.getGame) {
+                  setGame(response.data.getGame);
+                  gameRef.current = response.data.getGame;
+                }
+                return;
+              } catch (error) {
+                console.error("Error fetching updated game data after section change", error);
+                // Fall back to local update if refetch fails
+              }
+            }
+
+            // Handle section content updates (not creation/deletion)
             const updatedSheets = currentGame.playerSheets.map(sheet => {
               if (sheet.userId === updatedSection.userId) {
-                // Check if section already exists
-                const sectionExists = sheet.sections.some(section => section.sectionId === updatedSection.sectionId);
-
                 let updatedSections = [...sheet.sections];
 
                 if (sectionExists) {
-                  // Update or mark as deleted
+                  // Update existing section
                   updatedSections = updatedSections.map(section => {
                     if (section.sectionId === updatedSection.sectionId) {
-                      return updatedSection.deleted
-                        ? { ...updatedSection, deleted: true }
-                        : updatedSection;
+                      return updatedSection;
                     }
                     return section;
                   });
-
-                  // Remove deleted sections
-                  updatedSections = updatedSections.filter(section => !section.deleted);
-                } else {
-                  // Add new section
-                  updatedSections.push(updatedSection);
                 }
 
                 // Sort sections by position
@@ -242,7 +281,7 @@ const useSectionUpdates = (
         unsubscribe();
       }
     };
-  }, [gameId, setGame, gameRef, isGameFetched]);
+  }, [gameId, setGame, gameRef, isGameFetched, actualLanguage]);
 };
 
 const useGameUpdates = (
@@ -269,6 +308,7 @@ const useGameUpdates = (
               gameName: updatedGame.gameName,
               gameDescription: updatedGame.gameDescription,
               joinCode: updatedGame.joinCode ?? currentGame.joinCode,
+              remainingCharacters: updatedGame.remainingCharacters,
             }
             setGame(updatedGameData);
             gameRef.current = updatedGameData;
@@ -354,7 +394,7 @@ const GameContent: React.FC<{
   }, [id]);
 
   usePlayerSheetUpdates(id, setGame, gameRef, userSubject, setActiveSheet, isGameFetched, actualLanguage);
-  useSectionUpdates(id, setGame, gameRef, isGameFetched);
+  useSectionUpdates(id, setGame, gameRef, isGameFetched, actualLanguage);
   useGameUpdates(id, setGame, gameRef, isGameFetched);
 
   if (forceBackToList) {

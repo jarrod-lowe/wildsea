@@ -158,6 +158,8 @@ export function makeGameData(data: DataGame, sub: string): Game {
     updatedAt: data.updatedAt,
     type: data.type,
     theme: data.theme,
+    remainingCharacters: data.remainingCharacters,
+    remainingSections: data.remainingSections,
   };
 }
 
@@ -171,6 +173,7 @@ export function makeCharacterSheetData(data: DataPlayerSheet): PlayerSheet {
     type: data.type,
     sections: [],
     fireflyUserId: data.fireflyUserId,
+    remainingSections: data.remainingSections,
   };
 }
 

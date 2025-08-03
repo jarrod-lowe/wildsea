@@ -145,3 +145,40 @@ Development environments will not use Jumpcloud, but instead use Cognito.
 You can run the UI without pushing to the S3 bucket by running
 `AWS_PROFILE=<profile> make ui-local`. This may still perform a terraform
 apply.
+
+## Game Deletion
+
+When a game is deleted, the system cleans up all related data automatically.
+
+### What happens
+
+1. **User deletes game** - Only the game owner can do this
+2. **Main game record deleted** - Game disappears immediately
+3. **Background cleanup starts** - All player characters and sections get deleted automatically
+4. **Users get notified** - Anyone in the game gets redirected to the main page
+
+### Background process
+
+The cleanup happens automatically using:
+
+* DynamoDB streams detect the game deletion
+* Step Function finds all characters in that game  
+* Each character gets deleted (including all their character sheet sections)
+* Takes a few seconds to complete
+
+### If something goes wrong
+
+Check for leftover records:
+
+```bash
+AWS_PROFILE=wildsea aws dynamodb query \
+  --table-name Wildsea-dev \
+  --key-condition-expression "PK = :pk" \
+  --expression-attribute-values '{":pk":{"S":"GAME#<gameId>"}}'
+```
+
+Should return empty results. If not, those are orphaned records that didn't get cleaned up.
+
+### Character quotas
+
+Deleted games don't affect quotas for other games. Each game starts fresh with 20 character slots.

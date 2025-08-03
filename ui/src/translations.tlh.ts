@@ -77,6 +77,11 @@ export const messagesKlingon = {
     'joinCodeModal.codeRefreshed': 'DIch DIch URL chenmoH',
     'joinCodeModal.copyError': 'clipboard DIch DIch',
     'joinCodeModal.refreshError': 'DIch DIch URL chenmoH DIch',
+    'characterQuota.available': '{count, plural, =0 {jup DIch pagh DIch DIch.} =1 {jup DIch wa\' DIch DIch.} other {jup DIch # DIch DIch.}}',
+    'sectionQuota.available': '{count, plural, =0 {jup DIch pagh nugh DIch.} =1 {jup DIch wa\' nugh DIch.} other {jup DIch # nugh DIch.}}',
+    'gameQuota.exceeded': 'DIlo\' law\' DIch naQ Danaw\'pu\' ({totalQuota}). DIlo\' nugh DIch chenmoH pagh DIlo\' nughDaj laDlu\'meH, DIlo\' nugh DIch nargh!',
+    'gameQuota.remaining': 'DIlo\' nugh: {current}/{totalQuota}',
+    'gameQuota.warning': 'DIlo\' nugh DIch naQ DIchDaj DIch naDev ({remaining} DIch).',
 
     'deleteGameModal.deleteGame': '🗑 DIch Dub DIch',
     'deleteGameModal.confirmation': 'DIch Dub DIch DIch\'e\' DIch\'a\'?',
