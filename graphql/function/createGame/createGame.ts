@@ -2,20 +2,23 @@ import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
 import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
 import { GameSummary, CreateGameInput } from "../../../appsync/graphql";
+import type { GameDefaults } from "../../lib/dataTypes";
 import { TypeFirefly, TypeGame } from "../../lib/constants/entityTypes";
 import {
   DDBPrefixGame,
   DDBPrefixPlayer,
   DDBPrefixJoin,
+  DDBPrefixUser,
 } from "../../lib/constants/dbPrefixes";
-import {
-  GameTypeConfig,
-  DefaultGameConfig,
-} from "../../lib/constants/gameTypes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 import { generateJoinCode } from "../../lib/joinCode";
+import { getTranslatedMessage } from "../../lib/i18n";
 
-export function request(context: Context<{ input: CreateGameInput }>): unknown {
+export function request(
+  context: Context<{ input: CreateGameInput }> & {
+    stash: { gameDefaults?: GameDefaults };
+  },
+): unknown {
   if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
@@ -25,7 +28,13 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
   const joinCode = generateJoinCode();
   const timestamp = util.time.nowISO8601();
 
-  const config = GameTypeConfig[input.gameType] || DefaultGameConfig;
+  const gameDefaults = context.stash.gameDefaults;
+  if (!gameDefaults) {
+    util.error(
+      getTranslatedMessage("gameDefaults.missing", input.language),
+      "MissingGameDefaults",
+    );
+  }
 
   context.stash.record = {
     gameName: input.name,
@@ -39,6 +48,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
     createdAt: timestamp,
     updatedAt: timestamp,
     type: TypeGame,
+    theme: gameDefaults.theme,
   };
 
   const gameItem = {
@@ -66,8 +76,8 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
       gameName: input.name,
       gameType: input.gameType,
       gameDescription: input.description,
-      characterName: config.fireflyCharacterName,
-      GSI1PK: "USER#" + identity.sub,
+      characterName: gameDefaults?.defaultGMName || "Error: No GM Name",
+      GSI1PK: DDBPrefixUser + "#" + identity.sub,
       fireflyUserId: identity.sub,
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -78,7 +88,7 @@ export function request(context: Context<{ input: CreateGameInput }>): unknown {
   const transactItems = [gameItem, fireflyItem];
 
   // Create all configured default NPCs for this game type
-  config.defaultNPCs.forEach((npcConfig) => {
+  gameDefaults?.defaultNPCs.forEach((npcConfig) => {
     const npcId = util.autoId();
     const npcItem = {
       key: util.dynamodb.toMapValues({
@@ -125,5 +135,6 @@ export function response(context: Context): GameSummary | null {
     createdAt: context.stash.record.createdAt,
     updatedAt: context.stash.record.updatedAt,
     type: context.stash.record.type,
+    theme: context.stash.record.theme,
   };
 }

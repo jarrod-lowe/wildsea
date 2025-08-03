@@ -117,7 +117,7 @@ export function getJoinCode(): string | null {
     return null;
 }
 
-async function joinGame(joinCode: string) {
+async function joinGame(joinCode: string, language: string) {
     const client = generateClient();
     try {
         const response = await client.graphql({
@@ -125,6 +125,7 @@ async function joinGame(joinCode: string) {
             variables: {
                 input: {
                     joinCode: joinCode,
+                    language: language,
                 }
             }
         }) as GraphQLResult<{ joinGame: PlayerSheetSummary }>;
@@ -241,7 +242,8 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
                 query: updateUserSettingsMutation,
                 variables: {
                     input: {
-                        settings: JSON.stringify(updatedSettings)
+                        settings: JSON.stringify(updatedSettings),
+                        language: newLanguage
                     }
                 }
             });
@@ -254,7 +256,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
         }
     };
 
-    const fetchUserSettings = async () => {
+    const fetchUserSettings = async (): Promise<UserSettings | null> => {
         try {
             const client = generateClient();
             const response = await client.graphql({
@@ -263,13 +265,15 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
             
             if (response.errors) {
                 console.error('Error fetching user settings:', response.errors);
-                return;
+                return null;
             }
             
             const settings = response.data?.getUserSettings || null;
             updateLanguageFromSettings(settings);
+            return settings;
         } catch (error) {
             console.error('Error fetching user settings:', error);
+            return null;
         }
     };
 
@@ -281,9 +285,38 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
                 const email = await getUserEmail();
                 setUserEmail(email);
                 
-                // Fetch user settings after successful auth
+                // Fetch user settings after successful auth and get language
+                let userSettings: UserSettings | null = null;
                 if (email) {
-                    await fetchUserSettings();
+                    userSettings = await fetchUserSettings();
+                }
+                
+                // Handle join code after language is determined
+                const joinCode = getJoinCode();
+                if (joinCode) {
+                    // Determine the language to use - either from user settings or default to 'en'
+                    let languageToUse = 'en';
+                    if (userSettings?.settings) {
+                        try {
+                            const parsedSettings = JSON.parse(userSettings.settings);
+                            languageToUse = parsedSettings?.language || 'en';
+                        } catch (error) {
+                            console.error('Error parsing user settings:', error);
+                        }
+                    }
+                    
+                    // If language is 'auto', resolve it to actual language
+                    if (languageToUse === 'auto') {
+                        languageToUse = resolveLanguage('auto');
+                    }
+                    
+                    try {
+                        await joinGame(joinCode, languageToUse);
+                    }
+                    catch (error) {
+                        console.error(error);
+                        toast.addToast(intl.formatMessage({ id: 'unableToJoin' }), 'error');
+                    }
                 }
             } catch (error) {
                 console.error(error);
@@ -293,17 +326,6 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
             }
             const id = getGameId();
             setGameId(id);
-            const joinCode = getJoinCode();
-
-            if (joinCode) {
-                try {
-                    await joinGame(joinCode);
-                }
-                catch (error) {
-                    console.error(error);
-                    toast.addToast(intl.formatMessage({ id: 'unableToJoin' }), 'error');
-                }
-            }
         }
         setup();
     }, []);
@@ -343,17 +365,21 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
         return (
             <div>
                 <header>
-                    <TopBar 
-                        title={intl.formatMessage({ id: 'wildsea' })} 
-                        userEmail={undefined} 
-                        gameDescription="" 
-                        isFirefly={false}
-                        currentLanguage={currentLanguage}
-                        onLanguageChange={handleLanguageChangeFromUI}
-                    />
+                    <div className="gameslist">
+                        <TopBar 
+                            title={intl.formatMessage({ id: 'wildsea' })} 
+                            userEmail={undefined} 
+                            gameDescription="" 
+                            isFirefly={false}
+                            currentLanguage={currentLanguage}
+                            onLanguageChange={handleLanguageChangeFromUI}
+                        />
+                    </div>
                 </header>
                 <main>
-                    <div><FormattedMessage id="pleaseLogin" /></div>
+                    <div className="gameslist">
+                        <div><FormattedMessage id="pleaseLogin" /></div>
+                    </div>
                 </main>
                 <FooterBar />
             </div>

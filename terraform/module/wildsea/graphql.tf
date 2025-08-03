@@ -275,9 +275,13 @@ locals {
   resolvers = merge(local.mutations_map, local.queries_map, local.subscriptions_map)
 
   pipelines_map = {
+    createGame = {
+      type : "Mutation",
+      functions = ["getGameDefaults", "createGame"]
+    }
     joinGame = {
       type : "Mutation",
-      functions = ["getGameWithToken", "joinGame"]
+      functions = ["getGameWithToken", "getGameDefaults", "joinGame"]
     }
     getGame = {
       type : "Query",
@@ -297,7 +301,7 @@ locals {
     }
     createSection = {
       type : "Mutation",
-      functions = ["checkPlayerSheetAccess", "checkShipSheetAccess", "createSection"]
+      functions = ["checkPlayerSheetAccess", "checkNPCSheetAccess", "createSection"]
     }
     updateSection = {
       type : "Mutation",
@@ -307,9 +311,9 @@ locals {
       type : "Mutation",
       functions = ["checkGameAccess", "deleteSection"]
     }
-    createShip = {
+    createNPC = {
       type : "Mutation",
-      functions = ["checkGameFireflyAccess", "createShip"]
+      functions = ["checkGameFireflyAccess", "createNPC"]
     }
   }
 }

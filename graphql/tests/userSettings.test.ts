@@ -175,17 +175,19 @@ describe("updateUserSettings", () => {
       // Arrange
       const mockSettings = { theme: "dark", language: "en" };
       const mockContext: Context<{
-        input: { settings: string };
+        input: { settings: string; language: string };
       }> = {
         env: {},
         arguments: {
           input: {
             settings: JSON.stringify(mockSettings),
+            language: "en",
           },
         },
         args: {
           input: {
             settings: JSON.stringify(mockSettings),
+            language: "en",
           },
         },
         identity: {
@@ -237,17 +239,19 @@ describe("updateUserSettings", () => {
       const largeSettings = { data: "x".repeat(2000) }; // Exceeds 1KiB limit
       const largeSettingsString = JSON.stringify(largeSettings);
       const mockContext: Context<{
-        input: { settings: string };
+        input: { settings: string; language: string };
       }> = {
         env: {},
         arguments: {
           input: {
             settings: largeSettingsString,
+            language: "en",
           },
         },
         args: {
           input: {
             settings: largeSettingsString,
+            language: "en",
           },
         },
         identity: {
@@ -273,24 +277,26 @@ describe("updateUserSettings", () => {
 
       // Act & Assert
       expect(() => updateUserSettingsRequest(mockContext)).toThrow(
-        "Settings exceed 1024 byte size limit",
+        "Settings exceed size limit: 2011 bytes",
       );
     });
 
     it("should throw an error if context identity is missing", () => {
       // Arrange
       const mockContext: Context<{
-        input: { settings: string };
+        input: { settings: string; language: string };
       }> = {
         env: {},
         arguments: {
           input: {
             settings: JSON.stringify({ theme: "dark" }),
+            language: "en",
           },
         },
         args: {
           input: {
             settings: JSON.stringify({ theme: "dark" }),
+            language: "en",
           },
         },
         identity: undefined,
@@ -321,17 +327,19 @@ describe("updateUserSettings", () => {
     it("should throw an error if user ID is missing", () => {
       // Arrange
       const mockContext: Context<{
-        input: { settings: string };
+        input: { settings: string; language: string };
       }> = {
         env: {},
         arguments: {
           input: {
             settings: JSON.stringify({ theme: "dark" }),
+            language: "en",
           },
         },
         args: {
           input: {
             settings: JSON.stringify({ theme: "dark" }),
+            language: "en",
           },
         },
         identity: {} as AppSyncIdentityCognito,

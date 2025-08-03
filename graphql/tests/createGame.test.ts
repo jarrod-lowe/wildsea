@@ -8,7 +8,7 @@ jest.mock("../lib/joinCode", () => ({
   generateJoinCode: jest.fn(() => "7A8CV2"),
 }));
 
-import { request, response } from "../mutation/createGame/createGame";
+import { request, response } from "../function/createGame/createGame";
 import {
   util,
   Context,
@@ -24,14 +24,29 @@ describe("request function", () => {
   it("should return a valid DynamoDBTransactWriteItem when context is valid", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string; gameType: string };
-    }> = {
+      input: {
+        name: string;
+        description?: string;
+        gameType: string;
+        language: string;
+      };
+    }> & {
+      stash: {
+        gameDefaults?: {
+          defaultCharacterName: string;
+          defaultGMName: string;
+          defaultNPCs: { type: string; characterName: string }[];
+          theme: string;
+        };
+      };
+    } = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       args: {
@@ -39,6 +54,7 @@ describe("request function", () => {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       identity: {
@@ -54,7 +70,19 @@ describe("request function", () => {
         selectionSetGraphQL: "",
       } as Info,
       result: {},
-      stash: {},
+      stash: {
+        gameDefaults: {
+          defaultCharacterName: "Test Character",
+          defaultGMName: "Test Firefly",
+          defaultNPCs: [
+            {
+              type: "NPC",
+              characterName: "Test Ship",
+            },
+          ],
+          theme: "wildsea",
+        },
+      },
       prev: undefined,
       request: {
         headers: {},
@@ -64,11 +92,11 @@ describe("request function", () => {
 
     const mockId = "unique-id";
     const mockTimestamp = "2024-08-17T00:00:00Z";
-    const mockShipId = "unique-ship-id";
+    const mockNPCId = "unique-npc-id";
 
     (util.autoId as jest.Mock)
       .mockReturnValueOnce(mockId)
-      .mockReturnValueOnce(mockShipId);
+      .mockReturnValueOnce(mockNPCId);
     (util.time.nowISO8601 as jest.Mock).mockReturnValue(mockTimestamp);
 
     // Act
@@ -96,6 +124,7 @@ describe("request function", () => {
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
             type: { S: "GAME" },
+            theme: { S: "wildsea" },
           },
         },
         {
@@ -116,18 +145,18 @@ describe("request function", () => {
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
             type: { S: "FIREFLY" },
-            characterName: { S: "Firefly" },
+            characterName: { S: "Test Firefly" },
           },
         },
         {
           operation: "PutItem",
           key: {
             PK: { S: `GAME#${mockId}` },
-            SK: { S: `PLAYER#${mockShipId}` },
+            SK: { S: `PLAYER#${mockNPCId}` },
           },
           table: "Wildsea-MOCK",
           attributeValues: {
-            userId: { S: mockShipId },
+            userId: { S: mockNPCId },
             gameId: { S: mockId },
             gameName: { S: "Test Game" },
             gameType: { S: "wildsea" },
@@ -135,8 +164,8 @@ describe("request function", () => {
             fireflyUserId: { S: "1234-5678-91011" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
-            type: { S: "SHIP" },
-            characterName: { S: "Unnamed Ship" },
+            type: { S: "NPC" },
+            characterName: { S: "Test Ship" },
           },
         },
       ],
@@ -146,14 +175,29 @@ describe("request function", () => {
   it("should throw an error if context identity is missing", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string; gameType: string };
-    }> = {
+      input: {
+        name: string;
+        description?: string;
+        gameType: string;
+        language: string;
+      };
+    }> & {
+      stash: {
+        gameDefaults?: {
+          defaultCharacterName: string;
+          defaultGMName: string;
+          defaultNPCs: { type: string; characterName: string }[];
+          theme: string;
+        };
+      };
+    } = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       args: {
@@ -161,6 +205,7 @@ describe("request function", () => {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       identity: undefined,
@@ -174,7 +219,19 @@ describe("request function", () => {
         selectionSetGraphQL: "",
       } as Info,
       result: {},
-      stash: {},
+      stash: {
+        gameDefaults: {
+          defaultCharacterName: "Test Character",
+          defaultGMName: "Test Firefly",
+          defaultNPCs: [
+            {
+              type: "NPC",
+              characterName: "Test Ship",
+            },
+          ],
+          theme: "wildsea",
+        },
+      },
       prev: undefined,
       request: {
         headers: {},
@@ -189,14 +246,29 @@ describe("request function", () => {
   it("should throw an error if user ID is missing", () => {
     // Arrange
     const mockContext: Context<{
-      input: { name: string; description?: string; gameType: string };
-    }> = {
+      input: {
+        name: string;
+        description?: string;
+        gameType: string;
+        language: string;
+      };
+    }> & {
+      stash: {
+        gameDefaults?: {
+          defaultCharacterName: string;
+          defaultGMName: string;
+          defaultNPCs: { type: string; characterName: string }[];
+          theme: string;
+        };
+      };
+    } = {
       env: {},
       arguments: {
         input: {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       args: {
@@ -204,6 +276,7 @@ describe("request function", () => {
           name: "Test Game",
           description: "Test Description",
           gameType: "wildsea",
+          language: "en",
         },
       },
       identity: {} as AppSyncIdentityCognito,
@@ -217,7 +290,19 @@ describe("request function", () => {
         selectionSetGraphQL: "",
       } as Info,
       result: {},
-      stash: {},
+      stash: {
+        gameDefaults: {
+          defaultCharacterName: "Test Character",
+          defaultGMName: "Test Firefly",
+          defaultNPCs: [
+            {
+              type: "NPC",
+              characterName: "Test Ship",
+            },
+          ],
+          theme: "wildsea",
+        },
+      },
       prev: undefined,
       request: {
         headers: {},

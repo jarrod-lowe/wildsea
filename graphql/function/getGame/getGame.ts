@@ -21,9 +21,10 @@ import {
   TypeFirefly,
   TypeSection,
   TypeGame,
-  TypeShip,
+  TypeNPC,
 } from "../../lib/constants/entityTypes";
 import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
+import { getTranslatedMessage } from "../../lib/i18n";
 
 export function request(
   context: Context<{ input: GetGameInput }>,
@@ -68,8 +69,9 @@ export function response(context: ResponseContext): Game | undefined {
   validateIdentity(context);
 
   const identity = context.identity as AppSyncIdentityCognito;
-  const sheets = buildPlayerSheets(context.result.items);
-  const game = findAndBuildGame(context.result.items, identity.sub);
+  const language = context.arguments.input.language;
+  const sheets = buildPlayerSheets(context.result.items, language);
+  const game = findAndBuildGame(context.result.items, identity.sub, language);
 
   addSheetsToGame(game, sheets);
   return game;
@@ -81,24 +83,28 @@ function validateResponse(context: ResponseContext): void {
   }
 
   if (!context.result?.items?.length) {
-    util.error("Game not found");
+    const language = context.arguments.input.language;
+    util.error(getTranslatedMessage("game.notFound", language));
   }
 }
 
-function buildPlayerSheets(items: Data[]): Record<string, PlayerSheet> {
+function buildPlayerSheets(
+  items: Data[],
+  language: string,
+): Record<string, PlayerSheet> {
   const sheets: Record<string, PlayerSheet> = {};
   items.forEach((data) => {
     if (
       data.type === TypeCharacter ||
       data.type === TypeFirefly ||
-      data.type === TypeShip
+      data.type === TypeNPC
     ) {
       const sheet = makeCharacterSheetData(data as DataPlayerSheet);
       sheets[sheet.userId] = sheet;
     } else if (data.type === TypeSection) {
-      addSectionToSheet(sheets, data as DataSheetSection);
+      addSectionToSheet(sheets, data as DataSheetSection, language);
     } else if (data.type != TypeGame) {
-      util.error("Unknown type: " + data.type);
+      util.error(getTranslatedMessage("game.unknownType", language, data.type));
     }
   });
   return sheets;
@@ -107,19 +113,20 @@ function buildPlayerSheets(items: Data[]): Record<string, PlayerSheet> {
 function addSectionToSheet(
   sheets: Record<string, PlayerSheet>,
   data: DataSheetSection,
+  language: string,
 ): void {
   const section = makeSheetSection(data);
   const sheet = sheets[section.userId];
   if (sheet === undefined) {
-    util.error("Sheet not found");
+    util.error(getTranslatedMessage("sheet.notFound", language));
   }
   sheet.sections.push(section);
 }
 
-function findAndBuildGame(items: Data[], sub: string): Game {
+function findAndBuildGame(items: Data[], sub: string, language: string): Game {
   const gameData = items.find((data) => data.type === TypeGame) as DataGame;
   if (!gameData) {
-    util.error("Game record not found");
+    util.error(getTranslatedMessage("gameRecord.notFound", language));
   }
   return makeGameData(gameData, sub);
 }
@@ -150,6 +157,7 @@ export function makeGameData(data: DataGame, sub: string): Game {
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     type: data.type,
+    theme: data.theme,
   };
 }
 

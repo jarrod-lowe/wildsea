@@ -7,6 +7,7 @@ import type {
 import { DDBPrefixSettings } from "../../lib/constants/dbPrefixes";
 import { TypeSettings } from "../../lib/constants/entityTypes";
 import { MaxUserSettingsSize } from "../../lib/constants/defaults";
+import { getTranslatedMessage } from "../../lib/i18n";
 
 export function request(
   context: Context<{ input: UpdateUserSettingsInput }>,
@@ -15,13 +16,17 @@ export function request(
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
 
-  const { settings } = context.arguments.input;
+  const { settings, language } = context.arguments.input;
 
   // Validate size limit (settings is already a JSON string)
   const settingsSize = settings.length;
   if (settingsSize > MaxUserSettingsSize) {
     util.error(
-      `Settings exceed ${MaxUserSettingsSize} byte size limit`,
+      getTranslatedMessage(
+        "settings.sizeExceeded",
+        language,
+        `${settingsSize} bytes`,
+      ),
       "SettingsSizeExceededException",
     );
   }

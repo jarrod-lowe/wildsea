@@ -33,7 +33,13 @@ export type CharacterTemplateMetadata = {
 export type CreateGameInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   gameType: Scalars['String']['input'];
+  language: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+export type CreateNpcInput = {
+  characterName: Scalars['String']['input'];
+  gameId: Scalars['ID']['input'];
 };
 
 export type CreateSectionInput = {
@@ -43,11 +49,6 @@ export type CreateSectionInput = {
   sectionName: Scalars['String']['input'];
   sectionType: Scalars['String']['input'];
   userId?: InputMaybe<Scalars['ID']['input']>;
-};
-
-export type CreateShipInput = {
-  characterName: Scalars['String']['input'];
-  gameId: Scalars['ID']['input'];
 };
 
 export type DeleteGameInput = {
@@ -101,6 +102,7 @@ export type Game = {
   gameType: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
+  theme?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
 };
@@ -115,8 +117,16 @@ export type GameSummary = {
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
+  theme?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
+};
+
+export type GameTypeMetadata = {
+  __typename?: 'GameTypeMetadata';
+  displayName: Scalars['String']['output'];
+  gameType: Scalars['String']['output'];
+  language: Scalars['String']['output'];
 };
 
 export type GetCharacterTemplateInput = {
@@ -132,17 +142,23 @@ export type GetCharacterTemplatesInput = {
 
 export type GetGameInput = {
   gameId: Scalars['ID']['input'];
+  language: Scalars['String']['input'];
+};
+
+export type GetGameTypesInput = {
+  language: Scalars['String']['input'];
 };
 
 export type JoinGameInput = {
   joinCode: Scalars['String']['input'];
+  language: Scalars['String']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createGame: GameSummary;
+  createNPC: PlayerSheetSummary;
   createSection: SheetSection;
-  createShip: PlayerSheetSummary;
   deleteGame: GameSummary;
   deletePlayer?: Maybe<PlayerSheetSummary>;
   deleteSection: SheetSection;
@@ -161,13 +177,13 @@ export type MutationCreateGameArgs = {
 };
 
 
-export type MutationCreateSectionArgs = {
-  input: CreateSectionInput;
+export type MutationCreateNpcArgs = {
+  input: CreateNpcInput;
 };
 
 
-export type MutationCreateShipArgs = {
-  input: CreateShipInput;
+export type MutationCreateSectionArgs = {
+  input: CreateSectionInput;
 };
 
 
@@ -237,7 +253,7 @@ export type PlayerSheetSummary = {
   characterName: Scalars['String']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
   deleted?: Maybe<Scalars['Boolean']['output']>;
-  gameDescription: Scalars['String']['output'];
+  gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
@@ -251,6 +267,7 @@ export type Query = {
   getCharacterTemplate: Array<TemplateSectionData>;
   getCharacterTemplates: Array<CharacterTemplateMetadata>;
   getGame: Game;
+  getGameTypes: Array<GameTypeMetadata>;
   getGames?: Maybe<Array<PlayerSheetSummary>>;
   getUserSettings?: Maybe<UserSettings>;
 };
@@ -267,7 +284,12 @@ export type QueryGetCharacterTemplatesArgs = {
 
 
 export type QueryGetGameArgs = {
-  input?: InputMaybe<GetGameInput>;
+  input: GetGameInput;
+};
+
+
+export type QueryGetGameTypesArgs = {
+  input: GetGameTypesInput;
 };
 
 export type RollDiceInput = {
@@ -363,6 +385,7 @@ export type UpdateSectionInput = {
 };
 
 export type UpdateUserSettingsInput = {
+  language: Scalars['String']['input'];
   settings: Scalars['AWSJSON']['input'];
 };
 

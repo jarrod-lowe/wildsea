@@ -6,11 +6,11 @@
 let currentTheme: string | null = null;
 
 /**
- * Load a CSS theme by game type
- * @param gameType - The game type (e.g., 'wildsea', 'deltaGreen')
+ * Load a CSS theme by theme name
+ * @param themeName - The theme name (e.g., 'wildsea', 'deltaGreen', 'default')
  */
-export function loadTheme(gameType: string | null | undefined): void {
-  const themeToLoad = getThemeForGameType(gameType);
+export function loadTheme(themeName: string | null | undefined): void {
+  const themeToLoad = themeName || 'default';
   
   // Don't reload if it's already the current theme
   if (currentTheme === themeToLoad) {
@@ -40,21 +40,6 @@ export function loadTheme(gameType: string | null | undefined): void {
   currentTheme = themeToLoad;
 }
 
-/**
- * Get the appropriate theme name for a game type
- * @param gameType - The game type
- * @returns The theme name to use
- */
-function getThemeForGameType(gameType: string | null | undefined): string {
-  switch (gameType) {
-    case 'wildsea':
-      return 'wildsea';
-    case 'deltaGreen':
-      return 'deltaGreen';
-    default:
-      return 'default';
-  }
-}
 
 /**
  * Load the default theme (for non-game screens)

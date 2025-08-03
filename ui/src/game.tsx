@@ -3,7 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { Game, PlayerSheetSummary, Subscription as GQLSubscription, SheetSection, GameSummary } from "../../appsync/graphql";
 import { getGameQuery, updatedPlayerSubscription, updatedSectionSubscription, updatedGameSubscription } from "../../appsync/schema";
 import { FormattedMessage, useIntl, IntlShape } from 'react-intl';
-import { type SupportedLanguage } from './translations';
+import { type SupportedLanguage, resolveLanguage } from './translations';
 import { GraphQLResult, GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
 import { TopBar } from "./frame";
 import { fetchUserAttributes } from 'aws-amplify/auth';
@@ -81,13 +81,14 @@ const handlePlayerJoining = async (
   setGame: (game: Game) => void,
   gameRef: React.MutableRefObject<Game | null>,
   toast: any,
-  intl: IntlShape
+  intl: IntlShape,
+  language: string
 ) => {
   try {
     const client = generateClient();
     const response = await client.graphql({
       query: getGameQuery,
-      variables: { input: { gameId } },
+      variables: { input: { gameId, language } },
     }) as GraphQLResult<{ getGame: Game }>;
 
     if (response.data?.getGame) {
@@ -129,6 +130,7 @@ const usePlayerSheetUpdates = (
     userSubject: string,
     setActiveSheet: React.Dispatch<React.SetStateAction<string | null>>,
     isGameFetched: boolean,
+    actualLanguage: string,
   ) => {
   const toast = useToast();
   const intl = useIntl();
@@ -155,7 +157,7 @@ const usePlayerSheetUpdates = (
           );
 
           if (existingPlayerIndex === -1) {
-            await handlePlayerJoining(updatedSheetSummary, gameId, setGame, gameRef, toast, intl);
+            await handlePlayerJoining(updatedSheetSummary, gameId, setGame, gameRef, toast, intl, actualLanguage);
           } else {
             handlePlayerUpdate(updatedSheetSummary, currentGame, setGame, gameRef);
           }
@@ -173,7 +175,7 @@ const usePlayerSheetUpdates = (
         unsubscribe();
       }
     };
-  }, [gameId, setGame, gameRef, userSubject, setActiveSheet, toast, intl, isGameFetched]);
+  }, [gameId, setGame, gameRef, userSubject, setActiveSheet, toast, intl, isGameFetched, actualLanguage]);
 };
 
 const useSectionUpdates = (
@@ -302,6 +304,9 @@ const GameContent: React.FC<{
   const [showEditModal, setShowEditModal] = useState(false);
   const [showJoinCodeModal, setShowJoinCodeModal] = useState(false);
   const gameRef = useRef<Game | null>(null);
+  
+  // Resolve the current language (handle 'auto' case)
+  const actualLanguage = resolveLanguage(currentLanguage);
   const toast = useToast();
   const intl = useIntl();
 
@@ -316,6 +321,7 @@ const GameContent: React.FC<{
             variables: {
               input: {
                 gameId: id,
+                language: actualLanguage,
               },
             }
           }) as Promise<GraphQLResult<{ getGame: Game }>>,
@@ -330,8 +336,8 @@ const GameContent: React.FC<{
         setIsGameFetched(true);
         setActiveSheet(sub);
         
-        // Load theme based on game type
-        loadTheme(response.data.getGame.gameType);
+        // Load theme based on game theme setting
+        loadTheme(response.data.getGame.theme);
       } catch (err: any) {
         if (err.errors?.some((e: any) => e.message.includes(NO_GAME))) {
           toast.addToast(intl.formatMessage({ id: "noGame" }), 'error');
@@ -347,7 +353,7 @@ const GameContent: React.FC<{
     fetchGame();
   }, [id]);
 
-  usePlayerSheetUpdates(id, setGame, gameRef, userSubject, setActiveSheet, isGameFetched);
+  usePlayerSheetUpdates(id, setGame, gameRef, userSubject, setActiveSheet, isGameFetched, actualLanguage);
   useSectionUpdates(id, setGame, gameRef, isGameFetched);
   useGameUpdates(id, setGame, gameRef, isGameFetched);
 

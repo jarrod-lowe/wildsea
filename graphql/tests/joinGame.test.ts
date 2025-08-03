@@ -19,11 +19,13 @@ describe("fnJoinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: undefined,
@@ -38,7 +40,15 @@ describe("fnJoinGame request function", () => {
       },
       result: {},
       stash: {},
-      prev: undefined,
+      prev: {
+        result: {
+          gameId: "test-game-id",
+          gameName: "Test Game",
+          gameType: "wildsea",
+          gameDescription: "Test Description",
+          fireflyUserId: "test-firefly-id",
+        },
+      },
       request: {
         headers: {},
         domainName: null,
@@ -54,11 +64,13 @@ describe("fnJoinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {} as AppSyncIdentityCognito,
@@ -73,7 +85,15 @@ describe("fnJoinGame request function", () => {
       },
       result: {},
       stash: {},
-      prev: undefined,
+      prev: {
+        result: {
+          gameId: "test-game-id",
+          gameName: "Test Game",
+          gameType: "wildsea",
+          gameDescription: "Test Description",
+          fireflyUserId: "test-firefly-id",
+        },
+      },
       request: {
         headers: {},
         domainName: null,
@@ -89,11 +109,13 @@ describe("fnJoinGame request function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -168,7 +190,7 @@ describe("fnJoinGame request function", () => {
             gameName: { S: "Test Game" },
             gameType: { S: "wildsea" },
             gameDescription: { S: "Test Description" },
-            characterName: { S: "Unnamed Character" },
+            characterName: { S: "Error: No Character Name" },
             fireflyUserId: { S: "firefly" },
             type: { S: "CHARACTER" },
             createdAt: { S: mockTimestamp },
@@ -187,11 +209,13 @@ describe("fnJoinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {
@@ -228,11 +252,13 @@ describe("fnJoinGame response function", () => {
       arguments: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       args: {
         input: {
           joinCode: "ABC123",
+          language: "en",
         },
       },
       identity: {

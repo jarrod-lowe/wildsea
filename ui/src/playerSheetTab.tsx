@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateShipInput } from "../../appsync/graphql";
-import { createSectionMutation, createShipMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
+import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateNPCInput } from "../../appsync/graphql";
+import { createSectionMutation, createNPCMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { SupportedLanguage, resolveLanguage } from './translations';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { TypeFirefly, TypeShip } from "../../graphql/lib/constants/entityTypes";
+import { TypeFirefly, TypeNPC } from "../../graphql/lib/constants/entityTypes";
 import { Section } from './section';
 import { getSectionSeed, getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
@@ -34,7 +34,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
   const [editingSheetId, setEditingSheetId] = useState<string | null>(null);
-  const [showCreateShipModal, setShowCreateShipModal] = useState(false);
+  const [showCreateNPCModal, setShowCreateNPCModal] = useState(false);
   const [isDragLocked, setIsDragLocked] = useState(true);
   const sectionTypes = getSectionTypes();
   const intl = useIntl();
@@ -148,19 +148,19 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
     }
   };
 
-  const handleCreateShip = async (shipName: string) => {
+  const handleCreateNPC = async (npcName: string) => {
     try {
-      const input: CreateShipInput = {
+      const input: CreateNPCInput = {
         gameId: game.gameId,
-        characterName: shipName,
+        characterName: npcName,
       };
       const client = generateClient();
       await client.graphql({
-        query: createShipMutation,
+        query: createNPCMutation,
         variables: { input },
       });
     } catch (error) {
-      console.error("Error creating ship:", error);
+      console.error("Error creating NPC:", error);
       toast.addToast(intl.formatMessage({ id: "createShipModal.error" }), 'error');
     }
   };
@@ -186,13 +186,13 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
   let deleteButtonId = "playerSheetTab.quitLabel";
   if (userSubject === sheet.fireflyUserId) deleteButtonId = "playerSheetTab.kickPlayerLabel";
-  if (sheet.type === TypeShip) deleteButtonId = "playerSheetTab.kickShipLabel";
+  if (sheet.type === TypeNPC) deleteButtonId = "playerSheetTab.kickShipLabel";
 
   let mayEditSheet = false;
   let ownSheet = false;
   if (userSubject === sheet.userId) mayEditSheet = true;
   if (userSubject === sheet.userId) ownSheet = true;
-  if (sheet.type === TypeShip) mayEditSheet = true;
+  if (sheet.type === TypeNPC) mayEditSheet = true;
 
   const renderSections = (sections: SheetSection[], isDraggable: boolean) => {
     const sortedSections = sections.slice().sort((a, b) => a.position - b.position);
@@ -279,10 +279,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
       {mayEditSheet && !showNewSection && (
         <>
-          <button onClick={() => {
-            setShowNewSection(true);
-            setEditingSheetId(sheet.userId);
-          }} className="btn-standard btn-small">
+          <button onClick={() => setShowNewSection(true)} className="btn-standard btn-small">
             <FormattedMessage id="playerSheetTab.addSection" />
           </button>
           <button onClick={() => setShowDeleteSectionModal(true)} className="btn-danger btn-small">
@@ -291,7 +288,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         </>
       )}
 
-      {mayEditSheet && showNewSection && editingSheetId === sheet.userId && (
+      {mayEditSheet && showNewSection && (
         <div className="new-section">
           <input
             id="new-section-name"
@@ -325,7 +322,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
       />
 
       {sheet.type === TypeFirefly && (
-        <button onClick={() => setShowCreateShipModal(true)} className="btn-standard btn-small">
+        <button onClick={() => setShowCreateNPCModal(true)} className="btn-standard btn-small">
           <FormattedMessage id="createShipModal.buttonLabel" />
         </button>
       )}
@@ -357,10 +354,10 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         onConfirm={handleDeleteGame}
       />
 
-      <CreateShipModal
-        isOpen={showCreateShipModal}
-        onRequestClose={() => setShowCreateShipModal(false)}
-        onConfirm={handleCreateShip}
+      <CreateNPCModal
+        isOpen={showCreateNPCModal}
+        onRequestClose={() => setShowCreateNPCModal(false)}
+        onConfirm={handleCreateNPC}
       />
     </div>
   );
@@ -525,17 +522,17 @@ export const DeleteSectionModal: React.FC<DeleteSectionModalProps> = ({
 };
 
 // Add this new component
-const CreateShipModal: React.FC<{
+const CreateNPCModal: React.FC<{
   isOpen: boolean;
   onRequestClose: () => void;
-  onConfirm: (shipName: string) => void;
+  onConfirm: (npcName: string) => void;
 }> = ({ isOpen, onRequestClose, onConfirm }) => {
-  const [shipName, setShipName] = useState('');
+  const [npcName, setNPCName] = useState('');
   const intl = useIntl();
 
   const handleConfirm = () => {
-    onConfirm(shipName);
-    setShipName('');
+    onConfirm(npcName);
+    setNPCName('');
     onRequestClose();
   };
 
@@ -544,16 +541,16 @@ const CreateShipModal: React.FC<{
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel={intl.formatMessage({ id: "createShipModal.title" })}
-      className="create-ship-modal"
+      className="create-npc-modal"
       overlayClassName="modal-overlay"
     >
       <h2><FormattedMessage id="createShipModal.title" /></h2>
       <input
-        id="ship-name"
-        name="shipName"
+        id="npc-name"
+        name="npcName"
         type="text"
-        value={shipName}
-        onChange={(e) => setShipName(e.target.value)}
+        value={npcName}
+        onChange={(e) => setNPCName(e.target.value)}
         placeholder={intl.formatMessage({ id: "createShipModal.namePlaceholder" })}
       />
       <div className="modal-buttons">
@@ -562,7 +559,7 @@ const CreateShipModal: React.FC<{
         </button>
         <button
           onClick={handleConfirm}
-          disabled={!shipName.trim()}
+          disabled={!npcName.trim()}
           className="btn-standard btn-small"
         >
           <FormattedMessage id="create" />

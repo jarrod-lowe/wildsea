@@ -12,6 +12,7 @@ import {
 import { TypeCharacter } from "../../lib/constants/entityTypes";
 import { DataSheetSection } from "../../lib/dataTypes";
 import { authIsIam } from "../../lib/auth";
+import { getTranslatedMessage } from "../../lib/i18n";
 
 export function request(
   context: Context<{ input: DeletePlayerInput }>,
@@ -20,7 +21,7 @@ export function request(
 
   if (!authIsIam(context.identity)) {
     if (context.stash.userId == context.stash.fireflyUserId) {
-      util.error("Cannot delete firefly sheet");
+      util.error(getTranslatedMessage("player.cannotDelete"));
     }
   }
 

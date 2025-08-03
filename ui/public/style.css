@@ -651,6 +651,47 @@ body {
   padding: 10px;
   border: 1px solid var(--color-border);
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.new-section input,
+.new-section select {
+  flex: 1;
+  min-width: 150px;
+}
+
+.sheet-header {
+  margin-bottom: 20px;
+}
+
+.edit-character-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.edit-character-name input {
+  flex: 1;
+  min-width: 200px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 8px 12px;
+  border: 2px solid var(--color-primary);
+  border-radius: 4px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.view-character-name h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0;
 }
 
 /* NotificationToast.css */
@@ -1050,7 +1091,7 @@ body {
 }
 
 
-.create-ship-modal {
+.create-npc-modal {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -1063,12 +1104,12 @@ body {
   width: 90%;
 }
 
-.create-ship-modal h2 {
+.create-npc-modal h2 {
   margin-top: 0;
   margin-bottom: 20px;
 }
 
-.create-ship-modal input {
+.create-npc-modal input {
   width: 90%;
   padding: 10px;
   margin-bottom: 20px;
