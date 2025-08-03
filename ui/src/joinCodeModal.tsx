@@ -75,6 +75,12 @@ export const JoinCodeModal: React.FC<JoinCodeModalProps> = ({
     >
       <h2><FormattedMessage id="joinCodeModal.title" /></h2>
       <p><FormattedMessage id="joinCodeModal.description" /></p>
+      <p>
+        <FormattedMessage 
+          id="characterQuota.available" 
+          values={{ count: game.remainingCharacters }} 
+        />
+      </p>
       
       <div className="join-url-section">
         <label htmlFor="join-url-display">

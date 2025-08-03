@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { generateClient } from "aws-amplify/api";
-import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateNPCInput } from "../../appsync/graphql";
+import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateNpcInput } from "../../appsync/graphql";
 import { createSectionMutation, createNPCMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { SupportedLanguage, resolveLanguage } from './translations';
@@ -150,7 +150,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
   const handleCreateNPC = async (npcName: string) => {
     try {
-      const input: CreateNPCInput = {
+      const input: CreateNpcInput = {
         gameId: game.gameId,
         characterName: npcName,
       };
@@ -322,7 +322,11 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
       />
 
       {sheet.type === TypeFirefly && (
-        <button onClick={() => setShowCreateNPCModal(true)} className="btn-standard btn-small">
+        <button 
+          onClick={() => setShowCreateNPCModal(true)} 
+          className="btn-standard btn-small"
+          disabled={game.remainingCharacters <= 0}
+        >
           <FormattedMessage id="createShipModal.buttonLabel" />
         </button>
       )}
@@ -358,6 +362,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         isOpen={showCreateNPCModal}
         onRequestClose={() => setShowCreateNPCModal(false)}
         onConfirm={handleCreateNPC}
+        game={game}
       />
     </div>
   );
@@ -526,7 +531,8 @@ const CreateNPCModal: React.FC<{
   isOpen: boolean;
   onRequestClose: () => void;
   onConfirm: (npcName: string) => void;
-}> = ({ isOpen, onRequestClose, onConfirm }) => {
+  game: Game;
+}> = ({ isOpen, onRequestClose, onConfirm, game }) => {
   const [npcName, setNPCName] = useState('');
   const intl = useIntl();
 
@@ -545,6 +551,12 @@ const CreateNPCModal: React.FC<{
       overlayClassName="modal-overlay"
     >
       <h2><FormattedMessage id="createShipModal.title" /></h2>
+      <p>
+        <FormattedMessage 
+          id="characterQuota.available" 
+          values={{ count: game.remainingCharacters }} 
+        />
+      </p>
       <input
         id="npc-name"
         name="npcName"
@@ -559,7 +571,7 @@ const CreateNPCModal: React.FC<{
         </button>
         <button
           onClick={handleConfirm}
-          disabled={!npcName.trim()}
+          disabled={!npcName.trim() || game.remainingCharacters <= 0}
           className="btn-standard btn-small"
         >
           <FormattedMessage id="create" />

@@ -44,7 +44,7 @@ type Query {
 type Subscription @aws_cognito_user_pools {
   updatedPlayer(gameId: ID!): PlayerSheetSummary @aws_subscribe(mutations: ["updatePlayer", "deletePlayer", "createNPC", "joinGame"])
   updatedSection(gameId: ID!): SheetSection @aws_subscribe(mutations: ["createSection", "updateSection", "deleteSection"])
-  updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "deleteGame"])
+  updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "deleteGame", "updateJoinCode"])
   diceRolled(gameId: ID!): DiceRoll @aws_subscribe(mutations: ["rollDice"])
   updatedUserSettings: UserSettings @aws_subscribe(mutations: ["updateUserSettings"])
 }
@@ -134,6 +134,7 @@ type GameSummary @aws_cognito_user_pools {
   type: String!
   deleted: Boolean
   theme: String
+  remainingCharacters: Int!
 }
 
 type Game @aws_cognito_user_pools {
@@ -149,6 +150,7 @@ type Game @aws_cognito_user_pools {
   type: String!
   deleted: Boolean
   theme: String
+  remainingCharacters: Int!
 }
 
 input UpdatePlayerInput {

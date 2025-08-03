@@ -57,15 +57,24 @@ export function request(
     table: "Wildsea-" + environment.name,
     operation: "UpdateItem",
     update: {
-      expression: "DELETE players :userId",
+      expression:
+        "DELETE players :userId SET #remainingCharacters = #remainingCharacters + :one",
+      expressionNames: {
+        "#remainingCharacters": "remainingCharacters",
+      },
       expressionValues: {
         ":userId": util.dynamodb.toStringSet([userId]),
+        ":one": { N: "1" },
       },
     },
   };
 
   // Combine all operations
-  const transactItems = [...deleteSectionOps, deletePlayerOp, updateGameOp];
+  // For background cleanup (IAM-based calls), skip the game update since the game is already deleted
+  const isBackgroundCleanup = authIsIam(context.identity);
+  const transactItems = isBackgroundCleanup
+    ? [...deleteSectionOps, deletePlayerOp]
+    : [...deleteSectionOps, deletePlayerOp, updateGameOp];
 
   return {
     operation: "TransactWriteItems",

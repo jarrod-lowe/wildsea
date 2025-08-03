@@ -1,9 +1,10 @@
 # Game defaults for character names by language
 
 locals {
-  db_prefix_gamedefaults = "GAMEDEFAULTS"
-  db_prefix_language     = "LANGUAGE"
-  fallback_language      = "en"
+  db_prefix_gamedefaults  = "GAMEDEFAULTS"
+  db_prefix_language      = "LANGUAGE"
+  fallback_language       = "en"
+  initial_character_quota = "20"
 }
 
 # English defaults
@@ -48,6 +49,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_en" {
     theme = {
       S = "wildsea"
     }
+    remainingCharacters = {
+      N = local.initial_character_quota
+    }
     type = {
       S = local.db_prefix_gamedefaults
     }
@@ -83,6 +87,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_en" {
     }
     theme = {
       S = "deltaGreen"
+    }
+    remainingCharacters = {
+      N = local.initial_character_quota
     }
     type = {
       S = local.db_prefix_gamedefaults
@@ -132,6 +139,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_tlh" {
     theme = {
       S = "wildsea"
     }
+    remainingCharacters = {
+      N = local.initial_character_quota
+    }
     type = {
       S = local.db_prefix_gamedefaults
     }
@@ -167,6 +177,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_tlh" {
     }
     theme = {
       S = "deltaGreen"
+    }
+    remainingCharacters = {
+      N = local.initial_character_quota
     }
     type = {
       S = local.db_prefix_gamedefaults

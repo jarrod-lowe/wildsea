@@ -37,6 +37,7 @@ describe("request function", () => {
           defaultGMName: string;
           defaultNPCs: { type: string; characterName: string }[];
           theme: string;
+          remainingCharacters: number;
         };
       };
     } = {
@@ -81,6 +82,7 @@ describe("request function", () => {
             },
           ],
           theme: "wildsea",
+          remainingCharacters: 20,
         },
       },
       prev: undefined,
@@ -125,6 +127,7 @@ describe("request function", () => {
             updatedAt: { S: mockTimestamp },
             type: { S: "GAME" },
             theme: { S: "wildsea" },
+            remainingCharacters: { N: "18" },
           },
         },
         {
@@ -188,6 +191,7 @@ describe("request function", () => {
           defaultGMName: string;
           defaultNPCs: { type: string; characterName: string }[];
           theme: string;
+          remainingCharacters: number;
         };
       };
     } = {
@@ -230,6 +234,7 @@ describe("request function", () => {
             },
           ],
           theme: "wildsea",
+          remainingCharacters: 20,
         },
       },
       prev: undefined,
@@ -259,6 +264,7 @@ describe("request function", () => {
           defaultGMName: string;
           defaultNPCs: { type: string; characterName: string }[];
           theme: string;
+          remainingCharacters: number;
         };
       };
     } = {
@@ -301,6 +307,7 @@ describe("request function", () => {
             },
           ],
           theme: "wildsea",
+          remainingCharacters: 20,
         },
       },
       prev: undefined,

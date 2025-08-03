@@ -6,7 +6,7 @@ import { TypeNPC } from '../../graphql/lib/constants/entityTypes';
 interface DeletePlayerModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;
   isOwnSheet: boolean;
   sheetType: string;
   gameType: string;
@@ -30,8 +30,8 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
     }
   }, [isOpen]);
 
-  const handleConfirm = () => {
-    onConfirm();
+  const handleConfirm = async () => {
+    await onConfirm();
     onRequestClose();
     if (isOwnSheet) {
         const currentUrl = new URL(window.location.href);
