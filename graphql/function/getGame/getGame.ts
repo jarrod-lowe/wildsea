@@ -158,6 +158,7 @@ export function makeGameData(data: DataGame, sub: string): Game {
     updatedAt: data.updatedAt,
     type: data.type,
     theme: data.theme,
+    remainingCharacters: data.remainingCharacters,
   };
 }
 

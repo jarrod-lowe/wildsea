@@ -165,14 +165,26 @@ describe("fnJoinGame request function", () => {
             SK: { S: "GAME" },
           },
           update: {
-            expression: "ADD #players :player SET #updatedAt = :updatedAt",
+            expression:
+              "ADD #players :player SET #updatedAt = :updatedAt, #remainingCharacters = #remainingCharacters - :one",
             expressionNames: {
               "#players": "players",
               "#updatedAt": "updatedAt",
+              "#remainingCharacters": "remainingCharacters",
             },
             expressionValues: {
               ":player": { SS: ["user123"] },
               ":updatedAt": { S: mockTimestamp },
+              ":one": { N: "1" },
+            },
+          },
+          condition: {
+            expression: "#remainingCharacters > :zero",
+            expressionNames: {
+              "#remainingCharacters": "remainingCharacters",
+            },
+            expressionValues: {
+              ":zero": { N: "0" },
             },
           },
         },

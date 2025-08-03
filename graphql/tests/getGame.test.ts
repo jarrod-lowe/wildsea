@@ -132,6 +132,7 @@ describe("response", () => {
             players: [],
             joinCode: "ABC123",
             type: TypeGame,
+            remainingCharacters: 20,
           } as DataGame,
           {
             userId: "user1",
@@ -220,6 +221,8 @@ describe("response", () => {
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       type: TypeGame,
+      remainingCharacters: 20,
+      theme: undefined,
     });
   });
 
@@ -245,6 +248,7 @@ describe("response", () => {
             players: [],
             joinCode: "ABC123",
             type: TypeGame,
+            remainingCharacters: 20,
           } as DataGame,
           {
             userId: "user1",
@@ -333,6 +337,8 @@ describe("response", () => {
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       type: TypeGame,
+      remainingCharacters: 20,
+      theme: undefined,
     });
   });
 
@@ -389,6 +395,7 @@ describe("response", () => {
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeGame,
+            remainingCharacters: 20,
           } as DataGame,
           {
             type: "UNKNOWN_TYPE",
@@ -420,6 +427,7 @@ describe("makeGameData", () => {
       type: TypeGame,
       players: ["user3", "user2"],
       fireflyUserId: "user1",
+      remainingCharacters: 20,
     };
 
     const result = makeGameData(data, "notFirefly");
@@ -435,6 +443,8 @@ describe("makeGameData", () => {
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       type: TypeGame,
+      remainingCharacters: 20,
+      theme: undefined,
     });
   });
 
@@ -450,6 +460,7 @@ describe("makeGameData", () => {
       type: TypeGame,
       players: ["user3", "user2"],
       fireflyUserId: "user1",
+      remainingCharacters: 20,
     };
 
     const result = makeGameData(data, "user1");
@@ -465,6 +476,8 @@ describe("makeGameData", () => {
       createdAt: "2023-01-01",
       updatedAt: "2023-01-02",
       type: TypeGame,
+      remainingCharacters: 20,
+      theme: undefined,
     });
   });
 });

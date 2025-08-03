@@ -43,7 +43,7 @@ async function fetchWithBackoff<T>(
 }
 
 // Helper function to handle player deletion
-const handlePlayerDeletion = (
+const handlePlayerDeletion = async (
   updatedSheetSummary: PlayerSheetSummary,
   currentGame: Game,
   userSubject: string,
@@ -51,18 +51,42 @@ const handlePlayerDeletion = (
   gameRef: React.MutableRefObject<Game | null>,
   setActiveSheet: React.Dispatch<React.SetStateAction<string | null>>,
   toast: any,
-  intl: IntlShape
+  intl: IntlShape,
+  gameId: string,
+  language: string
 ) => {
-  const updatedSheets = currentGame.playerSheets.filter(sheet => sheet.userId !== updatedSheetSummary.userId);
-  const updatedGame = { ...currentGame, playerSheets: updatedSheets };
-  setGame(updatedGame);
-  gameRef.current = updatedGame;
-
   if (updatedSheetSummary.userId === userSubject) {
     const currentUrl = new URL(window.location.href);
     const newUrl = `${window.location.origin}${currentUrl.pathname}`;
     window.location.href = newUrl;
-  } else {
+    return;
+  }
+
+  // Refetch complete game data to get updated remainingCharacters
+  try {
+    const client = generateClient();
+    const response = await client.graphql({
+      query: getGameQuery,
+      variables: { input: { gameId, language } },
+    }) as GraphQLResult<{ getGame: Game }>;
+
+    if (response.data?.getGame) {
+      setGame(response.data.getGame);
+      gameRef.current = response.data.getGame;
+      
+      // Update active sheet if needed
+      setActiveSheet(prevActiveSheet => 
+        prevActiveSheet === updatedSheetSummary.userId ? userSubject : prevActiveSheet
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching updated game data after player deletion", error);
+    // Fallback to local state update if refetch fails
+    const updatedSheets = currentGame.playerSheets.filter(sheet => sheet.userId !== updatedSheetSummary.userId);
+    const updatedGame = { ...currentGame, playerSheets: updatedSheets };
+    setGame(updatedGame);
+    gameRef.current = updatedGame;
+    
     setActiveSheet(prevActiveSheet => 
       prevActiveSheet === updatedSheetSummary.userId ? userSubject : prevActiveSheet
     );
@@ -145,9 +169,9 @@ const usePlayerSheetUpdates = (
           if (!currentGame) return;
 
           if (updatedSheetSummary.deleted) {
-            handlePlayerDeletion(
+            await handlePlayerDeletion(
               updatedSheetSummary, currentGame, userSubject, setGame, 
-              gameRef, setActiveSheet, toast, intl
+              gameRef, setActiveSheet, toast, intl, gameId, actualLanguage
             );
             return;
           }
@@ -269,6 +293,7 @@ const useGameUpdates = (
               gameName: updatedGame.gameName,
               gameDescription: updatedGame.gameDescription,
               joinCode: updatedGame.joinCode ?? currentGame.joinCode,
+              remainingCharacters: updatedGame.remainingCharacters,
             }
             setGame(updatedGameData);
             gameRef.current = updatedGameData;

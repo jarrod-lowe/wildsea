@@ -77,6 +77,7 @@ export const messagesKlingon = {
     'joinCodeModal.codeRefreshed': 'DIch DIch URL chenmoH',
     'joinCodeModal.copyError': 'clipboard DIch DIch',
     'joinCodeModal.refreshError': 'DIch DIch URL chenmoH DIch',
+    'characterQuota.available': '{count, plural, =0 {jup DIch pagh DIch DIch.} =1 {jup DIch wa\' DIch DIch.} other {jup DIch # DIch DIch.}}',
 
     'deleteGameModal.deleteGame': '🗑 DIch Dub DIch',
     'deleteGameModal.confirmation': 'DIch Dub DIch DIch\'e\' DIch\'a\'?',

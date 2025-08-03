@@ -190,3 +190,84 @@ The application supports multiple TTRPG systems with database-driven configurati
 - Default section content should be created with appropriate `showEmpty` settings
 - Things in a section that will change regularly during gameplay (e.g. HP or usages) should be able to be changed in the normal form (`renderItems`)
 - Things in a section that will not change regularly during gameplay (e.g. STR, CON, ...) should only be able to be changed in the edit form (`renderEditForm`)
+
+## Debugging and AWS Operations
+
+When debugging issues or investigating the system state, these AWS CLI commands are useful:
+
+### DynamoDB Operations
+
+```bash
+# Check all games in the development environment
+AWS_PROFILE=wildsea aws dynamodb scan \
+  --table-name Wildsea-dev \
+  --filter-expression "begins_with(SK, :sk)" \
+  --expression-attribute-values '{":sk":{"S":"GAME"}}' \
+  --projection-expression "PK,SK,gameName,remainingCharacters"
+
+# Check specific game records (including orphaned data)
+AWS_PROFILE=wildsea aws dynamodb query \
+  --table-name Wildsea-dev \
+  --key-condition-expression "PK = :pk" \
+  --expression-attribute-values '{":pk":{"S":"GAME#<gameId>"}}'
+
+# Clean up orphaned player record manually (if needed)
+AWS_PROFILE=wildsea aws dynamodb delete-item \
+  --table-name Wildsea-dev \
+  --key '{"PK":{"S":"GAME#<gameId>"},"SK":{"S":"PLAYER#<userId>"}}'
+```
+
+### Step Function Operations
+
+```bash
+# Check recent Step Function executions for game deletion cleanup
+AWS_PROFILE=wildsea aws stepfunctions list-executions \
+  --state-machine-arn "arn:aws:states:ap-southeast-2:021891603679:stateMachine:Wildsea-dev-delete-player" \
+  --max-items 5
+
+# Get details of a specific execution (to debug failures)
+AWS_PROFILE=wildsea aws stepfunctions describe-execution \
+  --execution-arn "arn:aws:states:ap-southeast-2:021891603679:execution:Wildsea-dev-delete-player:<execution-id>"
+```
+
+### EventBridge Operations
+
+```bash
+# List EventBridge rules for the wildsea-dev bus
+AWS_PROFILE=wildsea aws events list-rules --event-bus-name "Wildsea-dev"
+```
+
+### AppSync Logs
+
+```bash
+# Check AppSync logs for GraphQL errors or subscription issues
+AWS_PROFILE=wildsea aws logs filter-log-events \
+  --log-group-name "/aws/appsync/apis/5h5wrzbmlnbx7coplrn53gb5xq" \
+  --start-time <timestamp> \
+  --filter-pattern "deletePlayer"
+```
+
+### Common Investigation Patterns
+
+**Game deletion not cleaning up properly:**
+
+1. Check if Step Function executed: `aws stepfunctions list-executions`
+2. Check if EventBridge events were sent: Look at Step Function execution details
+3. Check if deletePlayer mutations succeeded: AppSync logs
+4. Manually verify cleanup: DynamoDB query for remaining records
+
+**Character quota not updating:**
+
+1. Check GraphQL subscriptions are working: AppSync logs
+2. Verify remainingCharacters field exists: DynamoDB scan
+3. Check UI subscription handlers: Browser console
+
+**Database migration verification:**
+
+```bash
+# Count games missing remainingCharacters field
+AWS_PROFILE=wildsea aws dynamodb scan \
+  --table-name Wildsea-dev \
+  --filter-expression "begins_with(SK, :sk) AND attribute_not_exists(remainingCharacters)" \
+  --expression-attribute-values '{":sk":{"S":"GAME"}}'
+```

@@ -36,6 +36,11 @@ export function request(
     );
   }
 
+  // Calculate remaining characters: initial quota minus (firefly + default NPCs)
+  const charactersToCreate = 1 + (gameDefaults?.defaultNPCs?.length || 0); // 1 firefly + default NPCs
+  const remainingCharacters =
+    gameDefaults.remainingCharacters - charactersToCreate;
+
   context.stash.record = {
     gameName: input.name,
     gameDescription: input.description,
@@ -49,6 +54,7 @@ export function request(
     updatedAt: timestamp,
     type: TypeGame,
     theme: gameDefaults.theme,
+    remainingCharacters: remainingCharacters,
   };
 
   const gameItem = {
@@ -136,5 +142,6 @@ export function response(context: Context): GameSummary | null {
     updatedAt: context.stash.record.updatedAt,
     type: context.stash.record.type,
     theme: context.stash.record.theme,
+    remainingCharacters: context.stash.record.remainingCharacters,
   };
 }
