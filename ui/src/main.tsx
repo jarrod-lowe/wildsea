@@ -370,7 +370,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
                             title={intl.formatMessage({ id: 'wildsea' })} 
                             userEmail={undefined} 
                             gameDescription="" 
-                            isFirefly={false}
+                            isGM={false}
                             currentLanguage={currentLanguage}
                             onLanguageChange={handleLanguageChangeFromUI}
                         />

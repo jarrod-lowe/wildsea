@@ -25,12 +25,12 @@ export function request(
       SK: DDBPrefixGame,
     }),
     condition: {
-      expression: "#fireflyUserId = :fireflyUserId",
+      expression: "#gmUserId = :gmUserId",
       expressionNames: {
-        "#fireflyUserId": "fireflyUserId",
+        "#gmUserId": "gmUserId",
       },
       expressionValues: util.dynamodb.toMapValues({
-        ":fireflyUserId": identity.sub,
+        ":gmUserId": identity.sub,
       }),
     },
     update: {
@@ -66,6 +66,10 @@ export function response(context: Context): GameSummary | undefined {
     createdAt: context.result.createdAt,
     updatedAt: context.result.updatedAt,
     type: context.result.type,
-    fireflyUserId: context.result.fireflyUserId,
+    gmUserId: context.result.gmUserId,
+    remainingCharacters: context.result.remainingCharacters,
+    remainingSections: context.result.remainingSections,
+    theme: context.result.theme,
+    joinCode: context.result.joinCode,
   };
 }

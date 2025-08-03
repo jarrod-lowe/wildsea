@@ -97,7 +97,7 @@ describe("response", () => {
   it("should append error if user does not have access", () => {
     const context: Context = {
       identity: { sub: "unauthorized-sub" } as AppSyncIdentityCognito,
-      result: { fireflyUserId: "some-other-id", players: ["player-sub"] },
+      result: { gmUserId: "some-other-id", players: ["player-sub"] },
     } as Context;
 
     response(context);
@@ -108,36 +108,36 @@ describe("response", () => {
   });
   */
 
-  it("should return context.result if firefly has access", () => {
+  it("should return context.result if GM has access", () => {
     const context: Context = {
       stash: {},
       identity: { sub: "authorized-sub" } as AppSyncIdentityCognito,
-      result: { fireflyUserId: "authorized-sub", players: ["player-sub"] },
+      result: { gmUserId: "authorized-sub", players: ["player-sub"] },
     } as Context;
 
     const result = response(context);
 
     expect(result).toEqual({
-      fireflyUserId: "authorized-sub",
+      gmUserId: "authorized-sub",
       players: ["player-sub"],
     });
-    expect(context.stash).toEqual({ isFirefly: true });
+    expect(context.stash).toEqual({ isGM: true });
   });
 
   it("should return context.result if user has access", () => {
     const context: Context = {
       stash: {},
       identity: { sub: "player-sub" } as AppSyncIdentityCognito,
-      result: { fireflyUserId: "authorized-sub", players: ["player-sub"] },
+      result: { gmUserId: "authorized-sub", players: ["player-sub"] },
     } as Context;
 
     const result = response(context);
 
     expect(result).toEqual({
-      fireflyUserId: "authorized-sub",
+      gmUserId: "authorized-sub",
       players: ["player-sub"],
     });
-    expect(context.stash).toEqual({ isFirefly: false });
+    expect(context.stash).toEqual({ isGM: false });
   });
 });
 
@@ -150,7 +150,7 @@ describe("permitted", () => {
     createdAt: "2023-01-01T00:00:00Z",
     updatedAt: "2023-01-01T00:00:00Z",
     type: "GAME",
-    fireflyUserId: "firefly-sub",
+    gmUserId: "gm-sub",
     players: [],
     remainingCharacters: 20,
     remainingSections: 50,
@@ -163,9 +163,9 @@ describe("permitted", () => {
     expect(permitted(identity, data)).toBe(false);
   });
 
-  it("should return true if user is firefly", () => {
-    const identity = { sub: "firefly-sub" } as AppSyncIdentityCognito;
-    const data: DataGame = { ...baseGameData, fireflyUserId: "firefly-sub" };
+  it("should return true if user is GM", () => {
+    const identity = { sub: "gm-sub" } as AppSyncIdentityCognito;
+    const data: DataGame = { ...baseGameData, gmUserId: "gm-sub" };
 
     expect(permitted(identity, data)).toBe(true);
   });
@@ -174,18 +174,18 @@ describe("permitted", () => {
     const identity = { sub: "player-sub" } as AppSyncIdentityCognito;
     const data: DataGame = {
       ...baseGameData,
-      fireflyUserId: "firefly-sub",
+      gmUserId: "gm-sub",
       players: ["player-sub"],
     };
 
     expect(permitted(identity, data)).toBe(true);
   });
 
-  it("should return false if user is neither firefly nor a player", () => {
+  it("should return false if user is neither GM nor a player", () => {
     const identity = { sub: "unauthorized-sub" } as AppSyncIdentityCognito;
     const data: DataGame = {
       ...baseGameData,
-      fireflyUserId: "firefly-sub",
+      gmUserId: "gm-sub",
       players: ["player-sub"],
     };
 
@@ -196,7 +196,7 @@ describe("permitted", () => {
     const identity = { sub: "unauthorized-sub" } as AppSyncIdentityCognito;
     const data: DataGame = {
       ...baseGameData,
-      fireflyUserId: "firefly-sub",
+      gmUserId: "gm-sub",
       players: [],
     };
 

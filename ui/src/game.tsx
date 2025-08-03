@@ -413,7 +413,7 @@ const GameContent: React.FC<{
         title={game.gameName}
         userEmail={userEmail}
         gameDescription={game.gameDescription}
-        isFirefly={userSubject === game.fireflyUserId}
+        isGM={userSubject === game.gmUserId}
         onEditGame={() => setShowEditModal(true)}
         onShareGame={() => setShowJoinCodeModal(true)}
         currentLanguage={currentLanguage}

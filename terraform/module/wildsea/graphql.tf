@@ -289,11 +289,11 @@ locals {
     }
     updateGame = {
       type : "Mutation",
-      functions = ["checkGameFireflyAccess", "findAllPlayers", "updateGameOnPlayers", "updateGame"]
+      functions = ["checkGameGMAccess", "findAllPlayers", "updateGameOnPlayers", "updateGame"]
     }
     deletePlayer = {
       type : "Mutation",
-      functions = ["checkPlayerSheetAccessWithFirefly", "findAllSections", "deletePlayer"]
+      functions = ["checkPlayerSheetAccessWithGM", "findAllSections", "deletePlayer"]
     }
     updatePlayer = {
       type : "Mutation",
@@ -313,7 +313,7 @@ locals {
     }
     createNPC = {
       type : "Mutation",
-      functions = ["checkGameFireflyAccess", "createNPC"]
+      functions = ["checkGameGMAccess", "createNPC"]
     }
   }
 }

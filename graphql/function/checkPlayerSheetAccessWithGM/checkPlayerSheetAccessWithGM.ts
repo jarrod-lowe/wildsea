@@ -52,7 +52,7 @@ export function response(
     if (
       context.result === undefined ||
       (identity.sub != context.result.userId &&
-        identity.sub != context.result.fireflyUserId)
+        identity.sub != context.result.gmUserId)
     ) {
       util.unauthorized();
     }
@@ -60,7 +60,7 @@ export function response(
 
   context.stash.userId = context.result.userId;
   context.stash.gameId = context.result.gameId;
-  context.stash.fireflyUserId = context.result.fireflyUserId;
+  context.stash.gmUserId = context.result.gmUserId;
   context.stash.gameName = context.result.gameName;
   context.stash.gameType = context.result.gameType;
   context.stash.gameDescription = context.result.gameDescription;

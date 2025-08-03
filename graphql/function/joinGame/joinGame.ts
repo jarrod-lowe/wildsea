@@ -63,7 +63,7 @@ export function request(context: Context<{ input: JoinGameInput }>): unknown {
     characterName:
       context.stash.gameDefaults?.defaultCharacterName ||
       "Error: No Character Name",
-    fireflyUserId: context.prev.result.fireflyUserId,
+    gmUserId: context.prev.result.gmUserId,
     type: TypeCharacter,
     createdAt: timestamp,
     updatedAt: timestamp,

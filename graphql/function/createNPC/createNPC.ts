@@ -1,13 +1,13 @@
 import { util, Context, PutItemInputAttributeMap } from "@aws-appsync/utils";
-import { CreateNPCInput, PlayerSheetSummary } from "../../../appsync/graphql";
+import { CreateNpcInput, PlayerSheetSummary } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixPlayer } from "../../lib/constants/dbPrefixes";
 import { TypeNPC } from "../../lib/constants/entityTypes";
 import { DataPlayerSheet } from "../../lib/dataTypes";
 import environment from "../../environment.json";
 
-// CheckGameFireflyAccess has already confirmed we are the firefly for this game
+// checkGameGMAccess has already confirmed we are the GM for this game
 
-export function request(context: Context<{ input: CreateNPCInput }>): unknown {
+export function request(context: Context<{ input: CreateNpcInput }>): unknown {
   const input = context.arguments.input;
   const id = util.autoId();
   const timestamp = util.time.nowISO8601();
@@ -19,7 +19,7 @@ export function request(context: Context<{ input: CreateNPCInput }>): unknown {
     gameType: context.prev.result.gameType,
     gameDescription: context.prev.result.gameDescription,
     characterName: input.characterName,
-    fireflyUserId: context.prev.result.fireflyUserId,
+    gmUserId: context.prev.result.gmUserId,
     createdAt: timestamp,
     updatedAt: timestamp,
     type: TypeNPC,

@@ -26,12 +26,12 @@ export function request(
     operation: "UpdateItem",
     key: util.dynamodb.toMapValues(key),
     condition: {
-      expression: "#fireflyUserId = :fireflyUserId",
+      expression: "#gmUserId = :gmUserId",
       expressionNames: {
-        "#fireflyUserId": "fireflyUserId",
+        "#gmUserId": "gmUserId",
       },
       expressionValues: util.dynamodb.toMapValues({
-        ":fireflyUserId": identity.sub,
+        ":gmUserId": identity.sub,
       }),
     },
     update: {
@@ -65,11 +65,12 @@ export function response(
     gameType: result.gameType,
     gameDescription: result.gameDescription,
     joinCode: result.joinCode,
-    fireflyUserId: result.fireflyUserId,
+    gmUserId: result.gmUserId,
     createdAt: result.createdAt,
     updatedAt: result.updatedAt,
     type: result.type,
     theme: result.theme,
     remainingCharacters: result.remainingCharacters,
+    remainingSections: result.remainingSections,
   };
 }

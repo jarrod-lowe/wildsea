@@ -35,7 +35,7 @@ The application uses a single-table design with the following entity types:
 | `GAME` | Game instances/sessions | Persistent |
 | `CHARACTER` | Player characters | Persistent |
 | `SECTION` | Character sheet sections | Persistent |
-| `FIREFLY` | Game masters/handlers | Persistent |
+| `GM` | Game masters/handlers | Persistent |
 | `NPC` | NPCs | Persistent |
 | `TEMPLATE` | Character sheet templates | Persistent |
 | `DICEROLL` | Dice roll events | Subscription-only, not stored |
@@ -61,7 +61,7 @@ PK: GAME#{gameId}
 SK: PLAYER#{userId}
 ```
 
-**Attributes**: `characterName`, `userEmail`, `type` (CHARACTER/FIREFLY/NPC),
+**Attributes**: `characterName`, `userEmail`, `type` (CHARACTER/GM/NPC),
 `sections` (StringSet), etc.
 
 #### Section Records
@@ -137,7 +137,7 @@ GSI1PK = USER#{userId}
 **Access Pattern**: TransactWriteItems
 
 1. Create game record: `PK=GAME#{gameId}, SK=GAME`
-2. Create firefly/handler record: `PK=GAME#{gameId}, SK=PLAYER#{userId}` with `GSI1PK=USER#{userId}`
+2. Create GM/handler record: `PK=GAME#{gameId}, SK=PLAYER#{userId}` with `GSI1PK=USER#{userId}`
 3. Create default NPCs (based on game type)
 
 **Implementation**: `graphql/mutation/createGame/createGame.ts`
@@ -329,12 +329,12 @@ The single-table design efficiently models these relationships:
 1. **User Identity**: Cognito JWT token validation
 2. **Game Membership**: Verified through player records
 3. **Section Ownership**: Enforced via `userId` attribute
-4. **Game Master Privileges**: Firefly/Handler type checking
+4. **Game Master Privileges**: GM/Handler type checking
 
 ### Conditional Expressions
 
 - Section updates require ownership or game master status
-- Game deletion requires firefly/handler privileges
+- Game deletion requires GM/handler privileges
 - Player removal handled by game masters
 
 ### Data Privacy
