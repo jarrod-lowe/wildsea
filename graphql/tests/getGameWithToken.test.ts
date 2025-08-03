@@ -289,7 +289,7 @@ describe("joinGame response function", () => {
         items: [
           {
             joinToken: "token123",
-            fireflyUserId: "user123",
+            gmUserId: "user123",
           },
         ],
       },
@@ -341,7 +341,7 @@ describe("joinGame response function", () => {
         items: [
           {
             joinToken: "token123",
-            fireflyUserId: "user456",
+            gmUserId: "user456",
             playerSheets: [{ userId: "user123" }],
           },
         ],
@@ -394,7 +394,7 @@ describe("joinGame response function", () => {
         items: [
           {
             joinToken: "token123",
-            fireflyUserId: "user123",
+            gmUserId: "user123",
             playerSheets: [],
           },
         ],
@@ -447,7 +447,7 @@ describe("joinGame response function", () => {
         items: [
           {
             joinToken: "token123",
-            fireflyUserId: "user456",
+            gmUserId: "user456",
             playerSheets: [{ userId: "user123" }],
           },
         ],
@@ -495,7 +495,7 @@ describe("joinGame response function", () => {
         items: [
           {
             joinToken: "token123",
-            fireflyUserId: "user123",
+            gmUserId: "user123",
             playerSheets: [],
           },
         ],
@@ -548,7 +548,7 @@ describe("joinGame response function", () => {
         items: [
           {
             joinToken: "token123",
-            fireflyUserId: "user456",
+            gmUserId: "user456",
             players: [],
             gameId: "game123",
             gameName: "Test Game",
@@ -568,7 +568,7 @@ describe("joinGame response function", () => {
 
     expect(result).toEqual({
       joinToken: "token123",
-      fireflyUserId: "user456",
+      gmUserId: "user456",
       players: [],
       gameId: "game123",
       gameName: "Test Game",

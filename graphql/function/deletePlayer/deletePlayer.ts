@@ -20,7 +20,7 @@ export function request(
   // Auth has already been checked
 
   if (!authIsIam(context.identity)) {
-    if (context.stash.userId == context.stash.fireflyUserId) {
+    if (context.stash.userId == context.stash.gmUserId) {
       util.error(getTranslatedMessage("player.cannotDelete"));
     }
   }
@@ -97,6 +97,7 @@ export function response(context: Context): PlayerSheetSummary {
     gameDescription: context.stash.gameDescription,
     gameName: context.stash.gameName,
     createdAt: context.stash.createdAt,
+    remainingSections: 0,
     updatedAt: timestamp,
     type: TypeCharacter,
     deleted: true,

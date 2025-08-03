@@ -75,7 +75,7 @@ describe("request function", () => {
       stash: {
         gameDefaults: {
           defaultCharacterName: "Test Character",
-          defaultGMName: "Test Firefly",
+          defaultGMName: "Test GM",
           defaultNPCs: [
             {
               type: "NPC",
@@ -123,7 +123,7 @@ describe("request function", () => {
             gameType: { S: "wildsea" },
             gameId: { S: mockId },
             GSI1PK: { S: "JOIN#7A8CV2" },
-            fireflyUserId: { S: "1234-5678-91011" },
+            gmUserId: { S: "1234-5678-91011" },
             joinCode: { S: "7A8CV2" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
@@ -146,12 +146,12 @@ describe("request function", () => {
             gameName: { S: "Test Game" },
             gameType: { S: "wildsea" },
             gameDescription: { S: "Test Description" },
-            fireflyUserId: { S: "1234-5678-91011" },
+            gmUserId: { S: "1234-5678-91011" },
             GSI1PK: { S: "USER#1234-5678-91011" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
-            type: { S: "FIREFLY" },
-            characterName: { S: "Test Firefly" },
+            type: { S: "GM" },
+            characterName: { S: "Test GM" },
             remainingSections: { N: "50" },
           },
         },
@@ -168,7 +168,7 @@ describe("request function", () => {
             gameName: { S: "Test Game" },
             gameType: { S: "wildsea" },
             gameDescription: { S: "Test Description" },
-            fireflyUserId: { S: "1234-5678-91011" },
+            gmUserId: { S: "1234-5678-91011" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
             type: { S: "NPC" },
@@ -232,7 +232,7 @@ describe("request function", () => {
       stash: {
         gameDefaults: {
           defaultCharacterName: "Test Character",
-          defaultGMName: "Test Firefly",
+          defaultGMName: "Test GM",
           defaultNPCs: [
             {
               type: "NPC",
@@ -307,7 +307,7 @@ describe("request function", () => {
       stash: {
         gameDefaults: {
           defaultCharacterName: "Test Character",
-          defaultGMName: "Test Firefly",
+          defaultGMName: "Test GM",
           defaultNPCs: [
             {
               type: "NPC",
@@ -367,7 +367,7 @@ describe("response function", () => {
           gameType: "wildsea",
           gameId: "testGameId",
           joinCode: "7A8CV2",
-          fireflyUserId: "testFireflyUserId",
+          gmUserId: "testGMUserId",
           createdAt: "testCreatedAt",
           updatedAt: "testUpdatedAt",
           type: "testType",
@@ -390,7 +390,7 @@ describe("response function", () => {
       gameType: "wildsea",
       gameId: "testGameId",
       joinCode: "7A8CV2",
-      fireflyUserId: "testFireflyUserId",
+      gmUserId: "testGMUserId",
       createdAt: "testCreatedAt",
       updatedAt: "testUpdatedAt",
       type: "testType",

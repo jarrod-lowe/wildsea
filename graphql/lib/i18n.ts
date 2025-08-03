@@ -16,7 +16,7 @@ const translations: TranslationsByLanguage = {
     "joinGame.cannotJoinOwnGame": "You cannot join your own game",
     "joinGame.alreadyPlayer": "You are already a player in this game",
     "template.notFound": "Template not found",
-    "player.cannotDelete": "Cannot delete firefly sheet",
+    "player.cannotDelete": "Cannot delete GM sheet",
     "game.notFound": "Game not found",
     "sheet.notFound": "Sheet not found",
     "gameRecord.notFound": "Game record not found",

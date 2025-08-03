@@ -19,7 +19,7 @@ interface TopBarProps {
   title: string;
   userEmail: string | undefined;
   gameDescription: string | null | undefined;
-  isFirefly?: boolean;
+  isGM?: boolean;
   onEditGame?: () => void;
   onShareGame?: () => void;
   currentLanguage?: SupportedLanguage;
@@ -27,7 +27,7 @@ interface TopBarProps {
 }
 
 // TopBar component
-export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isFirefly, onEditGame, onShareGame, currentLanguage = 'en', onLanguageChange }) => {
+export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isGM, onEditGame, onShareGame, currentLanguage = 'en', onLanguageChange }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -70,7 +70,7 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
           </Tippy>
         </span>
       )}
-      {isFirefly && (
+      {isGM && (
         <span className="game-actions">
           <button className="btn-standard btn-small share" onClick={onShareGame}>
             {intl.formatMessage({ id: 'share' })}

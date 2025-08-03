@@ -122,7 +122,7 @@ export const GamesMenuContent: React.FC<{
                 title={intl.formatMessage({ id: 'wildsea' })} 
                 userEmail={userEmail} 
                 gameDescription="" 
-                isFirefly={false}
+                isGM={false}
                 currentLanguage={currentLanguage}
                 onLanguageChange={onLanguageChange}
             />

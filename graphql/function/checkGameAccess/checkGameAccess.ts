@@ -40,7 +40,7 @@ export function response(context: ResponseContext): DataGame | undefined {
   if (!identity?.sub) util.unauthorized();
   if (!permitted(identity, context.result)) util.unauthorized();
 
-  context.stash.isFirefly = context.result.fireflyUserId === identity.sub;
+  context.stash.isGM = context.result.gmUserId === identity.sub;
 
   return context.result;
 }
@@ -53,7 +53,7 @@ export function permitted(
     return false;
   }
 
-  if (data.fireflyUserId === identity.sub) {
+  if (data.gmUserId === identity.sub) {
     return true;
   }
 

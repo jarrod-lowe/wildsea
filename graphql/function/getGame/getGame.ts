@@ -18,7 +18,7 @@ import type {
 } from "../../lib/dataTypes";
 import {
   TypeCharacter,
-  TypeFirefly,
+  TypeGM,
   TypeSection,
   TypeGame,
   TypeNPC,
@@ -96,7 +96,7 @@ function buildPlayerSheets(
   items.forEach((data) => {
     if (
       data.type === TypeCharacter ||
-      data.type === TypeFirefly ||
+      data.type === TypeGM ||
       data.type === TypeNPC
     ) {
       const sheet = makeCharacterSheetData(data as DataPlayerSheet);
@@ -143,7 +143,7 @@ function addSheetsToGame(
 
 export function makeGameData(data: DataGame, sub: string): Game {
   let joinCode = null;
-  if (data.fireflyUserId == sub) {
+  if (data.gmUserId == sub) {
     joinCode = data.joinCode;
   }
   return {
@@ -153,7 +153,7 @@ export function makeGameData(data: DataGame, sub: string): Game {
     gameDescription: data.gameDescription,
     playerSheets: [],
     joinCode: joinCode,
-    fireflyUserId: data.fireflyUserId,
+    gmUserId: data.gmUserId,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     type: data.type,
@@ -172,7 +172,7 @@ export function makeCharacterSheetData(data: DataPlayerSheet): PlayerSheet {
     updatedAt: data.updatedAt,
     type: data.type,
     sections: [],
-    fireflyUserId: data.fireflyUserId,
+    gmUserId: data.gmUserId,
     remainingSections: data.remainingSections,
   };
 }

@@ -44,7 +44,7 @@ export function subscriptionResponse(
   // if the user is not a player or GM in this game, or the game does not exist, refuse
   if (
     !context.result ||
-    (context.result.fireflyUserId !== identity.sub &&
+    (context.result.gmUserId !== identity.sub &&
       !context.result.players?.includes(identity.sub))
   ) {
     util.unauthorized();

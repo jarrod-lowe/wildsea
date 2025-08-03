@@ -5,7 +5,7 @@ import { createSectionMutation, createNPCMutation, deleteGameMutation, deletePla
 import { FormattedMessage, useIntl } from 'react-intl';
 import { SupportedLanguage, resolveLanguage } from './translations';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { TypeFirefly, TypeNPC } from "../../graphql/lib/constants/entityTypes";
+import { TypeGM, TypeNPC } from "../../graphql/lib/constants/entityTypes";
 import { Section } from './section';
 import { getSectionSeed, getSectionTypes } from './sectionRegistry';
 import { useToast } from './notificationToast';
@@ -185,7 +185,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   };
 
   let deleteButtonId = "playerSheetTab.quitLabel";
-  if (userSubject === sheet.fireflyUserId) deleteButtonId = "playerSheetTab.kickPlayerLabel";
+  if (userSubject === sheet.gmUserId) deleteButtonId = "playerSheetTab.kickPlayerLabel";
   if (sheet.type === TypeNPC) deleteButtonId = "playerSheetTab.kickShipLabel";
 
   let mayEditSheet = false;
@@ -333,7 +333,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           onDeleteSection={handleDeleteSection}
       />
 
-      {sheet.type === TypeFirefly && (
+      {sheet.type === TypeGM && (
         <button 
           onClick={() => setShowCreateNPCModal(true)} 
           className="btn-standard btn-small"
@@ -343,13 +343,13 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         </button>
       )}
 
-      {(userSubject === sheet.userId || userSubject === sheet.fireflyUserId ) && (sheet.userId != sheet.fireflyUserId) && (
+      {(userSubject === sheet.userId || userSubject === sheet.gmUserId ) && (sheet.userId != sheet.gmUserId) && (
         <button onClick={() => setShowDeleteModal(true)} className="btn-danger btn-small">
           <FormattedMessage id={deleteButtonId} />
         </button>
       )}
 
-      {(userSubject === sheet.fireflyUserId) && (sheet.userId == sheet.fireflyUserId) && (
+      {(userSubject === sheet.gmUserId) && (sheet.userId == sheet.gmUserId) && (
         <button onClick={() => setShowDeleteGameModal(true)} className="btn-danger btn-small">
           <FormattedMessage id="deleteGameModal.deleteGame" />
         </button>

@@ -95,11 +95,11 @@ export type Game = {
   __typename?: 'Game';
   createdAt: Scalars['AWSDateTime']['output'];
   deleted?: Maybe<Scalars['Boolean']['output']>;
-  fireflyUserId: Scalars['String']['output'];
   gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
+  gmUserId: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
   remainingCharacters: Scalars['Int']['output'];
@@ -113,11 +113,11 @@ export type GameSummary = {
   __typename?: 'GameSummary';
   createdAt: Scalars['AWSDateTime']['output'];
   deleted?: Maybe<Scalars['Boolean']['output']>;
-  fireflyUserId: Scalars['String']['output'];
   gameDescription?: Maybe<Scalars['String']['output']>;
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
+  gmUserId: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
   remainingCharacters: Scalars['Int']['output'];
   remainingSections: Scalars['Int']['output'];
@@ -251,8 +251,8 @@ export type PlayerSheet = {
   __typename?: 'PlayerSheet';
   characterName: Scalars['String']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
-  fireflyUserId: Scalars['ID']['output'];
   gameId: Scalars['ID']['output'];
+  gmUserId: Scalars['ID']['output'];
   remainingSections: Scalars['Int']['output'];
   sections: Array<SheetSection>;
   type: Scalars['String']['output'];

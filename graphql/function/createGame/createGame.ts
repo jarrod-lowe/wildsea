@@ -3,7 +3,7 @@ import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-r
 import environment from "../../environment.json";
 import { GameSummary, CreateGameInput } from "../../../appsync/graphql";
 import type { GameDefaults } from "../../lib/dataTypes";
-import { TypeFirefly, TypeGame } from "../../lib/constants/entityTypes";
+import { TypeGM, TypeGame } from "../../lib/constants/entityTypes";
 import {
   DDBPrefixGame,
   DDBPrefixPlayer,
@@ -36,8 +36,8 @@ export function request(
     );
   }
 
-  // Calculate remaining characters: initial quota minus (firefly + default NPCs)
-  const charactersToCreate = 1 + (gameDefaults?.defaultNPCs?.length || 0); // 1 firefly + default NPCs
+  // Calculate remaining characters: initial quota minus (GM + default NPCs)
+  const charactersToCreate = 1 + (gameDefaults?.defaultNPCs?.length || 0); // 1 GM + default NPCs
   const remainingCharacters =
     gameDefaults.remainingCharacters - charactersToCreate;
 
@@ -47,7 +47,7 @@ export function request(
     gameType: input.gameType,
     gameId: id,
     GSI1PK: `${DDBPrefixJoin}#${joinCode}`,
-    fireflyUserId: identity.sub,
+    gmUserId: identity.sub,
     // players: no value yet
     joinCode: joinCode,
     createdAt: timestamp,
@@ -70,7 +70,7 @@ export function request(
     ) as PutItemInputAttributeMap,
   };
 
-  const fireflyItem = {
+  const gmItem = {
     key: util.dynamodb.toMapValues({
       PK: DDBPrefixGame + "#" + id,
       SK: DDBPrefixPlayer + "#" + identity.sub,
@@ -85,15 +85,15 @@ export function request(
       gameDescription: input.description,
       characterName: gameDefaults?.defaultGMName || "Error: No GM Name",
       GSI1PK: DDBPrefixUser + "#" + identity.sub,
-      fireflyUserId: identity.sub,
+      gmUserId: identity.sub,
       createdAt: timestamp,
       updatedAt: timestamp,
-      type: TypeFirefly,
+      type: TypeGM,
       remainingSections: gameDefaults.remainingSections,
     } as DataPlayerSheet) as PutItemInputAttributeMap,
   };
 
-  const transactItems = [gameItem, fireflyItem];
+  const transactItems = [gameItem, gmItem];
 
   // Create all configured default NPCs for this game type
   gameDefaults?.defaultNPCs.forEach((npcConfig) => {
@@ -112,7 +112,7 @@ export function request(
         gameDescription: input.description,
         gameType: input.gameType,
         characterName: npcConfig.characterName,
-        fireflyUserId: identity.sub,
+        gmUserId: identity.sub,
         createdAt: timestamp,
         updatedAt: timestamp,
         type: npcConfig.type,
@@ -140,7 +140,7 @@ export function response(context: Context): GameSummary | null {
     gameType: context.stash.record.gameType,
     gameId: context.stash.record.gameId,
     joinCode: context.stash.record.joinCode,
-    fireflyUserId: context.stash.record.fireflyUserId,
+    gmUserId: context.stash.record.gmUserId,
     createdAt: context.stash.record.createdAt,
     updatedAt: context.stash.record.updatedAt,
     type: context.stash.record.type,

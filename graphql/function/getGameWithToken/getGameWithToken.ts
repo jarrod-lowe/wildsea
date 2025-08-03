@@ -43,7 +43,7 @@ export function response(context: Context<{ input: JoinGameInput }>): Game {
   const identity = context.identity as AppSyncIdentityCognito;
   const language = context.arguments.input.language;
 
-  if (identity.sub === game.fireflyUserId) {
+  if (identity.sub === game.gmUserId) {
     util.error(
       getTranslatedMessage("joinGame.cannotJoinOwnGame", language),
       "Conflict",

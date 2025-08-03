@@ -51,7 +51,7 @@ export function permitted(
     return false;
   }
 
-  if (data.fireflyUserId === identity.sub) {
+  if (data.gmUserId === identity.sub) {
     return true;
   }
 
