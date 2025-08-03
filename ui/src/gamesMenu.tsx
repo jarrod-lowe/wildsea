@@ -8,6 +8,7 @@ import { type SupportedLanguage } from './translations';
 import { TopBar } from "./frame";
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
+import { resolveLanguage } from './translations';
 import { fetchAuthSession } from 'aws-amplify/auth';
 
 export const GamesMenuContent: React.FC<{ 
@@ -15,6 +16,7 @@ export const GamesMenuContent: React.FC<{
     currentLanguage?: SupportedLanguage;
     onLanguageChange?: (language: SupportedLanguage) => void;
 }> = ({ userEmail, currentLanguage, onLanguageChange }) => {
+    const actualLanguage = resolveLanguage(currentLanguage);
     const client = generateClient();
     const [games, setGames] = useState<PlayerSheetSummary[]>([]);
     const [gameTypes, setGameTypes] = useState<GameTypeMetadata[]>([]);
@@ -52,7 +54,7 @@ export const GamesMenuContent: React.FC<{
                 query: getGameTypesQuery,
                 variables: {
                     input: {
-                        language: currentLanguage || 'en'
+                        language: actualLanguage || 'en'
                     }
                 }
             }) as GraphQLResult<{ getGameTypes: GameTypeMetadata[] }>;
