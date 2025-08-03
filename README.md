@@ -153,7 +153,7 @@ When a game is deleted, the system cleans up all related data automatically.
 ### What happens
 
 1. **User deletes game** - Only the game owner can do this
-2. **Main game record deleted** - Game disappears immediately 
+2. **Main game record deleted** - Game disappears immediately
 3. **Background cleanup starts** - All player characters and sections get deleted automatically
 4. **Users get notified** - Anyone in the game gets redirected to the main page
 
@@ -169,6 +169,7 @@ The cleanup happens automatically using:
 ### If something goes wrong
 
 Check for leftover records:
+
 ```bash
 AWS_PROFILE=wildsea aws dynamodb query \
   --table-name Wildsea-dev \
