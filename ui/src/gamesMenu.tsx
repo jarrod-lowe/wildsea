@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { generateClient } from "aws-amplify/api";
 import { createGameMutation, getGamesQuery, getGameTypesQuery } from "../../appsync/schema";
-import { PlayerSheetSummary, CreateGameInput, Game, GameTypeMetadata } from "../../appsync/graphql";
+import { PlayerSheetSummary, CreateGameInput, Game, GameTypeMetadata, GamesWithQuota } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { type SupportedLanguage } from './translations';
@@ -18,6 +18,8 @@ export const GamesMenuContent: React.FC<{
     const client = generateClient();
     const [games, setGames] = useState<PlayerSheetSummary[]>([]);
     const [gameTypes, setGameTypes] = useState<GameTypeMetadata[]>([]);
+    const [remainingGames, setRemainingGames] = useState<number>(10);
+    const [totalQuota, setTotalQuota] = useState<number>(10);
     const [error, setError] = useState<string | null>(null);
     const [gameName, setGameName] = useState('');
     const [gameDescription, setGameDescription] = useState('');
@@ -35,8 +37,10 @@ export const GamesMenuContent: React.FC<{
         try {
             const response = await client.graphql({
                 query: getGamesQuery,
-            }) as GraphQLResult<{ getGames: PlayerSheetSummary[] }>;
-            setGames(response.data.getGames);
+            }) as GraphQLResult<{ getGames: GamesWithQuota }>;
+            setGames(response.data.getGames.games);
+            setRemainingGames(response.data.getGames.remainingGames);
+            setTotalQuota(response.data.getGames.totalQuota);
         } catch (error) {
             setError(intl.formatMessage({ id: 'errorFetchingGames' }) + JSON.stringify(error));
         }
@@ -168,6 +172,21 @@ export const GamesMenuContent: React.FC<{
                 </section>
                 <section className="newgame" role="region" aria-labelledby="create-game-heading">
                     <h2 id="create-game-heading"><FormattedMessage id="createNewGame" /></h2>
+                    <p className="game-quota">
+                        <FormattedMessage 
+                            id="gameQuota.remaining" 
+                            values={{ current: totalQuota - remainingGames, totalQuota: totalQuota }} 
+                        />
+                        {remainingGames <= 2 && remainingGames > 0 && (
+                            <span className="quota-warning">
+                                {" "}
+                                <FormattedMessage 
+                                    id="gameQuota.warning" 
+                                    values={{ remaining: remainingGames }} 
+                                />
+                            </span>
+                        )}
+                    </p>
                     {canCreateGame ? (
                         <form 
                             onSubmit={handleCreateGame} 
@@ -219,9 +238,18 @@ export const GamesMenuContent: React.FC<{
                                     <button 
                                         type="submit"
                                         className="btn-standard"
+                                        disabled={remainingGames <= 0}
                                     >
                                         <FormattedMessage id="createGame" />
                                     </button>
+                                    {remainingGames <= 0 && (
+                                        <p className="quota-exceeded-message" role="alert">
+                                            <FormattedMessage 
+                                                id="gameQuota.exceeded" 
+                                                values={{ totalQuota: totalQuota }} 
+                                            />
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </form>

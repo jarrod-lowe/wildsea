@@ -11,7 +11,7 @@
       export const getGamesQuery = `
         query getGames {
           getGames {
-            userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted remainingSections
+            games { userId gameId gameName gameType gameDescription characterName type createdAt updatedAt deleted remainingSections } remainingGames totalQuota
           }
         }
       `;

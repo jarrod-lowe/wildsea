@@ -32,9 +32,15 @@ type Mutation {
     updateUserSettings(input: UpdateUserSettingsInput!): UserSettings! @aws_cognito_user_pools
 }
 
+type GamesWithQuota @aws_cognito_user_pools {
+  games: [PlayerSheetSummary!]!
+  remainingGames: Int!
+  totalQuota: Int!
+}
+
 type Query {
     getGame(input: GetGameInput!): Game! @aws_cognito_user_pools
-    getGames: [PlayerSheetSummary!] @aws_cognito_user_pools
+    getGames: GamesWithQuota! @aws_cognito_user_pools
     getGameTypes(input: GetGameTypesInput!): [GameTypeMetadata!]! @aws_cognito_user_pools
     getCharacterTemplates(input: GetCharacterTemplatesInput!): [CharacterTemplateMetadata!]! @aws_cognito_user_pools
     getCharacterTemplate(input: GetCharacterTemplateInput!): [TemplateSectionData!]! @aws_cognito_user_pools

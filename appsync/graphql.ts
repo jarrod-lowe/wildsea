@@ -133,6 +133,13 @@ export type GameTypeMetadata = {
   language: Scalars['String']['output'];
 };
 
+export type GamesWithQuota = {
+  __typename?: 'GamesWithQuota';
+  games: Array<PlayerSheetSummary>;
+  remainingGames: Scalars['Int']['output'];
+  totalQuota: Scalars['Int']['output'];
+};
+
 export type GetCharacterTemplateInput = {
   gameType: Scalars['String']['input'];
   language: Scalars['String']['input'];
@@ -274,7 +281,7 @@ export type Query = {
   getCharacterTemplates: Array<CharacterTemplateMetadata>;
   getGame: Game;
   getGameTypes: Array<GameTypeMetadata>;
-  getGames?: Maybe<Array<PlayerSheetSummary>>;
+  getGames: GamesWithQuota;
   getUserSettings?: Maybe<UserSettings>;
 };
 
