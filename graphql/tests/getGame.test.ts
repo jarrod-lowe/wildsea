@@ -133,6 +133,7 @@ describe("response", () => {
             joinCode: "ABC123",
             type: TypeGame,
             remainingCharacters: 20,
+            remainingSections: 50,
           } as DataGame,
           {
             userId: "user1",
@@ -142,6 +143,7 @@ describe("response", () => {
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeCharacter,
+            remainingSections: 50,
           } as DataPlayerSheet,
           {
             userId: "user1",
@@ -163,6 +165,7 @@ describe("response", () => {
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeFirefly,
+            remainingSections: 50,
           } as DataPlayerSheet,
         ],
       },
@@ -190,6 +193,7 @@ describe("response", () => {
           createdAt: "2023-01-01",
           updatedAt: "2023-01-02",
           type: TypeCharacter,
+          remainingSections: 50,
           sections: [
             {
               userId: "user1",
@@ -213,6 +217,7 @@ describe("response", () => {
           createdAt: "2023-01-01",
           updatedAt: "2023-01-02",
           type: TypeFirefly,
+          remainingSections: 50,
           sections: [],
         },
       ],
@@ -222,6 +227,7 @@ describe("response", () => {
       updatedAt: "2023-01-02",
       type: TypeGame,
       remainingCharacters: 20,
+      remainingSections: 50,
       theme: undefined,
     });
   });
@@ -249,6 +255,7 @@ describe("response", () => {
             joinCode: "ABC123",
             type: TypeGame,
             remainingCharacters: 20,
+            remainingSections: 50,
           } as DataGame,
           {
             userId: "user1",
@@ -258,6 +265,7 @@ describe("response", () => {
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeCharacter,
+            remainingSections: 50,
           } as DataPlayerSheet,
           {
             userId: "user1",
@@ -279,6 +287,7 @@ describe("response", () => {
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeFirefly,
+            remainingSections: 50,
           } as DataPlayerSheet,
         ],
       },
@@ -306,6 +315,7 @@ describe("response", () => {
           createdAt: "2023-01-01",
           updatedAt: "2023-01-02",
           type: TypeCharacter,
+          remainingSections: 50,
           sections: [
             {
               userId: "user1",
@@ -329,6 +339,7 @@ describe("response", () => {
           createdAt: "2023-01-01",
           updatedAt: "2023-01-02",
           type: TypeFirefly,
+          remainingSections: 50,
           sections: [],
         },
       ],
@@ -338,6 +349,7 @@ describe("response", () => {
       updatedAt: "2023-01-02",
       type: TypeGame,
       remainingCharacters: 20,
+      remainingSections: 50,
       theme: undefined,
     });
   });
@@ -360,6 +372,7 @@ describe("response", () => {
             createdAt: "2023-01-01",
             updatedAt: "2023-01-02",
             type: TypeCharacter,
+            remainingSections: 50,
           } as DataPlayerSheet,
         ],
       },
@@ -396,6 +409,7 @@ describe("response", () => {
             updatedAt: "2023-01-02",
             type: TypeGame,
             remainingCharacters: 20,
+            remainingSections: 50,
           } as DataGame,
           {
             type: "UNKNOWN_TYPE",
@@ -428,6 +442,7 @@ describe("makeGameData", () => {
       players: ["user3", "user2"],
       fireflyUserId: "user1",
       remainingCharacters: 20,
+      remainingSections: 50,
     };
 
     const result = makeGameData(data, "notFirefly");
@@ -444,6 +459,7 @@ describe("makeGameData", () => {
       updatedAt: "2023-01-02",
       type: TypeGame,
       remainingCharacters: 20,
+      remainingSections: 50,
       theme: undefined,
     });
   });
@@ -461,6 +477,7 @@ describe("makeGameData", () => {
       players: ["user3", "user2"],
       fireflyUserId: "user1",
       remainingCharacters: 20,
+      remainingSections: 50,
     };
 
     const result = makeGameData(data, "user1");
@@ -477,6 +494,7 @@ describe("makeGameData", () => {
       updatedAt: "2023-01-02",
       type: TypeGame,
       remainingCharacters: 20,
+      remainingSections: 50,
       theme: undefined,
     });
   });
@@ -495,6 +513,7 @@ describe("makeCharacterSheetData", () => {
       type: TypeCharacter,
       gameName: "Test Game",
       gameDescription: "A test game",
+      remainingSections: 50,
     };
 
     const result = makeCharacterSheetData(data);
@@ -508,6 +527,7 @@ describe("makeCharacterSheetData", () => {
       fireflyUserId: "XXXXX",
       type: TypeCharacter,
       sections: [],
+      remainingSections: 50,
     });
   });
 });

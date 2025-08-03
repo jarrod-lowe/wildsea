@@ -103,6 +103,7 @@ export type Game = {
   joinCode?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
   remainingCharacters: Scalars['Int']['output'];
+  remainingSections: Scalars['Int']['output'];
   theme?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
@@ -119,6 +120,7 @@ export type GameSummary = {
   gameType: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
   remainingCharacters: Scalars['Int']['output'];
+  remainingSections: Scalars['Int']['output'];
   theme?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
@@ -244,6 +246,7 @@ export type PlayerSheet = {
   createdAt: Scalars['AWSDateTime']['output'];
   fireflyUserId: Scalars['ID']['output'];
   gameId: Scalars['ID']['output'];
+  remainingSections: Scalars['Int']['output'];
   sections: Array<SheetSection>;
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
@@ -259,6 +262,7 @@ export type PlayerSheetSummary = {
   gameId: Scalars['ID']['output'];
   gameName: Scalars['String']['output'];
   gameType: Scalars['String']['output'];
+  remainingSections: Scalars['Int']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
   userId: Scalars['ID']['output'];

@@ -139,6 +139,7 @@ describe("fnJoinGame request function", () => {
           gameType: "wildsea",
           gameDescription: "Test Description",
           fireflyUserId: "firefly",
+          remainingSections: 50,
         },
       },
       request: {
@@ -207,6 +208,7 @@ describe("fnJoinGame request function", () => {
             type: { S: "CHARACTER" },
             createdAt: { S: mockTimestamp },
             updatedAt: { S: mockTimestamp },
+            remainingSections: { N: "50" },
           },
         },
       ],

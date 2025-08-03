@@ -135,6 +135,7 @@ type GameSummary @aws_cognito_user_pools {
   deleted: Boolean
   theme: String
   remainingCharacters: Int!
+  remainingSections: Int!
 }
 
 type Game @aws_cognito_user_pools {
@@ -151,6 +152,7 @@ type Game @aws_cognito_user_pools {
   deleted: Boolean
   theme: String
   remainingCharacters: Int!
+  remainingSections: Int!
 }
 
 input UpdatePlayerInput {
@@ -175,6 +177,7 @@ type PlayerSheetSummary @aws_cognito_user_pools @aws_iam {
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   deleted: Boolean
+  remainingSections: Int!
 }
 
 type PlayerSheet @aws_cognito_user_pools {
@@ -186,6 +189,7 @@ type PlayerSheet @aws_cognito_user_pools {
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   fireflyUserId: ID!
+  remainingSections: Int!
 }
 
 type SheetSection @aws_cognito_user_pools {

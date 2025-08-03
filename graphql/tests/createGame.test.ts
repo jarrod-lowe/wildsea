@@ -38,6 +38,7 @@ describe("request function", () => {
           defaultNPCs: { type: string; characterName: string }[];
           theme: string;
           remainingCharacters: number;
+          remainingSections: number;
         };
       };
     } = {
@@ -83,6 +84,7 @@ describe("request function", () => {
           ],
           theme: "wildsea",
           remainingCharacters: 20,
+          remainingSections: 50,
         },
       },
       prev: undefined,
@@ -128,6 +130,7 @@ describe("request function", () => {
             type: { S: "GAME" },
             theme: { S: "wildsea" },
             remainingCharacters: { N: "18" },
+            remainingSections: { N: "50" },
           },
         },
         {
@@ -149,6 +152,7 @@ describe("request function", () => {
             updatedAt: { S: mockTimestamp },
             type: { S: "FIREFLY" },
             characterName: { S: "Test Firefly" },
+            remainingSections: { N: "50" },
           },
         },
         {
@@ -169,6 +173,7 @@ describe("request function", () => {
             updatedAt: { S: mockTimestamp },
             type: { S: "NPC" },
             characterName: { S: "Test Ship" },
+            remainingSections: { N: "50" },
           },
         },
       ],
@@ -192,6 +197,7 @@ describe("request function", () => {
           defaultNPCs: { type: string; characterName: string }[];
           theme: string;
           remainingCharacters: number;
+          remainingSections: number;
         };
       };
     } = {
@@ -235,6 +241,7 @@ describe("request function", () => {
           ],
           theme: "wildsea",
           remainingCharacters: 20,
+          remainingSections: 50,
         },
       },
       prev: undefined,
@@ -265,6 +272,7 @@ describe("request function", () => {
           defaultNPCs: { type: string; characterName: string }[];
           theme: string;
           remainingCharacters: number;
+          remainingSections: number;
         };
       };
     } = {
@@ -308,6 +316,7 @@ describe("request function", () => {
           ],
           theme: "wildsea",
           remainingCharacters: 20,
+          remainingSections: 50,
         },
       },
       prev: undefined,

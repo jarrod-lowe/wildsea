@@ -5,6 +5,7 @@ locals {
   db_prefix_language      = "LANGUAGE"
   fallback_language       = "en"
   initial_character_quota = "20"
+  initial_section_quota   = "50"
 }
 
 # English defaults
@@ -52,6 +53,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_en" {
     remainingCharacters = {
       N = local.initial_character_quota
     }
+    remainingSections = {
+      N = local.initial_section_quota
+    }
     type = {
       S = local.db_prefix_gamedefaults
     }
@@ -90,6 +94,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_en" {
     }
     remainingCharacters = {
       N = local.initial_character_quota
+    }
+    remainingSections = {
+      N = local.initial_section_quota
     }
     type = {
       S = local.db_prefix_gamedefaults
@@ -142,6 +149,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_tlh" {
     remainingCharacters = {
       N = local.initial_character_quota
     }
+    remainingSections = {
+      N = local.initial_section_quota
+    }
     type = {
       S = local.db_prefix_gamedefaults
     }
@@ -180,6 +190,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_tlh" {
     }
     remainingCharacters = {
       N = local.initial_character_quota
+    }
+    remainingSections = {
+      N = local.initial_section_quota
     }
     type = {
       S = local.db_prefix_gamedefaults

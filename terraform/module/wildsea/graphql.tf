@@ -309,7 +309,7 @@ locals {
     }
     deleteSection = {
       type : "Mutation",
-      functions = ["checkGameAccess", "deleteSection"]
+      functions = ["checkGameAccess", "getSectionData", "deleteSection"]
     }
     createNPC = {
       type : "Mutation",

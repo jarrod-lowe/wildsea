@@ -279,7 +279,11 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
       {mayEditSheet && !showNewSection && (
         <>
-          <button onClick={() => setShowNewSection(true)} className="btn-standard btn-small">
+          <button 
+            onClick={() => setShowNewSection(true)} 
+            className="btn-standard btn-small"
+            disabled={sheet.remainingSections <= 0}
+          >
             <FormattedMessage id="playerSheetTab.addSection" />
           </button>
           <button onClick={() => setShowDeleteSectionModal(true)} className="btn-danger btn-small">
@@ -290,27 +294,35 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
 
       {mayEditSheet && showNewSection && (
         <div className="new-section">
-          <input
-            id="new-section-name"
-            name="newSectionName"
-            type="text"
-            value={newSectionName}
-            onChange={(e) => setNewSectionName(e.target.value)}
-            placeholder={intl.formatMessage({ id: "sectionName" })}
-          />
-          <select value={newSectionType} onChange={(e) => setNewSectionType(e.target.value)}>
-            {sectionTypes.map(({ type, label }) => (
-              <option key={type} value={type}>
-                {intl.formatMessage({ id: label })}
-              </option>
-            ))}
-          </select>
-          <button onClick={handleCreateSection} className="btn-standard btn-small">
-            <FormattedMessage id="create" />
-          </button>
-          <button onClick={handleCancelCreateSection} className="btn-secondary btn-small">
-            <FormattedMessage id="cancel" />
-          </button>
+          <div className="new-section-quota">
+            <FormattedMessage 
+              id="sectionQuota.available" 
+              values={{ count: sheet.remainingSections }} 
+            />
+          </div>
+          <div className="new-section-form">
+            <input
+              id="new-section-name"
+              name="newSectionName"
+              type="text"
+              value={newSectionName}
+              onChange={(e) => setNewSectionName(e.target.value)}
+              placeholder={intl.formatMessage({ id: "sectionName" })}
+            />
+            <select value={newSectionType} onChange={(e) => setNewSectionType(e.target.value)}>
+              {sectionTypes.map(({ type, label }) => (
+                <option key={type} value={type}>
+                  {intl.formatMessage({ id: label })}
+                </option>
+              ))}
+            </select>
+            <button onClick={handleCreateSection} className="btn-standard btn-small">
+              <FormattedMessage id="create" />
+            </button>
+            <button onClick={handleCancelCreateSection} className="btn-secondary btn-small">
+              <FormattedMessage id="cancel" />
+            </button>
+          </div>
         </div>
       )}
 
