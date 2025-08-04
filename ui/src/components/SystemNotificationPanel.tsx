@@ -3,7 +3,7 @@ import { generateClient, GraphQLResult } from 'aws-amplify/api';
 import { GraphQLSubscription, GraphqlSubscriptionResult } from "@aws-amplify/api-graphql";
 import { getSystemNotificationQuery, systemNotificationUpdatedSubscription } from '../../../appsync/schema';
 import type { SystemNotification as GQLSystemNotification, Subscription as GQLSubscription } from '../../../appsync/graphql';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 const client = generateClient();
 
@@ -20,7 +20,7 @@ export const SystemNotificationPanel: React.FC = () => {
         }) as GraphQLResult<{ getSystemNotification: GQLSystemNotification }>;
         
         const result = response.data?.getSystemNotification;
-        if (result && result.message) {
+        if (result?.message) {
           setNotification(result);
           setDismissed(false);
         }
@@ -55,7 +55,7 @@ export const SystemNotificationPanel: React.FC = () => {
     setDismissed(true);
   };
 
-  if (!notification || !notification.message || dismissed) {
+  if (!notification?.message || dismissed) {
     return null;
   }
 
