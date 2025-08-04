@@ -30,6 +30,7 @@ type Mutation {
     createNPC(input: CreateNPCInput!): PlayerSheetSummary! @aws_cognito_user_pools
     rollDice(input: RollDiceInput!): DiceRoll! @aws_cognito_user_pools
     updateUserSettings(input: UpdateUserSettingsInput!): UserSettings! @aws_cognito_user_pools
+    setSystemNotification(input: SetSystemNotificationInput!): SystemNotification! @aws_iam
 }
 
 type GamesWithQuota @aws_cognito_user_pools {
@@ -45,6 +46,7 @@ type Query {
     getCharacterTemplates(input: GetCharacterTemplatesInput!): [CharacterTemplateMetadata!]! @aws_cognito_user_pools
     getCharacterTemplate(input: GetCharacterTemplateInput!): [TemplateSectionData!]! @aws_cognito_user_pools
     getUserSettings: UserSettings @aws_cognito_user_pools
+    getSystemNotification: SystemNotification @aws_cognito_user_pools
 }
 
 type Subscription @aws_cognito_user_pools {
@@ -53,6 +55,7 @@ type Subscription @aws_cognito_user_pools {
   updatedGame(gameId: ID!): GameSummary @aws_subscribe(mutations: ["updateGame", "deleteGame", "updateJoinCode"])
   diceRolled(gameId: ID!): DiceRoll @aws_subscribe(mutations: ["rollDice"])
   updatedUserSettings: UserSettings @aws_subscribe(mutations: ["updateUserSettings"])
+  systemNotificationUpdated: SystemNotification @aws_subscribe(mutations: ["setSystemNotification"])
 }
 
 input GetGameInput {
@@ -283,4 +286,17 @@ type UserSettings @aws_cognito_user_pools {
 input UpdateUserSettingsInput {
   settings: AWSJSON!
   language: String!
+}
+
+input SetSystemNotificationInput {
+  message: String
+  urgent: Boolean
+}
+
+type SystemNotification @aws_cognito_user_pools @aws_iam {
+  message: String
+  urgent: Boolean!
+  type: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }

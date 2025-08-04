@@ -14,6 +14,7 @@ import { ToastProvider, useToast } from "./notificationToast";
 import Modal from 'react-modal';
 import FooterBar from './footerBar';
 import { loadDefaultTheme } from './themeLoader';
+import { SystemNotificationPanel } from './components/SystemNotificationPanel';
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const AppGame = React.lazy(() => import("./game"))
@@ -393,6 +394,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
 
     return (
         <div>
+            <SystemNotificationPanel />
             <main>
                 <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
                     {gameId ? 

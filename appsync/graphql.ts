@@ -175,6 +175,7 @@ export type Mutation = {
   deleteSection: SheetSection;
   joinGame: PlayerSheetSummary;
   rollDice: DiceRoll;
+  setSystemNotification: SystemNotification;
   updateGame: GameSummary;
   updateJoinCode: GameSummary;
   updatePlayer?: Maybe<PlayerSheetSummary>;
@@ -220,6 +221,11 @@ export type MutationJoinGameArgs = {
 
 export type MutationRollDiceArgs = {
   input: RollDiceInput;
+};
+
+
+export type MutationSetSystemNotificationArgs = {
+  input: SetSystemNotificationInput;
 };
 
 
@@ -282,6 +288,7 @@ export type Query = {
   getGame: Game;
   getGameTypes: Array<GameTypeMetadata>;
   getGames: GamesWithQuota;
+  getSystemNotification?: Maybe<SystemNotification>;
   getUserSettings?: Maybe<UserSettings>;
 };
 
@@ -314,6 +321,11 @@ export type RollDiceInput = {
   target: Scalars['Int']['input'];
 };
 
+export type SetSystemNotificationInput = {
+  message?: InputMaybe<Scalars['String']['input']>;
+  urgent?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type SheetSection = {
   __typename?: 'SheetSection';
   content: Scalars['AWSJSON']['output'];
@@ -339,6 +351,7 @@ export type SingleDie = {
 export type Subscription = {
   __typename?: 'Subscription';
   diceRolled?: Maybe<DiceRoll>;
+  systemNotificationUpdated?: Maybe<SystemNotification>;
   updatedGame?: Maybe<GameSummary>;
   updatedPlayer?: Maybe<PlayerSheetSummary>;
   updatedSection?: Maybe<SheetSection>;
@@ -363,6 +376,15 @@ export type SubscriptionUpdatedPlayerArgs = {
 
 export type SubscriptionUpdatedSectionArgs = {
   gameId: Scalars['ID']['input'];
+};
+
+export type SystemNotification = {
+  __typename?: 'SystemNotification';
+  createdAt: Scalars['AWSDateTime']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
+  urgent: Scalars['Boolean']['output'];
 };
 
 export type TemplateSectionData = {
