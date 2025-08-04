@@ -48,6 +48,14 @@
         }
       `;
     
+      export const getSystemNotificationQuery = `
+        query getSystemNotification {
+          getSystemNotification {
+            message urgent type createdAt updatedAt
+          }
+        }
+      `;
+    
 
     
       export const createGameMutation = `
@@ -154,6 +162,14 @@
         }
       `;
     
+      export const setSystemNotificationMutation = `
+        mutation setSystemNotification($input: SetSystemNotificationInput!) {
+          setSystemNotification(input: $input) {
+            message urgent type createdAt updatedAt
+          }
+        }
+      `;
+    
 
     
       export const updatedPlayerSubscription = `
@@ -192,6 +208,14 @@
         subscription updatedUserSettings {
           updatedUserSettings {
             userId settings type createdAt updatedAt
+          }
+        }
+      `;
+    
+      export const systemNotificationUpdatedSubscription = `
+        subscription systemNotificationUpdated {
+          systemNotificationUpdated {
+            message urgent type createdAt updatedAt
           }
         }
       `;

@@ -8,3 +8,4 @@ export const DDBPrefixJoin = "JOIN";
 export const DDBPrefixSettings = "SETTINGS";
 export const DDBPrefixGameDefaults = "GAMEDEFAULTS";
 export const DDBPrefixLanguage = "LANGUAGE";
+export const DDBPrefixNotification = "NOTIFICATION";
