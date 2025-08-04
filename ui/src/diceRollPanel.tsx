@@ -43,6 +43,9 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
   useEffect(() => {
     if (isVisible && closeButtonRef.current) {
       closeButtonRef.current.focus();
+    } else if (!isVisible && closeButtonRef.current) {
+      // Remove focus when panel is hidden to prevent aria-hidden focus conflict
+      closeButtonRef.current.blur();
     }
   }, [isVisible]);
 
@@ -151,7 +154,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
         className={`dice-roll-panel ${isVisible ? 'visible' : 'hidden'}`}
         role="region"
         aria-label="Dice rolls panel"
-        aria-hidden={!isVisible}
+        {...(!isVisible && { inert: '' as any })}
       >
         <div className="dice-roll-header">
           <h3 id="dice-rolls-title"><FormattedMessage id="diceRollPanel.title" /></h3>
