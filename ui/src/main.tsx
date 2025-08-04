@@ -394,7 +394,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
 
     return (
         <div>
-            <SystemNotificationPanel />
+            <SystemNotificationPanel isAuthenticated={!!userEmail} />
             <main>
                 <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
                     {gameId ? 

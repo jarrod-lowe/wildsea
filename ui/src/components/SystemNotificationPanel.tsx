@@ -7,12 +7,17 @@ import { useIntl } from 'react-intl';
 
 const client = generateClient();
 
-export const SystemNotificationPanel: React.FC = () => {
+interface SystemNotificationPanelProps {
+  isAuthenticated: boolean;
+}
+
+export const SystemNotificationPanel: React.FC<SystemNotificationPanelProps> = ({ isAuthenticated }) => {
   const intl = useIntl();
   const [notification, setNotification] = useState<GQLSystemNotification | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     const fetchNotification = async () => {
       try {
         const response = await client.graphql({
@@ -49,7 +54,7 @@ export const SystemNotificationPanel: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [isAuthenticated]);
 
   const handleDismiss = () => {
     setDismissed(true);

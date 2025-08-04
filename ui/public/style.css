@@ -42,14 +42,15 @@ body {
   border: 2px solid var(--color-interactive);
   border-radius: var(--radius-md);
   filter: drop-shadow(0 4px 8px var(--color-overlay));
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fade-in 0.3s ease-in-out;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
