@@ -239,7 +239,6 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         sheet={sheet}
         mayEditSheet={mayEditSheet}
         ownSheet={ownSheet}
-        game={game}
         onUpdate={onUpdate}
         isEditing={editingSheetId === sheet.userId}
         setIsEditing={(editing) => setEditingSheetId(editing ? sheet.userId : null)}
@@ -385,13 +384,12 @@ const SheetHeader: React.FC<{
     sheet: PlayerSheet;
     mayEditSheet: boolean;
     ownSheet: boolean;
-    game: Game;
     onUpdate: (updatedSheet: PlayerSheet) => void;
     isEditing: boolean;
     setIsEditing: (editing: boolean) => void;
     isDragLocked: boolean;
     setIsDragLocked: (locked: boolean) => void;
-  }> = ({ sheet, mayEditSheet, ownSheet, game, onUpdate, isEditing, setIsEditing, isDragLocked, setIsDragLocked }) => {
+  }> = ({ sheet, mayEditSheet, ownSheet, onUpdate, isEditing, setIsEditing, isDragLocked, setIsDragLocked }) => {
   const [characterName, setCharacterName] = useState(sheet.characterName);
   const intl = useIntl();
   const toast = useToast();
