@@ -282,6 +282,7 @@ data "aws_iam_policy_document" "rw" {
       "iam:TagPolicy",
       "iam:PassRole",
       "iam:Attach*",
+      "iam:DetachRolePolicy",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-*",
@@ -562,6 +563,7 @@ data "aws_iam_policy_document" "rw_boundary" {
       "iam:GetPolicy*",
       "iam:PassRole",
       "iam:Attach*",
+      "iam:DetachRolePolicy",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-*",

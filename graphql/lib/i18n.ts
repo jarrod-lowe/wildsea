@@ -27,6 +27,7 @@ const translations: TranslationsByLanguage = {
   },
   tlh: {
     // Klingon translations - these are placeholders and would need proper translation
+    // cspell:disable
     "joinGame.cannotJoinOwnGame": "nugh DIch DIch DIlo'meH DIch DIch",
     "joinGame.alreadyPlayer": "DIch naQ DIch DIch",
     "template.notFound": "nugh DIch tu'lu'be'",
@@ -38,6 +39,7 @@ const translations: TranslationsByLanguage = {
     "game.unknownType": "Sovbe'ghach Segh",
     "game.invalidType": "nugh DIch lo'taHbe'",
     "settings.sizeExceeded": "nugh DIch nugh DIch lo'taHbe'",
+    // cspell:enable
   },
 };
 

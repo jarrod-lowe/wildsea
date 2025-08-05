@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "graphql_log_assume" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "grahql_log" {
+resource "aws_iam_role_policy_attachment" "graphql_log" {
   role       = aws_iam_role.graphql_log.name
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSAppSyncPushToCloudWatchLogs"
 }
