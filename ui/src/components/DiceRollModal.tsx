@@ -15,6 +15,8 @@ interface DiceRollModalProps {
   initialAction: string;
   onRollComplete?: (grade: string) => void;
   onBehalfOf?: string;
+  customActionsAfterRoll?: React.ReactNode;
+  prePopulatedResult?: DiceRoll;
 }
 
 export const DiceRollModal: React.FC<DiceRollModalProps> = ({
@@ -24,7 +26,9 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   skillValue,
   initialAction,
   onRollComplete,
-  onBehalfOf
+  onBehalfOf,
+  customActionsAfterRoll,
+  prePopulatedResult
 }) => {
   const intl = useIntl();
   const [action, setAction] = useState(initialAction);
@@ -38,14 +42,15 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
     if (isOpen) {
       setAction(initialAction);
       setTarget(skillValue);
-      setRollResult(null);
+      setRollResult(prePopulatedResult || null);
       setIsRolling(false);
       
       setTimeout(() => {
         rollButtonRef.current?.focus();
       }, 100);
     }
-  }, [isOpen, skillValue, initialAction]);
+  }, [isOpen, skillValue, initialAction, prePopulatedResult]);
+
 
 
   const targetOptions = [-40, -30, -20, -10, 0, 10, 20, 30, 40].map(modifier => {
@@ -90,6 +95,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
       onRequestClose();
     }
   };
+
 
 
   return (
@@ -182,11 +188,18 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
                 <FormattedMessage id="diceRollModal.result" />
               </h3>
               <DiceRollFormatter roll={rollResult} />
+              
+              {customActionsAfterRoll && (
+                <div className="custom-actions-panel">
+                  {customActionsAfterRoll}
+                </div>
+              )}
+              
               <div className="form-actions">
                 <button
                   className="btn-secondary"
                   onClick={handleClose}
-                  autoFocus
+                  autoFocus={!customActionsAfterRoll}
                 >
                   <FormattedMessage id="diceRollModal.close" />
                 </button>

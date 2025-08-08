@@ -251,6 +251,13 @@ export const messagesEnglish = {
     'diceRollModal.rollHelp': 'Roll a d100 against the target number',
     'diceRollModal.result': 'Roll Result',
 
+    // Sanity loss translations
+    'sanityLoss.title': 'Sanity Loss',
+    'sanityLoss.description': 'Roll for sanity loss and apply the result.',
+    'sanityLoss.action': 'Sanity loss',
+    'sanityLoss.rollTitle': 'Roll {dice} for sanity loss',
+    'sanityLoss.rollError': 'Error rolling for sanity loss. Please try again.',
+
     // Auto-populate translations
     'autoPopulate.title': 'Auto-Populate Character',
     'autoPopulate.description': 'Choose a pre-made character template to quickly set up your character sheet.',
