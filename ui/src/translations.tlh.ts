@@ -251,6 +251,13 @@ export const messagesKlingon = {
     'diceRollModal.rollHelp': 'd100 DIch DIch mI\' DIch DIch',
     'diceRollModal.result': 'DIch DIch DIch',
 
+    // valwI' DIch mugh - Sanity loss translations
+    'sanityLoss.title': 'valwI\' DIch mugh',
+    'sanityLoss.description': 'valwI\' DIch mugh DIch chenmoH \'e\' DIch.',
+    'sanityLoss.action': 'valwI\' DIch mugh',
+    'sanityLoss.rollTitle': '{dice} DIch valwI\' DIch mugh',
+    'sanityLoss.rollError': 'valwI\' DIch mugh DIch. DIch DIch naDev.',
+
     // Auto-populate translations
     'autoPopulate.title': 'DIch nugh nugh DIch',
     'autoPopulate.description': 'DIch nugh DIch nugh DIch wuq DIch nugh DIch nugh DIch chenmoH.',

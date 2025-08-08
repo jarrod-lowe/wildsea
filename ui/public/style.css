@@ -1459,6 +1459,69 @@ body {
   margin-left: 0;
 }
 
+/* Sanity Loss Panel */
+.sanity-loss-panel {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background-color: var(--color-surface-light);
+}
+
+.sanity-loss-panel h4 {
+  margin: 0 0 8px;
+  color: var(--color-danger);
+  font-size: 1rem;
+}
+
+.sanity-loss-description {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.sanity-loss-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.btn-sanity-loss {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border: 1px solid var(--color-danger);
+  background-color: var(--color-surface);
+  color: var(--color-danger);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 60px;
+  text-align: center;
+}
+
+.btn-sanity-loss:hover:not(:disabled) {
+  background-color: var(--color-danger);
+  color: var(--color-surface);
+  transform: translateY(-1px);
+}
+
+.btn-sanity-loss:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-sanity-loss:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.custom-actions-panel {
+  margin: 16px 0;
+}
+
 .derived-col-current {
   border-right: 1px solid var(--color-border);
 }
