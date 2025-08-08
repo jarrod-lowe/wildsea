@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { getDeltaGreenDerivedSeed } from './seed';
 import { SupportedLanguage } from './translations';
 import { DiceRollModal } from './components/DiceRollModal';
+import { SanityLossActions } from './components/SanityLossActions';
 
 interface DeltaGreenDerivedItem extends BaseSectionItem {
   attributeType: 'HP' | 'WP' | 'SAN' | 'BP';
@@ -43,17 +44,54 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
   const { section, userSubject } = props;
   const intl = useIntl();
   const [diceModalOpen, setDiceModalOpen] = useState(false);
-  const [selectedStat, setSelectedStat] = useState<{ name: string; value: number; actionText: string } | null>(null);
+  const [selectedStat, setSelectedStat] = useState<{ name: string; value: number; actionText: string; attributeType?: string } | null>(null);
+  const [sanityLossResult, setSanityLossResult] = useState<any>(null);
   
   // Track previous stats to detect changes
   const prevStatsRef = useRef<string>();
   // Track pending updates to prevent race conditions
   const updateTimeoutRef = useRef<NodeJS.Timeout>();
+  // Store the current update functions for sanity loss
+  const sanityUpdateRef = useRef<{ updateSection?: (section: Partial<SheetSection>) => Promise<void>, setContent?: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>, content?: SectionTypeDeltaGreenDerived }>();
 
-  const handleDiceClick = (statName: string, statValue: number) => {
-    setSelectedStat({ name: statName, value: statValue, actionText: statName });
+  const handleDiceClick = (statName: string, statValue: number, attributeType?: string) => {
+    setSelectedStat({ name: statName, value: statValue, actionText: statName, attributeType });
     setDiceModalOpen(true);
   };
+
+
+  const handleSanityLoss = useCallback((amount: number) => {
+    const { updateSection, setContent, content } = sanityUpdateRef.current || {};
+    
+    if (updateSection && setContent && content) {
+      // Find the SAN item and update its current value
+      const sanItem = content.items.find(item => item.attributeType === 'SAN');
+      
+      if (sanItem) {
+        const newCurrent = Math.max(0, sanItem.current - amount);
+        
+        const newItems = content.items.map(item => 
+          item.attributeType === 'SAN' 
+            ? { ...item, current: newCurrent }
+            : item
+        );
+        const newContent = { ...content, items: newItems };
+        
+        // Update local state immediately for responsive UI
+        setContent(newContent);
+        
+        // Update the section in the backend
+        updateSection({ content: JSON.stringify(newContent) });
+      }
+    }
+  }, []);
+
+  const handleCloseAndShowNewRoll = useCallback((rollResult: any) => {
+    // Close the current modal
+    setDiceModalOpen(false);
+    // Show the sanity loss result in a new modal
+    setSanityLossResult(rollResult);
+  }, []);
 
   const handleCurrentChange = useCallback((
     item: DeltaGreenDerivedItem,
@@ -100,6 +138,9 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     _isEditing: boolean,
   ) => {
+    // Store current update functions for sanity loss
+    sanityUpdateRef.current = { updateSection, setContent, content };
+    
     const stats = getStatsFromDataAttributes();
     const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
 
@@ -200,7 +241,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                 {item.attributeType === 'SAN' && displayCurrent > 0 && mayEditSheet && (
                   <button
                     className="dice-button"
-                    onClick={() => handleDiceClick(item.name, displayCurrent)}
+                    onClick={() => handleDiceClick(item.name, displayCurrent, item.attributeType)}
                     aria-label={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
                     title={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
                   >
@@ -253,6 +294,24 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
           skillValue={selectedStat.value}
           initialAction={selectedStat.actionText}
           onBehalfOf={onBehalfOfValue}
+          customActionsAfterRoll={selectedStat.attributeType === 'SAN' ? (
+            <SanityLossActions
+              gameId={props.section.gameId}
+              onBehalfOf={onBehalfOfValue}
+              onSanityLoss={handleSanityLoss}
+              onCloseAndShowNewRoll={handleCloseAndShowNewRoll}
+            />
+          ) : undefined}
+        />
+      )}
+      {sanityLossResult && (
+        <DiceRollModal
+          isOpen={true}
+          onRequestClose={() => setSanityLossResult(null)}
+          gameId={props.section.gameId}
+          skillValue={0}
+          initialAction="Sanity Loss"
+          prePopulatedResult={sanityLossResult}
         />
       )}
     </>
