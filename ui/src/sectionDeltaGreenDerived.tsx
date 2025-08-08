@@ -1,10 +1,11 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { getDeltaGreenDerivedSeed } from './seed';
 import { SupportedLanguage } from './translations';
+import { DiceRollModal } from './components/DiceRollModal';
 
 interface DeltaGreenDerivedItem extends BaseSectionItem {
   attributeType: 'HP' | 'WP' | 'SAN' | 'BP';
@@ -39,12 +40,20 @@ const calculateDerivedAttributes = (stats: { [key: string]: number }) => {
 };
 
 export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => {
+  const { section, userSubject } = props;
   const intl = useIntl();
+  const [diceModalOpen, setDiceModalOpen] = useState(false);
+  const [selectedStat, setSelectedStat] = useState<{ name: string; value: number; actionText: string } | null>(null);
   
   // Track previous stats to detect changes
   const prevStatsRef = useRef<string>();
   // Track pending updates to prevent race conditions
   const updateTimeoutRef = useRef<NodeJS.Timeout>();
+
+  const handleDiceClick = (statName: string, statValue: number) => {
+    setSelectedStat({ name: statName, value: statValue, actionText: statName });
+    setDiceModalOpen(true);
+  };
 
   const handleCurrentChange = useCallback((
     item: DeltaGreenDerivedItem,
@@ -135,6 +144,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
           <div className="derived-col-attribute">{intl.formatMessage({ id: "deltaGreenDerived.derivedAttribute" })}</div>
           <div className="derived-col-maximum">{intl.formatMessage({ id: "deltaGreenDerived.maximum" })}</div>
           <div className="derived-col-current">{intl.formatMessage({ id: "deltaGreenDerived.current" })}</div>
+          <div className="derived-col-roll"></div>
         </div>
         {content.items.map(item => {
           const calc = derivedCalcs?.[item.attributeType];
@@ -186,6 +196,18 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                   )}
                 </div>
               </div>
+              <div className="derived-col-roll">
+                {item.attributeType === 'SAN' && displayCurrent > 0 && mayEditSheet && (
+                  <button
+                    className="dice-button"
+                    onClick={() => handleDiceClick(item.name, displayCurrent)}
+                    aria-label={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
+                    title={intl.formatMessage({ id: 'deltaGreenStats.rollDice' }, { statName: item.name })}
+                  >
+                    {intl.formatMessage({ id: 'dice.icon' })}
+                  </button>
+                )}
+              </div>
             </div>
           );
         })}
@@ -216,7 +238,25 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     );
   };
 
-  return <BaseSection<DeltaGreenDerivedItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />;
+  // Determine if we need to pass onBehalfOf
+  const shouldUseOnBehalfOf = userSubject !== section.userId;
+  const onBehalfOfValue = shouldUseOnBehalfOf ? section.userId : undefined;
+
+  return (
+    <>
+      <BaseSection<DeltaGreenDerivedItem> {...props} renderItems={renderItems} renderEditForm={renderEditForm} />
+      {selectedStat && (
+        <DiceRollModal
+          isOpen={diceModalOpen}
+          onRequestClose={() => setDiceModalOpen(false)}
+          gameId={props.section.gameId}
+          skillValue={selectedStat.value}
+          initialAction={selectedStat.actionText}
+          onBehalfOf={onBehalfOfValue}
+        />
+      )}
+    </>
+  );
 };
 
 export const createDefaultDeltaGreenDerivedContent = (_sheet?: any, language?: SupportedLanguage): SectionTypeDeltaGreenDerived => {
