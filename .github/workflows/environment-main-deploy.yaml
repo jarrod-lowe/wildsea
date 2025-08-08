@@ -49,7 +49,7 @@ jobs:
         aws-region: ${{ vars.AWS_REGION }}
 
     - name: terraform apply
-      uses: dflook/terraform-apply@b8eeae1fcfefe833fa52b09b9c1f89eed0cd8ac7
+      uses: dflook/terraform-apply@8f47d0ad9f3cb9e50fd6b3595c0cb98f00c518df
       id: terraform
       with:
         path: terraform/environment/wildsea
