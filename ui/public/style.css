@@ -1405,7 +1405,7 @@ body {
 
 .derived-header {
   display: grid;
-  grid-template-columns: minmax(200px, 2fr) 80px minmax(140px, 1fr);
+  grid-template-columns: minmax(200px, 2fr) 80px minmax(140px, 1fr) 50px;
   gap: 0;
   background-color: var(--color-surface-light);
   border-bottom: 2px solid var(--color-border);
@@ -1415,7 +1415,7 @@ body {
 
 .derived-row {
   display: grid;
-  grid-template-columns: minmax(200px, 2fr) 80px minmax(140px, 1fr);
+  grid-template-columns: minmax(200px, 2fr) 80px minmax(140px, 1fr) 50px;
   gap: 0;
   border-bottom: 1px solid var(--color-border);
   align-items: center;
@@ -1440,15 +1440,27 @@ body {
 
 .derived-col-attribute,
 .derived-col-maximum,
-.derived-col-current {
+.derived-col-current,
+.derived-col-roll {
   padding: 12px 8px;
   border-right: 1px solid var(--color-border);
   display: flex;
   align-items: center;
 }
 
-.derived-col-current {
+.derived-col-roll {
   border-right: none;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+
+.derived-col-roll .dice-button {
+  margin-left: 0;
+}
+
+.derived-col-current {
+  border-right: 1px solid var(--color-border);
 }
 
 .derived-col-attribute {
@@ -1546,13 +1558,14 @@ body {
 @media screen and (max-width: 768px) {
   .derived-header,
   .derived-row {
-    grid-template-columns: minmax(150px, 2fr) 60px minmax(100px, 1fr);
+    grid-template-columns: minmax(150px, 2fr) 60px minmax(100px, 1fr) 40px;
     font-size: 14px;
   }
   
   .derived-col-attribute,
   .derived-col-maximum,
-  .derived-col-current {
+  .derived-col-current,
+  .derived-col-roll {
     padding: 8px 4px;
   }
   
