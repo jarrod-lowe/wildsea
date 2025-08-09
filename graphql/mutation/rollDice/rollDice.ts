@@ -112,7 +112,11 @@ export function response(context: Context): DiceRoll {
   let totalValue = 0;
 
   for (const diceInput of input.dice) {
-    const rolledValue = Math.floor(Math.random() * diceInput.size) + 1;
+    // Delta Green percentile dice use 0-99 range, other dice use 1-size range
+    const rolledValue =
+      input.rollType === RollTypes.DELTA_GREEN && diceInput.size === 100
+        ? Math.floor(Math.random() * 100) // 0-99 for percentile rolls
+        : Math.floor(Math.random() * diceInput.size) + 1; // 1-size for standard dice
     totalValue += rolledValue;
 
     // Convert DiceInput to SingleDie (the only type in Dice union currently)
@@ -181,25 +185,23 @@ function calculateGrade(
 }
 
 function calculateDeltaGreenGrade(rolledValue: number, target: number): string {
-  // Handle special cases for 01 and 00
-  if (rolledValue === 1) {
+  // Handle special cases: 00 and 01 are always critical success
+  if (rolledValue === 0 || rolledValue === 1) {
     return Grades.CRITICAL_SUCCESS;
   }
-  if (rolledValue === 100) {
-    return Grades.FUMBLE;
-  }
 
-  // Check if all digits are the same (for 2-digit numbers)
-  // Extract tens and units digits
-  const tens = Math.floor(rolledValue / 10);
-  const units = rolledValue % 10;
-  const allDigitsSame = tens === units;
+  // Check for matching digits (doubles): 11, 22, 33, 44, 55, 66, 77, 88, 99
+  if (rolledValue >= 11) {
+    const tens = Math.floor(rolledValue / 10);
+    const units = rolledValue % 10;
 
-  if (allDigitsSame) {
-    if (rolledValue <= target) {
-      return Grades.CRITICAL_SUCCESS;
-    } else {
-      return Grades.FUMBLE;
+    if (tens === units) {
+      // Matching digits: critical success if <= target, fumble if > target
+      if (rolledValue <= target) {
+        return Grades.CRITICAL_SUCCESS;
+      } else {
+        return Grades.FUMBLE;
+      }
     }
   }
 
