@@ -4,6 +4,7 @@ import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
+import { PostSessionUpgradeModal } from './components/PostSessionUpgradeModal';
 import { SectionEditForm } from './components/SectionEditForm';
 import { Grades } from "../../graphql/lib/constants/rollTypes";
 import { getDeltaGreenSkillsSeed } from './seed';
@@ -94,6 +95,8 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
   const [selectedSkill, setSelectedSkill] = useState<{ name: string; value: number; item: DeltaGreenSkillItem; actionText: string } | null>(null);
   const [currentContent, setCurrentContent] = useState<SectionTypeDeltaGreenSkills | null>(null);
   const [currentUpdateSection, setCurrentUpdateSection] = useState<((updatedSection: Partial<SheetSection>) => Promise<void>) | null>(null);
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [skillsToUpgrade, setSkillsToUpgrade] = useState<{ id: string; name: string; currentValue: number }[]>([]);
 
   const handleUsedToggle = async (
     item: DeltaGreenSkillItem,
@@ -144,26 +147,51 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     }
   };
 
-  const handlePostSessionUpgrades = async (
+  const handlePostSessionUpgrades = (
     content: SectionTypeDeltaGreenSkills,
-    setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
+    _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenSkills>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
   ) => {
-    const newItems = content.items.map(item => {
-      if (item.used && item.hasUsedFlag !== false) {
+    // Find all used skills with used flags
+    const usedSkills = content.items.filter(item => item.used && item.hasUsedFlag !== false);
+    
+    // Create skills to upgrade data
+    const skillsData = usedSkills.map(item => {
+      const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
+      return {
+        id: item.id,
+        name: item.name,
+        currentValue: numericRoll
+      };
+    });
+    
+    setSkillsToUpgrade(skillsData);
+    setCurrentContent(content);
+    setCurrentUpdateSection(() => updateSection);
+    setUpgradeModalOpen(true);
+  };
+
+  const handleUpgradesComplete = async (upgrades: { id: string; upgradeAmount: number }[]) => {
+    if (!currentContent || !currentUpdateSection) return;
+    
+    const newItems = currentContent.items.map(item => {
+      const upgrade = upgrades.find(u => u.id === item.id);
+      if (upgrade) {
         const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
         return {
           ...item,
-          roll: Math.min(99, numericRoll + 1),
+          roll: Math.min(99, numericRoll + upgrade.upgradeAmount),
           used: false
         };
       }
       return item;
     });
     
-    const newContent = { ...content, items: newItems };
-    setContent(newContent);
-    await updateSection({ content: JSON.stringify(newContent) });
+    const newContent = { ...currentContent, items: newItems };
+    
+    // We need to update the section and trigger a re-render
+    // The BaseSection will handle updating the local state
+    await currentUpdateSection({ content: JSON.stringify(newContent) });
   };
 
   const renderItems = (
@@ -354,6 +382,14 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
           onBehalfOf={onBehalfOfValue}
         />
       )}
+      <PostSessionUpgradeModal
+        isOpen={upgradeModalOpen}
+        onRequestClose={() => setUpgradeModalOpen(false)}
+        gameId={props.section.gameId}
+        skillsToUpgrade={skillsToUpgrade}
+        onUpgradesComplete={handleUpgradesComplete}
+        onBehalfOf={onBehalfOfValue}
+      />
     </>
   );
 };

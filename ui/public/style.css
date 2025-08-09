@@ -2809,6 +2809,125 @@ body {
   transform: none;
 }
 
+/* Post-Session Upgrade Modal */
+.post-session-upgrade-modal {
+  background: var(--color-surface);
+  border-radius: 8px;
+  max-width: 600px;
+  min-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--color-shadow-light);
+  border: none;
+  padding: 0;
+  position: relative;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.upgrade-instructions {
+  background: var(--color-highlight-bg);
+  border: 1px solid var(--color-highlight-border);
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.skills-upgrade-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.skill-upgrade-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 15px;
+  align-items: center;
+  padding: 10px 15px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-background);
+}
+
+.skill-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.current-value {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.upgrade-controls {
+  display: flex;
+  align-items: center;
+}
+
+.rolling-status {
+  font-style: italic;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.rolling-status.error {
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+.roll-result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.upgrade-preview {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-success);
+  text-align: right;
+}
+
+.upgrade-preview.at-maximum {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+@media screen and (width <= 768px) {
+  .post-session-upgrade-modal {
+    min-width: unset;
+    max-width: calc(100vw - 20px);
+    width: calc(100vw - 20px);
+  }
+  
+  .skill-upgrade-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .upgrade-controls {
+    justify-content: center;
+  }
+  
+  .roll-result {
+    align-items: center;
+  }
+  
+  .upgrade-preview {
+    text-align: center;
+  }
+}
+
 
 @media screen and (width <= 768px) {
   .dice-roll-modal {
