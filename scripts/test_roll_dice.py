@@ -10,7 +10,6 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import concurrent.futures
-import threading
 import time
 import math
 from dataclasses import dataclass
@@ -21,7 +20,6 @@ class DiceRoll:
     value: int
     grade: str
     error: Optional[str] = None
-    
     @property
     def is_success(self) -> bool:
         return self.error is None
@@ -33,7 +31,11 @@ class DiceRoll:
 def get_cognito_token(username, password, user_pool_id, client_id, region):
     """Authenticate with Cognito and get access token"""
     
-    # Cognito Identity Provider endpoint
+    # Validate region to ensure we only hit AWS endpoints (security: prevent file:// schemes)
+    if not region or not region.replace('-', '').isalnum():
+        raise ValueError("Invalid AWS region")
+    
+    # Cognito Identity Provider endpoint (controlled AWS URL, not user input)
     cognito_idp_url = f"https://cognito-idp.{region}.amazonaws.com/"
     
     payload = {
@@ -122,6 +124,10 @@ def test_roll_dice(access_token, graphql_url, game_id):
 
 def make_single_roll(access_token, graphql_url, game_id):
     """Make a single roll and return the result"""
+    
+    # Validate GraphQL URL to ensure it's HTTPS (security: prevent file:// schemes)
+    if not graphql_url or not graphql_url.startswith('https://'):
+        raise ValueError("GraphQL URL must be HTTPS")
     
     mutation = """
     mutation rollDice($input: RollDiceInput!) {
@@ -551,11 +557,12 @@ def main():
             draw_roll_graph(all_results)
             analyze_randomness(all_results)
             
-            # Sleep before next batch
+            # Sleep before next batch (intentional: controls update rate for visualization)
             time.sleep(0.5)
             
     except KeyboardInterrupt:
         print(f"\nStopped after {loop_count} loops with {len(all_results)} total rolls")
+
 
 if __name__ == "__main__":
     main()

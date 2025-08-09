@@ -43,4 +43,4 @@ docker run --rm \
     -e COGNITO_USERNAME="$COGNITO_USERNAME" \
     -e COGNITO_PASSWORD="$COGNITO_PASSWORD" \
     python:3.11-slim \
-    python -u /test_roll_dice.py $1
+    python -u /test_roll_dice.py "$1"
