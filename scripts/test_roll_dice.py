@@ -23,7 +23,7 @@ class DiceRoll:
     @property
     def is_success(self) -> bool:
         return self.error is None
-    
+
     @property
     def is_error(self) -> bool:
         return self.error is not None
@@ -50,7 +50,7 @@ def get_cognito_token(username, password, user_pool_id, client_id, region):
     data = json.dumps(payload).encode('utf-8')
     
     req = urllib.request.Request(
-        cognito_idp_url, 
+        cognito_idp_url,
         data=data,
         headers={
             'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth',
@@ -59,7 +59,8 @@ def get_cognito_token(username, password, user_pool_id, client_id, region):
     )
     
     try:
-        with urllib.request.urlopen(req) as response:
+        # nosemgrep: B310 - always https://
+        with urllib.request.urlopen(req) as response: # nosec noqa: B310 - always https://
             result = json.loads(response.read().decode('utf-8'))
             
         if 'AuthenticationResult' in result:
