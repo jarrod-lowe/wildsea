@@ -198,42 +198,27 @@ def make_100_rolls(access_token, graphql_url, game_id):
     
     return results
 
-def draw_roll_graph(results):
-    """Draw a horizontal graph with one character per roll value, multiple lines for frequency"""
-    
-    # Color codes for different grades
-    colors = {
+def _get_graph_colors():
+    """Get color codes for different dice roll grades"""
+    return {
         'CRITICAL_SUCCESS': '\033[92m',  # Green
         'SUCCESS': '\033[94m',           # Blue  
         'FAILURE': '\033[93m',           # Yellow
         'FUMBLE': '\033[91m',            # Red
         'ERROR': '\033[95m'              # Magenta
     }
-    reset = '\033[0m'
-    
-    # Get successful rolls only for the graph
-    successful_rolls = [roll for roll in results if roll.is_success]
-    
-    if not successful_rolls:
-        print("No successful rolls to graph")
-        return
-    
-    # Count rolls per value
+
+def _count_rolls_by_value(successful_rolls):
+    """Count rolls grouped by their values"""
     roll_counts = {}
     for roll in successful_rolls:
         if roll.value not in roll_counts:
             roll_counts[roll.value] = []
         roll_counts[roll.value].append(roll)
-    
-    # Find actual range from the data
-    min_val = min(roll.value for roll in successful_rolls)
-    max_val = max(roll.value for roll in successful_rolls)
-    range_size = max_val - min_val + 1
-    
-    # Find max count to know how many lines we need
-    max_count = max(len(rolls) for rolls in roll_counts.values()) if roll_counts else 0
-    
-    # Print scale with actual range
+    return roll_counts
+
+def _print_graph_scale(min_val, max_val, range_size):
+    """Print the scale line showing value range"""
     if range_size <= 50:
         # Short range - show min and max
         padding = " " * (range_size - len(str(min_val)) - len(str(max_val)))
@@ -244,28 +229,25 @@ def draw_roll_graph(results):
         left_pad = (range_size - len(str(min_val)) - len(str(mid_val))) // 2
         right_pad = range_size - len(str(min_val)) - len(str(mid_val)) - len(str(max_val)) - left_pad
         print(f"{min_val}{' ' * left_pad}{mid_val}{' ' * right_pad}{max_val}")
-    
-    # Check if all values have at least one roll (bottom line would be solid)
-    filled_positions = sum(1 for val in range(min_val, max_val + 1) if roll_counts.get(val, []))
-    total_positions = max_val - min_val + 1
-    is_bottom_line_full = filled_positions == total_positions
-    
-    # Find the minimum line level where all positions are filled
+
+def _find_min_full_line(roll_counts, min_val, max_val, max_count):
+    """Find the minimum line level where all positions are filled"""
     min_full_line = 1
-    if is_bottom_line_full:
-        for line in range(1, max_count + 1):
-            all_filled = True
-            for val in range(min_val, max_val + 1):
-                rolls_at_val = roll_counts.get(val, [])
-                if len(rolls_at_val) < line:
-                    all_filled = False
-                    break
-            if all_filled:
-                min_full_line = line
-            else:
+    for line in range(1, max_count + 1):
+        all_filled = True
+        for val in range(min_val, max_val + 1):
+            rolls_at_val = roll_counts.get(val, [])
+            if len(rolls_at_val) < line:
+                all_filled = False
                 break
-    
-    # Determine which lines to show
+        if all_filled:
+            min_full_line = line
+        else:
+            break
+    return min_full_line
+
+def _determine_lines_to_show(is_bottom_line_full, max_count, min_full_line):
+    """Determine which graph lines to display"""
     if is_bottom_line_full and max_count > min_full_line:
         # Show partial lines plus only the topmost full line
         lines_to_show = list(range(max_count, min_full_line, -1)) + [min_full_line]
@@ -276,23 +258,58 @@ def draw_roll_graph(results):
         lines_to_show = range(max_count, 0, -1)
         lines_not_shown = 0
         show_summary = False
+    return lines_to_show, lines_not_shown, show_summary
+
+def _draw_graph_line(line, min_val, max_val, roll_counts, colors, reset):
+    """Draw a single line of the frequency graph"""
+    graph_line = []
+    for val in range(min_val, max_val + 1):
+        rolls_at_val = roll_counts.get(val, [])
+        
+        if len(rolls_at_val) >= line:
+            # Show a mark for this line level
+            roll = rolls_at_val[0]  # Use first roll for color
+            color = colors.get(roll.grade, '')
+            graph_line.append(f"{color}█{reset}")
+        else:
+            graph_line.append('.')
+    
+    print(''.join(graph_line))
+
+def draw_roll_graph(results):
+    """Draw a horizontal graph with one character per roll value, multiple lines for frequency"""
+    colors = _get_graph_colors()
+    reset = '\033[0m'
+    
+    # Get successful rolls only for the graph
+    successful_rolls = [roll for roll in results if roll.is_success]
+    
+    if not successful_rolls:
+        print("No successful rolls to graph")
+        return
+    
+    # Count rolls per value and find range
+    roll_counts = _count_rolls_by_value(successful_rolls)
+    min_val = min(roll.value for roll in successful_rolls)
+    max_val = max(roll.value for roll in successful_rolls)
+    range_size = max_val - min_val + 1
+    max_count = max(len(rolls) for rolls in roll_counts.values()) if roll_counts else 0
+    
+    # Print scale
+    _print_graph_scale(min_val, max_val, range_size)
+    
+    # Check if bottom line would be solid
+    filled_positions = sum(1 for val in range(min_val, max_val + 1) if roll_counts.get(val, []))
+    total_positions = max_val - min_val + 1
+    is_bottom_line_full = filled_positions == total_positions
+    
+    # Find minimum full line and determine what to show
+    min_full_line = _find_min_full_line(roll_counts, min_val, max_val, max_count) if is_bottom_line_full else 1
+    lines_to_show, lines_not_shown, show_summary = _determine_lines_to_show(is_bottom_line_full, max_count, min_full_line)
     
     # Draw the graph lines
     for line in lines_to_show:
-        graph_line = []
-        
-        for val in range(min_val, max_val + 1):
-            rolls_at_val = roll_counts.get(val, [])
-            
-            if len(rolls_at_val) >= line:
-                # Show a mark for this line level
-                roll = rolls_at_val[0]  # Use first roll for color
-                color = colors.get(roll.grade, '')
-                graph_line.append(f"{color}█{reset}")
-            else:
-                graph_line.append('.')
-        
-        print(''.join(graph_line))
+        _draw_graph_line(line, min_val, max_val, roll_counts, colors, reset)
     
     # Show summary if we omitted full lines
     if show_summary:
@@ -454,19 +471,19 @@ def analyze_randomness(results: List[DiceRoll]):
     
     # Chi-square test
     chi_sq, p_val, chi_assessment = calculate_chi_square(values)
-    print(f"\nChi-square test:")
+    print("\nChi-square test:")
     print(f"  χ² = {chi_sq:.2f}, p ≈ {p_val:.3f}")
     print(f"  {chi_assessment}")
     
     # Entropy analysis
     entropy, entropy_ratio, entropy_assessment = calculate_entropy(values)
-    print(f"\nEntropy analysis:")
+    print("\nEntropy analysis:")
     print(f"  Entropy = {entropy:.2f} bits (ratio: {entropy_ratio:.3f})")
     print(f"  {entropy_assessment}")
     
     # Frequency variance
     freq_std, freq_assessment = calculate_frequency_variance(values)
-    print(f"\nFrequency variance:")
+    print("\nFrequency variance:")
     print(f"  Standard deviation = {freq_std:.2f}")
     print(f"  {freq_assessment}")
     
@@ -477,7 +494,7 @@ def analyze_randomness(results: List[DiceRoll]):
         "GOOD" in freq_assessment
     ])
     
-    print(f"\nOVERALL ASSESSMENT:")
+    print("\nOVERALL ASSESSMENT:")
     if good_tests >= 3:
         print("✓ EXCELLENT - All tests indicate good randomness")
     elif good_tests >= 2:
