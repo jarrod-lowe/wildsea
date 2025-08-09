@@ -2883,12 +2883,6 @@ body {
   font-weight: 500;
 }
 
-.roll-result {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
 
 .upgrade-preview {
   font-size: 14px;
