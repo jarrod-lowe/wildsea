@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { generateClient } from "aws-amplify/api";
 import { rollDiceMutation } from "../../../appsync/schema";
 import { RollDiceInput, DiceRoll } from "../../../appsync/graphql";
 import { RollTypes } from "../../../graphql/lib/constants/rollTypes";
-import { DiceRollFormatter } from './DiceRollFormatter';
 import { useToast } from '../notificationToast';
 
 interface SkillUpgrade {
@@ -39,8 +38,6 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
   const [upgrades, setUpgrades] = useState<SkillUpgrade[]>([]);
   const [isRolling, setIsRolling] = useState(false);
   const [currentRollingIndex, setCurrentRollingIndex] = useState<number | null>(null);
-  const rollButtonRef = useRef<HTMLButtonElement>(null);
-  const applyButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (isOpen && skillsToUpgrade.length > 0) {
@@ -149,55 +146,7 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
     }, 500);
   };
 
-  const handleRoll = async (index: number) => {
-    setIsRolling(true);
-    setCurrentRollingIndex(index);
-    
-    try {
-      const client = generateClient();
-      const skill = upgrades[index];
-      const input: RollDiceInput = {
-        gameId,
-        dice: [{ type: 'd4', size: 4 }],
-        rollType: RollTypes.GENERIC,
-        action: `Learn ${skill.name}`,
-        onBehalfOf: onBehalfOf || undefined,
-      };
-      
-      const result = await client.graphql({
-        query: rollDiceMutation,
-        variables: { input },
-      });
 
-      if ('data' in result && result.data?.rollDice) {
-        const rollResult = result.data.rollDice;
-        const upgradeAmount = rollResult.dice[0]?.result || 1; // Fallback to 1 if no result
-        
-        setUpgrades(prev => prev.map((upgrade, i) => 
-          i === index 
-            ? { ...upgrade, rollResult, upgradeAmount }
-            : upgrade
-        ));
-      }
-    } catch (error) {
-      console.error('Error rolling dice for skill upgrade:', error);
-    } finally {
-      setIsRolling(false);
-      setCurrentRollingIndex(null);
-    }
-  };
-
-  const handleApplyUpgrades = () => {
-    const completedUpgrades = upgrades
-      .filter(upgrade => upgrade.upgradeAmount !== undefined)
-      .map(upgrade => ({
-        id: upgrade.id,
-        upgradeAmount: upgrade.upgradeAmount!
-      }));
-    
-    onUpgradesComplete(completedUpgrades);
-    onRequestClose();
-  };
 
   const handleClose = () => {
     if (!isRolling) {
@@ -205,7 +154,6 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
     }
   };
 
-  const allRollsComplete = upgrades.length > 0 && upgrades.every(upgrade => upgrade.upgradeAmount !== undefined);
 
   return (
     <Modal
@@ -235,34 +183,48 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
               
               <div className="upgrade-controls">
                 <div className="roll-result">
-                  {upgrade.currentValue >= 99 ? (
-                    <div className="upgrade-preview at-maximum">
-                      <FormattedMessage id="postSessionUpgrade.atMaximum" />
-                    </div>
-                  ) : upgrade.upgradeAmount !== undefined ? (
-                    <div className="upgrade-preview">
-                      <FormattedMessage 
-                        id="postSessionUpgrade.newValue"
-                        values={{ 
-                          oldValue: upgrade.currentValue,
-                          upgradeAmount: upgrade.upgradeAmount,
-                          newValue: Math.min(99, upgrade.currentValue + upgrade.upgradeAmount)
-                        }}
-                      />
-                    </div>
-                  ) : upgrade.hasError ? (
-                    <div className="rolling-status error">
-                      <FormattedMessage id="postSessionUpgrade.error" />
-                    </div>
-                  ) : (
-                    <div className="rolling-status">
-                      {isRolling && currentRollingIndex === index ? (
-                        <FormattedMessage id="postSessionUpgrade.rolling" />
-                      ) : (
-                        <FormattedMessage id="postSessionUpgrade.waiting" />
-                      )}
-                    </div>
-                  )}
+                  {(() => {
+                    if (upgrade.currentValue >= 99) {
+                      return (
+                        <div className="upgrade-preview at-maximum">
+                          <FormattedMessage id="postSessionUpgrade.atMaximum" />
+                        </div>
+                      );
+                    }
+                    
+                    if (upgrade.upgradeAmount !== undefined) {
+                      return (
+                        <div className="upgrade-preview">
+                          <FormattedMessage 
+                            id="postSessionUpgrade.newValue"
+                            values={{ 
+                              oldValue: upgrade.currentValue,
+                              upgradeAmount: upgrade.upgradeAmount,
+                              newValue: Math.min(99, upgrade.currentValue + upgrade.upgradeAmount)
+                            }}
+                          />
+                        </div>
+                      );
+                    }
+                    
+                    if (upgrade.hasError) {
+                      return (
+                        <div className="rolling-status error">
+                          <FormattedMessage id="postSessionUpgrade.error" />
+                        </div>
+                      );
+                    }
+                    
+                    const statusMessage = isRolling && currentRollingIndex === index 
+                      ? "postSessionUpgrade.rolling" 
+                      : "postSessionUpgrade.waiting";
+                    
+                    return (
+                      <div className="rolling-status">
+                        <FormattedMessage id={statusMessage} />
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
