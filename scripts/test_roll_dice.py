@@ -78,7 +78,7 @@ def get_cognito_token(username, password, user_pool_id, client_id, region):
             return result['AuthenticationResult']['AccessToken']
         else:
             return None
- 
+
     except urllib.error.HTTPError:
         return None
 
