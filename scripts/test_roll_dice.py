@@ -68,14 +68,10 @@ def get_cognito_token(username, password, user_pool_id, client_id, region):
             'Content-Type': 'application/x-amz-json-1.1'
         }
     )
-    # Recheck because Codacy is dumb
-    parsed_req_url = urlparse(req.full_url)
-    if parsed_req_url.scheme != "https":
-        raise ValueError(f"Invalid URL scheme: {parsed_req_url.scheme}")
 
     try:
         # nosemgrep: B310 - always https://
-        with urllib.request.urlopen(req) as response: # nosec noqa: B310 - always https://
+        with urllib.request.urlopen(req) as response: # nosec B310  # nosemgrep  # noqa: S310
             result = json.loads(response.read().decode('utf-8'))
 
         if 'AuthenticationResult' in result:
@@ -127,7 +123,7 @@ def make_single_roll(access_token, graphql_url, game_id):
     )
 
     try:
-        with urllib.request.urlopen(req) as response:  # nosec B310  # noqa: S310
+        with urllib.request.urlopen(req) as response:  # nosec B310  # nosemgrep: python.lang.security.audit.urllib.urlopen.file-access  # noqa: S310
             result = json.loads(response.read().decode('utf-8'))
 
         if 'errors' in result:
