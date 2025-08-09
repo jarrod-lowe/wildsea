@@ -68,7 +68,11 @@ def get_cognito_token(username, password, user_pool_id, client_id, region):
             'Content-Type': 'application/x-amz-json-1.1'
         }
     )
- 
+    # Recheck because Codacy is dumb
+    parsed_req_url = urlparse(req.full_url)
+    if parsed_req_url.scheme != "https":
+        raise ValueError(f"Invalid URL scheme: {parsed_req_url.scheme}")
+
     try:
         # nosemgrep: B310 - always https://
         with urllib.request.urlopen(req) as response: # nosec noqa: B310 - always https://
