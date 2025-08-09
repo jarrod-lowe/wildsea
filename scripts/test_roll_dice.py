@@ -7,7 +7,7 @@ import json
 import sys
 import os
 import urllib.request
-import urllib.parse
+from urllib.parse import urlparse
 import urllib.error
 import concurrent.futures
 import time
@@ -28,6 +28,16 @@ class DiceRoll:
     def is_error(self) -> bool:
         return self.error is not None
 
+def _validate_https_url(url: str, allowed_hosts: Optional[List[str]] = None) -> None:
+    """Raise ValueError unless url is https:// and (optionally) host is allowed."""
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+        raise ValueError("URL must be HTTPS, contain a host, and have no credentials")
+    if allowed_hosts:
+        host = (parsed.hostname or "").lower()
+        if not any(host == h or host.endswith("." + h) for h in (h.lower() for h in allowed_hosts)):
+            raise ValueError(f"Host '{host}' is not in the allowed list")
+
 def get_cognito_token(username, password, user_pool_id, client_id, region):
     """Authenticate with Cognito and get access token"""
 
@@ -37,6 +47,7 @@ def get_cognito_token(username, password, user_pool_id, client_id, region):
 
     # Cognito Identity Provider endpoint (controlled AWS URL, not user input)
     cognito_idp_url = f"https://cognito-idp.{region}.amazonaws.com/"
+    _validate_https_url(cognito_idp_url, allowed_hosts=["amazonaws.com"])
 
     payload = {
         'AuthFlow': 'USER_PASSWORD_AUTH',
@@ -75,8 +86,7 @@ def make_single_roll(access_token, graphql_url, game_id):
     """Make a single roll and return the result"""
 
     # Validate GraphQL URL to ensure it's HTTPS (security: prevent file:// schemes)
-    if not graphql_url or not graphql_url.startswith('https://'):
-        raise ValueError("GraphQL URL must be HTTPS")
+    _validate_https_url(graphql_url)
 
     mutation = """
     mutation rollDice($input: RollDiceInput!) {
@@ -113,7 +123,7 @@ def make_single_roll(access_token, graphql_url, game_id):
     )
 
     try:
-        with urllib.request.urlopen(req) as response:
+        with urllib.request.urlopen(req) as response:  # nosec B310  # noqa: S310
             result = json.loads(response.read().decode('utf-8'))
 
         if 'errors' in result:
