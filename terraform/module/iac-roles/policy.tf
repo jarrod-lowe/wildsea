@@ -59,6 +59,8 @@ data "aws_iam_policy_document" "ro" {
       "cloudfront:Get*Policy",
       "cloudfront:GetDistribution",
       "cloudfront:GetOriginAccessControl",
+      "cloudfront:DescribeFunction",
+      "cloudfront:GetFunction",
       "iam:SimulatePrincipalPolicy",
       "route53:ListHostedZones",
     ]
@@ -265,6 +267,7 @@ data "aws_iam_policy_document" "rw" {
       "cloudfront:CreateResponseHeadersPolicy",
       "cloudfront:DeleteOriginRequestPolicy",
       "cloudfront:DeleteResponseHeadersPolicy",
+      "cloudfront:*Function",
     ]
     resources = [
       "*"
@@ -511,6 +514,7 @@ data "aws_iam_policy_document" "rw_boundary" {
       "cloudfront:CreateResponseHeadersPolicy",
       "cloudfront:DeleteOriginRequestPolicy",
       "cloudfront:DeleteResponseHeadersPolicy",
+      "cloudfront:*Function",
       "iam:SimulatePrincipalPolicy",
       "cloudwatch:CreateLogStream",
       "cloudwatch:PutLogEvents",
@@ -713,17 +717,11 @@ data "aws_iam_policy_document" "rw_boundary" {
 
   statement {
     actions = [
-      "wafv2:DeleteWebACL",
-      "wafv2:UpdatebACL",
-      "wafv2:ListTagsForResource",
-      "wafv2:AssociateWebACL",
-      "wafv2:ListWebACLs",
-      "wafv2:ListTagsForResource",
+      "wafv2:*WebACL",
+      "wafv2:List*",
       "appsync:StartSchemaCreation",
-      "appsync:UpdateGraphqlApi",
-      "appsync:DeleteGraphqlApi",
-      "appsync:TagResource",
-      "appsync:UntagResource",
+      "appsync:*GraphqlApi",
+      "appsync:*TagResource",
     ]
     resources = ["*"]
     condition {
