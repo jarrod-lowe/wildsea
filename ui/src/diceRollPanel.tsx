@@ -155,7 +155,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
         className={`dice-roll-panel ${isVisible ? 'visible' : 'hidden'}`}
         role="region"
         aria-label="Dice rolls panel"
-        {...(!isVisible && { inert: '' as any })}
+        {...(!isVisible && { inert: true })}
       >
         <div className="dice-roll-header">
           <h3 id="dice-rolls-title"><FormattedMessage id="diceRollPanel.title" /></h3>

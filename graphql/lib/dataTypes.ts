@@ -61,3 +61,13 @@ export interface GameDefaults {
   remainingCharacters: number;
   remainingSections: number;
 }
+
+// Type for DynamoDB GamePresets (as returned from database)
+export interface DynamoDBGamePresets {
+  PK: string;
+  SK: string;
+  dataSetName: string;
+  language: string;
+  displayName: string;
+  data: string; // JSON string stored in DynamoDB
+}

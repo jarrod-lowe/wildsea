@@ -5,6 +5,29 @@ import { IntlProvider } from "react-intl";
 import { messagesEnglish } from "./translations.en";
 import { ToastProvider } from "./notificationToast";
 
+// Mock the gamePresetsCache module
+jest.mock('./utils/gamePresetsCache', () => ({
+  getGamePresets: jest.fn(() => Promise.resolve([
+    {
+      displayName: 'Glock 17 (9mm pistol)',
+      language: 'en',
+      data: JSON.stringify({
+        name: 'Glock 17',
+        description: 'Standard 9mm service pistol',
+        skillId: 'Firearms 🔫',
+        baseRange: '20m',
+        damage: '1d10',
+        armorPiercing: '3',
+        lethality: 'N/A',
+        killRadius: 'N/A',
+        ammo: '17'
+      })
+    }
+  ])),
+  clearGamePresetsCache: jest.fn(),
+  preloadGamePresets: jest.fn(() => Promise.resolve([])),
+}));
+
 // Mock minimal props and data
 const mockSection = {
   gameId: "test-game",
@@ -37,7 +60,7 @@ const mockSection = {
 const mockSkills = [
   {
     id: "skill-1",
-    name: "Firearms",
+    name: "Firearms 🔫",
     roll: 50,
     used: false,
     hasUsedFlag: true

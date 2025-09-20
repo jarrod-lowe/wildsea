@@ -111,6 +111,13 @@ export type Game = {
   updatedAt: Scalars['AWSDateTime']['output'];
 };
 
+export type GamePresetItem = {
+  __typename?: 'GamePresetItem';
+  data: Scalars['AWSJSON']['output'];
+  displayName: Scalars['String']['output'];
+  language: Scalars['String']['output'];
+};
+
 export type GameSummary = {
   __typename?: 'GameSummary';
   createdAt: Scalars['AWSDateTime']['output'];
@@ -155,6 +162,11 @@ export type GetCharacterTemplatesInput = {
 
 export type GetGameInput = {
   gameId: Scalars['ID']['input'];
+  language: Scalars['String']['input'];
+};
+
+export type GetGamePresetsInput = {
+  dataSetName: Scalars['String']['input'];
   language: Scalars['String']['input'];
 };
 
@@ -288,6 +300,7 @@ export type Query = {
   getCharacterTemplate: Array<TemplateSectionData>;
   getCharacterTemplates: Array<CharacterTemplateMetadata>;
   getGame: Game;
+  getGamePresets: Array<GamePresetItem>;
   getGameTypes: Array<GameTypeMetadata>;
   getGames: GamesWithQuota;
   getSystemNotification?: Maybe<SystemNotification>;
@@ -307,6 +320,11 @@ export type QueryGetCharacterTemplatesArgs = {
 
 export type QueryGetGameArgs = {
   input: GetGameInput;
+};
+
+
+export type QueryGetGamePresetsArgs = {
+  input: GetGamePresetsInput;
 };
 
 

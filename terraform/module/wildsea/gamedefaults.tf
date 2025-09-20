@@ -2,10 +2,15 @@
 
 locals {
   db_prefix_gamedefaults  = "GAMEDEFAULTS"
+  db_prefix_gamepresets   = "GAMEPRESETS"
   db_prefix_language      = "LANGUAGE"
   fallback_language       = "en"
   initial_character_quota = "20"
   initial_section_quota   = "50"
+
+  # Delta Green weapons presets - load from JSON file if it exists, otherwise empty
+  weapons_file_path  = "${path.module}/../../../deltagreen-weapons.json"
+  deltagreen_weapons = fileexists(local.weapons_file_path) ? jsondecode(file(local.weapons_file_path)) : {}
 }
 
 # English defaults
@@ -196,6 +201,78 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_tlh" {
     }
     type = {
       S = local.db_prefix_gamedefaults
+    }
+  })
+}
+
+# Delta Green weapons presets - English
+resource "aws_dynamodb_table_item" "deltagreen_weapons_en" {
+  for_each = local.deltagreen_weapons
+
+  table_name = aws_dynamodb_table.table.name
+  hash_key   = aws_dynamodb_table.table.hash_key
+  range_key  = aws_dynamodb_table.table.range_key
+
+  item = jsonencode({
+    PK = {
+      S = "${local.db_prefix_gamepresets}#deltagreen-weapons#${local.fallback_language}"
+    }
+    SK = {
+      S = "${local.db_prefix_gamepresets}#${each.key}"
+    }
+    dataSetName = {
+      S = "deltagreen-weapons"
+    }
+    language = {
+      S = local.fallback_language
+    }
+    displayName = {
+      S = each.value.display_name_en
+    }
+    data = {
+      S = jsonencode(merge(each.value.weapon_data, {
+        description = each.value.description_en
+        skillId     = each.value.skillId_en
+      }))
+    }
+    type = {
+      S = local.db_prefix_gamepresets
+    }
+  })
+}
+
+# Delta Green weapons presets - Klingon
+resource "aws_dynamodb_table_item" "deltagreen_weapons_tlh" {
+  for_each = local.deltagreen_weapons
+
+  table_name = aws_dynamodb_table.table.name
+  hash_key   = aws_dynamodb_table.table.hash_key
+  range_key  = aws_dynamodb_table.table.range_key
+
+  item = jsonencode({
+    PK = {
+      S = "${local.db_prefix_gamepresets}#deltagreen-weapons#tlh"
+    }
+    SK = {
+      S = "${local.db_prefix_gamepresets}#${each.key}"
+    }
+    dataSetName = {
+      S = "deltagreen-weapons"
+    }
+    language = {
+      S = "tlh"
+    }
+    displayName = {
+      S = each.value.display_name_tlh
+    }
+    data = {
+      S = jsonencode(merge(each.value.weapon_data, {
+        description = each.value.description_tlh
+        skillId     = each.value.skillId_tlh
+      }))
+    }
+    type = {
+      S = local.db_prefix_gamepresets
     }
   })
 }

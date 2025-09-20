@@ -1,0 +1,70 @@
+{
+  "example-pistol": {
+    "display_name_en": "Example Pistol [Firearm]",
+    "display_name_tlh": "DIch motlh HIch [nuH]",
+    "weapon_data": {
+      "name": "Example Pistol",
+      "baseRange": "15m",
+      "damage": "1d10",
+      "armorPiercing": "N/A",
+      "lethality": "N/A",
+      "killRadius": "N/A",
+      "ammo": "12"
+    },
+    "skillId_en": "Firearms 🔫",
+    "skillId_tlh": "nuH 🔫",
+    "description_en": "A fictional firearm for demonstration purposes. Not based on any real weapon.",
+    "description_tlh": "DIch motlh HIch"
+  },
+  "example-heavy-weapon": {
+    "display_name_en": "Example Heavy Launcher [Heavy]",
+    "display_name_tlh": "DIch motlh jup [nuH law']",
+    "weapon_data": {
+      "name": "Example Heavy Launcher",
+      "baseRange": "200m",
+      "damage": "N/A",
+      "armorPiercing": "15",
+      "lethality": "25%",
+      "killRadius": "15m",
+      "ammo": "1"
+    },
+    "skillId_en": "Heavy Weapons 🧨",
+    "skillId_tlh": "nuH law'",
+    "description_en": "RESTRICTED. A fictional heavy weapon demonstrating lethality and kill radius mechanics.",
+    "description_tlh": "DIch. DIch motlh jup"
+  },
+  "example-gas-weapon": {
+    "display_name_en": "Example Gas Spray [Gas/Spray]",
+    "display_name_tlh": "DIch motlh eng [eng/DIch]",
+    "weapon_data": {
+      "name": "Example Gas Spray",
+      "baseRange": "5m",
+      "damage": "N/A",
+      "armorPiercing": "N/A",
+      "lethality": "N/A",
+      "killRadius": "3 targets",
+      "ammo": "8"
+    },
+    "skillId_en": "DEX×5",
+    "skillId_tlh": "valwI'×5",
+    "description_en": "A fictional gas weapon demonstrating victim's penalty mechanics. Victim's Penalty: -30% for 2 hrs",
+    "description_tlh": "DIch motlh eng. DIch DIch: -30% cha' rep"
+  },
+  "example-melee-weapon": {
+    "display_name_en": "Example Combat Blade [Hand to hand]",
+    "display_name_tlh": "DIch motlh yan [ghop HIv]",
+    "weapon_data": {
+      "name": "Example Combat Blade",
+      "baseRange": "N/A",
+      "damage": "1d8",
+      "armorPiercing": "2",
+      "lethality": "N/A",
+      "killRadius": "N/A",
+      "ammo": "N/A"
+    },
+    "skillId_en": "Melee Weapons 🗡️",
+    "skillId_tlh": "HIch nuH",
+    "description_en": "A fictional melee weapon demonstrating armor piercing mechanics.",
+    "description_tlh": "DIch motlh yan"
+  }
+}
