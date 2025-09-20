@@ -13,7 +13,7 @@ interface DiceRollModalProps {
   gameId: string;
   skillValue: number;
   initialAction: string;
-  onRollComplete?: (grade: string) => void;
+  onRollComplete?: (result: DiceRoll) => void;
   onBehalfOf?: string;
   customActionsAfterRoll?: React.ReactNode;
   prePopulatedResult?: DiceRoll;
@@ -80,7 +80,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
         const rollResult = result.data.rollDice;
         setRollResult(rollResult);
         if (onRollComplete) {
-          onRollComplete(rollResult.grade);
+          onRollComplete(rollResult);
         }
       }
     } catch (error) {

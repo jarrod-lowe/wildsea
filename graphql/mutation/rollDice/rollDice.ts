@@ -113,18 +113,22 @@ export function response(context: Context): DiceRoll {
 
   for (const diceInput of input.dice) {
     // Delta Green percentile dice use 0-99 range, other dice use 1-size range
-    const rolledValue =
+    const baseRolledValue =
       input.rollType === RollTypes.DELTA_GREEN && diceInput.size === 100
         ? Math.floor(Math.random() * 100) // 0-99 for percentile rolls
         : Math.floor(Math.random() * diceInput.size) + 1; // 1-size for standard dice
-    totalValue += rolledValue;
+
+    // Apply modifier if present
+    const modifier = diceInput.modifier || 0;
+    const finalValue = baseRolledValue + modifier;
+    totalValue += finalValue;
 
     // Convert DiceInput to SingleDie (the only type in Dice union currently)
     const rolledDie: SingleDie = {
       __typename: "SingleDie",
       type: diceInput.type,
       size: diceInput.size,
-      value: rolledValue,
+      value: finalValue,
     };
 
     rolledDice.push(rolledDie);

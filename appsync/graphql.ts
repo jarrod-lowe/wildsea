@@ -68,6 +68,7 @@ export type DeleteSectionInput = {
 export type Dice = SingleDie;
 
 export type DiceInput = {
+  modifier?: InputMaybe<Scalars['Int']['input']>;
   size: Scalars['Int']['input'];
   type: Scalars['String']['input'];
 };
