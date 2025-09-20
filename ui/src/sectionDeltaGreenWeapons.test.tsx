@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { SectionDeltaGreenWeapons } from "./sectionDeltaGreenWeapons";
 import { IntlProvider } from "react-intl";
 import { messagesEnglish } from "./translations.en";
@@ -58,7 +58,7 @@ document.body.innerHTML = `
 
 describe("SectionDeltaGreenWeapons", () => {
   it("ticks the used flag on skill when weapon roll fails", async () => {
-    const { getByLabelText, getByTitle } = render(
+  const { getByTitle } = render(
       <ToastProvider>
         <IntlProvider locale="en" messages={messagesEnglish}>
           <SectionDeltaGreenWeapons

@@ -97,31 +97,35 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
   } | null>(null);
   const [lastRollResult, setLastRollResult] = useState<DiceRoll | null>(null);
 
+  // Helper: Tick the 'used' flag on the relevant skill in the DOM
+  const tickUsedFlagOnSkill = (skillName: string) => {
+    const skillsContainer = document.querySelector('.delta-green-skills-grid');
+    if (!skillsContainer) return;
+    const skillElements = Array.from(skillsContainer.querySelectorAll('.skills-item'));
+    for (const element of skillElements) {
+      const nameElement = element.querySelector('.skills-col-name');
+      if (nameElement && nameElement.textContent?.trim() === skillName) {
+        const usedCheckbox = element.querySelector('input[type="checkbox"]');
+        if (usedCheckbox && !(usedCheckbox as HTMLInputElement).checked) {
+          (usedCheckbox as HTMLInputElement).click();
+        }
+        break;
+      }
+    }
+  };
+
   // When a weapon skill roll fails or fumbles, tick the 'used' flag on the relevant skill
   const handleRollComplete = (result: DiceRoll) => {
     setLastRollResult(result);
-
-    // Only handle skill rolls (not damage or lethality)
     if (
       selectedWeapon &&
       selectedWeapon.rollType === 'skill' &&
       (result.grade === 'FAILURE' || result.grade === 'FUMBLE')
     ) {
-      // Find the skills grid and update the matching skill's 'used' flag
-      const skillsContainer = document.querySelector('.delta-green-skills-grid');
-      if (skillsContainer) {
-        const skillElements = Array.from(skillsContainer.querySelectorAll('.skills-item'));
-        for (const element of skillElements) {
-          const nameElement = element.querySelector('.skills-col-name');
-          if (nameElement && nameElement.textContent?.trim() === selectedWeapon.name.split('(')[1]?.replace(')', '').trim()) {
-            // Find the checkbox for 'used' and check it if not already checked
-            const usedCheckbox = element.querySelector('input[type="checkbox"]');
-            if (usedCheckbox && !(usedCheckbox as HTMLInputElement).checked) {
-              (usedCheckbox as HTMLInputElement).click();
-            }
-            break;
-          }
-        }
+      // Extract skill name from selectedWeapon
+      const skillName = selectedWeapon.name.split('(')[1]?.replace(')', '').trim();
+      if (skillName) {
+        tickUsedFlagOnSkill(skillName);
       }
     }
   };
