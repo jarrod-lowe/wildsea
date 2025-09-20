@@ -217,7 +217,6 @@ export const messagesEnglish = {
     'deltaGreenWeapons.weaponName': 'Weapon Name',
     'deltaGreenWeapons.skill': 'Skill',
     'deltaGreenWeapons.selectSkill': 'Select a skill...',
-    'deltaGreenWeapons.noSkill': 'No skill assigned',
     'deltaGreenWeapons.baseRange': 'Base Range',
     'deltaGreenWeapons.damage': 'Damage',
     'deltaGreenWeapons.armorPiercing': 'Armor Piercing',
@@ -234,7 +233,6 @@ export const messagesEnglish = {
     'deltaGreenWeapons.noSkillFound': 'No skill found for this weapon',
     'deltaGreenWeapons.invalidDamage': 'Invalid damage format (use dice notation like 2d6+1)',
     'deltaGreenWeapons.invalidLethality': 'Invalid lethality format (use percentage like 15%)',
-    'deltaGreenWeapons.rollError': 'Error rolling dice',
     'deltaGreenWeapons.lethalityFailure': '{weapon} lethality failed: {damage} damage',
 
     'deltaGreenStats.rollDice': 'Roll dice for {statName}',
