@@ -165,42 +165,38 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
       return;
     }
 
-    try {
-      const client = generateClient();
-      const input: RollDiceInput = {
-        gameId: section.gameId,
-        dice: [{
-          type: `${diceData.count}d${diceData.sides}${getModifierString(diceData.modifier)}`,
-          size: diceData.sides,
-          modifier: diceData.modifier
-        }],
-        rollType: RollTypes.SUM,
-        target: 0,
-        action: intl.formatMessage({ id: 'deltaGreenWeapons.damageRoll' }, { weapon: item.name }),
-        onBehalfOf: userSubject || undefined,
-      };
+    const client = generateClient();
+    const input: RollDiceInput = {
+      gameId: section.gameId,
+      dice: [{
+        type: `${diceData.count}d${diceData.sides}${getModifierString(diceData.modifier)}`,
+        size: diceData.sides,
+        modifier: diceData.modifier
+      }],
+      rollType: RollTypes.SUM,
+      target: 0,
+      action: intl.formatMessage({ id: 'deltaGreenWeapons.damageRoll' }, { weapon: item.name }),
+      onBehalfOf: userSubject || undefined,
+    };
 
-      const result = await client.graphql({
-        query: rollDiceMutation,
-        variables: { input },
+    const result = await client.graphql({
+      query: rollDiceMutation,
+      variables: { input },
+    });
+
+    if ('data' in result && result.data?.rollDice) {
+      const rollResult = result.data.rollDice;
+
+      // Show the damage roll result in the modal
+      setSelectedWeapon({
+        name: `${item.name} (Damage)`,
+        value: 0, // Not used for damage rolls
+        item,
+        actionText: intl.formatMessage({ id: 'deltaGreenWeapons.damageRoll' }, { weapon: item.name }),
+        rollType: 'damage'
       });
-
-      if ('data' in result && result.data?.rollDice) {
-        const rollResult = result.data.rollDice;
-
-        // Show the damage roll result in the modal
-        setSelectedWeapon({
-          name: `${item.name} (Damage)`,
-          value: 0, // Not used for damage rolls
-          item,
-          actionText: intl.formatMessage({ id: 'deltaGreenWeapons.damageRoll' }, { weapon: item.name }),
-          rollType: 'damage'
-        });
-        setLastRollResult(rollResult);
-        setDiceModalOpen(true);
-      }
-    } catch (error) {
-      toast.addToast(intl.formatMessage({ id: 'deltaGreenWeapons.rollError' }), 'error');
+      setLastRollResult(rollResult);
+      setDiceModalOpen(true);
     }
   };
 
