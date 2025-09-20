@@ -81,6 +81,7 @@ export type DiceRoll = {
   gameId: Scalars['ID']['output'];
   grade: Scalars['String']['output'];
   messageIndex: Scalars['Int']['output'];
+  messageType?: Maybe<Scalars['String']['output']>;
   playerId: Scalars['ID']['output'];
   playerName: Scalars['String']['output'];
   proxyRoll: Scalars['Boolean']['output'];
@@ -317,6 +318,7 @@ export type RollDiceInput = {
   action?: InputMaybe<Scalars['String']['input']>;
   dice: Array<DiceInput>;
   gameId: Scalars['ID']['input'];
+  messageType?: InputMaybe<Scalars['String']['input']>;
   onBehalfOf?: InputMaybe<Scalars['ID']['input']>;
   rollType: Scalars['String']['input'];
   target: Scalars['Int']['input'];
