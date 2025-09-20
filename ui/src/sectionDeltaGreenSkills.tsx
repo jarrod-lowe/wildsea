@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
-import { SheetSection } from "../../appsync/graphql";
+import { SheetSection, DiceRoll } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { DiceRollModal } from './components/DiceRollModal';
@@ -30,9 +30,9 @@ type SectionTypeDeltaGreenSkills = BaseSectionContent<DeltaGreenSkillItem>;
 const renderRollControls = (
   item: DeltaGreenSkillItem, 
   index: number, 
-  handleItemChange: (index: number, field: string, value: any) => void,
+  handleItemChange: (index: number, field: string, value: string | number) => void,
   handleRollBlur: (index: number, value: string) => void,
-  intl: any
+  intl: ReturnType<typeof useIntl>
 ) => {
   const numericRoll = typeof item.roll === 'string' ? parseInt(item.roll) || 0 : item.roll;
   return (
@@ -128,7 +128,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     setDiceModalOpen(true);
   };
 
-  const handleRollComplete = async (result: any) => {
+  const handleRollComplete = async (result: DiceRoll) => {
     if (!selectedSkill || !currentContent || !currentUpdateSection) return;
 
     // Mark skill as used if it was a failure or fumble AND the skill has a used flag
@@ -302,7 +302,7 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
         if (typeof value === 'string') {
           // Allow empty string for editing, but validate on conversion
           if (value === '') {
-            newItems[index] = { ...newItems[index], [field]: '' as any };
+            newItems[index] = { ...newItems[index], [field]: '' };
           } else {
             const numValue = parseInt(value);
             if (!isNaN(numValue)) {

@@ -8,7 +8,7 @@ import { DiceRollModal } from './components/DiceRollModal';
 import { useToast } from './notificationToast';
 import { generateClient } from "aws-amplify/api";
 import { rollDiceMutation } from "../../appsync/schema";
-import { RollDiceInput } from "../../appsync/graphql";
+import { RollDiceInput, DiceRoll } from "../../appsync/graphql";
 import { RollTypes } from "../../graphql/lib/constants/rollTypes";
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
@@ -88,9 +88,9 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     actionText: string;
     rollType: 'skill' | 'damage' | 'lethality';
   } | null>(null);
-  const [lastRollResult, setLastRollResult] = useState<any | null>(null);
+  const [lastRollResult, setLastRollResult] = useState<DiceRoll | null>(null);
 
-  const handleRollComplete = (result: any) => {
+  const handleRollComplete = (result: DiceRoll) => {
     setLastRollResult(result);
   };
 
@@ -193,7 +193,6 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
         setDiceModalOpen(true);
       }
     } catch (error) {
-      console.error('Error rolling damage:', error);
       toast.addToast(intl.formatMessage({ id: 'deltaGreenWeapons.rollError' }), 'error');
     }
   };
@@ -367,7 +366,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
             initialAction={selectedWeapon.actionText}
             onRollComplete={handleRollComplete}
             onBehalfOf={userSubject}
-            prePopulatedResult={selectedWeapon.rollType === 'damage' ? lastRollResult : undefined}
+            prePopulatedResult={selectedWeapon.rollType === 'damage' ? lastRollResult || undefined : undefined}
             customActionsAfterRoll={
               selectedWeapon.rollType === 'lethality' &&
               lastRollResult &&
