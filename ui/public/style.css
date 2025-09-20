@@ -2778,26 +2778,6 @@ body {
   font-style: italic;
 }
 
-.dice-button {
-  padding: 2px 6px;
-  font-size: 0.75rem;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.dice-button:hover {
-  background: var(--color-accent);
-  color: var(--color-surface);
-}
-
-.dice-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 
 /* Weapon edit form specific styling */
 .weapon-edit-form .form-field {

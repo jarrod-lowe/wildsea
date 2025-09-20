@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
-import { SheetSection } from "../../appsync/graphql";
+import { SheetSection, RollDiceInput, DiceRoll } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { SectionEditForm } from './components/SectionEditForm';
@@ -8,7 +8,6 @@ import { DiceRollModal } from './components/DiceRollModal';
 import { useToast } from './notificationToast';
 import { generateClient } from "aws-amplify/api";
 import { rollDiceMutation } from "../../appsync/schema";
-import { RollDiceInput, DiceRoll } from "../../appsync/graphql";
 import { RollTypes } from "../../graphql/lib/constants/rollTypes";
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
@@ -60,7 +59,8 @@ const getSkillsFromDataAttributes = (): { id: string; name: string; roll: number
 const parseDiceNotation = (notation: string): { count: number; sides: number; modifier: number } | null => {
   if (!notation || notation.toLowerCase() === 'n/a') return null;
 
-  const match = notation.match(/^(\d{1,2})d(\d{1,3})([+-]\d{1,3})?$/i);
+  const regex = /^(\d{1,2})d(\d{1,3})([+-]\d{1,3})?$/i;
+  const match = regex.exec(notation);
   if (!match) return null;
 
   const count = parseInt(match[1]) || 1;
@@ -73,6 +73,13 @@ const parseDiceNotation = (notation: string): { count: number; sides: number; mo
 // Function to calculate lethality failure damage
 const calculateLethalityFailureDamage = (rollValue: number): number => {
   return Math.floor(rollValue / 10) + (rollValue % 10);
+};
+
+// Helper function to format dice modifier string
+const getModifierString = (modifier: number): string => {
+  if (modifier === 0) return '';
+  if (modifier > 0) return `+${modifier}`;
+  return modifier.toString();
 };
 
 export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => {
@@ -163,7 +170,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
       const input: RollDiceInput = {
         gameId: section.gameId,
         dice: [{
-          type: `${diceData.count}d${diceData.sides}${diceData.modifier !== 0 ? (diceData.modifier > 0 ? '+' : '') + diceData.modifier : ''}`,
+          type: `${diceData.count}d${diceData.sides}${getModifierString(diceData.modifier)}`,
           size: diceData.sides,
           modifier: diceData.modifier
         }],
@@ -198,7 +205,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
   };
 
   const handleLethalityRoll = (item: DeltaGreenWeaponItem) => {
-    const lethalityMatch = item.lethality.match(/(\d+)%?/);
+    const lethalityRegex = /(\d+)%?/;
+    const lethalityMatch = lethalityRegex.exec(item.lethality);
     if (lethalityMatch) {
       const lethalityValue = parseInt(lethalityMatch[1]);
       setSelectedWeapon({
@@ -251,7 +259,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
               const skill = skills.find(s => s.id === item.skillId || s.name === item.skillId);
               const hasValidAmmo = item.ammo && item.ammo !== 'N/A' && !isNaN(parseInt(item.ammo));
               const hasValidDamage = item.damage && item.damage !== 'N/A' && parseDiceNotation(item.damage);
-              const hasValidLethality = item.lethality && item.lethality !== 'N/A' && item.lethality.match(/\d+%?/);
+              const lethalityTestRegex = /\d+%?/;
+              const hasValidLethality = item.lethality && item.lethality !== 'N/A' && lethalityTestRegex.test(item.lethality);
 
               return (
                 <div key={item.id} className="weapon-row" role="row">
