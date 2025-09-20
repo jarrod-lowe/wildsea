@@ -230,10 +230,10 @@ resource "aws_dynamodb_table_item" "deltagreen_weapons_en" {
       S = each.value.display_name_en
     }
     data = {
-      S = jsonencode(merge(each.value.weapon_data, {
+      S = sensitive(jsonencode(merge(each.value.weapon_data, {
         description = each.value.description_en
         skillId     = each.value.skillId_en
-      }))
+      })))
     }
     type = {
       S = local.db_prefix_gamepresets
@@ -266,10 +266,10 @@ resource "aws_dynamodb_table_item" "deltagreen_weapons_tlh" {
       S = each.value.display_name_tlh
     }
     data = {
-      S = jsonencode(merge(each.value.weapon_data, {
+      S = sensitive(jsonencode(merge(each.value.weapon_data, {
         description = each.value.description_tlh
         skillId     = each.value.skillId_tlh
-      }))
+      })))
     }
     type = {
       S = local.db_prefix_gamepresets

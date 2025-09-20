@@ -21,103 +21,6 @@ function isCacheValid(cacheEntry: { timestamp: number }): boolean {
   return Date.now() - cacheEntry.timestamp < CACHE_DURATION;
 }
 
-// Temporary fallback data for development/testing
-const fallbackPresets: Record<string, GamePresetItem[]> = {
-  'deltagreen-weapons#en': [
-    {
-      displayName: 'Glock 17 (9mm pistol)',
-      language: 'en',
-      data: JSON.stringify({
-        name: 'Glock 17',
-        description: 'Standard 9mm service pistol',
-        skillId: 'Firearms 🔫',
-        baseRange: '20m',
-        damage: '1d10',
-        armorPiercing: '3',
-        lethality: 'N/A',
-        killRadius: 'N/A',
-        ammo: '17'
-      })
-    },
-    {
-      displayName: 'M4 Carbine (5.56mm rifle)',
-      language: 'en',
-      data: JSON.stringify({
-        name: 'M4 Carbine',
-        description: 'Standard military assault rifle',
-        skillId: 'Firearms 🔫',
-        baseRange: '150m',
-        damage: '1d12',
-        armorPiercing: '5',
-        lethality: 'N/A',
-        killRadius: 'N/A',
-        ammo: '30'
-      })
-    },
-    {
-      displayName: 'Remington 870 (12-gauge shotgun)',
-      language: 'en',
-      data: JSON.stringify({
-        name: 'Remington 870',
-        description: 'Pump-action 12-gauge shotgun',
-        skillId: 'Firearms 🔫',
-        baseRange: '50m',
-        damage: '2d8',
-        armorPiercing: '2',
-        lethality: 'N/A',
-        killRadius: 'N/A',
-        ammo: '8'
-      })
-    }
-  ],
-  'deltagreen-weapons#tlh': [
-    {
-      displayName: 'Glock 17 (9mm HIch)',
-      language: 'tlh',
-      data: JSON.stringify({
-        name: 'Glock 17',
-        description: 'motlh HIch DIch',
-        skillId: 'nuH 🔫',
-        baseRange: '20m',
-        damage: '1d10',
-        armorPiercing: '3',
-        lethality: 'N/A',
-        killRadius: 'N/A',
-        ammo: '17'
-      })
-    },
-    {
-      displayName: 'M4 Carbine (5.56mm jup baH)',
-      language: 'tlh',
-      data: JSON.stringify({
-        name: 'M4 Carbine',
-        description: 'jup Segh DIch baH',
-        skillId: 'nuH 🔫',
-        baseRange: '150m',
-        damage: '1d12',
-        armorPiercing: '5',
-        lethality: 'N/A',
-        killRadius: 'N/A',
-        ammo: '30'
-      })
-    },
-    {
-      displayName: 'Remington 870 (12-gauge nugh baH)',
-      language: 'tlh',
-      data: JSON.stringify({
-        name: 'Remington 870',
-        description: 'nugh baH tugh',
-        skillId: 'nuH 🔫',
-        baseRange: '50m',
-        damage: '2d8',
-        armorPiercing: '2',
-        lethality: 'N/A',
-        killRadius: 'N/A',
-        ammo: '8'
-      })
-    }
-  ]
-};
 
 export async function getGamePresets(
   dataSetName: string,
@@ -144,7 +47,7 @@ export async function getGamePresets(
       },
     });
 
-    if ('data' in result && result.data?.getGamePresets && result.data.getGamePresets.length > 0) {
+    if ('data' in result && result.data?.getGamePresets) {
       const presets = result.data.getGamePresets;
 
       // Cache the result
@@ -157,30 +60,8 @@ export async function getGamePresets(
       return presets;
     }
 
-    // Fall back to hardcoded data if API returns empty or fails
-    const fallbackKey = `${dataSetName}#${language}`;
-    const fallbackData = fallbackPresets[fallbackKey] || [];
-
-    if (fallbackData.length > 0) {
-      // Cache the fallback data too
-      cache[cacheKey] = {
-        data: fallbackData,
-        timestamp: Date.now(),
-        language,
-      };
-      return fallbackData;
-    }
-
     return [];
   } catch (error) {
-    // Try fallback data
-    const fallbackKey = `${dataSetName}#${language}`;
-    const fallbackData = fallbackPresets[fallbackKey] || [];
-
-    if (fallbackData.length > 0) {
-      return fallbackData;
-    }
-
     // Return cached data even if expired, or empty array
     return cachedEntry?.data || [];
   }
