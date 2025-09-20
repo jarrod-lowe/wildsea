@@ -41,7 +41,7 @@ const getSkillsFromDataAttributes = (): { id: string; name: string; roll: number
     if (nameElement && rollElement) {
       const name = nameElement.textContent?.trim() || '';
       const rollText = rollElement.textContent?.trim() || '0%';
-      const roll = parseInt(rollText.replace('%', '')) || 0;
+      const roll = parseInt(rollText.replace(/%/g, '')) || 0;
 
       if (name && roll > 0) {
         skills.push({
@@ -60,7 +60,7 @@ const getSkillsFromDataAttributes = (): { id: string; name: string; roll: number
 const parseDiceNotation = (notation: string): { count: number; sides: number; modifier: number } | null => {
   if (!notation || notation.toLowerCase() === 'n/a') return null;
 
-  const match = notation.match(/(\d+)d(\d+)([+-]\d+)?/i);
+  const match = notation.match(/^(\d{1,2})d(\d{1,3})([+-]\d{1,3})?$/i);
   if (!match) return null;
 
   const count = parseInt(match[1]) || 1;

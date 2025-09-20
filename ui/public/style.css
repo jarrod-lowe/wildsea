@@ -2817,7 +2817,7 @@ body {
 }
 
 /* Mobile responsive adjustments */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .weapons-table {
     grid-template-columns: 1fr;
     gap: 0;
