@@ -397,7 +397,7 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic_tlh" {
         },
         {
           sectionName = "nuH"
-          sectionType = "RICHTEXT"
+          sectionType = "DELTAGREENWEAPONS"
           content = jsonencode({
             items = [
               {
