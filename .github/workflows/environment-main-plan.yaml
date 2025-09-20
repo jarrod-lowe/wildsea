@@ -40,9 +40,11 @@ jobs:
         coverage-reports: graphql/coverage/lcov.info, ui/coverage/lcov.info
 
     - name: Create weapon data file
+      env:
+        WEAPON_DATA: ${{ secrets.DELTAGREEN_WEAPONS_JSON }}
       run: |
-        if [ -n "${{ secrets.DELTAGREEN_WEAPONS_JSON }}" ]; then
-          echo '${{ secrets.DELTAGREEN_WEAPONS_JSON }}' > deltagreen-weapons.json
+        if [ -n "$WEAPON_DATA" ]; then
+          echo "$WEAPON_DATA" > deltagreen-weapons.json
           echo "Created deltagreen-weapons.json from repository secret"
         else
           echo "No weapon data secret found, proceeding without weapon presets"

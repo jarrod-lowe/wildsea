@@ -240,8 +240,9 @@ For production deployments, you need to set up a repository secret containing th
 3. **Set the value**: Paste the complete JSON weapon data (same structure as the local file)
 
 The GitHub Actions workflow will automatically:
-- Load weapon data from the `DELTAGREEN_WEAPONS_JSON` repository secret
-- Write it to `deltagreen-weapons.json` before running Terraform
-- Make the weapon presets available during both planning and deployment
+
+* Load weapon data from the `DELTAGREEN_WEAPONS_JSON` repository secret
+* Write it to `deltagreen-weapons.json` before running Terraform
+* Make the weapon presets available during both planning and deployment
 
 If the secret is not set, the deployment will proceed without weapon presets (graceful degradation).
