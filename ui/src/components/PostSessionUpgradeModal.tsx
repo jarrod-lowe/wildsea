@@ -81,6 +81,7 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
           target: 0,
           action: intl.formatMessage({ id: 'postSessionUpgrade.learnSkill' }, { skillName: skill.name }),
           onBehalfOf: onBehalfOf || undefined,
+          messageType: 'deltaGreen',
         };
         
         const result = await client.graphql({

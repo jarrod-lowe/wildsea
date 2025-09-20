@@ -166,6 +166,7 @@ export function response(context: Context): DiceRoll {
     proxyRoll: proxyRoll,
     type: TypeDiceRoll,
     messageIndex: messageIndex,
+    messageType: input.messageType || null,
   };
 
   return result;
