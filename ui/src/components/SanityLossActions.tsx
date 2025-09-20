@@ -46,6 +46,7 @@ export const SanityLossActions: React.FC<SanityLossActionsProps> = ({
         target: 0,
         action: intl.formatMessage({ id: 'sanityLoss.action' }),
         onBehalfOf: onBehalfOf || undefined,
+        messageType: 'deltaGreen',
       };
       
       const result = await client.graphql({

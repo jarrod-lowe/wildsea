@@ -17,6 +17,7 @@ interface DiceRollModalProps {
   onBehalfOf?: string;
   customActionsAfterRoll?: React.ReactNode;
   prePopulatedResult?: DiceRoll;
+  messageType?: string;
 }
 
 export const DiceRollModal: React.FC<DiceRollModalProps> = ({
@@ -28,7 +29,8 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
   onRollComplete,
   onBehalfOf,
   customActionsAfterRoll,
-  prePopulatedResult
+  prePopulatedResult,
+  messageType
 }) => {
   const intl = useIntl();
   const [action, setAction] = useState(initialAction);
@@ -69,6 +71,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
         target,
         action: action.trim() || undefined,
         onBehalfOf: onBehalfOf || undefined,
+        messageType: messageType || 'deltaGreen',
       };
       
       const result = await client.graphql({

@@ -136,6 +136,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
         dice: [{ type: `d${dieSize}`, size: dieSize }],
         rollType: RollTypes.SUM,
         target: 0, // Not used for sum rolls
+        messageType: 'neutral',
       };
       
       await client.graphql({

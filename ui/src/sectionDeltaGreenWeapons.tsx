@@ -82,19 +82,22 @@ const getModifierString = (modifier: number): string => {
   return modifier.toString();
 };
 
+type SelectedWeapon = {
+  name: string;
+  value: number;
+  item: DeltaGreenWeaponItem;
+  actionText: string;
+  rollType: 'skill' | 'damage' | 'lethality';
+  messageType?: string;
+};
+
 export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => {
   const { section, userSubject } = props;
   const intl = useIntl();
   const toast = useToast();
   const updateTimeoutRef = useRef<NodeJS.Timeout>();
   const [diceModalOpen, setDiceModalOpen] = useState(false);
-  const [selectedWeapon, setSelectedWeapon] = useState<{
-    name: string;
-    value: number;
-    item: DeltaGreenWeaponItem;
-    actionText: string;
-    rollType: 'skill' | 'damage' | 'lethality';
-  } | null>(null);
+  const [selectedWeapon, setSelectedWeapon] = useState<SelectedWeapon | null>(null);
   const [lastRollResult, setLastRollResult] = useState<DiceRoll | null>(null);
 
   // Helper: Tick the 'used' flag on the relevant skill in the DOM
@@ -174,12 +177,14 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     const skill = skills.find(s => s.id === item.skillId || s.name === item.skillId);
 
     if (skill) {
+      // Set actionText to just the weapon name for skill rolls
       setSelectedWeapon({
         name: `${item.name} (${skill.name})`,
         value: skill.roll,
         item,
-        actionText: intl.formatMessage({ id: 'deltaGreenWeapons.skillRoll' }, { weapon: item.name }),
-        rollType: 'skill'
+        actionText: item.name,
+        rollType: 'skill',
+        messageType: 'deltaGreenAttack',
       });
       setDiceModalOpen(true);
     } else {
@@ -206,6 +211,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
       target: 0,
       action: intl.formatMessage({ id: 'deltaGreenWeapons.damageRoll' }, { weapon: item.name }),
       onBehalfOf: userSubject || undefined,
+      messageType: 'deltaGreenDamage',
     };
 
     const result = await client.graphql({
@@ -418,6 +424,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                 </div>
               ) : undefined
             }
+            // Pass messageType for skill rolls
+            {...(selectedWeapon.rollType === 'skill' && selectedWeapon.messageType ? { messageType: selectedWeapon.messageType } : {})}
           />
         )}
       </>

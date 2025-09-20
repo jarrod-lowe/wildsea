@@ -54,14 +54,14 @@ const formatDiceDetails = (diceList: any[], grade: string, target?: number, acti
   return result;
 };
 
-const getTranslationKey = (hasTarget: boolean, hasAction: boolean, grade: string, messageIndex: number, intl: any) => {
-  // Build the base key
-  const targetPart = hasTarget ? 'withTarget' : 'withoutTarget';
-  const actionPart = hasAction ? 'withAction' : 'withoutAction';
-  const gradeKey = grade.toLowerCase();
-  
-  const baseKey = `result.${targetPart}.${actionPart}.${gradeKey}`;
-  
+const getTranslationKey = (roll: DiceRoll, intl: any) => {
+  // Use messageType for the translation key
+  const messageType = roll.messageType || 'neutral';
+  // Level is the grade, lowercased (e.g., 'success', 'failure', 'neutral', etc)
+  const level = (roll.grade || 'neutral').toLowerCase();
+  // Compose the base key
+  const baseKey = `result.${messageType}.${level}`;
+
   // Count available translations for this key pattern
   let count = 0;
   let testKey = `${baseKey}.${count}`;
@@ -69,14 +69,14 @@ const getTranslationKey = (hasTarget: boolean, hasAction: boolean, grade: string
     count++;
     testKey = `${baseKey}.${count}`;
   }
-  
+
   if (count === 0) {
     // Fallback if no translations found
     return null;
   }
-  
+
   // Use modulo to select from available translations
-  const selectedIndex = messageIndex % count;
+  const selectedIndex = (roll.messageIndex || 0) % count;
   return `${baseKey}.${selectedIndex}`;
 };
 
@@ -87,14 +87,10 @@ interface DiceRollFormatterProps {
 export const DiceRollFormatter: React.FC<DiceRollFormatterProps> = ({ roll }) => {
   const intl = useIntl();
   const gradeInfo = formatGrade(roll.grade, roll.rollType, intl);
-  
-  // Determine if we have a target and action for translation selection
-  const hasTarget = roll.rollType !== RollTypes.SUM;
-  const hasAction = roll.action && roll.action.trim() !== '';
-  
-  // Get the dynamic message translation
-  const translationKey = getTranslationKey(hasTarget, hasAction, roll.grade, roll.messageIndex || 0, intl);
-  
+
+  // Get the dynamic message translation using messageType and grade
+  const translationKey = getTranslationKey(roll, intl);
+
   let dynamicMessage = '';
   if (translationKey) {
     try {
@@ -115,13 +111,15 @@ export const DiceRollFormatter: React.FC<DiceRollFormatterProps> = ({ roll }) =>
     // Fallback to old format if no translation found
     dynamicMessage = `${roll.playerName} rolled ${roll.value}`;
   }
-  
+
+  const hasTarget = roll.rollType !== RollTypes.SUM;
+
   return (
     <div className="dice-roll-formatted">
       <div className="roll-header">
         {dynamicMessage}
       </div>
-      
+
       <div className="roll-details">
         {formatDiceDetails(roll.diceList, gradeInfo.text, hasTarget ? roll.target : undefined, roll.action || undefined, roll.proxyRoll, roll.rolledBy, intl)}
       </div>
