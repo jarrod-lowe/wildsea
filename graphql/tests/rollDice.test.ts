@@ -391,4 +391,164 @@ describe("rollDice resolver", () => {
       expect(result.playerName).toBe("Test Character");
     });
   });
+
+  describe("response function - Dice Modifiers", () => {
+    it("should apply negative modifier: 1d4-1 produces 0-3 range", () => {
+      const modifierContext = createMockContext({
+        input: {
+          dice: [{ type: "1d4-1", size: 4, modifier: -1 }],
+          rollType: RollTypes.SUM,
+          target: 0,
+        },
+      });
+
+      // Mock Math.random to return 1.0 (should become 4, then 4-1=3)
+      jest.spyOn(Math, "random").mockReturnValue(0.99);
+
+      const result = response(modifierContext);
+
+      expect(result.value).toBe(3); // 4 (max d4) - 1 = 3
+      expect(result.diceList[0].value).toBe(3); // Individual die should show final value
+    });
+
+    it("should apply negative modifier: 1d4-1 minimum result is 0", () => {
+      const modifierContext = createMockContext({
+        input: {
+          dice: [{ type: "1d4-1", size: 4, modifier: -1 }],
+          rollType: RollTypes.SUM,
+          target: 0,
+        },
+      });
+
+      // Mock Math.random to return ~0 (should become 1, then 1-1=0)
+      jest.spyOn(Math, "random").mockReturnValue(0.01);
+
+      const result = response(modifierContext);
+
+      expect(result.value).toBe(0); // 1 (min d4) - 1 = 0
+      expect(result.diceList[0].value).toBe(0); // Individual die should show final value
+    });
+
+    it("should apply positive modifier: 1d6+2 produces 3-8 range", () => {
+      const modifierContext = createMockContext({
+        input: {
+          dice: [{ type: "1d6+2", size: 6, modifier: 2 }],
+          rollType: RollTypes.SUM,
+          target: 0,
+        },
+      });
+
+      // Mock Math.random to return 1.0 (should become 6, then 6+2=8)
+      jest.spyOn(Math, "random").mockReturnValue(0.99);
+
+      const result = response(modifierContext);
+
+      expect(result.value).toBe(8); // 6 (max d6) + 2 = 8
+      expect(result.diceList[0].value).toBe(8); // Individual die should show final value
+    });
+
+    it("should apply positive modifier: 1d6+2 minimum result is 3", () => {
+      const modifierContext = createMockContext({
+        input: {
+          dice: [{ type: "1d6+2", size: 6, modifier: 2 }],
+          rollType: RollTypes.SUM,
+          target: 0,
+        },
+      });
+
+      // Mock Math.random to return ~0 (should become 1, then 1+2=3)
+      jest.spyOn(Math, "random").mockReturnValue(0.01);
+
+      const result = response(modifierContext);
+
+      expect(result.value).toBe(3); // 1 (min d6) + 2 = 3
+      expect(result.diceList[0].value).toBe(3); // Individual die should show final value
+    });
+
+    it("should apply modifiers to multiple dice: 2d6-2 produces 0-10 range", () => {
+      const modifierContext = createMockContext({
+        input: {
+          dice: [
+            { type: "1d6-1", size: 6, modifier: -1 },
+            { type: "1d6-1", size: 6, modifier: -1 },
+          ],
+          rollType: RollTypes.SUM,
+          target: 0,
+        },
+      });
+
+      // Mock Math.random to return max values (6 each, then 5+5=10)
+      jest
+        .spyOn(Math, "random")
+        .mockReturnValueOnce(0.99)
+        .mockReturnValueOnce(0.99);
+
+      const result = response(modifierContext);
+
+      expect(result.value).toBe(10); // (6-1) + (6-1) = 5+5 = 10
+      expect(result.diceList[0].value).toBe(5); // First die: 6-1=5
+      expect(result.diceList[1].value).toBe(5); // Second die: 6-1=5
+    });
+
+    it("should apply modifiers to multiple dice: 2d6-2 minimum result is 0", () => {
+      const modifierContext = createMockContext({
+        input: {
+          dice: [
+            { type: "1d6-1", size: 6, modifier: -1 },
+            { type: "1d6-1", size: 6, modifier: -1 },
+          ],
+          rollType: RollTypes.SUM,
+          target: 0,
+        },
+      });
+
+      // Mock Math.random to return min values (1 each, then 0+0=0)
+      jest
+        .spyOn(Math, "random")
+        .mockReturnValueOnce(0.01)
+        .mockReturnValueOnce(0.01);
+
+      const result = response(modifierContext);
+
+      expect(result.value).toBe(0); // (1-1) + (1-1) = 0+0 = 0
+      expect(result.diceList[0].value).toBe(0); // First die: 1-1=0
+      expect(result.diceList[1].value).toBe(0); // Second die: 1-1=0
+    });
+
+    it("should handle zero modifier: 1d6+0 produces 1-6 range", () => {
+      const modifierContext = createMockContext({
+        input: {
+          dice: [{ type: "1d6", size: 6, modifier: 0 }],
+          rollType: RollTypes.SUM,
+          target: 0,
+        },
+      });
+
+      // Mock Math.random to return 0.5 (should become 4)
+      jest.spyOn(Math, "random").mockReturnValue(0.5);
+
+      const result = response(modifierContext);
+
+      expect(result.value).toBe(4); // 4 + 0 = 4
+      expect(result.diceList[0].value).toBe(4); // Individual die should show final value
+    });
+
+    it("should handle large negative modifier that could go below zero", () => {
+      const modifierContext = createMockContext({
+        input: {
+          dice: [{ type: "1d4-10", size: 4, modifier: -10 }],
+          rollType: RollTypes.SUM,
+          target: 0,
+        },
+      });
+
+      // Mock Math.random to return max (should become 4, then 4-10=-6)
+      jest.spyOn(Math, "random").mockReturnValue(0.99);
+
+      const result = response(modifierContext);
+
+      expect(result.value).toBe(-6); // 4 - 10 = -6 (negative results should be allowed)
+      expect(result.diceList[0].value).toBe(-6); // Individual die should show final value
+    });
+  });
 });

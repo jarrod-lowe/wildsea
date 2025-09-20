@@ -128,11 +128,11 @@ export const SectionDeltaGreenSkills: React.FC<SectionDefinition> = (props) => {
     setDiceModalOpen(true);
   };
 
-  const handleRollComplete = async (grade: string) => {
+  const handleRollComplete = async (result: any) => {
     if (!selectedSkill || !currentContent || !currentUpdateSection) return;
-    
+
     // Mark skill as used if it was a failure or fumble AND the skill has a used flag
-    if ((grade === Grades.FAILURE || grade === Grades.FUMBLE) && selectedSkill.item.hasUsedFlag !== false) {
+    if ((result.grade === Grades.FAILURE || result.grade === Grades.FUMBLE) && selectedSkill.item.hasUsedFlag !== false) {
       const newItems = [...currentContent.items];
       const itemIndex = newItems.findIndex(i => i.id === selectedSkill.item.id);
       if (itemIndex !== -1) {

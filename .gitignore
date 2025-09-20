@@ -67,3 +67,4 @@ ui/.push
 ui/.push-*
 ui/coverage
 ui/.build-*
+.playwright-mcp/*

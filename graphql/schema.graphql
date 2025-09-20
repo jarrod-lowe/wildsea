@@ -220,6 +220,7 @@ union Dice = SingleDie
 input DiceInput {
   type: String!
   size: Int!
+  modifier: Int
 }
 
 input RollDiceInput {
