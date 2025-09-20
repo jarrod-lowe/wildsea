@@ -2796,6 +2796,33 @@ body {
   margin: 0;
 }
 
+/* Preset weapon selection styling */
+.preset-weapon-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.preset-label {
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+.preset-select {
+  flex: 1;
+  min-width: 200px;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.875rem;
+}
+
+
 /* Mobile responsive adjustments */
 @media (width <= 768px) {
   .weapons-table {

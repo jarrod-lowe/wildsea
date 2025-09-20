@@ -40,6 +40,14 @@
         }
       `;
     
+      export const getGamePresetsQuery = `
+        query getGamePresets($input: GetGamePresetsInput!) {
+          getGamePresets(input: $input) {
+            displayName data language
+          }
+        }
+      `;
+    
       export const getUserSettingsQuery = `
         query getUserSettings {
           getUserSettings {

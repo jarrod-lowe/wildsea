@@ -41,6 +41,17 @@ jobs:
         project-token: ${{ secrets.CODACY_API_TOKEN }}
         coverage-reports: graphql/coverage/lcov.info
 
+    - name: Create weapon data file
+      env:
+        WEAPON_DATA: ${{ secrets.DELTAGREEN_WEAPONS_JSON }}
+      run: |
+        if [ -n "$WEAPON_DATA" ]; then
+          echo "$WEAPON_DATA" > deltagreen-weapons.json
+          echo "Created deltagreen-weapons.json from repository secret"
+        else
+          echo "No weapon data secret found, proceeding without weapon presets"
+        fi
+
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@6e562ac9abb118b648a1c7765070c66a1c996eb6
       with:

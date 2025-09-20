@@ -7,5 +7,6 @@ export const DDBPrefixTemplate = "TEMPLATE";
 export const DDBPrefixJoin = "JOIN";
 export const DDBPrefixSettings = "SETTINGS";
 export const DDBPrefixGameDefaults = "GAMEDEFAULTS";
+export const DDBPrefixGamePresets = "GAMEPRESETS";
 export const DDBPrefixLanguage = "LANGUAGE";
 export const DDBPrefixNotification = "NOTIFICATION";

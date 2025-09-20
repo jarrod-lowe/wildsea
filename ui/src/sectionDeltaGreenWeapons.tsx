@@ -1,6 +1,6 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
-import { SheetSection, RollDiceInput, DiceRoll } from "../../appsync/graphql";
+import { SheetSection, RollDiceInput, DiceRoll, GamePresetItem } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { SectionEditForm } from './components/SectionEditForm';
@@ -9,6 +9,7 @@ import { useToast } from './notificationToast';
 import { generateClient } from "aws-amplify/api";
 import { rollDiceMutation } from "../../appsync/schema";
 import { RollTypes } from "../../graphql/lib/constants/rollTypes";
+import { getGamePresets } from './utils/gamePresetsCache';
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
 import 'tippy.js/dist/tippy.css';
@@ -95,10 +96,30 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
   const { section, userSubject } = props;
   const intl = useIntl();
   const toast = useToast();
-  const updateTimeoutRef = useRef<NodeJS.Timeout>();
+  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [diceModalOpen, setDiceModalOpen] = useState(false);
   const [selectedWeapon, setSelectedWeapon] = useState<SelectedWeapon | null>(null);
   const [lastRollResult, setLastRollResult] = useState<DiceRoll | null>(null);
+  const [presetWeapons, setPresetWeapons] = useState<GamePresetItem[]>([]);
+  const [selectedPreset, setSelectedPreset] = useState<string>('');
+  const [loadingPresets, setLoadingPresets] = useState(false);
+
+  // Load preset weapons when component mounts
+  useEffect(() => {
+    const loadPresetWeapons = async () => {
+      setLoadingPresets(true);
+      try {
+        const presets = await getGamePresets('deltagreen-weapons', intl.locale);
+        setPresetWeapons(presets);
+      } catch (error) {
+        toast.addToast(intl.formatMessage({ id: 'deltaGreenWeapons.presetLoadError' }), 'error');
+      } finally {
+        setLoadingPresets(false);
+      }
+    };
+
+    loadPresetWeapons();
+  }, [intl.locale, toast]);
 
   // Helper: Tick the 'used' flag on the relevant skill in the DOM
   const tickUsedFlagOnSkill = (skillName: string) => {
@@ -467,8 +488,77 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
       setContent({ ...content, items: newItems });
     };
 
+    const handleAddPresetWeapon = () => {
+      if (!selectedPreset) return;
+
+      const preset = presetWeapons.find(p => p.displayName === selectedPreset);
+      if (!preset) return;
+
+      try {
+        // Parse twice because the data is double-encoded JSON
+        const firstParse = JSON.parse(preset.data);
+        const weaponData = JSON.parse(firstParse);
+
+        // Look up skill ID by skill name
+        const skills = getSkillsFromDataAttributes();
+        const skill = skills.find(s => s.name === weaponData.skillId);
+        const skillId = skill ? skill.id : '';
+
+        const newWeapon: DeltaGreenWeaponItem = {
+          id: uuidv4(),
+          name: weaponData.name || '',
+          description: weaponData.description || '',
+          skillId: skillId,
+          baseRange: weaponData.baseRange || 'N/A',
+          damage: weaponData.damage || 'N/A',
+          armorPiercing: weaponData.armorPiercing || 'N/A',
+          lethality: weaponData.lethality || 'N/A',
+          killRadius: weaponData.killRadius || 'N/A',
+          ammo: weaponData.ammo || 'N/A'
+        };
+
+        const newItems = [...content.items, newWeapon];
+        setContent({ ...content, items: newItems });
+        setSelectedPreset(''); // Reset selection
+        toast.addToast(intl.formatMessage({ id: 'deltaGreenWeapons.presetAdded' }, { weapon: newWeapon.name }), 'success');
+      } catch (error) {
+        toast.addToast(intl.formatMessage({ id: 'deltaGreenWeapons.presetAddError' }), 'error');
+      }
+    };
+
     return (
       <div className="weapon-edit-form">
+        {presetWeapons.length > 0 && (
+          <div className="section-item-edit">
+            <div className="preset-weapon-row">
+              <span className="preset-label">
+                {intl.formatMessage({ id: 'deltaGreenWeapons.addPresetWeapon' })}
+              </span>
+              <select
+                value={selectedPreset}
+                onChange={(e) => setSelectedPreset(e.target.value)}
+                disabled={loadingPresets}
+                className="preset-select"
+                aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.selectWeapon' })}
+              >
+                <option value="">{intl.formatMessage({ id: 'deltaGreenWeapons.chooseWeapon' })}</option>
+                {presetWeapons.map((preset) => (
+                  <option key={preset.displayName} value={preset.displayName}>
+                    {preset.displayName}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={handleAddPresetWeapon}
+                disabled={!selectedPreset || loadingPresets}
+                className="btn-standard btn-small"
+              >
+                ✚ {intl.formatMessage({ id: 'deltaGreenWeapons.addWeapon' })}
+              </button>
+            </div>
+          </div>
+        )}
         <SectionEditForm
           content={content}
           setContent={setContent}

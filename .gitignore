@@ -68,3 +68,6 @@ ui/.push-*
 ui/coverage
 ui/.build-*
 .playwright-mcp/*
+
+# Copyrighted game data (must be created by users who own the books)
+deltagreen-weapons.json

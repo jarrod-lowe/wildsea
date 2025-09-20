@@ -45,6 +45,7 @@ type Query {
     getGameTypes(input: GetGameTypesInput!): [GameTypeMetadata!]! @aws_cognito_user_pools
     getCharacterTemplates(input: GetCharacterTemplatesInput!): [CharacterTemplateMetadata!]! @aws_cognito_user_pools
     getCharacterTemplate(input: GetCharacterTemplateInput!): [TemplateSectionData!]! @aws_cognito_user_pools
+    getGamePresets(input: GetGamePresetsInput!): [GamePresetItem!]! @aws_cognito_user_pools
     getUserSettings: UserSettings @aws_cognito_user_pools
     getSystemNotification: SystemNotification @aws_cognito_user_pools
 }
@@ -75,6 +76,11 @@ input GetCharacterTemplatesInput {
 input GetCharacterTemplateInput {
   templateName: String!
   gameType: String!
+  language: String!
+}
+
+input GetGamePresetsInput {
+  dataSetName: String!
   language: String!
 }
 
@@ -276,6 +282,12 @@ type TemplateSectionData @aws_cognito_user_pools {
   sectionType: String!
   content: AWSJSON!
   position: Int!
+}
+
+type GamePresetItem @aws_cognito_user_pools {
+  displayName: String!
+  data: AWSJSON!
+  language: String!
 }
 
 type UserSettings @aws_cognito_user_pools {

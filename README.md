@@ -24,7 +24,7 @@ Wildsea companion app
   * Add `workspace = "<your github org>"` to the vars file
 * Create `terraform/environment/wildsea-dev/terraform.tfvars`
   * Add `domain = "<domain>"` to the route53 zone domain name
-* Run `.AWS_PROFILE=<profile> ./terraform/environment/github/aws.sh <aws account id>`
+* Run `AWS_PROFILE=<profile> ./terraform/environment/github/deploy.sh <aws account id>`
 * Log into Codacy, and connect the repo
   * Configure the rule to maximum
 * In Codacy, in the repo, go to code patterns, and edit the coding standard:
@@ -177,8 +177,72 @@ AWS_PROFILE=wildsea aws dynamodb query \
   --expression-attribute-values '{":pk":{"S":"GAME#<gameId>"}}'
 ```
 
-Should return empty results. If not, those are orphaned records that didn't get cleaned up.
+Should return empty results. If not, those are orphaned records that didn't get
+cleaned up.
 
 ### Character quotas
 
-Deleted games don't affect quotas for other games. Each game starts fresh with 20 character slots.
+Deleted games don't affect quotas for other games. Each game starts fresh with
+20 character slots.
+
+## Delta Green Weapon Presets
+
+The application supports weapon presets for Delta Green character sheets, but
+the weapon data is not included in the repository.  To use weapon presets, you
+must own the Delta Green Agent's Handbook and create the weapon data file
+yourself.
+
+### Adding Weapon Data
+
+1. **For Development**: Create a file called `deltagreen-weapons.json` in the project root
+2. **For Production**: Add the weapon data as a repository secret called `DELTAGREEN_WEAPONS_JSON`
+
+The weapon data must follow the exact structure shown in `deltagreen-weapons.example.json`. Each weapon requires:
+
+* `display_name_*``: Display names in each language
+* `weapon_data`: Object containing weapon statistics (name, baseRange, damage, etc.)
+* `skillId_*`: Associated skill names in each language
+* `description_*`: Weapon descriptions in each language
+
+### Data Structure Example
+
+```json
+{
+  "weapon-key": {
+    "display_name_en": "Weapon Name [Category]",
+    "display_name_tlh": "Klingon Translation [Category]",
+    "weapon_data": {
+      "name": "Weapon Name",
+      "baseRange": "15m",
+      "damage": "1d10",
+      "armorPiercing": "N/A",
+      "lethality": "N/A",
+      "killRadius": "N/A",
+      "ammo": "12"
+    },
+    "skillId_en": "Firearms 🔫",
+    "skillId_tlh": "nuH 🔫",
+    "description_en": "Weapon description and examples",
+    "description_tlh": "Klingon description"
+  }
+}
+```
+
+Ensure the skill names match the names in that language from the "Skills"
+section of the "Basic Agent" template.
+
+### Production Deployment
+
+For production deployments, you need to set up a repository secret containing the weapon data:
+
+1. **Create the secret**: Go to repository Settings → Secrets and variables → Actions
+2. **Add repository secret**: Name it `DELTAGREEN_WEAPONS_JSON`
+3. **Set the value**: Paste the complete JSON weapon data (same structure as the local file)
+
+The GitHub Actions workflow will automatically:
+
+* Load weapon data from the `DELTAGREEN_WEAPONS_JSON` repository secret
+* Write it to `deltagreen-weapons.json` before running Terraform
+* Make the weapon presets available during both planning and deployment
+
+If the secret is not set, the deployment will proceed without weapon presets (graceful degradation).
