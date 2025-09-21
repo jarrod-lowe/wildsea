@@ -12,17 +12,6 @@ export const diceRollMessagesKlingon = {
     "result.deltaGreenDamage.neutral.0": "{name} Heghlu'meH QaQ jajvam: {roll} QIH.",
     "result.deltaGreenDamage.neutral.1": "{name} QIH: {roll} Hegh.",
 
-    // Delta Green Skill
-    "result.deltaGreenSkill.success.0": "{name} laH Qap: {roll}.",
-    "result.deltaGreenSkill.success.1": "{name} laH Qapchu': {roll}.",
-    "result.deltaGreenSkill.failure.0": "{name} laH luj: {roll}.",
-    "result.deltaGreenSkill.failure.1": "{name} laH Qagh: {roll}.",
-
-    // Delta Green (general)
-    "result.deltaGreen.fumble.0": "{name} {action} Qaghqu'. {roll}, {target} poQ.",
-    "result.deltaGreen.failure.0": "{name} {action} luj. {roll} yapbe'.",
-    "result.deltaGreen.success.0": "Qap! {name} {action} {roll}.",
-    "result.deltaGreen.critical_success.0": "{name} {action} Qapchu'qu'! {roll} Dun.",
 
     // Neutral (no target, no action)
     "result.neutral.neutral.0": "{name} {roll} SuvwI'.",
