@@ -28,7 +28,7 @@ body {
   --radius-lg: 0.75rem;
 
   /* react-md-editor font settings */
-  --editor-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --editor-font-family: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
   --editor-font-size: 14px;
   --editor-line-height: 1.5;
   --editor-letter-spacing: 0;
