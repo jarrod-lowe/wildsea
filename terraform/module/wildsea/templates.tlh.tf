@@ -309,16 +309,9 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic_tlh" {
         },
         {
           sectionName = "jup"
-          sectionType = "RICHTEXT"
+          sectionType = "DELTAGREENBONDS"
           content = jsonencode({
-            items = [
-              {
-                id          = "bonds"
-                name        = "jup"
-                description = ""
-                markdown    = "naDev chel"
-              }
-            ]
+            items = []
             showEmpty = false
           })
           position = 4
