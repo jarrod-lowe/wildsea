@@ -358,7 +358,11 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
 
               return (
                 <div key={item.id} className="weapon-row" role="row">
-                  <div className="weapon-col-name" data-label="Name" role="cell">
+                  <div
+                    className="weapon-col-name"
+                    data-label={intl.formatMessage({ id: 'deltaGreenWeapons.weaponName' })}
+                    role="cell"
+                  >
                     <span className="weapon-name">{item.name}</span>
                     {item.description && (
                       <Tippy
@@ -378,7 +382,11 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                       </Tippy>
                     )}
                   </div>
-                  <div className="weapon-col-skill" data-label="Skill" role="cell">
+                  <div
+                    className="weapon-col-skill"
+                    data-label={intl.formatMessage({ id: 'deltaGreenWeapons.skill' })}
+                    role="cell"
+                  >
                     {skill ? (
                       <div className="weapon-skill">
                         <span>{skill.name} ({skill.roll}%)</span>
@@ -398,10 +406,18 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                       <span className="no-skill">—</span>
                     )}
                   </div>
-                  <div className="weapon-col-range" data-label="Range" role="cell">
+                  <div
+                    className="weapon-col-range"
+                    data-label={intl.formatMessage({ id: 'deltaGreenWeapons.baseRange' })}
+                    role="cell"
+                  >
                     <span>{item.baseRange || 'N/A'}</span>
                   </div>
-                  <div className="weapon-col-damage" data-label="Damage" role="cell">
+                  <div
+                    className="weapon-col-damage"
+                    data-label={intl.formatMessage({ id: 'deltaGreenWeapons.damage' })}
+                    role="cell"
+                  >
                     <div className="weapon-damage">
                       <span>{item.damage || 'N/A'}</span>
                       {mayEditSheet && hasValidDamage && (
@@ -416,10 +432,18 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                       )}
                     </div>
                   </div>
-                  <div className="weapon-col-ap" data-label="AP" role="cell">
+                  <div
+                    className="weapon-col-ap"
+                    data-label={intl.formatMessage({ id: 'deltaGreenWeapons.armorPiercing' })}
+                    role="cell"
+                  >
                     <span>{item.armorPiercing || 'N/A'}</span>
                   </div>
-                  <div className="weapon-col-lethality" data-label="Lethality" role="cell">
+                  <div
+                    className="weapon-col-lethality"
+                    data-label={intl.formatMessage({ id: 'deltaGreenWeapons.lethality' })}
+                    role="cell"
+                  >
                     <div className="weapon-lethality">
                       <span>{item.lethality || 'N/A'}</span>
                       {mayEditSheet && hasValidLethality && (
@@ -434,10 +458,18 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                       )}
                     </div>
                   </div>
-                  <div className="weapon-col-radius" data-label="Radius" role="cell">
+                  <div
+                    className="weapon-col-radius"
+                    data-label={intl.formatMessage({ id: 'deltaGreenWeapons.killRadius' })}
+                    role="cell"
+                  >
                     <span>{item.killRadius || 'N/A'}</span>
                   </div>
-                  <div className="weapon-col-ammo" data-label="Ammo" role="cell">
+                  <div
+                    className="weapon-col-ammo"
+                    data-label={intl.formatMessage({ id: 'deltaGreenWeapons.ammo' })}
+                    role="cell"
+                  >
                     <div className="weapon-ammo">
                       <span>{item.ammo || 'N/A'}</span>
                       {mayEditSheet && hasValidAmmo && (

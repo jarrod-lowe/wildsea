@@ -2916,14 +2916,16 @@ body {
     grid-column: 1;
   }
 
-  .weapon-col-name::before { content: "Name"; }
-  .weapon-col-skill::before { content: "Skill"; }
-  .weapon-col-range::before { content: "Range"; }
-  .weapon-col-damage::before { content: "Damage"; }
-  .weapon-col-ap::before { content: "AP"; }
-  .weapon-col-lethality::before { content: "Lethality"; }
-  .weapon-col-radius::before { content: "Radius"; }
-  .weapon-col-ammo::before { content: "Ammo"; }
+  .weapon-col-name::before,
+  .weapon-col-skill::before,
+  .weapon-col-range::before,
+  .weapon-col-damage::before,
+  .weapon-col-ap::before,
+  .weapon-col-lethality::before,
+  .weapon-col-radius::before,
+  .weapon-col-ammo::before {
+    content: attr(data-label);
+  }
 
   .weapon-col-name,
   .weapon-col-skill,
