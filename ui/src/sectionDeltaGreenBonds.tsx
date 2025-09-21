@@ -22,13 +22,13 @@ export const createDefaultDeltaGreenBondsContent = (): SectionTypeDeltaGreenBond
 
 export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
-  const updateTimeoutRef = useRef<NodeJS.Timeout>();
+  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleValueDecrement = useCallback(async (
     item: BondItem,
     content: SectionTypeDeltaGreenBonds,
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenBonds>>,
-    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>
   ) => {
     if (item.value > 0) {
       const newItems = [...content.items];
@@ -56,7 +56,7 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
     mayEditSheet: boolean,
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenBonds>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
-    isEditing: boolean,
+    _isEditing: boolean,
   ) => {
     const filteredItems = content.items.filter(item => content.showEmpty || item.name !== '');
 
