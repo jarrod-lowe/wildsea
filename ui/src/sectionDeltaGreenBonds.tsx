@@ -102,12 +102,9 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
                   </Tippy>
                 )}
               </span>
-              {(item as BondItem).symptoms && (
-                <div className="bond-symptoms" style={{ gridColumn: '1 / -1' }}>
-                  <span className="bond-symptoms-label">{intl.formatMessage({ id: 'deltaGreenBonds.symptoms' })}: </span>
-                  <span>{(item as BondItem).symptoms}</span>
-                </div>
-              )}
+              <span className="bond-symptoms">
+                {(item as BondItem).symptoms || ''}
+              </span>
             </React.Fragment>
           );
         })}
@@ -195,6 +192,13 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
               placeholder="Value"
               aria-label="Bond value"
               className="bond-value-input"
+            />
+            <input
+              type="text"
+              value={item.symptoms || ''}
+              onChange={(e) => handleItemChange(index, 'symptoms', e.target.value)}
+              placeholder={intl.formatMessage({ id: "deltaGreenBonds.symptoms" })}
+              aria-label={intl.formatMessage({ id: "deltaGreenBonds.symptoms" })}
             />
             <textarea
               value={item.description || ''}

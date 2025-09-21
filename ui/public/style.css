@@ -2781,7 +2781,7 @@ body {
 /* Bonds grid layout - similar to weapons table */
 .bonds-grid {
   display: grid;
-  grid-template-columns: min-content auto 1fr;
+  grid-template-columns: min-content auto 1fr 1fr;
   gap: var(--space-xs) var(--space-sm);
   align-items: center;
 }
@@ -2798,6 +2798,11 @@ body {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+}
+
+.bond-symptoms {
+  font-style: italic;
+  color: var(--color-text-secondary);
 }
 
 .no-skill {
