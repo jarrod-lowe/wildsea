@@ -220,6 +220,9 @@ export const messagesKlingon = {
 
     // Delta Green Weapons
     'sectionType.deltagreenweapons': 'Delta DIch nuH',
+
+    // Delta Green Bonds
+    'sectionType.deltagreenbonds': 'Delta DIch DIch',
     'deltaGreenWeapons.armorNote': 'DIch Sepmeyvam Hoch HIv DIch DIch DIch motlhbe\'.',
     'deltaGreenWeapons.tableLabel': 'nuH naQ',
     'deltaGreenWeapons.weaponName': 'nuH pagh',
