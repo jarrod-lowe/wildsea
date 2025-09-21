@@ -10,7 +10,7 @@ body {
 }
 
 /* 
- * Theme-specific CSS variables are now loaded dynamically based on game type.
+ * Theme-specific CSS variables are loaded dynamically based on game type.
  * See /themes/ directory for theme files.
  */
 
@@ -26,6 +26,14 @@ body {
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
+
+  /* react-md-editor font settings */
+  --editor-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --editor-font-size: 14px;
+  --editor-line-height: 1.5;
+  --editor-letter-spacing: 0;
+  --editor-tab-size: 4;
+  --editor-font-variant-ligatures: none;
 }
 
 /* System Notification Panel */
@@ -448,6 +456,20 @@ body {
 .newgame .form-field .w-md-editor-text-input::placeholder {
     color: var(--color-text-muted);
     -webkit-text-fill-color: var(--color-text-muted);
+}
+
+/* Make sure the text in the shown and hidden versions of the text in the editor match */
+.w-md-editor .w-md-editor-text,
+.w-md-editor .w-md-editor-text-input,
+.w-md-editor .w-md-editor-text-pre,
+.language-markdown .code-line,
+.language-markdown .token {
+  font-family: var(--editor-font-family) !important;
+  font-size: var(--editor-font-size);
+  line-height: var(--editor-line-height);
+  letter-spacing: var(--editor-letter-spacing);
+  tab-size: var(--editor-tab-size);
+  font-variant-ligatures: var(--editor-font-variant-ligatures);
 }
 
 /* Quota exceeded message styling */
