@@ -22,6 +22,7 @@ interface DeltaGreenWeaponItem extends BaseSectionItem {
   lethality: string;
   killRadius: string;
   ammo: string;
+  maxAmmo: string;
 }
 
 type SectionTypeDeltaGreenWeapons = BaseSectionContent<DeltaGreenWeaponItem>;
@@ -231,6 +232,18 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     const currentAmmo = parseInt(item.ammo) || 0;
     if (currentAmmo > 0) {
       await handleFieldChange(item, 'ammo', (currentAmmo - 1).toString(), content, setContent, updateSection);
+    }
+  }, [handleFieldChange]);
+
+  const handleReload = useCallback(async (
+    item: DeltaGreenWeaponItem,
+    content: SectionTypeDeltaGreenWeapons,
+    setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenWeapons>>,
+    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+  ) => {
+    const maxAmmo = item.maxAmmo;
+    if (maxAmmo && maxAmmo !== 'N/A' && !isNaN(parseInt(maxAmmo))) {
+      await handleFieldChange(item, 'ammo', maxAmmo, content, setContent, updateSection);
     }
   }, [handleFieldChange]);
 
@@ -483,6 +496,17 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                           -1
                         </button>
                       )}
+                      {mayEditSheet && hasValidAmmo && (
+                        <button
+                          className="adjust-btn small reload"
+                          onClick={() => handleReload(item, content, setContent, updateSection)}
+                          disabled={!item.maxAmmo || item.maxAmmo === 'N/A' || isNaN(parseInt(item.maxAmmo))}
+                          aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.reloadWeapon' }, { weapon: item.name })}
+                          title={intl.formatMessage({ id: 'deltaGreenWeapons.reloadWeapon' }, { weapon: item.name })}
+                        >
+                          {intl.formatMessage({ id: 'deltaGreenWeapons.reloadSymbol' })}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -547,7 +571,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
         armorPiercing: 'N/A',
         lethality: 'N/A',
         killRadius: 'N/A',
-        ammo: 'N/A'
+        ammo: 'N/A',
+        maxAmmo: 'N/A'
       }];
       setContent({ ...content, items: newItems });
     };
@@ -589,7 +614,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
           armorPiercing: weaponData.armorPiercing || 'N/A',
           lethality: weaponData.lethality || 'N/A',
           killRadius: weaponData.killRadius || 'N/A',
-          ammo: weaponData.ammo || 'N/A'
+          ammo: weaponData.ammo || 'N/A',
+          maxAmmo: weaponData.maxAmmo || weaponData.ammo || 'N/A'
         };
 
         const newItems = [...content.items, newWeapon];
@@ -729,6 +755,16 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                 onChange={(e) => handleItemChange(index, 'ammo', e.target.value)}
                 placeholder={intl.formatMessage({ id: "deltaGreenWeapons.ammo" })}
                 aria-label={intl.formatMessage({ id: "deltaGreenWeapons.ammo" })}
+              />
+            </div>
+            <div className="form-field">
+              <label>{intl.formatMessage({ id: "deltaGreenWeapons.maxAmmo" })}</label>
+              <input
+                type="text"
+                value={item.maxAmmo || ''}
+                onChange={(e) => handleItemChange(index, 'maxAmmo', e.target.value)}
+                placeholder={intl.formatMessage({ id: "deltaGreenWeapons.maxAmmo" })}
+                aria-label={intl.formatMessage({ id: "deltaGreenWeapons.maxAmmo" })}
               />
             </div>
           </>

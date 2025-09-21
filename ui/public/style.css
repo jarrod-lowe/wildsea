@@ -2759,6 +2759,10 @@ body {
   font-weight: 500;
 }
 
+.weapon-col-ammo {
+  justify-content: flex-end !important;
+}
+
 .weapon-name {
   font-weight: 500;
 }
