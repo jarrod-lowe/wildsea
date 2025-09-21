@@ -309,16 +309,9 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic_en" {
         },
         {
           sectionName = "Bonds"
-          sectionType = "RICHTEXT"
+          sectionType = "DELTAGREENBONDS"
           content = jsonencode({
-            items = [
-              {
-                id          = "bonds"
-                name        = "Bonds"
-                description = ""
-                markdown    = "Add your bonds here"
-              }
-            ]
+            items     = []
             showEmpty = false
           })
           position = 4
