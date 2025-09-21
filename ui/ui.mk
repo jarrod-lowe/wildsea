@@ -1,3 +1,5 @@
+UI_PORT ?= 5173
+
 UI_JQ_FILTER := { \
 	identity_pool: .cognito_identity_pool_id.value, \
 	user_pool: .cognito_user_pool_id.value, \
@@ -18,7 +20,7 @@ ui/config/config-%.json: ui/config/output-%.json
 .PHONY: ui-local
 ui-local: ui/config/config-dev.json appsync/schema.ts appsync/graphql.ts terraform/environment/wildsea-dev/.apply ui/node_modules
 	cp $< ui/public/config.json
-	docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui -p 5173:5173 node:20 npm run dev
+	docker run --rm -it --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui -p $(UI_PORT):5173 node:20 npm run dev
 
 ui/node_modules: ui/package.json
 	if [ -z "$(IN_PIPELINE)" ] ; then \

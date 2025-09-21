@@ -407,6 +407,15 @@ const GameContent: React.FC<{
     return <div><FormattedMessage id="loadingGameData" /></div>;
   }
 
+  // Find the currently active sheet object
+  const activeSheetObj = activeSheet ? game.playerSheets.find(s => s.userId === activeSheet) : null;
+  // Determine if the user can edit the active sheet
+  let mayEditActiveSheet = false;
+  if (activeSheetObj) {
+    if (userSubject === activeSheetObj.userId) mayEditActiveSheet = true;
+    if (activeSheetObj.type === 'NPC') mayEditActiveSheet = true;
+    if (userSubject === game.gmUserId) mayEditActiveSheet = true;
+  }
   return (
     <div className="game-container">
       <TopBar
@@ -418,6 +427,8 @@ const GameContent: React.FC<{
         onShareGame={() => setShowJoinCodeModal(true)}
         currentLanguage={currentLanguage}
         onLanguageChange={onLanguageChange}
+        activeSheet={activeSheetObj}
+        mayEditActiveSheet={mayEditActiveSheet}
       />
       <div className="tab-bar" role="tablist" aria-label={intl.formatMessage({ id: 'game.characterTabs' })}>
         {game.playerSheets
