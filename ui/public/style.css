@@ -2774,16 +2774,25 @@ body {
 }
 
 /* Override section-items grid for bonds to take full width */
-.section-items .bonds-grid {
+.section-items .bonds-container {
   grid-column: 1 / -1;
 }
 
-/* Bonds grid layout - similar to weapons table */
-.bonds-grid {
+/* Bonds container for multiple rows */
+.bonds-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* Individual bond row grid layout */
+.bond-row {
   display: grid;
   grid-template-columns: min-content auto 1fr 1fr;
   gap: var(--space-xs) var(--space-sm);
   align-items: center;
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
 }
 
 .bond-value {
@@ -2803,6 +2812,16 @@ body {
 .bond-symptoms {
   font-style: italic;
   color: var(--color-text-secondary);
+}
+
+/* Highlighting for bonds with zero value - similar to disorder warning */
+.bond-row.bond-item-zero {
+  background-color: var(--color-accent-disorder1);
+  box-shadow: inset 4px 0 0 var(--color-danger);
+}
+
+.bond-row.bond-item-zero .bond-value {
+  font-weight: 600;
 }
 
 .no-skill {

@@ -61,12 +61,12 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
     const filteredItems = content.items.filter(item => content.showEmpty || item.name !== '');
 
     return (
-      <div className="bonds-grid">
+      <div className="bonds-container">
         {filteredItems.map(item => {
           const isZeroValue = item.value === 0;
           return (
-            <React.Fragment key={item.id}>
-              <span className={`bond-value ${isZeroValue ? 'bond-value-zero' : ''}`}>
+            <div key={item.id} className={`bonds-grid bond-row ${isZeroValue ? 'bond-item-zero' : ''}`}>
+              <span className="bond-value">
                 {(item as BondItem).value}
               </span>
               {mayEditSheet ? (
@@ -105,7 +105,7 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
               <span className="bond-symptoms">
                 {(item as BondItem).symptoms || ''}
               </span>
-            </React.Fragment>
+            </div>
           );
         })}
       </div>
