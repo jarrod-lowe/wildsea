@@ -2773,6 +2773,30 @@ body {
   justify-content: center;
 }
 
+/* Override section-items grid for bonds to take full width */
+.section-items .bonds-grid {
+  grid-column: 1 / -1;
+}
+
+/* Bonds grid layout - similar to weapons table */
+.bonds-grid {
+  display: grid;
+  grid-template-columns: min-content auto 1fr;
+  gap: var(--space-xs) var(--space-sm);
+  align-items: center;
+}
+
+.bond-value {
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+  min-width: 2em;
+}
+
+.bond-name {
+  font-weight: 500;
+}
+
 .no-skill {
   color: var(--color-text-secondary);
   font-style: italic;

@@ -239,6 +239,8 @@ export const messagesEnglish = {
     'deltaGreenWeapons.addPresetWeapon': 'Add Preset Weapon',
 
     'sectionType.deltagreenbonds': 'Delta Green Bonds',
+    'deltaGreenBonds.decrementValue': 'Decrease {name} by 1',
+    'deltaGreenBonds.symptoms': 'Symptoms',
     'deltaGreenWeapons.selectWeapon': 'Select weapon',
     'deltaGreenWeapons.chooseWeapon': 'Choose a weapon...',
     'deltaGreenWeapons.addWeapon': 'Add',
