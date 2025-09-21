@@ -333,4 +333,8 @@ export const messagesKlingon = {
     'language.autoDetect': 'Hol DIch tu\'',
     'language.english': 'DIch Hol',
     'language.klingon': 'tlhIngan Hol',
+
+    'playerSheetTab.download.button': 'nagh beQ yIchev',
+    'playerSheetTab.download.filename': 'nagh-beQ',
+    'playerSheetTab.download.noPermission': 'nagh beQ yIchevlaHbe\' SoH',
 };

@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Tippy from '@tippyjs/react';
 import ReactMarkdown from 'react-markdown';
 import { supportedLanguages, type SupportedLanguage } from './translations';
+import { PlayerSheet } from '../../appsync/graphql';
 
 function handleSignInClick() {
     signOut(); // sometimes Cognito gets confused; and things you are both logged in, but can't retrieve your email address
@@ -24,10 +25,12 @@ interface TopBarProps {
   onShareGame?: () => void;
   currentLanguage?: SupportedLanguage;
   onLanguageChange?: (language: SupportedLanguage) => void;
+  activeSheet?: PlayerSheet | null;
+  mayEditActiveSheet?: boolean;
 }
 
 // TopBar component
-export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isGM, onEditGame, onShareGame, currentLanguage = 'en', onLanguageChange }) => {
+export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isGM, onEditGame, onShareGame, currentLanguage = 'en', onLanguageChange, activeSheet, mayEditActiveSheet }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -127,6 +130,28 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
                   </div>
                   <div className="dropdown-separator" />
                 </>
+              )}
+              {activeSheet && (
+                <button
+                  onClick={() => {
+                    if (!mayEditActiveSheet) return;
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(activeSheet, null, 2));
+                    const defaultFilename = intl.formatMessage({ id: 'playerSheetTab.download.filename' });
+                    const filename = `${activeSheet.characterName || defaultFilename}.json`;
+                    const dlAnchor = document.createElement('a');
+                    dlAnchor.setAttribute("href", dataStr);
+                    dlAnchor.setAttribute("download", filename);
+                    document.body.appendChild(dlAnchor);
+                    dlAnchor.click();
+                    document.body.removeChild(dlAnchor);
+                  }}
+                  className="btn-standard btn-small"
+                  style={{ width: '100%', marginBottom: 4, opacity: mayEditActiveSheet ? 1 : 0.5, cursor: mayEditActiveSheet ? 'pointer' : 'not-allowed' }}
+                  disabled={!mayEditActiveSheet}
+                  title={mayEditActiveSheet ? '' : intl.formatMessage({ id: 'playerSheetTab.download.noPermission' })}
+                >
+                  <FormattedMessage id="playerSheetTab.download.button" />
+                </button>
               )}
               <button onClick={() => { handleSignOutClick(); }} className="btn-standard btn-small">
                 <FormattedMessage id="logout" />
