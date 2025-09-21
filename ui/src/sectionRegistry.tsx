@@ -8,6 +8,7 @@ import { SectionDeltaGreenStats, createDefaultDeltaGreenStatsContent } from './s
 import { SectionDeltaGreenDerived, createDefaultDeltaGreenDerivedContent } from './sectionDeltaGreenDerived';
 import { SectionDeltaGreenSkills, createDefaultDeltaGreenSkillsContent } from './sectionDeltaGreenSkills';
 import { SectionDeltaGreenWeapons, createDefaultDeltaGreenWeaponsContent } from './sectionDeltaGreenWeapons';
+import { SectionDeltaGreenBonds, createDefaultDeltaGreenBondsContent } from './sectionDeltaGreenBonds';
 import { SupportedLanguage } from './translations';
 
 type SectionTypeConfig = {
@@ -25,7 +26,8 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: (sheet, language) => createDefaultDeltaGreenStatsContent(language) },
   'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet, language) => createDefaultDeltaGreenDerivedContent(sheet, language) },
   'DELTAGREENSKILLS': { component: SectionDeltaGreenSkills, label: 'sectionType.deltagreenskills', seed: (sheet, language) => createDefaultDeltaGreenSkillsContent(language) },
-  'DELTAGREENWEAPONS': { component: SectionDeltaGreenWeapons, label: 'sectionType.deltagreenweapons', seed: () => createDefaultDeltaGreenWeaponsContent() }
+  'DELTAGREENWEAPONS': { component: SectionDeltaGreenWeapons, label: 'sectionType.deltagreenweapons', seed: () => createDefaultDeltaGreenWeaponsContent() },
+  'DELTAGREENBONDS': { component: SectionDeltaGreenBonds, label: 'sectionType.deltagreenbonds', seed: () => createDefaultDeltaGreenBondsContent() }
 };
 
 // Function to get the component for a section type

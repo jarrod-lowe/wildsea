@@ -237,6 +237,11 @@ export const messagesEnglish = {
     'deltaGreenWeapons.invalidLethality': 'Invalid lethality format (use percentage like 15%)',
     'deltaGreenWeapons.lethalityFailure': '{weapon} lethality failed: {damage} damage',
     'deltaGreenWeapons.addPresetWeapon': 'Add Preset Weapon',
+
+    'sectionType.deltagreenbonds': 'Delta Green Bonds',
+    'deltaGreenBonds.bondName': 'Bond Name',
+    'deltaGreenBonds.decrementValue': 'Decrease {name} by 1',
+    'deltaGreenBonds.symptoms': 'Symptoms',
     'deltaGreenWeapons.selectWeapon': 'Select weapon',
     'deltaGreenWeapons.chooseWeapon': 'Choose a weapon...',
     'deltaGreenWeapons.addWeapon': 'Add',
