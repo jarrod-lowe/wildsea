@@ -162,8 +162,8 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
               type="text"
               value={item.name || ''}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
-              placeholder="Bond name (temporary)"
-              aria-label="Bond name"
+              placeholder={intl.formatMessage({ id: "deltaGreenBonds.bondName" })}
+              aria-label={intl.formatMessage({ id: "deltaGreenBonds.bondName" })}
             />
             <input
               type="number"
