@@ -4,7 +4,9 @@ import { SheetSection } from "../../appsync/graphql";
 import { useIntl } from 'react-intl';
 import { v4 as uuidv4 } from 'uuid';
 import { SectionEditForm } from './components/SectionEditForm';
-import { SectionItem } from './components/SectionItem';
+import Tippy from '@tippyjs/react';
+import ReactMarkdown from 'react-markdown';
+import 'tippy.js/dist/tippy.css';
 
 interface BondItem extends BaseSectionItem {
   value: number;
@@ -80,7 +82,26 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
               ) : (
                 <span></span>
               )}
-              <span className="bond-name">{item.name}</span>
+              <span className="bond-name">
+                {item.name}
+                {item.description && (
+                  <Tippy
+                    content={<ReactMarkdown>{item.description}</ReactMarkdown>}
+                    interactive={true}
+                    trigger="click"
+                    arrow={true}
+                    placement="top"
+                    className="markdown-tippy"
+                  >
+                    <button
+                      className="btn-icon info"
+                      aria-label={intl.formatMessage({ id: 'showInfo.itemDescription' })}
+                    >
+                      {intl.formatMessage({ id: 'showInfo' })}
+                    </button>
+                  </Tippy>
+                )}
+              </span>
               {(item as BondItem).symptoms && (
                 <div className="bond-symptoms" style={{ gridColumn: '1 / -1' }}>
                   <span className="bond-symptoms-label">{intl.formatMessage({ id: 'deltaGreenBonds.symptoms' })}: </span>
@@ -174,6 +195,12 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
               placeholder="Value"
               aria-label="Bond value"
               className="bond-value-input"
+            />
+            <textarea
+              value={item.description || ''}
+              onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+              placeholder={intl.formatMessage({ id: "sectionObject.itemDescription" })}
+              aria-label={intl.formatMessage({ id: "sectionObject.itemDescription" })}
             />
           </>
         )}
