@@ -56,6 +56,37 @@ const getSkillsFromDataAttributes = (): { id: string; name: string; roll: number
   return skills;
 };
 
+// Function to get stats from DOM data attributes for stat-based skills like DEXx5
+const getStatsFromDataAttributes = (): { id: string; name: string; roll: number }[] => {
+  const statsContainer = document.querySelector('.delta-green-stats-grid');
+  if (!statsContainer) return [];
+
+  const stats: { id: string; name: string; roll: number }[] = [];
+
+  // Common stat abbreviations used in Delta Green
+  const statAbbreviations = ['STR', 'CON', 'DEX', 'INT', 'POW', 'CHA'];
+
+  statAbbreviations.forEach(abbrev => {
+    const statValue = parseInt(statsContainer.getAttribute(`data-stat-${abbrev.toLowerCase()}`) || '0');
+    if (statValue > 0) {
+      stats.push({
+        id: `stat-${abbrev.toLowerCase()}`,
+        name: `${abbrev}×5`,
+        roll: statValue * 5
+      });
+    }
+  });
+
+  return stats;
+};
+
+// Function to get all available skills and stats combined
+const getAllSkillsAndStats = (): { id: string; name: string; roll: number; isStatBased?: boolean }[] => {
+  const skills = getSkillsFromDataAttributes().map(skill => ({ ...skill, isStatBased: false }));
+  const stats = getStatsFromDataAttributes().map(stat => ({ ...stat, isStatBased: true }));
+  return [...skills, ...stats];
+};
+
 // Function to parse dice notation (e.g., "2d6+3", "1d8", "3d10-1")
 const parseDiceNotation = (notation: string): { count: number; sides: number; modifier: number } | null => {
   if (!notation || notation.toLowerCase() === 'n/a') return null;
@@ -139,6 +170,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
   };
 
   // When a weapon skill roll fails or fumbles, tick the 'used' flag on the relevant skill
+  // Note: DEXx5 and other stat-based skills don't have a 'used' flag to tick
   const handleRollComplete = (result: DiceRoll) => {
     setLastRollResult(result);
     if (
@@ -148,7 +180,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     ) {
       // Extract skill name from selectedWeapon
       const skillName = selectedWeapon.name.split('(')[1]?.replace(')', '').trim();
-      if (skillName) {
+      if (skillName && !skillName.includes('×5')) {
+        // Only tick 'used' flag for regular skills, not stat-based skills like DEXx5
         tickUsedFlagOnSkill(skillName);
       }
     }
@@ -194,8 +227,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
   }, [handleFieldChange]);
 
   const handleSkillRoll = (item: DeltaGreenWeaponItem) => {
-    const skills = getSkillsFromDataAttributes();
-    const skill = skills.find(s => s.id === item.skillId || s.name === item.skillId);
+    const allSkillsAndStats = getAllSkillsAndStats();
+    const skill = allSkillsAndStats.find(s => s.id === item.skillId || s.name === item.skillId);
 
     if (skill) {
       // Set actionText to just the weapon name for skill rolls
@@ -282,7 +315,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     _isEditing: boolean,
   ) => {
-    const skills = getSkillsFromDataAttributes();
+    const allSkillsAndStats = getAllSkillsAndStats();
 
     return (
       <>
@@ -308,7 +341,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
           {content.items
             .filter(item => content.showEmpty || item.name !== '')
             .map(item => {
-              const skill = skills.find(s => s.id === item.skillId || s.name === item.skillId);
+              const skill = allSkillsAndStats.find(s => s.id === item.skillId || s.name === item.skillId);
               const hasValidAmmo = item.ammo && item.ammo !== 'N/A' && !isNaN(parseInt(item.ammo));
               const hasValidDamage = item.damage && item.damage !== 'N/A' && parseDiceNotation(item.damage);
               const lethalityTestRegex = /\d+%?/;
@@ -459,7 +492,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     handleUpdate: () => void,
     handleCancel: () => void
   ) => {
-    const skills = getSkillsFromDataAttributes();
+    const allSkillsAndStats = getAllSkillsAndStats();
 
     const handleAddItem = () => {
       const newItems = [...content.items, {
@@ -500,8 +533,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
         const weaponData = JSON.parse(firstParse);
 
         // Look up skill ID by skill name
-        const skills = getSkillsFromDataAttributes();
-        const skill = skills.find(s => s.name === weaponData.skillId);
+        const allSkillsAndStats = getAllSkillsAndStats();
+        const skill = allSkillsAndStats.find(s => s.name === weaponData.skillId);
         const skillId = skill ? skill.id : '';
 
         const newWeapon: DeltaGreenWeaponItem = {
@@ -591,7 +624,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                 aria-label={intl.formatMessage({ id: "deltaGreenWeapons.skill" })}
               >
                 <option value="">{intl.formatMessage({ id: "deltaGreenWeapons.selectSkill" })}</option>
-                {skills.map(skill => (
+                {allSkillsAndStats.map(skill => (
                   <option key={skill.id} value={skill.id}>{skill.name} ({skill.roll}%)</option>
                 ))}
               </select>
