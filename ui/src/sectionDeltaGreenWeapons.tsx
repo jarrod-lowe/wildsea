@@ -121,6 +121,7 @@ type SelectedWeapon = {
   actionText: string;
   rollType: 'skill' | 'damage' | 'lethality';
   messageType?: string;
+  needsAmmoDecrement?: boolean;
 };
 
 export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => {
@@ -171,18 +172,25 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
 
   // When a weapon skill roll fails or fumbles, tick the 'used' flag on the relevant skill
   // Note: DEXx5 and other stat-based skills don't have a 'used' flag to tick
-  const handleRollComplete = (result: DiceRoll) => {
+  const handleRollComplete = (result: DiceRoll, content: SectionTypeDeltaGreenWeapons, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenWeapons>>, updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>) => {
     setLastRollResult(result);
-    if (
-      selectedWeapon &&
-      selectedWeapon.rollType === 'skill' &&
-      (result.grade === 'FAILURE' || result.grade === 'FUMBLE')
-    ) {
-      // Extract skill name from selectedWeapon
-      const skillName = selectedWeapon.name.split('(')[1]?.replace(')', '').trim();
-      if (skillName && !skillName.includes('×5')) {
-        // Only tick 'used' flag for regular skills, not stat-based skills like DEXx5
-        tickUsedFlagOnSkill(skillName);
+    if (selectedWeapon && selectedWeapon.rollType === 'skill') {
+      // Decrement ammo when the weapon is actually fired
+      if (selectedWeapon.needsAmmoDecrement) {
+        const hasValidAmmo = selectedWeapon.item.ammo && selectedWeapon.item.ammo !== 'N/A' && !isNaN(parseInt(selectedWeapon.item.ammo));
+        if (hasValidAmmo) {
+          handleAmmoDecrement(selectedWeapon.item, content, setContent, updateSection);
+        }
+      }
+
+      // Only tick 'used' flag for failures and fumbles
+      if (result.grade === 'FAILURE' || result.grade === 'FUMBLE') {
+        // Extract skill name from selectedWeapon
+        const skillName = selectedWeapon.name.split('(')[1]?.replace(')', '').trim();
+        if (skillName && !skillName.includes('×5')) {
+          // Only tick 'used' flag for regular skills, not stat-based skills like DEXx5
+          tickUsedFlagOnSkill(skillName);
+        }
       }
     }
   };
@@ -239,6 +247,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
         actionText: item.name,
         rollType: 'skill',
         messageType: 'deltaGreenAttack',
+        needsAmmoDecrement: true
       });
       setDiceModalOpen(true);
     } else {
@@ -377,8 +386,9 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                           <button
                             className="dice-button"
                             onClick={() => handleSkillRoll(item)}
+                            disabled={!!hasValidAmmo && parseInt(item.ammo) <= 0}
                             aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.rollSkill' }, { weapon: item.name })}
-                            title={intl.formatMessage({ id: 'deltaGreenWeapons.rollSkill' }, { weapon: item.name })}
+                            title={!!hasValidAmmo && parseInt(item.ammo) <= 0 ? intl.formatMessage({ id: 'deltaGreenWeapons.noAmmo' }, { weapon: item.name }) : intl.formatMessage({ id: 'deltaGreenWeapons.rollSkill' }, { weapon: item.name })}
                           >
                             🎲
                           </button>
@@ -458,7 +468,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
             gameId={section.gameId}
             skillValue={selectedWeapon.value}
             initialAction={selectedWeapon.actionText}
-            onRollComplete={handleRollComplete}
+            onRollComplete={(result) => handleRollComplete(result, content, setContent, updateSection)}
             onBehalfOf={userSubject}
             prePopulatedResult={selectedWeapon.rollType === 'damage' ? lastRollResult || undefined : undefined}
             customActionsAfterRoll={

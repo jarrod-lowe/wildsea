@@ -242,11 +242,13 @@ export const messagesKlingon = {
     'deltaGreenWeapons.invalidLethality': 'Hegh DIch mI\' DIch (15% DIch lo\')',
     'deltaGreenWeapons.lethalityFailure': '{weapon} Hegh DIch DIch: {damage} DIch',
     'deltaGreenWeapons.addPresetWeapon': 'motlhbe\' nuH chel',
+    'deltaGreenWeapons.selectWeapon': 'nuH wuq',
     'deltaGreenWeapons.chooseWeapon': 'nuH wuq...',
     'deltaGreenWeapons.addWeapon': 'chel',
     'deltaGreenWeapons.presetAdded': '{weapon} nuH DIch naQ DIch',
     'deltaGreenWeapons.presetAddError': 'motlhbe\' nuH chel DIch',
     'deltaGreenWeapons.presetLoadError': 'motlhbe\' nuH DIch DIch',
+    'deltaGreenWeapons.noAmmo': '{weapon} baH DIlo\' - jup pagh',
 
     'dice.icon': '🎲',
 

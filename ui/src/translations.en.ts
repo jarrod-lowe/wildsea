@@ -237,11 +237,13 @@ export const messagesEnglish = {
     'deltaGreenWeapons.invalidLethality': 'Invalid lethality format (use percentage like 15%)',
     'deltaGreenWeapons.lethalityFailure': '{weapon} lethality failed: {damage} damage',
     'deltaGreenWeapons.addPresetWeapon': 'Add Preset Weapon',
+    'deltaGreenWeapons.selectWeapon': 'Select weapon',
     'deltaGreenWeapons.chooseWeapon': 'Choose a weapon...',
     'deltaGreenWeapons.addWeapon': 'Add',
     'deltaGreenWeapons.presetAdded': '{weapon} added to weapons list',
     'deltaGreenWeapons.presetAddError': 'Failed to add preset weapon',
     'deltaGreenWeapons.presetLoadError': 'Failed to load preset weapons',
+    'deltaGreenWeapons.noAmmo': 'Cannot fire {weapon} - no ammo remaining',
 
     'deltaGreenStats.rollDice': 'Roll dice for {statName}',
     'deltaGreenStats.actionWith': 'with {statName}',
