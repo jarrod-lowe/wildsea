@@ -197,7 +197,8 @@ yourself.
 1. **For Development**: Create a file called `deltagreen-weapons.json` in the project root
 2. **For Production**: Add the weapon data as a repository secret called `DELTAGREEN_WEAPONS_JSON`
 
-The weapon data must follow the exact structure shown in `deltagreen-weapons.example.json`. Each weapon requires:
+The weapon data must follow the exact structure shown in
+`deltagreen-weapons.example.json`. Each weapon requires:
 
 * `display_name_*``: Display names in each language
 * `weapon_data`: Object containing weapon statistics (name, baseRange, damage, etc.)
@@ -230,6 +231,11 @@ The weapon data must follow the exact structure shown in `deltagreen-weapons.exa
 
 Ensure the skill names match the names in that language from the "Skills"
 section of the "Basic Agent" template.
+
+For stat-based skills, use the format `STAT×5` (e.g., `DEX×5`, `STR×5`) which
+will automatically use the corresponding stat value from the character's Stats
+section. Note that stat-based weapon skills do not have a 'used' flag to tick
+when failed or fumbled rolls occur.
 
 ### Production Deployment
 
