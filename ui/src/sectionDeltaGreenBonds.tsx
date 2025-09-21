@@ -58,7 +58,7 @@ export const SectionDeltaGreenBonds: React.FC<SectionDefinition> = (props) => {
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     _isEditing: boolean,
   ) => {
-    const filteredItems = content.items.filter(item => content.showEmpty || item.name !== '');
+    const filteredItems = content.items.filter(item => content.showEmpty || (item.name !== '' && item.value > 0));
 
     return (
       <div className="bonds-container">
