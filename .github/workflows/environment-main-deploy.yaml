@@ -54,7 +54,7 @@ jobs:
 
     - name: Get PR number
       id: get_pr
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
