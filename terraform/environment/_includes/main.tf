@@ -24,6 +24,12 @@ variable "google_client_secret" {
   default     = null
 }
 
+variable "pipeline_number" {
+  description = "GitHub pipeline number for versioning"
+  type        = string
+  default     = null
+}
+
 locals {
   app_name = "Wildsea"
   prefix   = "${local.app_name}-${var.environment}"
@@ -62,6 +68,7 @@ module "wildsea" {
   log_level            = local.log_level
   google_client_id     = var.google_client_id
   google_client_secret = var.google_client_secret
+  pipeline_number      = var.pipeline_number
 
   providers = {
     aws           = aws

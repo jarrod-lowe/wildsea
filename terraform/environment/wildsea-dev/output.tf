@@ -33,3 +33,15 @@ output "cdn_id" {
 output "cdn_domain_name" {
   value = module.wildsea.cdn_domain_name
 }
+
+output "rum_app_monitor_id" {
+  value = module.wildsea.rum_app_monitor_id
+}
+
+output "rum_app_monitor_name" {
+  value = module.wildsea.rum_app_monitor_name
+}
+
+output "rum_config" {
+  value = module.wildsea.rum_config
+}
