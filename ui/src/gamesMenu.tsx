@@ -11,11 +11,12 @@ import { SectionItemDescription } from './components/SectionItem';
 import { resolveLanguage } from './translations';
 import { fetchAuthSession } from 'aws-amplify/auth';
 
-export const GamesMenuContent: React.FC<{ 
+export const GamesMenuContent: React.FC<{
     userEmail: string;
     currentLanguage?: SupportedLanguage;
     onLanguageChange?: (language: SupportedLanguage) => void;
-}> = ({ userEmail, currentLanguage, onLanguageChange }) => {
+    version?: string;
+}> = ({ userEmail, currentLanguage, onLanguageChange, version }) => {
     const actualLanguage = resolveLanguage(currentLanguage);
     const client = generateClient();
     const [games, setGames] = useState<PlayerSheetSummary[]>([]);
@@ -118,13 +119,14 @@ export const GamesMenuContent: React.FC<{
 
     return (
         <div className="gameslist">
-            <TopBar 
-                title={intl.formatMessage({ id: 'wildsea' })} 
-                userEmail={userEmail} 
-                gameDescription="" 
+            <TopBar
+                title={intl.formatMessage({ id: 'wildsea' })}
+                userEmail={userEmail}
+                gameDescription=""
                 isGM={false}
                 currentLanguage={currentLanguage}
                 onLanguageChange={onLanguageChange}
+                version={version}
             />
             <div className="allgames">
                 <section className="joingame" role="region" aria-labelledby="available-games-heading">
@@ -274,10 +276,11 @@ export const GamesMenuContent: React.FC<{
     );
 };
 
-export const GamesMenu: React.FC<{ 
+export const GamesMenu: React.FC<{
     userEmail: string;
     currentLanguage?: SupportedLanguage;
     onLanguageChange?: (language: SupportedLanguage) => void;
+    version?: string;
 }> = (props) => (
     <GamesMenuContent {...props} />
 );

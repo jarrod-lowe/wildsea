@@ -330,12 +330,13 @@ const useGameUpdates = (
 };
 
 // Main Game component
-const GameContent: React.FC<{ 
-  id: string; 
+const GameContent: React.FC<{
+  id: string;
   userEmail: string;
   currentLanguage?: SupportedLanguage;
   onLanguageChange?: (language: SupportedLanguage) => void;
-}> = ({ id, userEmail, currentLanguage, onLanguageChange }) => {
+  version?: string;
+}> = ({ id, userEmail, currentLanguage, onLanguageChange, version }) => {
   const [game, setGame] = useState<Game | null>(null);
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [userSubject, setUserSubject] = useState<string>("");
@@ -429,6 +430,7 @@ const GameContent: React.FC<{
         onLanguageChange={onLanguageChange}
         activeSheet={activeSheetObj}
         mayEditActiveSheet={mayEditActiveSheet}
+        version={version}
       />
       <div className="tab-bar" role="tablist" aria-label={intl.formatMessage({ id: 'game.characterTabs' })}>
         {game.playerSheets
@@ -490,11 +492,12 @@ const GameContent: React.FC<{
   );
 };
 
-const AppGame: React.FC<{ 
-  id: string; 
+const AppGame: React.FC<{
+  id: string;
   userEmail: string;
   currentLanguage?: SupportedLanguage;
   onLanguageChange?: (language: SupportedLanguage) => void;
+  version?: string;
 }> = (props) => (
   <GameContent {...props} />
 );
