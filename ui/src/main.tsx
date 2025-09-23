@@ -305,10 +305,10 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
 
             await Promise.all([
                 amplifySetup(config),
-                config.rum_config && config.version ? initializeRum({
+                config.rum_config && config.version ? Promise.resolve(initializeRum({
                     ...config.rum_config,
                     applicationVersion: config.version
-                }) : Promise.resolve()
+                })) : Promise.resolve()
             ]);
 
             setIsAmplifyConfigured(true);
