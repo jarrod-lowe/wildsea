@@ -52,17 +52,6 @@ jobs:
           echo "No weapon data secret found, proceeding without weapon presets"
         fi
 
-    - name: Get PR number
-      id: get_pr
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            commit_sha: context.sha,
-          });
-          return prs.data[0]?.number || null;
 
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@0be22f94c34623c570f2c1479d3a28b5678673c7
@@ -82,7 +71,6 @@ jobs:
           domain_name="${{ vars.DOMAIN_NAME }}"
           google_client_id="${{ secrets.GOOGLE_CLIENT_ID }}"
           google_client_secret="${{ secrets.GOOGLE_CLIENT_SECRET }}"
-          app_version="v1.0.${{ steps.get_pr.outputs.result }}"
         backend_config:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate
@@ -96,3 +84,14 @@ jobs:
     - name: Push UI
       run: |
         IN_PIPELINE=true ENVIRONMENT=${{ vars.ENVIRONMENT }} make ui/.push-${{ vars.ENVIRONMENT }}
+      env:
+        VERSION: 1.0.${{ github.run_number }}
+
+    - name: Create deployment tag
+      run: |
+        version_tag="v1.0.${{ github.run_number }}"
+        echo "Creating deployment tag: ${version_tag}"
+        git tag "${version_tag}"
+        git push origin "${version_tag}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
