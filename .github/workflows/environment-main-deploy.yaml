@@ -78,7 +78,7 @@ jobs:
 
     - name: write UI config file
       run: |
-        echo '${{ toJSON(steps.terraform.outputs) }}' > ui/config/output-${{ vars.ENVIRONMENT }}.json
+        echo '${{ toJSON(steps.terraform.outputs) }}' | jq 'with_entries(.value = {value: .value})' > ui/config/output-${{ vars.ENVIRONMENT }}.json
 
     - name: Push UI
       run: |

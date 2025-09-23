@@ -42,6 +42,26 @@ output "rum_app_monitor_name" {
   value = module.wildsea.rum_app_monitor_name
 }
 
-output "rum_config" {
-  value = module.wildsea.rum_config
+output "rum_application_id" {
+  value = module.wildsea.rum_application_id
+}
+
+output "rum_application_region" {
+  value = module.wildsea.rum_application_region
+}
+
+output "rum_identity_pool_id" {
+  value = module.wildsea.rum_identity_pool_id
+}
+
+output "rum_guest_role_arn" {
+  value = module.wildsea.rum_guest_role_arn
+}
+
+output "rum_endpoint" {
+  value = module.wildsea.rum_endpoint
+}
+
+output "rum_session_sample_rate" {
+  value = module.wildsea.rum_session_sample_rate
 }
