@@ -67,6 +67,7 @@ jobs:
           domain_name="${{ vars.DOMAIN_NAME }}"
           google_client_id="${{ secrets.GOOGLE_CLIENT_ID }}"
           google_client_secret="${{ secrets.GOOGLE_CLIENT_SECRET }}"
+          pipeline_number="${{ github.run_number }}"
         backend_config:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate
