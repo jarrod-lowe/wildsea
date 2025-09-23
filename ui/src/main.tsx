@@ -32,9 +32,9 @@ interface AmplifyConfigJSON {
     graphql: string;
     web_client: string;
     user_pool: string;
+    version?: string;
     rum_config?: {
         applicationId: string;
-        applicationVersion: string;
         applicationRegion: string;
         identityPoolId: string;
         guestRoleArn: string;
@@ -95,18 +95,15 @@ export async function mergeConfig(configUpdates: AmplifyConfigJSON, pageUrl: str
     return amplifyconfig;
 }
 
-export async function amplifySetup() {
+export async function loadConfig(): Promise<AmplifyConfigJSON> {
     const response = await fetch("/config.json");
-    const configUpdates = await response.json();
-    const pageUrl = getPageURL();
+    return await response.json();
+}
 
+export async function amplifySetup(configUpdates: AmplifyConfigJSON) {
+    const pageUrl = getPageURL();
     const config = await mergeConfig(configUpdates, pageUrl);
     Amplify.configure(config);
-
-    // Initialize RUM if configuration is provided
-    if (configUpdates.rum_config) {
-        initializeRum(configUpdates.rum_config);
-    }
 }
 
 
@@ -209,6 +206,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
     const [isAmplifyConfigured, setIsAmplifyConfigured] = useState(false);
     const [userEmail, setUserEmail] = useState<string | undefined | null>(null);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+    const [version, setVersion] = useState<string | undefined>(undefined);
     const toast = useToast();
     const intl = useIntl();
 
@@ -298,7 +296,21 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
 
     useEffect(() => {
         async function setup() {
-            await amplifySetup();
+            const config = await loadConfig();
+            setVersion(config.version);
+
+            // Run these in parallel
+            console.log('Config loaded:', JSON.stringify(config, null, 2));
+            console.log('Version from config:', config.version);
+
+            await Promise.all([
+                amplifySetup(config),
+                config.rum_config && config.version ? Promise.resolve(initializeRum({
+                    ...config.rum_config,
+                    applicationVersion: config.version
+                })) : Promise.resolve()
+            ]);
+
             setIsAmplifyConfigured(true);
             try {
                 const email = await getUserEmail();
@@ -385,13 +397,14 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
             <div>
                 <header>
                     <div className="gameslist">
-                        <TopBar 
-                            title={intl.formatMessage({ id: 'wildsea' })} 
-                            userEmail={undefined} 
-                            gameDescription="" 
+                        <TopBar
+                            title={intl.formatMessage({ id: 'wildsea' })}
+                            userEmail={undefined}
+                            gameDescription=""
                             isGM={false}
                             currentLanguage={currentLanguage}
                             onLanguageChange={handleLanguageChangeFromUI}
+                            version={version}
                         />
                     </div>
                 </header>
@@ -415,17 +428,19 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
             <SystemNotificationPanel isAuthenticated={!!userEmail} />
             <main>
                 <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
-                    {gameId ? 
-                        <AppGame 
-                            id={gameId} 
+                    {gameId ?
+                        <AppGame
+                            id={gameId}
                             userEmail={userEmail}
                             currentLanguage={currentLanguage}
                             onLanguageChange={handleLanguageChangeFromUI}
-                        /> : 
-                        <GamesMenu 
+                            version={version}
+                        /> :
+                        <GamesMenu
                             userEmail={userEmail}
                             currentLanguage={currentLanguage}
                             onLanguageChange={handleLanguageChangeFromUI}
+                            version={version}
                         />
                     }
                 </Suspense>

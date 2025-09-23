@@ -27,10 +27,11 @@ interface TopBarProps {
   onLanguageChange?: (language: SupportedLanguage) => void;
   activeSheet?: PlayerSheet | null;
   mayEditActiveSheet?: boolean;
+  version?: string;
 }
 
 // TopBar component
-export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isGM, onEditGame, onShareGame, currentLanguage = 'en', onLanguageChange, activeSheet, mayEditActiveSheet }) => {
+export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescription, isGM, onEditGame, onShareGame, currentLanguage = 'en', onLanguageChange, activeSheet, mayEditActiveSheet, version }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const intl = useIntl();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -156,6 +157,11 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
               <button onClick={() => { handleSignOutClick(); }} className="btn-standard btn-small">
                 <FormattedMessage id="logout" />
               </button>
+              {version && (
+                <div className="version-info">
+                  v{version}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -69,19 +69,12 @@ variable "rum_sample_rate" {
   }
 }
 
-variable "app_version" {
-  description = "Application version (e.g., v1.0.123 from git tag)"
-  type        = string
-  default     = null
-}
 
 locals {
   appsync_domain_name = "api-${lower(var.prefix)}.${var.domain_name}"
   cdn_domain_name     = var.prefix == "Wildsea-primary" ? var.domain_name : "${lower(var.prefix)}.${var.domain_name}"
   enable_google_auth  = var.google_client_id != null && var.google_client_secret != null
 
-  # Version: use provided app_version or default to dev version
-  app_version = var.app_version != null ? var.app_version : "v0.0.1+dev"
 }
 
 data "aws_route53_zone" "zone" {

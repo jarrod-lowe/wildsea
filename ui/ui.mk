@@ -1,4 +1,5 @@
 UI_PORT ?= 5173
+VERSION ?= 0.0.0+$(shell git rev-parse --short HEAD)
 
 UI_JQ_FILTER := { \
 	identity_pool: .cognito_identity_pool_id.value, \
@@ -7,7 +8,8 @@ UI_JQ_FILTER := { \
 	graphql: .graphql_uri.value, \
 	region: .region.value, \
 	loginDomain: .cognito_login_domain.value, \
-	rum_config: .rum_config.value \
+	rum_config: .rum_config.value, \
+	version: \"$(VERSION)\" \
 }
 
 ifndef IN_PIPELINE
