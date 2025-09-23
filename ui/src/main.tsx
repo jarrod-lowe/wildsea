@@ -15,6 +15,7 @@ import Modal from 'react-modal';
 import FooterBar from './footerBar';
 import { loadDefaultTheme } from './themeLoader';
 import { SystemNotificationPanel } from './components/SystemNotificationPanel';
+import { initializeRum } from './rumClient';
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
 const AppGame = React.lazy(() => import("./game"))
@@ -31,6 +32,18 @@ interface AmplifyConfigJSON {
     graphql: string;
     web_client: string;
     user_pool: string;
+    rum_config?: {
+        applicationId: string;
+        applicationVersion: string;
+        applicationRegion: string;
+        identityPoolId: string;
+        guestRoleArn: string;
+        endpoint: string;
+        telemetries: string[];
+        allowCookies: boolean;
+        enableXRay: boolean;
+        sessionSampleRate: number;
+    };
 }
 
 interface AwsConfig {
@@ -89,6 +102,11 @@ export async function amplifySetup() {
 
     const config = await mergeConfig(configUpdates, pageUrl);
     Amplify.configure(config);
+
+    // Initialize RUM if configuration is provided
+    if (configUpdates.rum_config) {
+        initializeRum(configUpdates.rum_config);
+    }
 }
 
 

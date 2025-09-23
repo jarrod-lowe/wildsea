@@ -63,6 +63,8 @@ data "aws_iam_policy_document" "ro" {
       "cloudfront:GetFunction",
       "iam:SimulatePrincipalPolicy",
       "route53:ListHostedZones",
+      "rum:GetAppMonitor",
+      "rum:ListAppMonitors",
     ]
     resources = [
       "*"
@@ -85,7 +87,8 @@ data "aws_iam_policy_document" "ro" {
     actions = [
       "iam:GetRole",
       "iam:List*",
-      "iam:GetPolicy*"
+      "iam:GetPolicy*",
+      "iam:GetRolePolicy"
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-*",
@@ -268,6 +271,11 @@ data "aws_iam_policy_document" "rw" {
       "cloudfront:DeleteOriginRequestPolicy",
       "cloudfront:DeleteResponseHeadersPolicy",
       "cloudfront:*Function",
+      "rum:CreateAppMonitor",
+      "rum:UpdateAppMonitor",
+      "rum:DeleteAppMonitor",
+      "rum:TagResource",
+      "rum:UntagResource",
     ]
     resources = [
       "*"
@@ -286,6 +294,9 @@ data "aws_iam_policy_document" "rw" {
       "iam:PassRole",
       "iam:Attach*",
       "iam:DetachRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:GetRolePolicy",
+      "iam:DeleteRolePolicy",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-*",
@@ -360,7 +371,7 @@ data "aws_iam_policy_document" "rw" {
     condition {
       test     = "StringEquals"
       variable = "iam:AWSServiceName"
-      values   = ["appsync.${data.aws_partition.current.dns_suffix}"]
+      values   = ["appsync.${data.aws_partition.current.dns_suffix}", "rum.amazonaws.com"]
     }
   }
 
@@ -466,15 +477,7 @@ data "aws_iam_policy_document" "rw_boundary" {
   statement {
     sid = "CognitoIdp"
     actions = [
-      "cognito-idp:Create*",
-      "cognito-idp:TagResource",
-      "cognito-idp:UntagResource",
-      "cognito-idp:List*",
-      "cognito-idp:Describe*",
-      "cognito-idp:Get*",
-      "cognito-idp:Delete*",
-      "cognito-idp:Update*",
-      "cognito-idp:SetUICustomization",
+      "cognito-idp:*",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:cognito-idp:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:userpool/*",
@@ -484,42 +487,23 @@ data "aws_iam_policy_document" "rw_boundary" {
   statement {
     actions = [
       "cognito-idp:DescribeUserPoolDomain",
-      "appsync:SetWebACL",
+      "appsync:*",
       "wafv2:GetWebACLForResource",
       "wafv2:GetWebAcl",
-      "appsync:CreateResolver",
-      "appsync:DeleteResolver",
-      "appsync:UpdateResolver",
-      "appsync:GetResolver",
-      "appsync:CreateDomainName",
-      "appsync:GetDomainName",
-      "appsync:DeleteDomainName",
-      "appsync:AssociateApi",
-      "appsync:DisassociateApi",
-      "appsync:GetApiAssociation",
       "s3:CreateBucket",
-      "cloudfront:List*",
-      "cloudfront:Get*Policy",
-      "cloudfront:CreateOriginAccessControl",
-      "cloudfront:GetOriginAccessControl",
-      "cloudfront:DeleteOriginAccessControl",
-      "cloudfront:CreateDistribution*",
-      "cloudfront:UpdateDistribution",
-      "cloudfront:DeleteDistribution",
-      "cloudfront:TagResource",
-      "cloudfront:GetDistribution",
-      "cloudfront:CreateOriginRequestPolicy",
-      "cloudfront:CreateCachePolicy",
-      "cloudfront:UpdateOriginRequestPolicy",
-      "cloudfront:CreateResponseHeadersPolicy",
-      "cloudfront:DeleteOriginRequestPolicy",
-      "cloudfront:DeleteResponseHeadersPolicy",
-      "cloudfront:*Function",
+      "cloudfront:*",
       "iam:SimulatePrincipalPolicy",
       "cloudwatch:CreateLogStream",
       "cloudwatch:PutLogEvents",
       "cloudwatch:CreateLogGroup",
       "route53:ListHostedZones",
+      "rum:CreateAppMonitor",
+      "rum:UpdateAppMonitor",
+      "rum:DeleteAppMonitor",
+      "rum:GetAppMonitor",
+      "rum:ListAppMonitors",
+      "rum:TagResource",
+      "rum:UntagResource",
     ]
     resources = [
       "*"
@@ -568,6 +552,9 @@ data "aws_iam_policy_document" "rw_boundary" {
       "iam:PassRole",
       "iam:Attach*",
       "iam:DetachRolePolicy",
+      "iam:PutRolePolicy",
+      "iam:GetRolePolicy",
+      "iam:DeleteRolePolicy",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-*",
@@ -622,33 +609,9 @@ data "aws_iam_policy_document" "rw_boundary" {
       "logs:ListTagsForResource",
       "s3:DeleteBucket",
       "s3:PutBucket*",
-      "states:StartExecution",
-      "states:CreateStateMachine",
-      "states:UpdateStateMachine",
-      "states:DeleteStateMachine",
-      "states:DescribeStateMachine",
-      "states:ListStateMachineVersions",
-      "states:ListTagsForResource",
-      "states:TagResource",
-      "events:PutEvents",
-      "events:TagResource",
-      "events:CreateEventBus",
-      "events:DeleteEventBus",
-      "events:PutPermission",
-      "events:PutRule",
-      "events:DeleteRule",
-      "events:PutTargets",
-      "events:RemoveTargets",
-      "events:DescribeEventBus",
-      "events:ListTagsForResource",
-      "events:DescribeRule",
-      "events:ListTargetsByRule",
-      "pipes:TagResource",
-      "pipes:CreatePipe",
-      "pipes:DeletePipe",
-      "pipes:UpdatePipe",
-      "pipes:DescribePipe",
-      "pipes:ListTagsForResource",
+      "states:*",
+      "events:*",
+      "pipes:*",
       "acm:RequestCertificate",
       "acm:AddTagsToCertificate",
       "acm:DescribeCertificate",
@@ -698,7 +661,7 @@ data "aws_iam_policy_document" "rw_boundary" {
     condition {
       test     = "StringEquals"
       variable = "iam:AWSServiceName"
-      values   = ["appsync.${data.aws_partition.current.dns_suffix}"]
+      values   = ["appsync.${data.aws_partition.current.dns_suffix}", "rum.amazonaws.com"]
     }
   }
 

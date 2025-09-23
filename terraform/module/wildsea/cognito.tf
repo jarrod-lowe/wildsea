@@ -47,7 +47,7 @@ resource "aws_cognito_user_pool_client" "cognito" {
 
 resource "aws_cognito_identity_pool" "cognito" {
   identity_pool_name               = var.prefix
-  allow_unauthenticated_identities = false
+  allow_unauthenticated_identities = true
   allow_classic_flow               = false
 
   cognito_identity_providers {
@@ -60,7 +60,8 @@ resource "aws_cognito_identity_pool" "cognito" {
 resource "aws_cognito_identity_pool_roles_attachment" "cognito" {
   identity_pool_id = aws_cognito_identity_pool.cognito.id
   roles = {
-    "authenticated" = aws_iam_role.cognito.arn
+    "authenticated"   = aws_iam_role.cognito.arn
+    "unauthenticated" = aws_iam_role.cognito_unauth.arn
   }
 }
 
@@ -102,11 +103,104 @@ data "aws_iam_policy_document" "cognito" {
     ]
     resources = ["*"] # checkov:skip=CKV_AWS_107:Has to be wildcard
   }
+
+  # Add RUM permissions only if RUM is enabled
+  dynamic "statement" {
+    for_each = var.enable_rum ? [1] : []
+    content {
+      actions = [
+        "rum:PutRumEvents"
+      ]
+      resources = [aws_rum_app_monitor.main[0].arn]
+    }
+  }
+
+  # Add X-Ray permissions for RUM tracing
+  dynamic "statement" {
+    for_each = var.enable_rum ? [1] : []
+    content {
+      actions = [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+      ]
+      resources = ["*"]
+    }
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "cognito" {
   role       = aws_iam_role.cognito.name
   policy_arn = aws_iam_policy.cognito.arn
+}
+
+# Unauthenticated role with minimal permissions
+resource "aws_iam_role" "cognito_unauth" {
+  name               = "${var.prefix}-unauth"
+  assume_role_policy = data.aws_iam_policy_document.cognito_unauth_assume.json
+}
+
+data "aws_iam_policy_document" "cognito_unauth_assume" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    principals {
+      type        = "Federated"
+      identifiers = ["cognito-identity.${data.aws_partition.current.dns_suffix}"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "cognito-identity.${data.aws_partition.current.dns_suffix}:aud"
+      values   = [aws_cognito_identity_pool.cognito.id]
+    }
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "cognito-identity.${data.aws_partition.current.dns_suffix}:amr"
+      values   = ["unauthenticated"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "cognito_unauth" {
+  name   = "${var.prefix}-unauth"
+  policy = data.aws_iam_policy_document.cognito_unauth.json
+}
+
+data "aws_iam_policy_document" "cognito_unauth" {
+  # Minimal permissions for unauthenticated users
+  statement {
+    actions = [
+      "cognito-identity:GetCredentialsForIdentity",
+    ]
+    resources = ["*"] # checkov:skip=CKV_AWS_107:Has to be wildcard
+  }
+
+  # Add RUM permissions only if RUM is enabled
+  dynamic "statement" {
+    for_each = var.enable_rum ? [1] : []
+    content {
+      actions = [
+        "rum:PutRumEvents"
+      ]
+      resources = [aws_rum_app_monitor.main[0].arn]
+    }
+  }
+
+  # Add X-Ray permissions for RUM tracing
+  dynamic "statement" {
+    for_each = var.enable_rum ? [1] : []
+    content {
+      actions = [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+      ]
+      resources = ["*"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "cognito_unauth" {
+  role       = aws_iam_role.cognito_unauth.name
+  policy_arn = aws_iam_policy.cognito_unauth.arn
 }
 
 resource "aws_cognito_user_pool_domain" "cognito" {

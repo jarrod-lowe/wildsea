@@ -311,7 +311,7 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic_tlh" {
           sectionName = "jup"
           sectionType = "DELTAGREENBONDS"
           content = jsonencode({
-            items = []
+            items     = []
             showEmpty = false
           })
           position = 4

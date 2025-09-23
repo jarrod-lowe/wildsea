@@ -36,3 +36,26 @@ output "cdn_id" {
 output "cdn_domain_name" {
   value = aws_cloudfront_distribution.cdn.domain_name
 }
+
+output "rum_app_monitor_id" {
+  value = var.enable_rum ? aws_rum_app_monitor.main[0].app_monitor_id : null
+}
+
+output "rum_app_monitor_name" {
+  value = var.enable_rum ? aws_rum_app_monitor.main[0].name : null
+}
+
+output "rum_config" {
+  value = var.enable_rum ? {
+    applicationId      = aws_rum_app_monitor.main[0].app_monitor_id
+    applicationVersion = local.app_version
+    applicationRegion  = data.aws_region.current.name
+    identityPoolId     = aws_cognito_identity_pool.cognito.id
+    guestRoleArn       = aws_iam_role.cognito_unauth.arn
+    endpoint           = "https://dataplane.rum.${data.aws_region.current.name}.${data.aws_partition.current.dns_suffix}"
+    telemetries        = ["errors", "performance", "http"]
+    allowCookies       = true
+    enableXRay         = true
+    sessionSampleRate  = var.rum_sample_rate
+  } : null
+}

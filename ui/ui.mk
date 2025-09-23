@@ -6,7 +6,8 @@ UI_JQ_FILTER := { \
 	web_client: .cognito_web_client_id.value, \
 	graphql: .graphql_uri.value, \
 	region: .region.value, \
-	loginDomain: .cognito_login_domain.value \
+	loginDomain: .cognito_login_domain.value, \
+	rum_config: .rum_config.value \
 }
 
 ifndef IN_PIPELINE

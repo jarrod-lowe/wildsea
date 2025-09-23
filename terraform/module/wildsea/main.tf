@@ -53,10 +53,35 @@ variable "google_client_secret" {
   nullable    = true
 }
 
+variable "enable_rum" {
+  description = "Enable CloudWatch RUM monitoring"
+  type        = bool
+  default     = true
+}
+
+variable "rum_sample_rate" {
+  description = "CloudWatch RUM session sample rate (0.0 to 1.0)"
+  type        = number
+  default     = 1.0
+  validation {
+    condition     = var.rum_sample_rate >= 0.0 && var.rum_sample_rate <= 1.0
+    error_message = "RUM sample rate must be between 0.0 and 1.0."
+  }
+}
+
+variable "pipeline_number" {
+  description = "GitHub pipeline number for versioning"
+  type        = string
+  default     = null
+}
+
 locals {
   appsync_domain_name = "api-${lower(var.prefix)}.${var.domain_name}"
   cdn_domain_name     = var.prefix == "Wildsea-primary" ? var.domain_name : "${lower(var.prefix)}.${var.domain_name}"
   enable_google_auth  = var.google_client_id != null && var.google_client_secret != null
+
+  # Version: if pipeline_number is set, use "1.0.{pipeline_number}", otherwise "0.0.1+dev"
+  app_version = var.pipeline_number != null ? "1.0.${var.pipeline_number}" : "0.0.1+dev"
 }
 
 data "aws_route53_zone" "zone" {
