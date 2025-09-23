@@ -15,8 +15,6 @@ jobs:
     name: Environment Main - Apply
     runs-on: ubuntu-latest
     environment: primary-rw
-    permissions:
-      contents: write
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
