@@ -78,7 +78,7 @@ jobs:
 
     - name: write UI config file
       run: |
-        echo '${{ toJSON(steps.terraform.outputs) }}' | jq 'with_entries(.value = {value: .value})' > ui/config/output-${{ vars.ENVIRONMENT }}.json
+        echo '${{ toJSON(steps.terraform.outputs) }}' > ui/config/output-${{ vars.ENVIRONMENT }}.json
 
     - name: Push UI
       run: |
@@ -87,6 +87,8 @@ jobs:
         VERSION: 1.0.${{ github.run_number }}
 
     - name: Create deployment tag
+      permissions:
+        contents: write
       run: |
         version_tag="v1.0.${{ github.run_number }}"
         echo "Creating deployment tag: ${version_tag}"
