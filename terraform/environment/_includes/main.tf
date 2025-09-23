@@ -24,8 +24,8 @@ variable "google_client_secret" {
   default     = null
 }
 
-variable "pipeline_number" {
-  description = "GitHub pipeline number for versioning"
+variable "app_version" {
+  description = "Application version (e.g., v1.0.123 from git tag)"
   type        = string
   default     = null
 }
@@ -68,7 +68,7 @@ module "wildsea" {
   log_level            = local.log_level
   google_client_id     = var.google_client_id
   google_client_secret = var.google_client_secret
-  pipeline_number      = var.pipeline_number
+  app_version          = var.app_version
 
   providers = {
     aws           = aws

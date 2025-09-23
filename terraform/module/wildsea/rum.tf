@@ -2,7 +2,7 @@ resource "aws_rum_app_monitor" "main" {
   count = var.enable_rum ? 1 : 0
 
   name   = "${var.prefix}-rum"
-  domain_list = var.pipeline_number == null ? [local.cdn_domain_name, "localhost"] : [local.cdn_domain_name]
+  domain_list = var.app_version == null ? [local.cdn_domain_name, "localhost"] : [local.cdn_domain_name]
 
   app_monitor_configuration {
     allow_cookies = true

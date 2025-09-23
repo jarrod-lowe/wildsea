@@ -67,8 +67,17 @@ jobs:
           domain_name="${{ vars.DOMAIN_NAME }}"
           google_client_id="${{ secrets.GOOGLE_CLIENT_ID }}"
           google_client_secret="${{ secrets.GOOGLE_CLIENT_SECRET }}"
-          pipeline_number="${{ github.run_number }}"
+          app_version="v1.0.${{ github.event.pull_request.number }}"
         backend_config:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate
           region=${{ vars.AWS_REGION }}
+
+    - name: Create version tag
+      run: |
+        version_tag="v1.0.${{ github.event.pull_request.number }}"
+        echo "Creating version tag: ${version_tag}"
+        git tag "${version_tag}" || echo "Tag already exists"
+        git push origin "${version_tag}" || echo "Tag already pushed"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
