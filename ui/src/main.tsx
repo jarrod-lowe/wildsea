@@ -300,9 +300,6 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
             setVersion(config.version);
 
             // Run these in parallel
-            console.log('Config loaded:', JSON.stringify(config, null, 2));
-            console.log('Version from config:', config.version);
-
             await Promise.all([
                 amplifySetup(config),
                 config.rum_config && config.version ? Promise.resolve(initializeRum({
