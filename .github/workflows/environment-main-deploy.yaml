@@ -52,6 +52,18 @@ jobs:
           echo "No weapon data secret found, proceeding without weapon presets"
         fi
 
+    - name: Get PR number
+      id: get_pr
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: context.sha,
+          });
+          return prs.data[0]?.number || null;
+
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@0be22f94c34623c570f2c1479d3a28b5678673c7
       with:
@@ -70,7 +82,7 @@ jobs:
           domain_name="${{ vars.DOMAIN_NAME }}"
           google_client_id="${{ secrets.GOOGLE_CLIENT_ID }}"
           google_client_secret="${{ secrets.GOOGLE_CLIENT_SECRET }}"
-          pipeline_number="${{ github.run_number }}"
+          app_version="v1.0.${{ steps.get_pr.outputs.result }}"
         backend_config:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate
