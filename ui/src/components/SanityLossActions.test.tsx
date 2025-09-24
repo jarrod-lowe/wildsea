@@ -73,11 +73,11 @@ describe('SanityLossActions', () => {
 
     // Check that dice buttons are rendered
     const diceOptions = ['1d4', '1d6', '1d8', '1d10', '1d20'];
-    diceOptions.forEach(dice => {
+    for (const dice of diceOptions) {
       const button = screen.getByRole('button', { name: dice });
       expect(button).toBeInTheDocument();
       expect(button).toHaveAttribute('title', `Roll ${dice} for sanity loss`);
-    });
+    }
   });
 
   it('calls onSanityLoss when static button is clicked', () => {
