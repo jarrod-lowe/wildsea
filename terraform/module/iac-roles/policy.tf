@@ -65,6 +65,10 @@ data "aws_iam_policy_document" "ro" {
       "route53:ListHostedZones",
       "rum:GetAppMonitor",
       "rum:ListAppMonitors",
+      "rum:GetRumMetricsDestination",
+      "rum:ListRumMetricsDestinations",
+      "cloudwatch:DescribeAlarms",
+      "cloudwatch:ListTagsForResource",
     ]
     resources = [
       "*"
@@ -276,6 +280,16 @@ data "aws_iam_policy_document" "rw" {
       "rum:DeleteAppMonitor",
       "rum:TagResource",
       "rum:UntagResource",
+      "rum:PutRumMetricsDestination",
+      "rum:DeleteRumMetricsDestination",
+      "rum:GetRumMetricsDestination",
+      "rum:ListRumMetricsDestinations",
+      "cloudwatch:PutMetricAlarm",
+      "cloudwatch:DeleteAlarms",
+      "cloudwatch:DescribeAlarms",
+      "cloudwatch:ListTagsForResource",
+      "cloudwatch:TagResource",
+      "cloudwatch:UntagResource",
     ]
     resources = [
       "*"
@@ -496,6 +510,9 @@ data "aws_iam_policy_document" "rw_boundary" {
       "cloudwatch:CreateLogStream",
       "cloudwatch:PutLogEvents",
       "cloudwatch:CreateLogGroup",
+      "cloudwatch:PutMetricAlarm",
+      "cloudwatch:DeleteAlarms",
+      "cloudwatch:DescribeAlarms",
       "route53:ListHostedZones",
       "rum:CreateAppMonitor",
       "rum:UpdateAppMonitor",
@@ -504,6 +521,13 @@ data "aws_iam_policy_document" "rw_boundary" {
       "rum:ListAppMonitors",
       "rum:TagResource",
       "rum:UntagResource",
+      "rum:PutRumMetricsDestination",
+      "rum:DeleteRumMetricsDestination",
+      "rum:GetRumMetricsDestination",
+      "rum:ListRumMetricsDestinations",
+      "cloudwatch:ListTagsForResource",
+      "cloudwatch:TagResource",
+      "cloudwatch:UntagResource",
     ]
     resources = [
       "*"

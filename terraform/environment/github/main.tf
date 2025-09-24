@@ -52,6 +52,11 @@ variable "codacy_api_token" {
   type        = string
 }
 
+variable "sns_alarm_topic_arn" {
+  description = "ARN of the SNS topic for alarm notifications"
+  type        = string
+}
+
 terraform {
   backend "s3" {
     // region, bucket and key come from -backend-config
@@ -121,11 +126,12 @@ resource "github_repository_ruleset" "ruleset" {
 
 locals {
   rw_vars = {
-    AWS_ROLE     = "GitHubAction-Wildsea-rw-${var.environment}"
-    AWS_ACCOUNT  = var.aws_account
-    AWS_REGION   = var.aws_region
-    STATE_BUCKET = var.state_bucket
-    ENVIRONMENT  = var.environment
+    AWS_ROLE            = "GitHubAction-Wildsea-rw-${var.environment}"
+    AWS_ACCOUNT         = var.aws_account
+    AWS_REGION          = var.aws_region
+    STATE_BUCKET        = var.state_bucket
+    ENVIRONMENT         = var.environment
+    SNS_ALARM_TOPIC_ARN = var.sns_alarm_topic_arn
   }
   ro_vars = {
     AWS_ROLE     = "GitHubAction-Wildsea-ro-${var.environment}"

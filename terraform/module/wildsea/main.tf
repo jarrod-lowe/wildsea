@@ -69,6 +69,11 @@ variable "rum_sample_rate" {
   }
 }
 
+variable "sns_alarm_topic_arn" {
+  description = "ARN of the SNS topic for alarm notifications"
+  type        = string
+}
+
 
 locals {
   appsync_domain_name = "api-${lower(var.prefix)}.${var.domain_name}"
