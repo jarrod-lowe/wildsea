@@ -134,11 +134,12 @@ locals {
     SNS_ALARM_TOPIC_ARN = var.sns_alarm_topic_arn
   }
   ro_vars = {
-    AWS_ROLE     = "GitHubAction-Wildsea-ro-${var.environment}"
-    AWS_ACCOUNT  = var.aws_account
-    AWS_REGION   = var.aws_region
-    STATE_BUCKET = var.state_bucket
-    ENVIRONMENT  = var.environment
+    AWS_ROLE            = "GitHubAction-Wildsea-ro-${var.environment}"
+    AWS_ACCOUNT         = var.aws_account
+    AWS_REGION          = var.aws_region
+    STATE_BUCKET        = var.state_bucket
+    ENVIRONMENT         = var.environment
+    SNS_ALARM_TOPIC_ARN = var.sns_alarm_topic_arn
   }
   rw_secrets = {
     CODACY_API_TOKEN = var.codacy_api_token

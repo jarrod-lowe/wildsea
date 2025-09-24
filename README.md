@@ -200,7 +200,7 @@ yourself.
 The weapon data must follow the exact structure shown in
 `deltagreen-weapons.example.json`. Each weapon requires:
 
-* `display_name_*``: Display names in each language
+* `display_name_*`: Display names in each language
 * `weapon_data`: Object containing weapon statistics (name, baseRange, damage, etc.)
 * `skillId_*`: Associated skill names in each language
 * `description_*`: Weapon descriptions in each language
