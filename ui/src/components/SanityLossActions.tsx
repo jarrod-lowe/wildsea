@@ -18,6 +18,8 @@ interface SanityLossOption {
   label: string;
 }
 
+const staticSanityLossOptions = [1, 2, 3, 4, 5, 6];
+
 const sanityLossOptions: SanityLossOption[] = [
   { dice: '1d4', size: 4, label: '1d4' },
   { dice: '1d6', size: 6, label: '1d6' },
@@ -35,6 +37,16 @@ export const SanityLossActions: React.FC<SanityLossActionsProps> = ({
   const intl = useIntl();
   const [isRolling, setIsRolling] = useState(false);
 
+  const handleStaticSanityLoss = (amount: number) => {
+    // Apply the sanity loss immediately
+    onSanityLoss(amount);
+
+    // Close current modal if callback provided (no roll result for static loss)
+    if (onCloseAndShowNewRoll) {
+      onCloseAndShowNewRoll(null);
+    }
+  };
+
   const handleSanityLossRoll = async (option: SanityLossOption) => {
     setIsRolling(true);
     try {
@@ -48,7 +60,7 @@ export const SanityLossActions: React.FC<SanityLossActionsProps> = ({
         onBehalfOf: onBehalfOf || undefined,
         messageType: 'deltaGreen',
       };
-      
+
       const result = await client.graphql({
         query: rollDiceMutation,
         variables: { input },
@@ -57,10 +69,10 @@ export const SanityLossActions: React.FC<SanityLossActionsProps> = ({
       if ('data' in result && result.data?.rollDice) {
         const diceRollResult = result.data.rollDice;
         const totalRoll = diceRollResult.value || 0;
-        
+
         // Apply the sanity loss immediately
         onSanityLoss(totalRoll);
-        
+
         // Close current modal and show new roll if callback provided
         if (onCloseAndShowNewRoll) {
           onCloseAndShowNewRoll(diceRollResult);
@@ -82,6 +94,20 @@ export const SanityLossActions: React.FC<SanityLossActionsProps> = ({
       <p className="sanity-loss-description">
         <FormattedMessage id="sanityLoss.description" />
       </p>
+
+      <div className="sanity-loss-static-buttons">
+        {staticSanityLossOptions.map((amount) => (
+          <button
+            key={amount}
+            className="btn-sanity-loss"
+            onClick={() => handleStaticSanityLoss(amount)}
+            disabled={isRolling}
+            title={intl.formatMessage({ id: 'sanityLoss.staticTitle' }, { amount })}
+          >
+            {amount}
+          </button>
+        ))}
+      </div>
 
       <div className="sanity-loss-buttons">
         {sanityLossOptions.map((option) => (

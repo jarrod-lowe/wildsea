@@ -309,6 +309,7 @@ export const messagesKlingon = {
     'sanityLoss.description': 'valwI\' DIch mugh DIch chenmoH \'e\' DIch.',
     'sanityLoss.action': 'valwI\' DIch mugh',
     'sanityLoss.rollTitle': '{dice} DIch valwI\' DIch mugh',
+    'sanityLoss.staticTitle': 'valwI\' {amount} DIch mugh',
     'sanityLoss.rollError': 'valwI\' DIch mugh DIch. DIch DIch naDev.',
 
     // Auto-populate translations
