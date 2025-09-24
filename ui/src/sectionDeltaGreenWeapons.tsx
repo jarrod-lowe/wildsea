@@ -175,7 +175,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
   // Note: DEXx5 and other stat-based skills don't have a 'used' flag to tick
   const handleRollComplete = (result: DiceRoll, content: SectionTypeDeltaGreenWeapons, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenWeapons>>, updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>) => {
     setLastRollResult(result);
-    if (selectedWeapon && selectedWeapon.rollType === 'skill') {
+    if (selectedWeapon) {
       // Decrement ammo when the weapon is actually fired
       if (selectedWeapon.needsAmmoDecrement) {
         const hasValidAmmo = selectedWeapon.item.ammo && selectedWeapon.item.ammo !== 'N/A' && !isNaN(parseInt(selectedWeapon.item.ammo));
@@ -184,8 +184,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
         }
       }
 
-      // Only tick 'used' flag for failures and fumbles
-      if (result.grade === 'FAILURE' || result.grade === 'FUMBLE') {
+      // Only tick 'used' flag for failures and fumbles on skill rolls (not lethality rolls)
+      if (selectedWeapon.rollType === 'skill' && (result.grade === 'FAILURE' || result.grade === 'FUMBLE')) {
         // Extract skill name from selectedWeapon
         const skillName = selectedWeapon.name.split('(')[1]?.replace(')', '').trim();
         if (skillName && !skillName.includes('×5')) {
@@ -321,7 +321,8 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
         value: lethalityValue,
         item,
         actionText: intl.formatMessage({ id: 'deltaGreenWeapons.lethalityRoll' }, { weapon: item.name }),
-        rollType: 'lethality'
+        rollType: 'lethality',
+        needsAmmoDecrement: true
       });
       setDiceModalOpen(true);
     } else {
@@ -463,8 +464,9 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                         <button
                           className="dice-button"
                           onClick={() => handleLethalityRoll(item)}
+                          disabled={!!hasValidAmmo && parseInt(item.ammo) <= 0}
                           aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.rollLethality' }, { weapon: item.name })}
-                          title={intl.formatMessage({ id: 'deltaGreenWeapons.rollLethality' }, { weapon: item.name })}
+                          title={!!hasValidAmmo && parseInt(item.ammo) <= 0 ? intl.formatMessage({ id: 'deltaGreenWeapons.noAmmo' }, { weapon: item.name }) : intl.formatMessage({ id: 'deltaGreenWeapons.rollLethality' }, { weapon: item.name })}
                         >
                           🎲
                         </button>
