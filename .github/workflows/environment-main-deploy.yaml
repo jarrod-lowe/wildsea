@@ -71,6 +71,7 @@ jobs:
           domain_name="${{ vars.DOMAIN_NAME }}"
           google_client_id="${{ secrets.GOOGLE_CLIENT_ID }}"
           google_client_secret="${{ secrets.GOOGLE_CLIENT_SECRET }}"
+          sns_alarm_topic_arn="${{ vars.SNS_ALARM_TOPIC_ARN }}"
         backend_config:
           bucket=${{ vars.STATE_BUCKET }}
           key=${{ vars.ENVIRONMENT }}/terraform.tfstate
@@ -78,8 +79,7 @@ jobs:
 
     - name: write UI config file
       run: |
-        cd terraform/environment/wildsea
-        terraform output -json > ../../../ui/config/output-${{ vars.ENVIRONMENT }}.json
+        echo '${{ toJSON(steps.terraform.outputs) }}' | jq 'with_entries(.value = {value: .value})' > ui/config/output-${{ vars.ENVIRONMENT }}.json
 
     - name: Push UI
       run: |
@@ -87,11 +87,28 @@ jobs:
       env:
         VERSION: 1.0.${{ github.run_number }}
 
-    - name: Create deployment tag
-      run: |
-        version_tag="v1.0.${{ github.run_number }}"
-        echo "Creating deployment tag: ${version_tag}"
-        git tag "${version_tag}"
-        git push origin "${version_tag}"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  create_deployment_tag:
+    name: Create deployment tag
+    needs: envtest
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # elevate only here
+    steps:
+      - name: Checkout (with token, full history)
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+        with:
+          fetch-depth: 0    # safer for tags
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and push tag
+        env:
+          VERSION_TAG: v1.0.${{ github.run_number }}
+        run: |
+          echo "Creating deployment tag: ${VERSION_TAG}"
+          # tag the commit that triggered this workflow
+          git tag "${VERSION_TAG}" "${{ github.sha }}"
+          git push origin "${VERSION_TAG}"

@@ -24,6 +24,11 @@ variable "google_client_secret" {
   default     = null
 }
 
+variable "sns_alarm_topic_arn" {
+  description = "ARN of the SNS topic for alarm notifications"
+  type        = string
+}
+
 
 locals {
   app_name = "Wildsea"
@@ -63,6 +68,7 @@ module "wildsea" {
   log_level            = local.log_level
   google_client_id     = var.google_client_id
   google_client_secret = var.google_client_secret
+  sns_alarm_topic_arn  = var.sns_alarm_topic_arn
 
   providers = {
     aws           = aws

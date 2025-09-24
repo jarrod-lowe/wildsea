@@ -8,7 +8,17 @@ UI_JQ_FILTER := { \
 	graphql: .graphql_uri.value, \
 	region: .region.value, \
 	loginDomain: .cognito_login_domain.value, \
-	rum_config: .rum_config.value, \
+	rum_config: (if .rum_application_id.value then { \
+		applicationId: .rum_application_id.value, \
+		applicationRegion: .rum_application_region.value, \
+		identityPoolId: .rum_identity_pool_id.value, \
+		guestRoleArn: .rum_guest_role_arn.value, \
+		endpoint: .rum_endpoint.value, \
+		telemetries: [\"errors\", \"performance\", \"http\"], \
+		allowCookies: true, \
+		enableXRay: true, \
+		sessionSampleRate: .rum_session_sample_rate.value \
+	} else null end), \
 	version: \"$(VERSION)\" \
 }
 

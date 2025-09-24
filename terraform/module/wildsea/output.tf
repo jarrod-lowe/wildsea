@@ -45,16 +45,26 @@ output "rum_app_monitor_name" {
   value = var.enable_rum ? aws_rum_app_monitor.main[0].name : null
 }
 
-output "rum_config" {
-  value = var.enable_rum ? {
-    applicationId     = aws_rum_app_monitor.main[0].app_monitor_id
-    applicationRegion = data.aws_region.current.name
-    identityPoolId    = aws_cognito_identity_pool.cognito.id
-    guestRoleArn      = aws_iam_role.cognito_unauth.arn
-    endpoint          = "https://dataplane.rum.${data.aws_region.current.name}.${data.aws_partition.current.dns_suffix}"
-    telemetries       = ["errors", "performance", "http"]
-    allowCookies      = true
-    enableXRay        = true
-    sessionSampleRate = var.rum_sample_rate
-  } : null
+output "rum_application_id" {
+  value = var.enable_rum ? aws_rum_app_monitor.main[0].app_monitor_id : null
+}
+
+output "rum_application_region" {
+  value = var.enable_rum ? data.aws_region.current.name : null
+}
+
+output "rum_identity_pool_id" {
+  value = var.enable_rum ? aws_cognito_identity_pool.cognito.id : null
+}
+
+output "rum_guest_role_arn" {
+  value = var.enable_rum ? aws_iam_role.cognito_unauth.arn : null
+}
+
+output "rum_endpoint" {
+  value = var.enable_rum ? "https://dataplane.rum.${data.aws_region.current.name}.${data.aws_partition.current.dns_suffix}" : null
+}
+
+output "rum_session_sample_rate" {
+  value = var.enable_rum ? var.rum_sample_rate : null
 }

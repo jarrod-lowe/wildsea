@@ -310,6 +310,7 @@ export const messagesEnglish = {
     'sanityLoss.description': 'Roll for sanity loss and apply the result.',
     'sanityLoss.action': 'Sanity loss',
     'sanityLoss.rollTitle': 'Roll {dice} for sanity loss',
+    'sanityLoss.staticTitle': 'Lose {amount} sanity points',
     'sanityLoss.rollError': 'Error rolling for sanity loss. Please try again.',
 
     // Auto-populate translations
