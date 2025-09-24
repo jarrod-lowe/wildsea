@@ -1510,6 +1510,17 @@ body {
   color: var(--color-text-secondary);
 }
 
+.sanity-loss-static-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  justify-content: center;
+}
+.sanity-loss-static-buttons .btn-sanity-loss {
+  min-width: 40px;
+  padding: 6px 8px;
+}
 .sanity-loss-buttons {
   display: flex;
   gap: 8px;
