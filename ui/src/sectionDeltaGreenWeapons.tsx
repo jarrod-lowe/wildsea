@@ -178,7 +178,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     if (selectedWeapon) {
       // Decrement ammo when the weapon is actually fired
       if (selectedWeapon.needsAmmoDecrement) {
-        const hasValidAmmo = selectedWeapon.item.ammo && selectedWeapon.item.ammo !== 'N/A' && !isNaN(Number.parseInt(selectedWeapon.item.ammo));
+        const hasValidAmmo = selectedWeapon.item.ammo && selectedWeapon.item.ammo !== 'N/A' && !Number.isNaN(Number.parseInt(selectedWeapon.item.ammo));
         if (hasValidAmmo) {
           handleAmmoDecrement(selectedWeapon.item, content, setContent, updateSection);
         }
@@ -242,7 +242,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
   ) => {
     const maxAmmo = item.maxAmmo;
-    if (maxAmmo && maxAmmo !== 'N/A' && !isNaN(Number.parseInt(maxAmmo))) {
+    if (maxAmmo && maxAmmo !== 'N/A' && !Number.isNaN(Number.parseInt(maxAmmo))) {
       await handleFieldChange(item, 'ammo', maxAmmo, content, setContent, updateSection);
     }
   }, [handleFieldChange]);
@@ -365,7 +365,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
             .filter(item => content.showEmpty || item.name !== '')
             .map(item => {
               const skill = allSkillsAndStats.find(s => s.id === item.skillId || s.name === item.skillId);
-              const hasValidAmmo = item.ammo && item.ammo !== 'N/A' && !isNaN(Number.parseInt(item.ammo));
+              const hasValidAmmo = item.ammo && item.ammo !== 'N/A' && !Number.isNaN(Number.parseInt(item.ammo));
               const hasValidDamage = item.damage && item.damage !== 'N/A' && parseDiceNotation(item.damage);
               const lethalityTestRegex = /\d+%?/;
               const hasValidLethality = item.lethality && item.lethality !== 'N/A' && lethalityTestRegex.test(item.lethality);
@@ -502,7 +502,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                         <button
                           className="adjust-btn small reload"
                           onClick={() => handleReload(item, content, setContent, updateSection)}
-                          disabled={!item.maxAmmo || item.maxAmmo === 'N/A' || isNaN(Number.parseInt(item.maxAmmo))}
+                          disabled={!item.maxAmmo || item.maxAmmo === 'N/A' || Number.isNaN(Number.parseInt(item.maxAmmo))}
                           aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.reloadWeapon' }, { weapon: item.name })}
                           title={intl.formatMessage({ id: 'deltaGreenWeapons.reloadWeapon' }, { weapon: item.name })}
                         >
