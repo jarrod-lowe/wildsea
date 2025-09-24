@@ -42,7 +42,7 @@ const getSkillsFromDataAttributes = (): { id: string; name: string; roll: number
     if (nameElement && rollElement) {
       const name = nameElement.textContent?.trim() || '';
       const rollText = rollElement.textContent?.trim() || '0%';
-      const roll = parseInt(rollText.replace(/%/g, '')) || 0;
+      const roll = Number.parseInt(rollText.replace(/%/g, '')) || 0;
 
       if (name && roll > 0) {
         skills.push({
@@ -68,7 +68,7 @@ const getStatsFromDataAttributes = (): { id: string; name: string; roll: number 
   const statAbbreviations = ['STR', 'CON', 'DEX', 'INT', 'POW', 'CHA'];
 
   statAbbreviations.forEach(abbrev => {
-    const statValue = parseInt(statsContainer.getAttribute(`data-stat-${abbrev.toLowerCase()}`) || '0');
+    const statValue = Number.parseInt(statsContainer.getAttribute(`data-stat-${abbrev.toLowerCase()}`) || '0');
     if (statValue > 0) {
       stats.push({
         id: `stat-${abbrev.toLowerCase()}`,
@@ -96,9 +96,9 @@ const parseDiceNotation = (notation: string): { count: number; sides: number; mo
   const match = regex.exec(notation);
   if (!match) return null;
 
-  const count = parseInt(match[1]) || 1;
-  const sides = parseInt(match[2]) || 6;
-  const modifier = match[3] ? parseInt(match[3]) : 0;
+  const count = Number.parseInt(match[1]) || 1;
+  const sides = Number.parseInt(match[2]) || 6;
+  const modifier = match[3] ? Number.parseInt(match[3]) : 0;
 
   return { count, sides, modifier };
 };
@@ -178,7 +178,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     if (selectedWeapon) {
       // Decrement ammo when the weapon is actually fired
       if (selectedWeapon.needsAmmoDecrement) {
-        const hasValidAmmo = selectedWeapon.item.ammo && selectedWeapon.item.ammo !== 'N/A' && !isNaN(parseInt(selectedWeapon.item.ammo));
+        const hasValidAmmo = selectedWeapon.item.ammo && selectedWeapon.item.ammo !== 'N/A' && !isNaN(Number.parseInt(selectedWeapon.item.ammo));
         if (hasValidAmmo) {
           handleAmmoDecrement(selectedWeapon.item, content, setContent, updateSection);
         }
@@ -229,7 +229,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenWeapons>>,
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
   ) => {
-    const currentAmmo = parseInt(item.ammo) || 0;
+    const currentAmmo = Number.parseInt(item.ammo) || 0;
     if (currentAmmo > 0) {
       await handleFieldChange(item, 'ammo', (currentAmmo - 1).toString(), content, setContent, updateSection);
     }
@@ -242,7 +242,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
   ) => {
     const maxAmmo = item.maxAmmo;
-    if (maxAmmo && maxAmmo !== 'N/A' && !isNaN(parseInt(maxAmmo))) {
+    if (maxAmmo && maxAmmo !== 'N/A' && !isNaN(Number.parseInt(maxAmmo))) {
       await handleFieldChange(item, 'ammo', maxAmmo, content, setContent, updateSection);
     }
   }, [handleFieldChange]);
@@ -315,7 +315,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
     const lethalityRegex = /(\d+)%?/;
     const lethalityMatch = lethalityRegex.exec(item.lethality);
     if (lethalityMatch) {
-      const lethalityValue = parseInt(lethalityMatch[1]);
+      const lethalityValue = Number.parseInt(lethalityMatch[1]);
       setSelectedWeapon({
         name: `${item.name} (Lethality)`,
         value: lethalityValue,
@@ -365,7 +365,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
             .filter(item => content.showEmpty || item.name !== '')
             .map(item => {
               const skill = allSkillsAndStats.find(s => s.id === item.skillId || s.name === item.skillId);
-              const hasValidAmmo = item.ammo && item.ammo !== 'N/A' && !isNaN(parseInt(item.ammo));
+              const hasValidAmmo = item.ammo && item.ammo !== 'N/A' && !isNaN(Number.parseInt(item.ammo));
               const hasValidDamage = item.damage && item.damage !== 'N/A' && parseDiceNotation(item.damage);
               const lethalityTestRegex = /\d+%?/;
               const hasValidLethality = item.lethality && item.lethality !== 'N/A' && lethalityTestRegex.test(item.lethality);
@@ -408,9 +408,9 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                           <button
                             className="dice-button"
                             onClick={() => handleSkillRoll(item)}
-                            disabled={!!hasValidAmmo && parseInt(item.ammo) <= 0}
+                            disabled={!!hasValidAmmo && Number.parseInt(item.ammo) <= 0}
                             aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.rollSkill' }, { weapon: item.name })}
-                            title={!!hasValidAmmo && parseInt(item.ammo) <= 0 ? intl.formatMessage({ id: 'deltaGreenWeapons.noAmmo' }, { weapon: item.name }) : intl.formatMessage({ id: 'deltaGreenWeapons.rollSkill' }, { weapon: item.name })}
+                            title={!!hasValidAmmo && Number.parseInt(item.ammo) <= 0 ? intl.formatMessage({ id: 'deltaGreenWeapons.noAmmo' }, { weapon: item.name }) : intl.formatMessage({ id: 'deltaGreenWeapons.rollSkill' }, { weapon: item.name })}
                           >
                             🎲
                           </button>
@@ -464,9 +464,9 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                         <button
                           className="dice-button"
                           onClick={() => handleLethalityRoll(item)}
-                          disabled={!!hasValidAmmo && parseInt(item.ammo) <= 0}
+                          disabled={!!hasValidAmmo && Number.parseInt(item.ammo) <= 0}
                           aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.rollLethality' }, { weapon: item.name })}
-                          title={!!hasValidAmmo && parseInt(item.ammo) <= 0 ? intl.formatMessage({ id: 'deltaGreenWeapons.noAmmo' }, { weapon: item.name }) : intl.formatMessage({ id: 'deltaGreenWeapons.rollLethality' }, { weapon: item.name })}
+                          title={!!hasValidAmmo && Number.parseInt(item.ammo) <= 0 ? intl.formatMessage({ id: 'deltaGreenWeapons.noAmmo' }, { weapon: item.name }) : intl.formatMessage({ id: 'deltaGreenWeapons.rollLethality' }, { weapon: item.name })}
                         >
                           🎲
                         </button>
@@ -491,7 +491,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                         <button
                           className="adjust-btn small"
                           onClick={() => handleAmmoDecrement(item, content, setContent, updateSection)}
-                          disabled={parseInt(item.ammo) <= 0}
+                          disabled={Number.parseInt(item.ammo) <= 0}
                           aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.decrementAmmo' }, { weapon: item.name })}
                           title={intl.formatMessage({ id: 'deltaGreenWeapons.decrementAmmo' }, { weapon: item.name })}
                         >
@@ -502,7 +502,7 @@ export const SectionDeltaGreenWeapons: React.FC<SectionDefinition> = (props) => 
                         <button
                           className="adjust-btn small reload"
                           onClick={() => handleReload(item, content, setContent, updateSection)}
-                          disabled={!item.maxAmmo || item.maxAmmo === 'N/A' || isNaN(parseInt(item.maxAmmo))}
+                          disabled={!item.maxAmmo || item.maxAmmo === 'N/A' || isNaN(Number.parseInt(item.maxAmmo))}
                           aria-label={intl.formatMessage({ id: 'deltaGreenWeapons.reloadWeapon' }, { weapon: item.name })}
                           title={intl.formatMessage({ id: 'deltaGreenWeapons.reloadWeapon' }, { weapon: item.name })}
                         >
