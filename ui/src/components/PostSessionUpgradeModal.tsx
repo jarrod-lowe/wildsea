@@ -37,7 +37,6 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
   const toast = useToast();
   const [upgrades, setUpgrades] = useState<SkillUpgrade[]>([]);
   const [isRolling, setIsRolling] = useState(false);
-  const [currentRollingIndex, setCurrentRollingIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (isOpen && skillsToUpgrade.length > 0) {
@@ -52,7 +51,6 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
       }));
       setUpgrades(initialUpgrades);
       setIsRolling(false);
-      setCurrentRollingIndex(null);
       
       // Automatically roll for all skills
       rollAllSkills(initialUpgrades);
@@ -61,19 +59,17 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
 
   const rollAllSkills = async (skillUpgrades: SkillUpgrade[]) => {
     setIsRolling(true);
-    const updatedUpgrades: SkillUpgrade[] = [...skillUpgrades];
-    
-    // Roll for each skill sequentially (skip skills already at maximum)
-    for (let i = 0; i < skillUpgrades.length; i++) {
+
+    const client = generateClient();
+
+    // Create promises for all skills that need rolling (skip skills already at maximum)
+    const rollPromises = skillUpgrades.map(async (skill, index) => {
       // Skip skills that are already at maximum (99%)
-      if (skillUpgrades[i].currentValue >= 99) {
-        continue;
+      if (skill.currentValue >= 99) {
+        return { index, skill, result: null };
       }
-      setCurrentRollingIndex(i);
-      
+
       try {
-        const client = generateClient();
-        const skill = skillUpgrades[i];
         const input: RollDiceInput = {
           gameId,
           dice: [{ type: 'd4', size: 4 }],
@@ -83,7 +79,7 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
           onBehalfOf: onBehalfOf || undefined,
           messageType: 'deltaGreen',
         };
-        
+
         const result = await client.graphql({
           query: rollDiceMutation,
           variables: { input },
@@ -92,48 +88,64 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
         if ('data' in result && result.data?.rollDice) {
           const rollResult = result.data.rollDice;
           const upgradeAmount = rollResult.value || rollResult.total || rollResult.dice?.[0]?.result;
-          
+
           if (upgradeAmount === undefined || upgradeAmount === null) {
             throw new Error(`No dice result returned for skill ${skill.name}`);
           }
-          
-          // Update our local copy
-          updatedUpgrades[i] = {
-            ...updatedUpgrades[i],
-            rollResult,
-            upgradeAmount
+
+          return {
+            index,
+            skill,
+            result: {
+              rollResult,
+              upgradeAmount
+            }
           };
-          
-          // Update state
-          setUpgrades([...updatedUpgrades]);
-          
-          // Small delay between rolls for visual effect
-          await new Promise(resolve => setTimeout(resolve, 500));
         } else {
           throw new Error(`Invalid response from dice roll mutation for skill ${skill.name}`);
         }
       } catch (error) {
-        console.error(`Error rolling dice for skill ${skillUpgrades[i].name}:`, error);
+        console.error(`Error rolling dice for skill ${skill.name}:`, error);
         toast.addToast(
           intl.formatMessage(
-            { id: 'postSessionUpgrade.rollError' }, 
-            { skillName: skillUpgrades[i].name }
-          ), 
+            { id: 'postSessionUpgrade.rollError' },
+            { skillName: skill.name }
+          ),
           'error'
         );
-        
-        // Mark this skill as having an error
-        updatedUpgrades[i] = {
-          ...updatedUpgrades[i],
+
+        return {
+          index,
+          skill,
+          result: null,
           hasError: true
         };
-        setUpgrades([...updatedUpgrades]);
       }
-    }
-    
+    });
+
+    // Wait for all rolls to complete
+    const rollResults = await Promise.all(rollPromises);
+
+    // Update state with all results
+    const updatedUpgrades: SkillUpgrade[] = [...skillUpgrades];
+    rollResults.forEach(({ index, result, hasError }) => {
+      if (hasError) {
+        updatedUpgrades[index] = {
+          ...updatedUpgrades[index],
+          hasError: true
+        };
+      } else if (result) {
+        updatedUpgrades[index] = {
+          ...updatedUpgrades[index],
+          rollResult: result.rollResult,
+          upgradeAmount: result.upgradeAmount
+        };
+      }
+    });
+
+    setUpgrades(updatedUpgrades);
     setIsRolling(false);
-    setCurrentRollingIndex(null);
-    
+
     // Automatically apply upgrades when all rolls are complete
     setTimeout(() => {
       const completedUpgrades = updatedUpgrades
@@ -142,7 +154,7 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
           id: upgrade.id,
           upgradeAmount: upgrade.upgradeAmount!
         }));
-      
+
       onUpgradesComplete(completedUpgrades);
     }, 500);
   };
@@ -176,7 +188,7 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
         </div>
 
         <div className="skills-upgrade-list">
-          {upgrades.map((upgrade, index) => (
+          {upgrades.map((upgrade) => (
             <div key={upgrade.id} className="skill-upgrade-item">
               <div className="skill-info">
                 <h4>{upgrade.name}</h4>
@@ -216,10 +228,10 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
                       );
                     }
                     
-                    const statusMessage = isRolling && currentRollingIndex === index 
-                      ? "postSessionUpgrade.rolling" 
+                    const statusMessage = isRolling
+                      ? "postSessionUpgrade.rolling"
                       : "postSessionUpgrade.waiting";
-                    
+
                     return (
                       <div className="rolling-status">
                         <FormattedMessage id={statusMessage} />
