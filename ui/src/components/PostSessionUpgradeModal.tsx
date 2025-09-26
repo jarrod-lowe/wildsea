@@ -128,7 +128,7 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
 
     // Update state with all results
     const updatedUpgrades: SkillUpgrade[] = [...skillUpgrades];
-    rollResults.forEach(({ index, result, hasError }) => {
+    for (const { index, result, hasError } of rollResults) {
       if (hasError) {
         updatedUpgrades[index] = {
           ...updatedUpgrades[index],
@@ -141,7 +141,7 @@ export const PostSessionUpgradeModal: React.FC<PostSessionUpgradeModalProps> = (
           upgradeAmount: result.upgradeAmount
         };
       }
-    });
+    }
 
     setUpgrades(updatedUpgrades);
     setIsRolling(false);
