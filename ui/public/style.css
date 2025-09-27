@@ -1105,13 +1105,18 @@ body {
   white-space: nowrap;
 }
 
-.adjust-btn {
-  flex-shrink: 0;
-}
 
 .clock-description-input {
   width: 100%;
   margin-top: var(--space-sm);
+}
+
+.clock-progress-element {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
 }
 
 /* Info icon positioning fix */
@@ -1774,6 +1779,7 @@ body {
   font-weight: bold;
   padding: 0;
   color: var(--color-text);
+  flex-shrink: 0;
 }
 
 .adjust-btn:hover:not(:disabled) {
