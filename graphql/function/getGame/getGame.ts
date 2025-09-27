@@ -160,6 +160,7 @@ export function makeGameData(data: DataGame, sub: string): Game {
     theme: data.theme,
     remainingCharacters: data.remainingCharacters,
     remainingSections: data.remainingSections,
+    remainingAssets: data.remainingAssets,
   };
 }
 

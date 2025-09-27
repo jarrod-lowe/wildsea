@@ -95,6 +95,7 @@ export function response(
     theme: gameDefaults.theme,
     remainingCharacters: gameDefaults.remainingCharacters,
     remainingSections: gameDefaults.remainingSections,
+    remainingAssets: gameDefaults.remainingAssets,
   };
 
   // Store the defaults in stash for the next function to use

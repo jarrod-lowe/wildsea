@@ -7,3 +7,4 @@ export const TypeDiceRoll = "DICEROLL"; // Not stored in database, used only for
 export const TypeTemplate = "TEMPLATE";
 export const TypeSettings = "SETTINGS";
 export const TypeNotification = "NOTIFICATION";
+export const TypeAsset = "ASSET";

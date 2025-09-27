@@ -39,6 +39,7 @@ describe("request function", () => {
           theme: string;
           remainingCharacters: number;
           remainingSections: number;
+          remainingAssets: number;
         };
       };
     } = {
@@ -85,6 +86,7 @@ describe("request function", () => {
           theme: "wildsea",
           remainingCharacters: 20,
           remainingSections: 50,
+          remainingAssets: 100,
         },
       },
       prev: undefined,
@@ -131,6 +133,7 @@ describe("request function", () => {
             theme: { S: "wildsea" },
             remainingCharacters: { N: "18" },
             remainingSections: { N: "50" },
+            remainingAssets: { N: "100" },
           },
         },
         {
@@ -198,6 +201,7 @@ describe("request function", () => {
           theme: string;
           remainingCharacters: number;
           remainingSections: number;
+          remainingAssets: number;
         };
       };
     } = {
@@ -242,6 +246,7 @@ describe("request function", () => {
           theme: "wildsea",
           remainingCharacters: 20,
           remainingSections: 50,
+          remainingAssets: 100,
         },
       },
       prev: undefined,
@@ -273,6 +278,7 @@ describe("request function", () => {
           theme: string;
           remainingCharacters: number;
           remainingSections: number;
+          remainingAssets: number;
         };
       };
     } = {
@@ -317,6 +323,7 @@ describe("request function", () => {
           theme: "wildsea",
           remainingCharacters: 20,
           remainingSections: 50,
+          remainingAssets: 100,
         },
       },
       prev: undefined,
@@ -371,6 +378,10 @@ describe("response function", () => {
           createdAt: "testCreatedAt",
           updatedAt: "testUpdatedAt",
           type: "testType",
+          theme: "wildsea",
+          remainingCharacters: 18,
+          remainingSections: 50,
+          remainingAssets: 100,
         },
       },
       prev: undefined,
@@ -394,6 +405,10 @@ describe("response function", () => {
       createdAt: "testCreatedAt",
       updatedAt: "testUpdatedAt",
       type: "testType",
+      theme: "wildsea",
+      remainingCharacters: 18,
+      remainingSections: 50,
+      remainingAssets: 100,
     });
   });
 });

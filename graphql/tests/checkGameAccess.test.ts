@@ -154,6 +154,7 @@ describe("permitted", () => {
     players: [],
     remainingCharacters: 20,
     remainingSections: 50,
+    remainingAssets: 100,
   };
 
   it("should return false if data is null", () => {

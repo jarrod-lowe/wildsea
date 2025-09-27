@@ -48,6 +48,9 @@ graphql/function/*/appsync.js
 graphql/coverage/
 graphql/environment.json
 
+# Lambda zip files
+lambda/generatePresignedUrl.zip
+
 appsync/node_modules
 appsync/.graphqlconfig.yml
 

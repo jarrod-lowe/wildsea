@@ -1,0 +1,22 @@
+// Asset upload constants
+
+// File size limits
+export const MAX_ASSET_SIZE_BYTES = 0; // Disabled
+
+// Timeout and expiration settings
+export const ASSET_CLEANUP_TIMEOUT_SECONDS = 15 * 60; // 15 minutes
+export const PRESIGNED_URL_EXPIRES_SECONDS = 900; // 15 minutes
+export const LAMBDA_TIMEOUT_SECONDS = 30;
+
+// Asset status values
+export const ASSET_STATUS_PENDING = "PENDING";
+export const ASSET_STATUS_UPLOADED = "UPLOADED";
+export const ASSET_STATUS_FAILED = "FAILED";
+
+// Allowed MIME types for asset uploads
+export const ALLOWED_ASSET_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+];

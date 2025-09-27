@@ -31,6 +31,7 @@ type Mutation {
     rollDice(input: RollDiceInput!): DiceRoll! @aws_cognito_user_pools
     updateUserSettings(input: UpdateUserSettingsInput!): UserSettings! @aws_cognito_user_pools
     setSystemNotification(input: SetSystemNotificationInput!): SystemNotification! @aws_iam
+    requestAssetUpload(input: RequestAssetUploadInput!): AssetUploadTicket! @aws_cognito_user_pools
 }
 
 type GamesWithQuota @aws_cognito_user_pools {
@@ -151,6 +152,7 @@ type GameSummary @aws_cognito_user_pools {
   theme: String
   remainingCharacters: Int!
   remainingSections: Int!
+  remainingAssets: Int!
 }
 
 type Game @aws_cognito_user_pools {
@@ -168,6 +170,7 @@ type Game @aws_cognito_user_pools {
   theme: String
   remainingCharacters: Int!
   remainingSections: Int!
+  remainingAssets: Int!
 }
 
 input UpdatePlayerInput {
@@ -219,6 +222,7 @@ type SheetSection @aws_cognito_user_pools {
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   deleted: Boolean
+  assets: [String!]
 }
 
 union Dice = SingleDie
@@ -314,4 +318,40 @@ type SystemNotification @aws_cognito_user_pools @aws_iam {
   type: String!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
+}
+
+type Asset @aws_cognito_user_pools {
+  gameId: ID!
+  sectionId: ID!
+  assetId: ID!
+  label: String
+  status: AssetStatus!
+  mimeType: String!
+  sizeBytes: Int
+  width: Int
+  height: Int
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  type: String!
+}
+
+enum AssetStatus {
+  PENDING
+  READY
+  EXPIRED
+  CANCELED
+}
+
+type AssetUploadTicket @aws_cognito_user_pools {
+  asset: Asset!
+  uploadUrl: AWSURL!
+  uploadFields: AWSJSON!
+}
+
+input RequestAssetUploadInput {
+  gameId: ID!
+  sectionId: ID!
+  mimeType: String!
+  sizeBytes: Int!
+  label: String
 }

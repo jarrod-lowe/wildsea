@@ -7,6 +7,7 @@ locals {
   fallback_language       = "en"
   initial_character_quota = "20"
   initial_section_quota   = "50"
+  initial_asset_quota     = "100"
 
   # Delta Green weapons presets - load from JSON file if it exists, otherwise empty
   weapons_file_path  = "${path.module}/../../../deltagreen-weapons.json"
@@ -61,6 +62,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_en" {
     remainingSections = {
       N = local.initial_section_quota
     }
+    remainingAssets = {
+      N = local.initial_asset_quota
+    }
     type = {
       S = local.db_prefix_gamedefaults
     }
@@ -102,6 +106,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_en" {
     }
     remainingSections = {
       N = local.initial_section_quota
+    }
+    remainingAssets = {
+      N = local.initial_asset_quota
     }
     type = {
       S = local.db_prefix_gamedefaults
@@ -157,6 +164,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_wildsea_tlh" {
     remainingSections = {
       N = local.initial_section_quota
     }
+    remainingAssets = {
+      N = local.initial_asset_quota
+    }
     type = {
       S = local.db_prefix_gamedefaults
     }
@@ -198,6 +208,9 @@ resource "aws_dynamodb_table_item" "gamedefaults_deltagreen_tlh" {
     }
     remainingSections = {
       N = local.initial_section_quota
+    }
+    remainingAssets = {
+      N = local.initial_asset_quota
     }
     type = {
       S = local.db_prefix_gamedefaults
