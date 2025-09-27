@@ -983,6 +983,165 @@ body {
   opacity: 0.6;
 }
 
+/* Clock Styles */
+.clock-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  min-width: 0; /* Allow flexbox to shrink */
+}
+
+.clock-bar {
+  display: flex;
+  flex: 1;
+  width: 200px; /* Fixed width for consistent bar lengths */
+  min-height: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  overflow: hidden;
+}
+
+.clock-segment {
+  flex: 1;
+  height: 24px;
+  border: none;
+  border-right: 1px solid var(--color-border);
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 2px; /* Very small minimum to prevent rounding issues */
+}
+
+.clock-segment:last-child {
+  border-right: none;
+}
+
+.clock-segment.filled {
+  background-color: var(--color-accent-ticked);
+}
+
+.clock-segment.unfilled {
+  background-color: transparent;
+}
+
+.clock-segment:not(:disabled):hover {
+  opacity: 0.8;
+}
+
+.clock-segment:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* Clock Filled Bar Mode (for high segment counts) */
+.clock-bar-filled {
+  display: flex;
+  flex: 1;
+  width: 200px;
+  min-height: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.clock-bar-filled-progress {
+  height: 24px; /* Same as clock segments */
+  background-color: var(--color-accent-ticked);
+  transition: width 0.2s ease;
+  border-radius: inherit;
+}
+
+.clock-bar-filled:hover .clock-bar-filled-progress {
+  opacity: 0.8;
+}
+
+.clock-bar-filled.disabled {
+  cursor: default;
+}
+
+.clock-bar-filled.disabled .clock-bar-filled-progress {
+  opacity: 0.6;
+}
+
+/* Clock Edit Mode Styles */
+.clock-edit-main-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  margin-bottom: var(--space-sm);
+  min-width: 0; /* Allow flexbox to shrink */
+}
+
+.clock-name-input {
+  flex: 1;
+  min-width: 80px;
+  margin-right: 8px;
+}
+
+.clock-number-input {
+  width: 40px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.clock-edit-separator {
+  font-size: 1.2em;
+  color: var(--color-text-secondary);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.clock-edit-label {
+  font-size: 0.9em;
+  color: var(--color-text-secondary);
+  margin-left: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+
+.clock-description-input {
+  width: 100%;
+  margin-top: var(--space-sm);
+}
+
+.clock-progress-element {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* Info icon positioning fix */
+.section-item span .btn-icon.info {
+  margin-left: var(--space-xs);
+  vertical-align: text-top;
+  line-height: 1;
+  display: inline-block;
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustments for very narrow screens */
+@media (width <= 480px) {
+  .clock-edit-main-line {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .clock-name-input {
+    flex-basis: 100%;
+    margin-bottom: var(--space-xs);
+    margin-right: 0;
+  }
+}
+
 .section-items {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -1620,6 +1779,7 @@ body {
   font-weight: bold;
   padding: 0;
   color: var(--color-text);
+  flex-shrink: 0;
 }
 
 .adjust-btn:hover:not(:disabled) {
