@@ -134,6 +134,7 @@ describe("response", () => {
             type: TypeGame,
             remainingCharacters: 20,
             remainingSections: 50,
+            remainingAssets: 100,
           } as DataGame,
           {
             userId: "user1",
@@ -228,6 +229,7 @@ describe("response", () => {
       type: TypeGame,
       remainingCharacters: 20,
       remainingSections: 50,
+      remainingAssets: 100,
       theme: undefined,
     });
   });
@@ -256,6 +258,7 @@ describe("response", () => {
             type: TypeGame,
             remainingCharacters: 20,
             remainingSections: 50,
+            remainingAssets: 100,
           } as DataGame,
           {
             userId: "user1",
@@ -350,6 +353,7 @@ describe("response", () => {
       type: TypeGame,
       remainingCharacters: 20,
       remainingSections: 50,
+      remainingAssets: 100,
       theme: undefined,
     });
   });
@@ -410,6 +414,7 @@ describe("response", () => {
             type: TypeGame,
             remainingCharacters: 20,
             remainingSections: 50,
+            remainingAssets: 100,
           } as DataGame,
           {
             type: "UNKNOWN_TYPE",
@@ -443,6 +448,7 @@ describe("makeGameData", () => {
       gmUserId: "user1",
       remainingCharacters: 20,
       remainingSections: 50,
+      remainingAssets: 100,
     };
 
     const result = makeGameData(data, "notGM");
@@ -460,6 +466,7 @@ describe("makeGameData", () => {
       type: TypeGame,
       remainingCharacters: 20,
       remainingSections: 50,
+      remainingAssets: 100,
       theme: undefined,
     });
   });
@@ -478,6 +485,7 @@ describe("makeGameData", () => {
       gmUserId: "user1",
       remainingCharacters: 20,
       remainingSections: 50,
+      remainingAssets: 100,
     };
 
     const result = makeGameData(data, "user1");
@@ -495,6 +503,7 @@ describe("makeGameData", () => {
       type: TypeGame,
       remainingCharacters: 20,
       remainingSections: 50,
+      remainingAssets: 100,
       theme: undefined,
     });
   });

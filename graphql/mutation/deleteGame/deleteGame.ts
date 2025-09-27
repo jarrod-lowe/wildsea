@@ -58,5 +58,6 @@ export function response(context: Context): GameSummary {
     theme: context.result.theme || "default",
     remainingCharacters: 0, // Game is deleted, no remaining characters
     remainingSections: 0, // Game is deleted, no remaining sections
+    remainingAssets: 0, // Game is deleted, no remaining assets
   };
 }

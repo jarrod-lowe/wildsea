@@ -50,6 +50,7 @@ export interface DynamoDBGameDefaults {
   theme: string;
   remainingCharacters: number;
   remainingSections: number;
+  remainingAssets: number;
 }
 
 // Type for game defaults from database
@@ -60,6 +61,7 @@ export interface GameDefaults {
   theme: string;
   remainingCharacters: number;
   remainingSections: number;
+  remainingAssets: number;
 }
 
 // Type for DynamoDB GamePresets (as returned from database)
@@ -70,4 +72,27 @@ export interface DynamoDBGamePresets {
   language: string;
   displayName: string;
   data: string; // JSON string stored in DynamoDB
+}
+
+// Asset status types
+export type AssetStatus = "PENDING" | "READY" | "EXPIRED" | "CANCELED";
+
+// Type for Asset entities in DynamoDB
+export interface DataAsset {
+  gameId: string;
+  sectionId: string;
+  assetId: string;
+  label?: string;
+  status: AssetStatus;
+  bucket: string;
+  originalKey: string;
+  variantsPrefix: string;
+  mimeType: string;
+  sizeBytes: number;
+  width?: number;
+  height?: number;
+  createdAt: string;
+  updatedAt: string;
+  cleanupAt: string; // Epoch seconds as string for cleanup
+  type: string; // Will be TypeAsset
 }

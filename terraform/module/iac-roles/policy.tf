@@ -19,6 +19,7 @@ data "aws_iam_policy_document" "ro" {
     resources = [
       var.state_bucket_arn,
       "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui",
+      "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
     ]
   }
 
@@ -161,6 +162,10 @@ data "aws_iam_policy_document" "ro" {
       "route53:ListTagsForResource",
       "route53:GetChange",
       "route53:ListResourceRecordSets",
+      "lambda:GetFunction",
+      "lambda:ListTags",
+      "lambda:ListVersionsByFunction",
+      "lambda:GetFunctionCodeSigningConfig",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
@@ -170,6 +175,7 @@ data "aws_iam_policy_document" "ro" {
       "arn:${data.aws_partition.current.id}:acm:us-east-1:${data.aws_caller_identity.current.account_id}:certificate/*",
       "arn:aws:route53:::hostedzone/*",
       "arn:aws:route53:::change/*",
+      "arn:${data.aws_partition.current.id}:lambda:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:function:${local.prefix}-*",
     ]
   }
 
@@ -448,6 +454,15 @@ data "aws_iam_policy_document" "rw" {
       "acm:RequestCertificate",
       "acm:AddTagsToCertificate",
       "route53:ChangeResourceRecordSets",
+      "lambda:CreateFunction",
+      "lambda:DeleteFunction",
+      "lambda:UpdateFunction*",
+      "lambda:GetFunction",
+      "lambda:ListTags",
+      "lambda:TagResource",
+      "lambda:UntagResource",
+      "lambda:ListVersionsByFunction",
+      "lambda:GetFunctionCodeSigningConfig",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
@@ -457,6 +472,7 @@ data "aws_iam_policy_document" "rw" {
       "arn:${data.aws_partition.current.id}:acm:us-east-1:${data.aws_caller_identity.current.account_id}:certificate/*",
       "arn:aws:route53:::hostedzone/*",
       "arn:aws:route53:::change/*",
+      "arn:${data.aws_partition.current.id}:lambda:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:function:${local.prefix}-*",
     ]
   }
 }
@@ -485,6 +501,7 @@ data "aws_iam_policy_document" "rw_boundary" {
     resources = [
       "${var.state_bucket_arn}/${var.environment}/terraform.tfstate",
       "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-*",
+      "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
     ]
   }
 
@@ -659,6 +676,15 @@ data "aws_iam_policy_document" "rw_boundary" {
       "dynamodb:List*",
       "wafv2:CreateWebACL",
       "wafv2:UpdateWebACL",
+      "lambda:CreateFunction",
+      "lambda:DeleteFunction",
+      "lambda:UpdateFunction*",
+      "lambda:GetFunction",
+      "lambda:ListTags",
+      "lambda:TagResource",
+      "lambda:UntagResource",
+      "lambda:ListVersionsByFunction",
+      "lambda:GetFunctionCodeSigningConfig",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:states:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stateMachine:*",
@@ -676,6 +702,7 @@ data "aws_iam_policy_document" "rw_boundary" {
       "arn:${data.aws_partition.current.id}:s3:::${lower(var.app_name)}-${var.environment}-ui/*",
       "arn:${data.aws_partition.current.id}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*",
       "arn:${data.aws_partition.current.id}:appsync:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:*",
+      "arn:${data.aws_partition.current.id}:lambda:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:function:${local.prefix}-*",
     ]
   }
 
