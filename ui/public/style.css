@@ -1129,7 +1129,7 @@ body {
 }
 
 /* Responsive adjustments for very narrow screens */
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .clock-edit-main-line {
     flex-wrap: wrap;
     gap: var(--space-xs);

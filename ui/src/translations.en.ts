@@ -268,6 +268,7 @@ export const messagesEnglish = {
     'sectionClocks.incrementCurrent': 'Increase current value of {name}',
     'sectionClocks.clockName': 'Clock Name',
     'sectionClocks.editLayoutFormat': '{current} of {length} segments',
+    'sectionClocks.segments': 'segments',
 
     'deltaGreenStats.rollDice': 'Roll dice for {statName}',
     'deltaGreenStats.actionWith': 'with {statName}',

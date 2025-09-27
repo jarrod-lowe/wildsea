@@ -394,7 +394,9 @@ export const SectionClocks: React.FC<SectionDefinition> = (props) => {
               >
                 <FormattedMessage id="sectionClocks.increment" />
               </button>
-              <span className="clock-edit-label">segments</span>
+              <span className="clock-edit-label">
+                <FormattedMessage id="sectionClocks.segments" />
+              </span>
             </div>
             <textarea
               value={item.description || ''}

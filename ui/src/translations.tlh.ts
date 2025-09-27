@@ -356,6 +356,7 @@ export const messagesKlingon = {
     'sectionClocks.incrementCurrent': '{name} DaH DIch chel',
     'sectionClocks.clockName': 'mI\' pagh',
     'sectionClocks.editLayoutFormat': 'naDev {total}vo\' {current}',
+    'sectionClocks.segments': 'naDev',
 
     // Language selector translations
     'language.selector.title': 'Hol wuq',
