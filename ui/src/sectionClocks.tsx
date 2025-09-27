@@ -13,6 +13,114 @@ interface ClockItem extends BaseSectionItem {
 
 type SectionTypeClocks = BaseSectionContent<ClockItem>;
 
+const ClockItemContent: React.FC<{
+  item: ClockItem;
+  content: SectionTypeClocks;
+  mayEditSheet: boolean;
+  setContent: React.Dispatch<React.SetStateAction<SectionTypeClocks>>;
+  updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>;
+  isEditing: boolean;
+  onDecrement: (item: ClockItem, content: SectionTypeClocks, setContent: React.Dispatch<React.SetStateAction<SectionTypeClocks>>, updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>) => void;
+  onIncrement: (item: ClockItem, content: SectionTypeClocks, setContent: React.Dispatch<React.SetStateAction<SectionTypeClocks>>, updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>) => void;
+  onFilledBarClick: (event: React.MouseEvent<HTMLDivElement>, item: ClockItem, content: SectionTypeClocks, setContent: React.Dispatch<React.SetStateAction<SectionTypeClocks>>, updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>) => void;
+  onSegmentClick: (item: ClockItem, index: number, content: SectionTypeClocks, setContent: React.Dispatch<React.SetStateAction<SectionTypeClocks>>, updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>, isEditing: boolean) => void;
+  shouldUseFilledMode: (segmentCount: number) => boolean;
+  intl: any;
+}> = ({ item, content, mayEditSheet, setContent, updateSection, isEditing, onDecrement, onIncrement, onFilledBarClick, onSegmentClick, shouldUseFilledMode, intl }) => (
+  <div className="clock-container">
+    <button
+      className="adjust-btn"
+      onClick={() => onDecrement(item, content, setContent, updateSection)}
+      disabled={mayEditSheet === false || item.current <= 0}
+      aria-label={intl.formatMessage(
+        { id: 'sectionClocks.decrementLabel' },
+        { name: item.name }
+      )}
+    >
+      <FormattedMessage id="sectionClocks.decrement" />
+    </button>
+
+    {shouldUseFilledMode(item.length) ? (
+      <div
+        className={`clock-bar-filled ${mayEditSheet === false ? 'disabled' : ''}`}
+        onClick={mayEditSheet ? (e) => onFilledBarClick(e, item, content, setContent, updateSection) : undefined}
+        onKeyDown={mayEditSheet ? (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onFilledBarClick(e, item, content, setContent, updateSection);
+          }
+        } : undefined}
+        role="button"
+        tabIndex={mayEditSheet ? 0 : undefined}
+      >
+        <progress
+          value={item.current}
+          max={item.length}
+          aria-label={intl.formatMessage(
+            { id: 'sectionClocks.progressLabelWithName' },
+            { name: item.name, current: item.current, length: item.length }
+          )}
+          className="clock-progress-element"
+        />
+        <span
+          className="sr-only"
+          aria-live="polite"
+        >
+          {intl.formatMessage(
+            { id: 'sectionClocks.progressLabelWithName' },
+            { name: item.name, current: item.current, length: item.length }
+          )}
+        </span>
+        <div
+          className="clock-bar-filled-progress"
+          style={{ width: `${(item.current / item.length) * 100}%` }}
+        />
+      </div>
+    ) : (
+      <div className="clock-bar">
+        <progress
+          value={item.current}
+          max={item.length}
+          aria-label={intl.formatMessage(
+            { id: 'sectionClocks.progressLabelWithName' },
+            { name: item.name, current: item.current, length: item.length }
+          )}
+          className="clock-progress-element"
+        />
+        <span
+          className="sr-only"
+          aria-live="polite"
+        >
+          {intl.formatMessage(
+            { id: 'sectionClocks.progressLabelWithName' },
+            { name: item.name, current: item.current, length: item.length }
+          )}
+        </span>
+        {new Array(item.length).fill(null).map((_, index) => (
+          <ClockSegment
+            key={`${item.id}-${index}`}
+            filled={index < item.current}
+            onClick={() => onSegmentClick(item, index, content, setContent, updateSection, isEditing)}
+            disabled={mayEditSheet === false}
+          />
+        ))}
+      </div>
+    )}
+
+    <button
+      className="adjust-btn"
+      onClick={() => onIncrement(item, content, setContent, updateSection)}
+      disabled={mayEditSheet === false || item.current >= item.length}
+      aria-label={intl.formatMessage(
+        { id: 'sectionClocks.incrementLabel' },
+        { name: item.name }
+      )}
+    >
+      <FormattedMessage id="sectionClocks.increment" />
+    </button>
+  </div>
+);
+
 const ClockSegment: React.FC<{
   filled: boolean;
   onClick: () => void;
@@ -161,107 +269,6 @@ export const SectionClocks: React.FC<SectionDefinition> = (props) => {
     debouncedUpdate(newContent, updateSection);
   }, [debouncedUpdate]);
 
-  const ClockItemContent: React.FC<{
-    item: ClockItem;
-    content: SectionTypeClocks;
-    mayEditSheet: boolean;
-    setContent: React.Dispatch<React.SetStateAction<SectionTypeClocks>>;
-    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>;
-    isEditing: boolean;
-  }> = ({ item, content, mayEditSheet, setContent, updateSection, isEditing }) => (
-    <div className="clock-container">
-      <button
-        className="adjust-btn"
-        onClick={() => handleDecrement(item, content, setContent, updateSection)}
-        disabled={mayEditSheet === false || item.current <= 0}
-        aria-label={intl.formatMessage(
-          { id: 'sectionClocks.decrementLabel' },
-          { name: item.name }
-        )}
-      >
-        <FormattedMessage id="sectionClocks.decrement" />
-      </button>
-
-      {shouldUseFilledMode(item.length) ? (
-        <div
-          className={`clock-bar-filled ${mayEditSheet === false ? 'disabled' : ''}`}
-          onClick={mayEditSheet ? (e) => handleFilledBarClick(e, item, content, setContent, updateSection) : undefined}
-          onKeyDown={mayEditSheet ? (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleFilledBarClick(e as any, item, content, setContent, updateSection);
-            }
-          } : undefined}
-          tabIndex={mayEditSheet ? 0 : -1}
-        >
-          <progress
-            value={item.current}
-            max={item.length}
-            aria-label={intl.formatMessage(
-              { id: 'sectionClocks.progressLabelWithName' },
-              { name: item.name, current: item.current, length: item.length }
-            )}
-            className="clock-progress-element"
-          />
-          <span
-            className="sr-only"
-            aria-live="polite"
-          >
-            {intl.formatMessage(
-              { id: 'sectionClocks.progressLabelWithName' },
-              { name: item.name, current: item.current, length: item.length }
-            )}
-          </span>
-          <div
-            className="clock-bar-filled-progress"
-            style={{ width: `${(item.current / item.length) * 100}%` }}
-          />
-        </div>
-      ) : (
-        <div className="clock-bar">
-          <progress
-            value={item.current}
-            max={item.length}
-            aria-label={intl.formatMessage(
-              { id: 'sectionClocks.progressLabelWithName' },
-              { name: item.name, current: item.current, length: item.length }
-            )}
-            className="clock-progress-element"
-          />
-          <span
-            className="sr-only"
-            aria-live="polite"
-          >
-            {intl.formatMessage(
-              { id: 'sectionClocks.progressLabelWithName' },
-              { name: item.name, current: item.current, length: item.length }
-            )}
-          </span>
-          {new Array(item.length).fill(null).map((_, index) => (
-            <ClockSegment
-              key={`${item.id}-${index}`}
-              filled={index < item.current}
-              onClick={() => handleSegmentClick(item, index, content, setContent, updateSection, isEditing)}
-              disabled={mayEditSheet === false}
-            />
-          ))}
-        </div>
-      )}
-
-      <button
-        className="adjust-btn"
-        onClick={() => handleIncrement(item, content, setContent, updateSection)}
-        disabled={mayEditSheet === false || item.current >= item.length}
-        aria-label={intl.formatMessage(
-          { id: 'sectionClocks.incrementLabel' },
-          { name: item.name }
-        )}
-      >
-        <FormattedMessage id="sectionClocks.increment" />
-      </button>
-    </div>
-  );
-
   const renderItems = (
       content: SectionTypeClocks,
       mayEditSheet: boolean,
@@ -283,6 +290,12 @@ export const SectionClocks: React.FC<SectionDefinition> = (props) => {
               setContent={setContent}
               updateSection={updateSection}
               isEditing={isEditing}
+              onDecrement={handleDecrement}
+              onIncrement={handleIncrement}
+              onFilledBarClick={handleFilledBarClick}
+              onSegmentClick={handleSegmentClick}
+              shouldUseFilledMode={shouldUseFilledMode}
+              intl={intl}
             />
           )}
         />
