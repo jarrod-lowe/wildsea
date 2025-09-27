@@ -42,7 +42,7 @@ echo "Username: $COGNITO_USERNAME"
 
 # Build docker run command with required environment variables
 docker run --rm \
-    -v "$(pwd)/scripts/test_request_asset_upload.py:/test_request_asset_upload.py" \
+    -v "$(pwd)/test-scripts/test_request_asset_upload.py:/test_request_asset_upload.py" \
     -e GRAPHQL_URL="$GRAPHQL_URL" \
     -e COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" \
     -e COGNITO_CLIENT_ID="$COGNITO_CLIENT_ID" \

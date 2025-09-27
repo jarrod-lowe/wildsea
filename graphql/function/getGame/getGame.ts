@@ -22,6 +22,7 @@ import {
   TypeSection,
   TypeGame,
   TypeNPC,
+  TypeAsset,
 } from "../../lib/constants/entityTypes";
 import { DDBPrefixGame } from "../../lib/constants/dbPrefixes";
 import { getTranslatedMessage } from "../../lib/i18n";
@@ -103,7 +104,7 @@ function buildPlayerSheets(
       sheets[sheet.userId] = sheet;
     } else if (data.type === TypeSection) {
       addSectionToSheet(sheets, data as DataSheetSection, language);
-    } else if (data.type != TypeGame) {
+    } else if (data.type != TypeGame && data.type != TypeAsset) {
       util.error(getTranslatedMessage("game.unknownType", language, data.type));
     }
   });

@@ -1,9 +1,67 @@
 locals {
-  assets = "${var.prefix}-assets"
+  assets      = "${var.prefix}-assets"
+  assets_logs = "${var.prefix}-assets-logs"
+}
+
+# S3 bucket for storing access logs
+resource "aws_s3_bucket" "assets_logs" {
+  # checkov:skip=CKV2_AWS_62:No need for S3 events on log bucket
+  # checkov:skip=CKV_AWS_144:No need for cross-region replication
+  # checkov:skip=CKV_AWS_145:AWS key is sufficient
+  # checkov:skip=CKV_AWS_18:Log bucket doesn't need its own logging
+  bucket = lower(local.assets_logs)
+
+  tags = {
+    Name = local.assets_logs
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "assets_logs" {
+  bucket = aws_s3_bucket.assets_logs.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_ownership_controls" "assets_logs" {
+  bucket = aws_s3_bucket.assets_logs.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "assets_logs" {
+  bucket = aws_s3_bucket.assets_logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+# Lifecycle policy for log retention
+resource "aws_s3_bucket_lifecycle_configuration" "assets_logs" {
+  bucket = aws_s3_bucket.assets_logs.id
+
+  rule {
+    id     = "log-retention"
+    status = "Enabled"
+
+    expiration {
+      days = 90
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+  }
 }
 
 resource "aws_s3_bucket" "assets" {
-  # checkov:skip=CKV_AWS_18:Chosen not to enable access logging yet
   # checkov:skip=CKV2_AWS_62:No need for S3 events
   # checkov:skip=CKV_AWS_144:No need for cross-region replication
   # checkov:skip=CKV_AWS_145:AWS key is sufficient
@@ -94,6 +152,14 @@ resource "aws_s3_bucket_cors_configuration" "assets" {
 }
 
 # Basic lifecycle to handle incomplete uploads
+# S3 access logging configuration
+resource "aws_s3_bucket_logging" "assets" {
+  bucket = aws_s3_bucket.assets.id
+
+  target_bucket = aws_s3_bucket.assets_logs.id
+  target_prefix = "access-logs/"
+}
+
 resource "aws_s3_bucket_lifecycle_configuration" "assets" {
   bucket = aws_s3_bucket.assets.id
 
