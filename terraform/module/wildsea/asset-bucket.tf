@@ -1,6 +1,6 @@
 locals {
   assets      = "${var.prefix}-assets"
-  assets_logs = "${var.prefix}-assets-logs"
+  assets_logs = "${var.prefix}-logs"
 }
 
 # S3 bucket for storing access logs
@@ -85,7 +85,10 @@ data "aws_iam_policy_document" "assets_logs" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values   = [aws_s3_bucket.assets.arn]
+      values = [
+        aws_s3_bucket.assets.arn,
+        aws_s3_bucket.ui.arn
+      ]
     }
     condition {
       test     = "StringEquals"
@@ -245,12 +248,20 @@ resource "aws_s3_bucket_cors_configuration" "assets" {
 }
 
 # Basic lifecycle to handle incomplete uploads
-# S3 access logging configuration
+# S3 access logging configuration for assets bucket
 resource "aws_s3_bucket_logging" "assets" {
   bucket = aws_s3_bucket.assets.id
 
   target_bucket = aws_s3_bucket.assets_logs.id
-  target_prefix = "access-logs/"
+  target_prefix = "assets-access-logs/"
+}
+
+# S3 access logging configuration for UI bucket
+resource "aws_s3_bucket_logging" "ui" {
+  bucket = aws_s3_bucket.ui.id
+
+  target_bucket = aws_s3_bucket.assets_logs.id
+  target_prefix = "ui-access-logs/"
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "assets" {

@@ -3,10 +3,9 @@ locals {
 }
 
 resource "aws_s3_bucket" "ui" {
-  # checkov:skip=CKV_AWS_18:Chosen not to enable access logging yet
   # checkov:skip=CKV2_AWS_62:No need for S3 events
   # checkov:skip=CKV_AWS_144:No need for cross-region replication
-  # checkov:skip=CKV_AWS_145:AWS ley is sufficient
+  # checkov:skip=CKV_AWS_145:AWS key is sufficient
   bucket = lower(local.ui)
 
   tags = {
