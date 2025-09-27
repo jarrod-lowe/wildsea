@@ -9,6 +9,7 @@ import { SectionDeltaGreenDerived, createDefaultDeltaGreenDerivedContent } from 
 import { SectionDeltaGreenSkills, createDefaultDeltaGreenSkillsContent } from './sectionDeltaGreenSkills';
 import { SectionDeltaGreenWeapons, createDefaultDeltaGreenWeaponsContent } from './sectionDeltaGreenWeapons';
 import { SectionDeltaGreenBonds, createDefaultDeltaGreenBondsContent } from './sectionDeltaGreenBonds';
+import { SectionClocks } from './sectionClocks';
 import { SupportedLanguage } from './translations';
 
 type SectionTypeConfig = {
@@ -27,7 +28,8 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet, language) => createDefaultDeltaGreenDerivedContent(sheet, language) },
   'DELTAGREENSKILLS': { component: SectionDeltaGreenSkills, label: 'sectionType.deltagreenskills', seed: (sheet, language) => createDefaultDeltaGreenSkillsContent(language) },
   'DELTAGREENWEAPONS': { component: SectionDeltaGreenWeapons, label: 'sectionType.deltagreenweapons', seed: () => createDefaultDeltaGreenWeaponsContent() },
-  'DELTAGREENBONDS': { component: SectionDeltaGreenBonds, label: 'sectionType.deltagreenbonds', seed: () => createDefaultDeltaGreenBondsContent() }
+  'DELTAGREENBONDS': { component: SectionDeltaGreenBonds, label: 'sectionType.deltagreenbonds', seed: () => createDefaultDeltaGreenBondsContent() },
+  'CLOCKS': { component: SectionClocks, label: 'sectionType.clocks', seed: () => ({showEmpty: false, items: []}) }
 };
 
 // Function to get the component for a section type

@@ -340,6 +340,23 @@ export const messagesKlingon = {
     'sectionObject.buttonState.unticked': 'DIch', 
     'sectionObject.buttonState.burnt': 'meQ',
 
+    // Clocks section
+    'sectionType.clocks': 'mI\'mey',
+    'sectionClocks.decrement': '−',
+    'sectionClocks.increment': '+',
+    'sectionClocks.decrementLabel': '{name} puS',
+    'sectionClocks.incrementLabel': '{name} chel',
+    'sectionClocks.progressLabel': '{length}vo\' {current} nugh',
+    'sectionClocks.progressLabelWithName': '{name}: {length}vo\' {current}',
+    'sectionClocks.lengthLabel': 'nugh law\'',
+    'sectionClocks.currentLabel': 'DaH naDev',
+    'sectionClocks.decrementLength': '{name} nugh law\' puS',
+    'sectionClocks.incrementLength': '{name} nugh law\' chel',
+    'sectionClocks.decrementCurrent': '{name} DaH DIch puS',
+    'sectionClocks.incrementCurrent': '{name} DaH DIch chel',
+    'sectionClocks.clockName': 'mI\' pagh',
+    'sectionClocks.editLayoutFormat': 'naDev {total}vo\' {current}',
+
     // Language selector translations
     'language.selector.title': 'Hol wuq',
     'language.autoDetect': 'Hol DIch tu\'',
