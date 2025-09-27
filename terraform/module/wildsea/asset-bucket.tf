@@ -43,6 +43,67 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "assets_logs" {
   }
 }
 
+# HTTPS-only access policy for assets logs bucket
+resource "aws_s3_bucket_policy" "assets_logs" {
+  bucket = aws_s3_bucket.assets_logs.id
+  policy = data.aws_iam_policy_document.assets_logs.json
+}
+
+data "aws_iam_policy_document" "assets_logs" {
+  # Block all HTTP Access
+  statement {
+    sid     = "BlockHTTP"
+    effect  = "Deny"
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.assets_logs.arn,
+      "${aws_s3_bucket.assets_logs.arn}/*",
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+
+  # Allow S3 logging service to write logs
+  statement {
+    sid    = "S3ServerAccessLogsPolicy"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["logging.s3.${data.aws_partition.current.dns_suffix}"]
+    }
+    actions = [
+      "s3:PutObject"
+    ]
+    resources = ["${aws_s3_bucket.assets_logs.arn}/*"]
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = [aws_s3_bucket.assets.arn]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+}
+
+# Versioning for log bucket (security best practice)
+resource "aws_s3_bucket_versioning" "assets_logs" {
+  bucket = aws_s3_bucket.assets_logs.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 # Lifecycle policy for log retention
 resource "aws_s3_bucket_lifecycle_configuration" "assets_logs" {
   bucket = aws_s3_bucket.assets_logs.id
@@ -57,6 +118,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "assets_logs" {
 
     noncurrent_version_expiration {
       noncurrent_days = 30
+    }
+
+    # Clean up incomplete multipart uploads
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 1
     }
   }
 }
@@ -97,6 +163,32 @@ data "aws_iam_policy_document" "assets" {
       values   = ["false"]
     }
   }
+
+
+  # Deny uploads with public ACLs
+  statement {
+    sid    = "DenyPublicACLs"
+    effect = "Deny"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+    resources = ["${aws_s3_bucket.assets.arn}/*"]
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+      values = [
+        "public-read",
+        "public-read-write",
+        "authenticated-read"
+      ]
+    }
+  }
+
 }
 
 resource "aws_s3_bucket_public_access_block" "assets" {
@@ -131,6 +223,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "assets" {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
     }
+    bucket_key_enabled = true # Cost optimization
   }
 }
 
