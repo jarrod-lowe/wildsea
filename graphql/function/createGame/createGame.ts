@@ -56,6 +56,7 @@ export function request(
     theme: gameDefaults.theme,
     remainingCharacters: remainingCharacters,
     remainingSections: gameDefaults.remainingSections,
+    remainingAssets: gameDefaults.remainingAssets,
   };
 
   const gameItem = {
@@ -147,5 +148,6 @@ export function response(context: Context): GameSummary | null {
     theme: context.stash.record.theme,
     remainingCharacters: context.stash.record.remainingCharacters,
     remainingSections: context.stash.record.remainingSections,
+    remainingAssets: context.stash.record.remainingAssets,
   };
 }

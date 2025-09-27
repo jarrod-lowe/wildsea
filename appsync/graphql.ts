@@ -22,6 +22,36 @@ export type Scalars = {
   AWSURL: { input: string; output: string; }
 };
 
+export type Asset = {
+  __typename?: 'Asset';
+  assetId: Scalars['ID']['output'];
+  createdAt: Scalars['AWSDateTime']['output'];
+  gameId: Scalars['ID']['output'];
+  height?: Maybe<Scalars['Int']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
+  mimeType: Scalars['String']['output'];
+  sectionId: Scalars['ID']['output'];
+  sizeBytes?: Maybe<Scalars['Int']['output']>;
+  status: AssetStatus;
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['AWSDateTime']['output'];
+  width?: Maybe<Scalars['Int']['output']>;
+};
+
+export enum AssetStatus {
+  Canceled = 'CANCELED',
+  Expired = 'EXPIRED',
+  Pending = 'PENDING',
+  Ready = 'READY'
+}
+
+export type AssetUploadTicket = {
+  __typename?: 'AssetUploadTicket';
+  asset: Asset;
+  uploadFields: Scalars['AWSJSON']['output'];
+  uploadUrl: Scalars['AWSURL']['output'];
+};
+
 export type CharacterTemplateMetadata = {
   __typename?: 'CharacterTemplateMetadata';
   displayName: Scalars['String']['output'];
@@ -104,6 +134,7 @@ export type Game = {
   gmUserId: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
   playerSheets: Array<PlayerSheet>;
+  remainingAssets: Scalars['Int']['output'];
   remainingCharacters: Scalars['Int']['output'];
   remainingSections: Scalars['Int']['output'];
   theme?: Maybe<Scalars['String']['output']>;
@@ -128,6 +159,7 @@ export type GameSummary = {
   gameType: Scalars['String']['output'];
   gmUserId: Scalars['String']['output'];
   joinCode?: Maybe<Scalars['String']['output']>;
+  remainingAssets: Scalars['Int']['output'];
   remainingCharacters: Scalars['Int']['output'];
   remainingSections: Scalars['Int']['output'];
   theme?: Maybe<Scalars['String']['output']>;
@@ -188,6 +220,7 @@ export type Mutation = {
   deletePlayer?: Maybe<PlayerSheetSummary>;
   deleteSection: SheetSection;
   joinGame: PlayerSheetSummary;
+  requestAssetUpload: AssetUploadTicket;
   rollDice: DiceRoll;
   setSystemNotification: SystemNotification;
   updateGame: GameSummary;
@@ -230,6 +263,11 @@ export type MutationDeleteSectionArgs = {
 
 export type MutationJoinGameArgs = {
   input: JoinGameInput;
+};
+
+
+export type MutationRequestAssetUploadArgs = {
+  input: RequestAssetUploadInput;
 };
 
 
@@ -332,6 +370,14 @@ export type QueryGetGameTypesArgs = {
   input: GetGameTypesInput;
 };
 
+export type RequestAssetUploadInput = {
+  gameId: Scalars['ID']['input'];
+  label?: InputMaybe<Scalars['String']['input']>;
+  mimeType: Scalars['String']['input'];
+  sectionId: Scalars['ID']['input'];
+  sizeBytes: Scalars['Int']['input'];
+};
+
 export type RollDiceInput = {
   action?: InputMaybe<Scalars['String']['input']>;
   dice: Array<DiceInput>;
@@ -349,6 +395,7 @@ export type SetSystemNotificationInput = {
 
 export type SheetSection = {
   __typename?: 'SheetSection';
+  assets?: Maybe<Array<Scalars['String']['output']>>;
   content: Scalars['AWSJSON']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
   deleted?: Maybe<Scalars['Boolean']['output']>;

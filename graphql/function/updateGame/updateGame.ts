@@ -69,6 +69,7 @@ export function response(context: Context): GameSummary | undefined {
     gmUserId: context.result.gmUserId,
     remainingCharacters: context.result.remainingCharacters,
     remainingSections: context.result.remainingSections,
+    remainingAssets: context.result.remainingAssets,
     theme: context.result.theme,
     joinCode: context.result.joinCode,
   };

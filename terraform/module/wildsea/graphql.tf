@@ -176,6 +176,18 @@ resource "aws_appsync_datasource" "local" {
   description = "Local/None data source for subscription resolvers"
 }
 
+resource "aws_appsync_datasource" "lambda_generate_presigned_url" {
+  api_id           = aws_appsync_graphql_api.graphql.id
+  name             = "${replace(var.prefix, "-", "_")}_lambda_generate_presigned_url"
+  type             = "AWS_LAMBDA"
+  service_role_arn = aws_iam_role.graphql_lambda.arn
+  description      = "Lambda data source for generating presigned URLs"
+
+  lambda_config {
+    function_arn = aws_lambda_function.generate_presigned_url.arn
+  }
+}
+
 resource "aws_iam_role" "graphql_datasource" {
   name               = "${var.prefix}-graphql-datasource"
   assume_role_policy = data.aws_iam_policy_document.graphql_datasource_assume.json
@@ -226,6 +238,75 @@ resource "aws_iam_role_policy_attachment" "graphql_datasource" {
   policy_arn = aws_iam_policy.graphql_datasource.arn
 }
 
+resource "aws_iam_policy" "graphql_s3" {
+  name   = "${var.prefix}-graphql-s3"
+  policy = data.aws_iam_policy_document.graphql_s3.json
+
+  tags = {
+    Name = var.prefix
+  }
+}
+
+data "aws_iam_policy_document" "graphql_s3" {
+  statement {
+    actions = [
+      "s3:PutObject",
+    ]
+    resources = [
+      "${aws_s3_bucket.assets.arn}/*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "graphql_s3" {
+  role       = aws_iam_role.graphql_datasource.name
+  policy_arn = aws_iam_policy.graphql_s3.arn
+}
+
+resource "aws_iam_role" "graphql_lambda" {
+  name               = "${var.prefix}-graphql-lambda"
+  assume_role_policy = data.aws_iam_policy_document.graphql_lambda_assume.json
+
+  tags = {
+    Name = var.prefix
+  }
+}
+
+data "aws_iam_policy_document" "graphql_lambda_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["appsync.${data.aws_partition.current.dns_suffix}"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "graphql_lambda" {
+  name   = "${var.prefix}-graphql-lambda"
+  policy = data.aws_iam_policy_document.graphql_lambda.json
+
+  tags = {
+    Name = var.prefix
+  }
+}
+
+data "aws_iam_policy_document" "graphql_lambda" {
+  statement {
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = [
+      aws_lambda_function.generate_presigned_url.arn
+    ]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "graphql_lambda" {
+  role       = aws_iam_role.graphql_lambda.name
+  policy_arn = aws_iam_policy.graphql_lambda.arn
+}
+
 locals {
   mutations     = distinct([for d in fileset("${path.module}/../../../graphql/mutation", "**") : dirname(d)])
   queries       = distinct([for d in fileset("${path.module}/../../../graphql/query", "**") : dirname(d)])
@@ -264,7 +345,8 @@ locals {
       "type" : "Function",
       "path" : "../../../graphql/function/${function}/appsync.js",
       "make" : "graphql/function/${function}/appsync.js",
-      "source" : "../../../graphql/function/${function}/appsync.ts"
+      "source" : "../../../graphql/function/${function}/appsync.ts",
+      "data_source" : replace(function, "../../../graphql/function/", "") == "generatePresignedUrl" ? "lambda" : "dynamodb"
     }
   }
 
@@ -315,6 +397,10 @@ locals {
       type : "Mutation",
       functions = ["checkGameGMAccess", "createNPC"]
     }
+    requestAssetUpload = {
+      type : "Mutation",
+      functions = ["requestAssetUpload", "generatePresignedUrl"]
+    }
   }
 }
 
@@ -352,7 +438,7 @@ resource "aws_appsync_function" "function" {
   for_each = local.functions_map
 
   api_id      = aws_appsync_graphql_api.graphql.id
-  data_source = aws_appsync_datasource.graphql.name
+  data_source = each.value.data_source == "lambda" ? aws_appsync_datasource.lambda_generate_presigned_url.name : aws_appsync_datasource.graphql.name
   name        = each.key
 
   runtime {

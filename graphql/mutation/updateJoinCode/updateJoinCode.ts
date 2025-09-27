@@ -72,5 +72,6 @@ export function response(
     theme: result.theme,
     remainingCharacters: result.remainingCharacters,
     remainingSections: result.remainingSections,
+    remainingAssets: result.remainingAssets,
   };
 }
