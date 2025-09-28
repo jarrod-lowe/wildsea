@@ -1,14 +1,13 @@
 module.exports = {
-  preset: 'ts-jest',
   rootDir: ".",
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: 'tsconfig.json',
-      isolatedModules: true
-    }]
+    '^.+\\.[tj]sx?$': 'babel-jest'
   },
+  transformIgnorePatterns: [
+    "/node_modules/(?!uuid)/"
+  ],
   globals: {
     "process.env.NODE_ENV": "test"
   },
