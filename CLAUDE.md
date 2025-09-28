@@ -38,7 +38,7 @@ AWS_PROFILE=<profile> make ui-local
 
 # Deploy development environment
 # This does EVERYTHING required to fully update the dev environment, including terraform
-AWS_PROFILE=<profile> make dev
+AWS_PROFILE=<profile> make dev >/dev/null
 ```
 
 The `make dev` is the only way to update the development graphql server. If any
@@ -192,6 +192,8 @@ The application supports multiple TTRPG systems with database-driven configurati
 - Things in a section that will not change regularly during gameplay (e.g. STR, CON, ...) should only be able to be changed in the edit form (`renderEditForm`)
 
 ## Debugging and AWS Operations
+
+You may run *read-only* `AWS_PROFILE=wildsea aws ...` commands.
 
 When debugging issues or investigating the system state, these AWS CLI commands are useful:
 

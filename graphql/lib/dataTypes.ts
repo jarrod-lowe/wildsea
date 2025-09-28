@@ -93,6 +93,6 @@ export interface DataAsset {
   height?: number;
   createdAt: string;
   updatedAt: string;
-  cleanupAt: string; // Epoch seconds as string for cleanup
+  expireUploadAt: string; // Epoch seconds as string for upload expiration
   type: string; // Will be TypeAsset
 }

@@ -10,7 +10,7 @@ import {
 } from "../../lib/constants/dbPrefixes";
 import { TypeSection } from "../../lib/constants/entityTypes";
 
-/* The pipeline has already oerformed the auth checks needed */
+/* The pipeline has already performed the auth checks needed */
 
 export function request(
   context: Context<{ input: CreateSectionInput }>,

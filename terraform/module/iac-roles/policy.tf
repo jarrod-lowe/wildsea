@@ -150,6 +150,7 @@ data "aws_iam_policy_document" "ro" {
       "states:DescribeStateMachine",
       "states:ListStateMachineVersions",
       "states:ListTagsForResource",
+      "states:ValidateStateMachineDefinition",
       "events:DescribeEventBus",
       "events:ListTagsForResource",
       "events:DescribeRule",

@@ -25,7 +25,8 @@ data "aws_iam_policy_document" "bus" {
       test     = "ArnEquals"
       variable = "aws:SourceArn"
       values = [
-        aws_sfn_state_machine.delete_player_sm.arn
+        aws_sfn_state_machine.delete_player_sm.arn,
+        aws_sfn_state_machine.expire_asset_sm.arn
       ]
     }
   }

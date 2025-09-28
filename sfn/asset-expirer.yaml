@@ -1,0 +1,29 @@
+Comment: "Process DynamoDB stream records and send ExpireAsset events for each asset"
+StartAt: ProcessRecords
+States:
+  ProcessRecords:
+    Type: Map
+    ItemsPath: "$"
+    ItemProcessor:
+      ProcessorConfig:
+        Mode: INLINE
+      StartAt: WaitUntilExpiration
+      States:
+        WaitUntilExpiration:
+          Type: Wait
+          TimestampPath: "$.dynamodb.NewImage.expireUploadAt.S"
+          Next: SendExpireAssetEvent
+
+        SendExpireAssetEvent:
+          Type: Task
+          Resource: arn:aws:states:::events:putEvents
+          Parameters:
+            Entries:
+              - DetailType: ${detail_type}
+                Source: ${source}
+                EventBusName: ${bus_arn}
+                Detail:
+                  gameId.$: "$.dynamodb.NewImage.gameId.S"
+                  assetId.$: "$.dynamodb.NewImage.assetId.S"
+          End: true
+    End: true
