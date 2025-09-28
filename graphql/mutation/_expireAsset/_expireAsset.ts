@@ -47,6 +47,5 @@ export function response(context: Context): unknown {
     util.error(context.error.message, context.error.type, context.result);
   }
 
-  // Return the updated asset record
   return context.result;
 }

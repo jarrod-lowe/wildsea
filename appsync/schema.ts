@@ -244,4 +244,12 @@
         }
       `;
     
+      export const updatedAssetSubscription = `
+        subscription updatedAsset($gameId: ID!) {
+          updatedAsset(gameId: $gameId) {
+            gameId sectionId assetId label status mimeType sizeBytes width height createdAt updatedAt type
+          }
+        }
+      `;
+    
   

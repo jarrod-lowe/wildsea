@@ -431,6 +431,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   diceRolled?: Maybe<DiceRoll>;
   systemNotificationUpdated?: Maybe<SystemNotification>;
+  updatedAsset?: Maybe<Asset>;
   updatedGame?: Maybe<GameSummary>;
   updatedPlayer?: Maybe<PlayerSheetSummary>;
   updatedSection?: Maybe<SheetSection>;
@@ -439,6 +440,11 @@ export type Subscription = {
 
 
 export type SubscriptionDiceRolledArgs = {
+  gameId: Scalars['ID']['input'];
+};
+
+
+export type SubscriptionUpdatedAssetArgs = {
   gameId: Scalars['ID']['input'];
 };
 
