@@ -186,6 +186,14 @@
         }
       `;
     
+      export const _expireAssetMutation = `
+        mutation _expireAsset($input: ExpireAssetInput!) {
+          _expireAsset(input: $input) {
+            gameId sectionId assetId label status mimeType sizeBytes width height createdAt updatedAt type
+          }
+        }
+      `;
+    
 
     
       export const updatedPlayerSubscription = `

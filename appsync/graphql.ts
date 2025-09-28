@@ -123,6 +123,11 @@ export type DiceRoll = {
   value: Scalars['Int']['output'];
 };
 
+export type ExpireAssetInput = {
+  assetId: Scalars['ID']['input'];
+  gameId: Scalars['ID']['input'];
+};
+
 export type Game = {
   __typename?: 'Game';
   createdAt: Scalars['AWSDateTime']['output'];
@@ -213,6 +218,7 @@ export type JoinGameInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  _expireAsset: Asset;
   createGame: GameSummary;
   createNPC: PlayerSheetSummary;
   createSection: SheetSection;
@@ -228,6 +234,11 @@ export type Mutation = {
   updatePlayer?: Maybe<PlayerSheetSummary>;
   updateSection: SheetSection;
   updateUserSettings: UserSettings;
+};
+
+
+export type Mutation_ExpireAssetArgs = {
+  input: ExpireAssetInput;
 };
 
 

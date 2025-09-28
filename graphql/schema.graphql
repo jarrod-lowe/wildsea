@@ -32,6 +32,7 @@ type Mutation {
     updateUserSettings(input: UpdateUserSettingsInput!): UserSettings! @aws_cognito_user_pools
     setSystemNotification(input: SetSystemNotificationInput!): SystemNotification! @aws_iam
     requestAssetUpload(input: RequestAssetUploadInput!): AssetUploadTicket! @aws_cognito_user_pools
+    _expireAsset(input: ExpireAssetInput!): Asset! @aws_iam
 }
 
 type GamesWithQuota @aws_cognito_user_pools {
@@ -320,7 +321,7 @@ type SystemNotification @aws_cognito_user_pools @aws_iam {
   updatedAt: AWSDateTime!
 }
 
-type Asset @aws_cognito_user_pools {
+type Asset @aws_cognito_user_pools @aws_iam {
   gameId: ID!
   sectionId: ID!
   assetId: ID!
@@ -354,4 +355,9 @@ input RequestAssetUploadInput {
   mimeType: String!
   sizeBytes: Int!
   label: String
+}
+
+input ExpireAssetInput {
+  gameId: ID!
+  assetId: ID!
 }

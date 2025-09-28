@@ -1,5 +1,5 @@
 import { util, Context, AppSyncIdentityCognito } from "@aws-appsync/utils";
-import type { PutItemInputAttributeMap } from "@aws-appsync/utils/lib/resolver-return-types";
+import type { DynamoDBTransactWriteItemsRequest } from "@aws-appsync/utils/lib/resolver-return-types";
 import environment from "../../environment.json";
 import { RequestAssetUploadInput } from "../../../appsync/graphql";
 import type { DataAsset } from "../../lib/dataTypes";
@@ -18,7 +18,7 @@ import {
 
 export function request(
   context: Context<{ input: RequestAssetUploadInput }>,
-): unknown {
+): DynamoDBTransactWriteItemsRequest {
   if (!context.identity) util.unauthorized();
   const identity = context.identity as AppSyncIdentityCognito;
   if (!identity?.sub) util.unauthorized();
@@ -27,10 +27,12 @@ export function request(
   const assetId = util.autoId();
   const timestamp = util.time.nowISO8601();
 
-  // Set cleanup time from now
-  const cleanupAtSeconds =
+  // Set cleanup time from now (ISO-8601 format for Step Functions)
+  const expireUploadAtSeconds =
     util.time.nowEpochSeconds() + ASSET_CLEANUP_TIMEOUT_SECONDS;
-  const cleanupAt = `${cleanupAtSeconds}`;
+  const expireUploadAt = util.time.epochMilliSecondsToISO8601(
+    expireUploadAtSeconds * 1000,
+  );
 
   // Validate mime type
   if (!ALLOWED_ASSET_MIME_TYPES.includes(input.mimeType)) {
@@ -66,23 +68,23 @@ export function request(
     sizeBytes: input.sizeBytes,
     createdAt: timestamp,
     updatedAt: timestamp,
-    cleanupAt: cleanupAt,
+    expireUploadAt: expireUploadAt,
     type: TypeAsset,
   };
 
   const assetItem = {
-    operation: "PutItem",
+    operation: "PutItem" as const,
     table: "Wildsea-" + environment.name,
     key: util.dynamodb.toMapValues({
       PK: DDBPrefixGame + "#" + input.gameId,
       SK: DDBPrefixAsset + "#" + assetId,
     }),
     attributeValues: util.dynamodb.toMapValues(assetData),
-  } as PutItemInputAttributeMap;
+  };
 
   // Update game to decrement remainingAssets
   const gameItem = {
-    operation: "UpdateItem",
+    operation: "UpdateItem" as const,
     table: "Wildsea-" + environment.name,
     key: util.dynamodb.toMapValues({
       PK: DDBPrefixGame + "#" + input.gameId,
@@ -95,25 +97,26 @@ export function request(
         "#updatedAt": "updatedAt",
         "#remainingAssets": "remainingAssets",
       },
-      expressionValues: {
-        ":updatedAt": { S: timestamp },
-        ":one": { N: "1" },
-      },
+      expressionValues: util.dynamodb.toMapValues({
+        ":updatedAt": timestamp,
+        ":one": 1,
+      }),
     },
     condition: {
       expression: "#remainingAssets > :zero",
       expressionNames: {
         "#remainingAssets": "remainingAssets",
       },
-      expressionValues: {
-        ":zero": { N: "0" },
-      },
+      expressionValues: util.dynamodb.toMapValues({
+        ":zero": 0,
+      }),
+      returnValuesOnConditionCheckFailure: false,
     },
-  } as PutItemInputAttributeMap;
+  };
 
   // Update section to add asset ID - with user ownership condition
   const sectionItem = {
-    operation: "UpdateItem",
+    operation: "UpdateItem" as const,
     table: "Wildsea-" + environment.name,
     key: util.dynamodb.toMapValues({
       PK: DDBPrefixGame + "#" + input.gameId,
@@ -126,22 +129,23 @@ export function request(
         "#updatedAt": "updatedAt",
         "#assets": "assets",
       },
-      expressionValues: {
-        ":updatedAt": { S: timestamp },
-        ":emptyList": { L: [] },
-        ":assetList": { L: [{ S: assetId }] },
-      },
+      expressionValues: util.dynamodb.toMapValues({
+        ":updatedAt": timestamp,
+        ":emptyList": [],
+        ":assetList": [assetId],
+      }),
     },
     condition: {
       expression: "#userId = :userId",
       expressionNames: {
         "#userId": "userId",
       },
-      expressionValues: {
-        ":userId": { S: identity.sub },
-      },
+      expressionValues: util.dynamodb.toMapValues({
+        ":userId": identity.sub,
+      }),
+      returnValuesOnConditionCheckFailure: false,
     },
-  } as PutItemInputAttributeMap;
+  };
 
   // Store asset data for next function
   context.stash.assetData = assetData;

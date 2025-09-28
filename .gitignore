@@ -72,5 +72,8 @@ ui/coverage
 ui/.build-*
 .playwright-mcp/*
 
+test-scripts/*.jpg
+test-scripts/*.json
+
 # Copyrighted game data (must be created by users who own the books)
 deltagreen-weapons.json

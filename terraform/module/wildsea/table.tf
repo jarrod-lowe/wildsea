@@ -7,7 +7,7 @@ resource "aws_dynamodb_table" "table" {
   hash_key                    = "PK"
   range_key                   = "SK"
   stream_enabled              = true
-  stream_view_type            = "OLD_IMAGE"
+  stream_view_type            = "NEW_AND_OLD_IMAGES"
 
   attribute {
     name = "PK"

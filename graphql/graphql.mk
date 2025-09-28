@@ -1,4 +1,4 @@
-graphql/%/appsync.js: graphql/node_modules graphql/%/*.ts appsync/graphql.ts appsync/schema.ts graphql/environment.json $(wildcard graphql/lib/*.ts)
+graphql/%/appsync.js: graphql/node_modules graphql/%/*.ts appsync/graphql.ts appsync/schema.ts graphql/environment.json $(wildcard graphql/lib/*.ts) $(wildcard graphql/lib/constants/*.ts)
 	echo $(GRAPHQL_TS)
 	echo $(GRAPHQL_JS)
 	cd graphql && \
