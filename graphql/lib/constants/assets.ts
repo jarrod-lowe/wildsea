@@ -1,7 +1,7 @@
 // Asset upload constants
 
 // File size limits
-export const MAX_ASSET_SIZE_BYTES = 0; // Disabled until complete system ready
+export const MAX_ASSET_SIZE_BYTES = 0; // Disabled - will be enabled in future PR
 
 // Timeout and expiration settings
 export const ASSET_CLEANUP_TIMEOUT_SECONDS = 30; // Temporary 60 * 60; // 60 minutes

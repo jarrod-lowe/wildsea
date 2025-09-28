@@ -26,9 +26,18 @@ locals {
   graphql_expire_asset_mutation  = <<-EOT
         mutation ExpireAssetBackground($input: ExpireAssetInput!) {
             _expireAsset(input: $input) {
-                gameId
                 assetId
+                createdAt
+                gameId
+                height
+                label
+                mimeType
+                sectionId
+                sizeBytes
                 status
+                type
+                updatedAt
+                width
             }
         }
     EOT

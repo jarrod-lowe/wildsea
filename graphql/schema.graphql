@@ -59,6 +59,7 @@ type Subscription @aws_cognito_user_pools {
   diceRolled(gameId: ID!): DiceRoll @aws_subscribe(mutations: ["rollDice"])
   updatedUserSettings: UserSettings @aws_subscribe(mutations: ["updateUserSettings"])
   systemNotificationUpdated: SystemNotification @aws_subscribe(mutations: ["setSystemNotification"])
+  updatedAsset(gameId: ID!): Asset @aws_subscribe(mutations: ["_expireAsset"])
 }
 
 input GetGameInput {
