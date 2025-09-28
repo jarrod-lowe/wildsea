@@ -1,6 +1,39 @@
 #!/bin/bash
 set -e
 
+# Function to show usage
+usage() {
+    echo "Usage: $0 <username> <password> <game_id> <section_id>"
+    echo ""
+    echo "Arguments:"
+    echo "  username    Cognito username for authentication"
+    echo "  password    Cognito password for authentication"
+    echo "  game_id     Game ID to upload asset to"
+    echo "  section_id  Section ID to upload asset to (must belong to authenticated user)"
+    echo ""
+    echo "Example:"
+    echo "  $0 username 'mypassword' 'cd69661a-57e4-450d-8670-1058958b1bfe' '9187e56a-07f2-4ca8-945a-264ad970e2e2'"
+    exit 1
+}
+
+# Check if correct number of arguments provided
+if [ $# -ne 4 ]; then
+    echo "Error: Incorrect number of arguments"
+    usage
+fi
+
+# Parse command line arguments
+COGNITO_USERNAME="$1"
+COGNITO_PASSWORD="$2"
+GAME_ID="$3"
+SECTION_ID="$4"
+
+# Validate arguments are not empty
+if [ -z "$COGNITO_USERNAME" ] || [ -z "$COGNITO_PASSWORD" ] || [ -z "$GAME_ID" ] || [ -z "$SECTION_ID" ]; then
+    echo "Error: All arguments are required and cannot be empty"
+    usage
+fi
+
 # Change to correct terraform directory and get outputs
 cd terraform/environment/wildsea-dev
 TERRAFORM_OUTPUT=$(AWS_PROFILE=wildsea terraform output -json)
@@ -11,28 +44,6 @@ GRAPHQL_URL=$(echo "$TERRAFORM_OUTPUT" | jq -r '.graphql_uri.value')
 COGNITO_USER_POOL_ID=$(echo "$TERRAFORM_OUTPUT" | jq -r '.cognito_user_pool_id.value')
 COGNITO_CLIENT_ID=$(echo "$TERRAFORM_OUTPUT" | jq -r '.cognito_web_client_id.value')
 AWS_REGION=$(echo "$TERRAFORM_OUTPUT" | jq -r '.region.value')
-
-# Use environment variables for credentials
-if [ -z "$COGNITO_USERNAME" ] || [ -z "$COGNITO_PASSWORD" ]; then
-    echo "Error: COGNITO_USERNAME and COGNITO_PASSWORD environment variables are required"
-    echo "Example: COGNITO_USERNAME='username' COGNITO_PASSWORD='password' GAME_ID='game-id' SECTION_ID='section-id' ./test-scripts/test_request_asset_upload.sh"
-    exit 1
-fi
-
-# GAME_ID and SECTION_ID are required - no defaults
-if [ -z "$GAME_ID" ]; then
-    echo "Error: GAME_ID environment variable is required"
-    echo "You need a real game ID from your wildsea application"
-    echo "Example: COGNITO_USERNAME='username' COGNITO_PASSWORD='password' GAME_ID='game-id' SECTION_ID='section-id' ./test-scripts/test_request_asset_upload.sh"
-    exit 1
-fi
-
-if [ -z "$SECTION_ID" ]; then
-    echo "Error: SECTION_ID environment variable is required"
-    echo "You need a real section ID that belongs to the authenticated user"
-    echo "Example: COGNITO_USERNAME='username' COGNITO_PASSWORD='password' GAME_ID='game-id' SECTION_ID='section-id' ./test-scripts/test_request_asset_upload.sh"
-    exit 1
-fi
 
 echo "Running requestAssetUpload test in Docker container..."
 echo "GraphQL URL: $GRAPHQL_URL"
