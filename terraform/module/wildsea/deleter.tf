@@ -14,7 +14,7 @@ locals {
       local.graphql_id,
     ]),
   ])
-  graphql_delete_player_mutation = <<-EOT
+  graphql_delete_player_mutation  = <<-EOT
         mutation DeletePlayerBackground($input: DeletePlayerInput!) {
             deletePlayer(input: $input) {
                 gameId
@@ -23,7 +23,7 @@ locals {
             }
         }
     EOT
-  graphql_expire_asset_mutation  = <<-EOT
+  graphql_expire_asset_mutation   = <<-EOT
         mutation ExpireAssetBackground($input: ExpireAssetInput!) {
             _expireAsset(input: $input) {
                 assetId
@@ -41,10 +41,30 @@ locals {
             }
         }
     EOT
-  delete_source                  = "wildsea.table"
-  delete_player_detail_type      = "DeletePlayer"
-  expire_asset_source            = "wildsea.table"
-  expire_asset_detail_type       = "ExpireAsset"
+  graphql_finalise_asset_mutation = <<-EOT
+        mutation FinaliseAssetBackground($input: FinaliseAssetInput!) {
+            _finaliseAsset(input: $input) {
+                assetId
+                createdAt
+                gameId
+                height
+                label
+                mimeType
+                sectionId
+                sizeBytes
+                status
+                type
+                updatedAt
+                width
+            }
+        }
+    EOT
+  delete_source                   = "wildsea.table"
+  delete_player_detail_type       = "DeletePlayer"
+  expire_asset_source             = "wildsea.table"
+  expire_asset_detail_type        = "ExpireAsset"
+  finalise_asset_source           = "asset.uploaded"
+  finalise_asset_detail_type      = "ObjectCreated"
 }
 
 resource "aws_iam_role" "delete_player_pipe" {
@@ -498,3 +518,85 @@ resource "aws_cloudwatch_event_target" "expire_asset_target" {
     graphql_operation = local.graphql_expire_asset_mutation
   }
 }
+
+# Asset finalization infrastructure
+
+resource "aws_iam_role" "finalise_asset_bus" {
+  name               = "${var.prefix}-finalise-asset-bus"
+  assume_role_policy = data.aws_iam_policy_document.finalise_asset_bus_assume.json
+}
+
+data "aws_iam_policy_document" "finalise_asset_bus_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "finalise_asset_bus" {
+  name   = "${var.prefix}-finalise-asset-bus"
+  policy = data.aws_iam_policy_document.finalise_asset_bus.json
+}
+
+data "aws_iam_policy_document" "finalise_asset_bus" {
+  statement {
+    sid = "InvokeGraphQL"
+    actions = [
+      "appsync:GraphQL",
+    ]
+    resources = [
+      "${aws_appsync_graphql_api.graphql.arn}/types/Mutation/fields/_finaliseAsset",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "finalise_asset_bus" {
+  role       = aws_iam_role.finalise_asset_bus.name
+  policy_arn = aws_iam_policy.finalise_asset_bus.arn
+}
+
+resource "aws_cloudwatch_event_rule" "finalise_asset_rule" {
+  name           = "${var.prefix}-finalise-asset"
+  description    = "Finalize assets when original file is uploaded"
+  event_bus_name = aws_cloudwatch_event_bus.bus.name
+  state          = "ENABLED"
+  event_pattern = jsonencode({
+    "source"      = [local.finalise_asset_source]
+    "detail-type" = [local.finalise_asset_detail_type]
+  })
+}
+
+
+resource "aws_cloudwatch_event_target" "finalise_asset_target" {
+  target_id      = "appsync-finalise-asset"
+  rule           = aws_cloudwatch_event_rule.finalise_asset_rule.name
+  arn            = local.graphql_ep_arn
+  role_arn       = aws_iam_role.finalise_asset_bus.arn
+  event_bus_name = aws_cloudwatch_event_bus.bus.name
+
+  input_transformer {
+    input_paths = {
+      gameId    = "$.detail.gameId"
+      assetId   = "$.detail.assetId"
+      sectionId = "$.detail.sectionId"
+    }
+    input_template = <<-EOT
+      {
+          "input": {
+              "gameId": "<gameId>",
+              "assetId": "<assetId>",
+              "sectionId": "<sectionId>"
+          }
+      }
+    EOT
+  }
+
+  appsync_target {
+    graphql_operation = local.graphql_finalise_asset_mutation
+  }
+}
+
+

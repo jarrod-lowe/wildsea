@@ -194,6 +194,22 @@
         }
       `;
     
+      export const _finaliseAssetMutation = `
+        mutation _finaliseAsset($input: FinaliseAssetInput!) {
+          _finaliseAsset(input: $input) {
+            gameId sectionId assetId label status mimeType sizeBytes width height createdAt updatedAt type
+          }
+        }
+      `;
+    
+      export const deleteAssetMutation = `
+        mutation deleteAsset($input: DeleteAssetInput!) {
+          deleteAsset(input: $input) {
+            gameId sectionId assetId label status mimeType sizeBytes width height createdAt updatedAt type
+          }
+        }
+      `;
+    
 
     
       export const updatedPlayerSubscription = `

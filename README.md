@@ -252,3 +252,143 @@ The GitHub Actions workflow will automatically:
 * Make the weapon presets available during both planning and deployment
 
 If the secret is not set, the deployment will proceed without weapon presets (graceful degradation).
+
+## Asset Management System
+
+The application includes a comprehensive asset management system for handling file uploads with automatic status tracking and error handling.
+
+### Asset Upload and Finalization Flow
+
+#### 1. Initial Upload Flow
+
+```plain
+User initiates upload
+    ↓
+requestAssetUpload mutation
+    ↓
+Creates PENDING asset record in DynamoDB
+    ↓
+Returns S3 upload URL and fields
+    ↓
+User uploads file to S3 (asset/game/{gameId}/section/{sectionId}/{assetId}/original)
+```
+
+#### 2. Automatic Finalization Flow
+
+```plain
+S3 Object Created Event
+    ↓
+EventBridge (aws.s3 source)
+    ↓
+EventBridge Rule (filters for /original suffix)
+    ↓
+_finaliseAsset GraphQL mutation
+    ↓
+Parses S3 object key to extract gameId, sectionId, assetId
+    ↓
+DynamoDB conditional update: PENDING → READY
+    ↓
+updatedAsset subscription notifies clients
+```
+
+#### 3. Error Handling Flow (DLQ)
+
+```plain
+_finaliseAsset mutation fails
+    ↓
+EventBridge Target Dead Letter Queue (SQS)
+    ↓
+EventBridge Pipe reads from SQS
+    ↓
+EventBridge (asset.delete source)
+    ↓
+EventBridge Rule for asset deletion
+    ↓
+deleteAsset GraphQL mutation
+    ↓
+Currently returns "not yet implemented" error
+    ↓
+Future: Will handle authorization and asset cleanup
+```
+
+### Asset Status Lifecycle
+
+* **PENDING**: Asset record created, waiting for file upload
+* **READY**: File successfully uploaded and processed
+* **EXPIRED**: Asset expired due to timeout (handled by separate flow)
+* **CANCELED**: Asset upload was canceled (future state)
+
+### S3 Object Key Structure
+
+Assets are stored with the following path structure:
+`asset/game/{gameId}/section/{sectionId}/{assetId}/original`
+
+This structure allows:
+
+* Easy extraction of metadata from object keys
+* Organized storage by game and section
+* Future support for multiple file variants (thumbnails, processed versions)
+
+### EventBridge Sources
+
+* **aws.s3**: S3 bucket events for object creation
+* **wildsea.table**: DynamoDB stream events for record changes
+
+### GraphQL Mutations
+
+* **requestAssetUpload**: Initiates upload process, creates PENDING asset
+* **_finaliseAsset**: System mutation to mark assets as READY (IAM auth only)
+* **_expireAsset**: System mutation to mark assets as EXPIRED (IAM auth only)
+* **deleteAsset**: Handles asset deletion for both user-initiated deletions and system cleanup (Cognito + IAM auth, not yet implemented)
+
+### Subscriptions
+
+* **updatedAsset**: Real-time notifications for asset status changes
+
+## Scratch
+
+⏺ S3 Event Chains with Resource Names
+
+  1. Asset Upload Chain (Success Path)
+
+  S3 → SQS → EventBridge Pipe → Step Function → EventBridge Bus → AppSync
+
+  1. S3 Bucket Notification
+    - Resource: aws_s3_bucket_notification.assets_events (terraform/module/wildsea/asset-bucket.tf:337)
+    - Source: aws_s3_bucket.assets
+    - Trigger: s3:ObjectCreated:* with filter suffix /original
+    - Target: aws_sqs_queue.asset_uploads
+  2. SQS Queue
+    - Resource: aws_sqs_queue.asset_uploads (terraform/module/wildsea/asset-bucket.tf:289)
+    - Name: ${var.prefix}-asset-uploads
+  3. EventBridge Pipe
+    - Resource: aws_pipes_pipe.asset_uploads_pipe (terraform/module/wildsea/asset-bucket.tf:349)
+    - Name: ${var.prefix}-asset-uploads
+    - Source: aws_sqs_queue.asset_uploads.arn
+    - Enrichment: aws_sfn_state_machine.asset_path_parser.arn
+    - Target: aws_cloudwatch_event_bus.bus.arn
+  4. Step Function Enrichment
+    - Resource: aws_sfn_state_machine.asset_path_parser (terraform/module/wildsea/asset-bucket.tf:377)
+    - Name: ${var.prefix}-asset-path-parser
+    - Extracts gameId, sectionId, assetId from S3 object key
+  5. EventBridge Rule
+    - Resource: aws_cloudwatch_event_rule.finalise_asset_rule (terraform/module/wildsea/deleter.tf:581)
+    - Name: ${var.prefix}-finalise-asset
+    - Bus: aws_cloudwatch_event_bus.bus
+    - Pattern: source = ["asset.uploaded"], detail-type = ["ObjectCreated"]
+  6. AppSync Target
+    - Resource: aws_cloudwatch_event_target.finalise_asset_target (terraform/module/wildsea/deleter.tf:604)
+    - Target ID: appsync-finalise-asset
+    - GraphQL Operation: _finaliseAsset mutation
+
+
+  Resource Flow Diagram:
+
+  aws_s3_bucket.assets
+    → aws_sqs_queue.asset_uploads
+    → aws_pipes_pipe.asset_uploads_pipe
+    → aws_sfn_state_machine.asset_path_parser
+    → aws_cloudwatch_event_bus.bus
+    → aws_cloudwatch_event_rule.finalise_asset_rule
+    → aws_cloudwatch_event_target.finalise_asset_target
+    → AppSync _finaliseAsset
