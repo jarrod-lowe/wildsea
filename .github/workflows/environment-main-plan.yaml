@@ -51,7 +51,7 @@ jobs:
         fi
 
     - name: Configure AWS Access
-      uses: aws-actions/configure-aws-credentials@0be22f94c34623c570f2c1479d3a28b5678673c7
+      uses: aws-actions/configure-aws-credentials@f226b0540e0de24b4ff8b81fdd0524c71cde478f
       with:
         role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE }}
         role-session-name: GitHubTest-${{ vars.ENVIRONMENT }}
