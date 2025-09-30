@@ -81,6 +81,12 @@ export type CreateSectionInput = {
   userId?: InputMaybe<Scalars['ID']['input']>;
 };
 
+export type DeleteAssetInput = {
+  assetId: Scalars['ID']['input'];
+  gameId: Scalars['ID']['input'];
+  sectionId: Scalars['ID']['input'];
+};
+
 export type DeleteGameInput = {
   gameId: Scalars['ID']['input'];
 };
@@ -126,6 +132,12 @@ export type DiceRoll = {
 export type ExpireAssetInput = {
   assetId: Scalars['ID']['input'];
   gameId: Scalars['ID']['input'];
+};
+
+export type FinaliseAssetInput = {
+  assetId: Scalars['ID']['input'];
+  gameId: Scalars['ID']['input'];
+  sectionId: Scalars['ID']['input'];
 };
 
 export type Game = {
@@ -219,9 +231,11 @@ export type JoinGameInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   _expireAsset: Asset;
+  _finaliseAsset: Asset;
   createGame: GameSummary;
   createNPC: PlayerSheetSummary;
   createSection: SheetSection;
+  deleteAsset: Asset;
   deleteGame: GameSummary;
   deletePlayer?: Maybe<PlayerSheetSummary>;
   deleteSection: SheetSection;
@@ -242,6 +256,11 @@ export type Mutation_ExpireAssetArgs = {
 };
 
 
+export type Mutation_FinaliseAssetArgs = {
+  input: FinaliseAssetInput;
+};
+
+
 export type MutationCreateGameArgs = {
   input: CreateGameInput;
 };
@@ -254,6 +273,11 @@ export type MutationCreateNpcArgs = {
 
 export type MutationCreateSectionArgs = {
   input: CreateSectionInput;
+};
+
+
+export type MutationDeleteAssetArgs = {
+  input: DeleteAssetInput;
 };
 
 
