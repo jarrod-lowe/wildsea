@@ -67,25 +67,25 @@ resource "aws_dynamodb_table_item" "template_wildsea_basic_en" {
                 id          = "iron"
                 name        = "Iron"
                 description = ""
-                current     = 2
-                maximum     = 5
+                length      = 5
+                ticked      = 2
               },
               {
                 id          = "teeth"
                 name        = "Teeth"
                 description = ""
-                current     = 2
-                maximum     = 5
+                length      = 5
+                ticked      = 2
               },
               {
                 id          = "veils"
                 name        = "Veils"
                 description = ""
-                current     = 2
-                maximum     = 5
+                length      = 5
+                ticked      = 2
               }
             ]
-            showEmpty = false
+            showEmpty = true
           })
           position = 1
         },
@@ -98,46 +98,46 @@ resource "aws_dynamodb_table_item" "template_wildsea_basic_en" {
                 id          = "break"
                 name        = "Break"
                 description = ""
-                current     = 0
-                maximum     = 3
+                length      = 3
+                ticked      = 0
               },
               {
                 id          = "delve"
                 name        = "Delve"
                 description = ""
-                current     = 0
-                maximum     = 3
+                length      = 3
+                ticked      = 0
               },
               {
                 id          = "hunt"
                 name        = "Hunt"
                 description = ""
-                current     = 0
-                maximum     = 3
+                length      = 3
+                ticked      = 0
               },
               {
                 id          = "outwit"
                 name        = "Outwit"
                 description = ""
-                current     = 0
-                maximum     = 3
+                length      = 3
+                ticked      = 0
               },
               {
                 id          = "study"
                 name        = "Study"
                 description = ""
-                current     = 0
-                maximum     = 3
+                length      = 3
+                ticked      = 0
               },
               {
                 id          = "sway"
                 name        = "Sway"
                 description = ""
-                current     = 0
-                maximum     = 3
+                length      = 3
+                ticked      = 0
               }
             ]
-            showEmpty = false
+            showEmpty = true
           })
           position = 2
         },
@@ -175,7 +175,7 @@ resource "aws_dynamodb_table_item" "template_wildsea_basic_en" {
                 states      = ["unticked", "unticked", "unticked"]
               }
             ]
-            showEmpty = false
+            showEmpty = true
           })
           position = 3
         }
