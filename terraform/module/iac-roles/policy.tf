@@ -272,34 +272,9 @@ data "aws_iam_policy_document" "rw" {
       "appsync:AssociateApi",
       "appsync:DisassociateApi",
       "s3:CreateBucket",
-      "cloudfront:CreateOriginAccessControl",
-      "cloudfront:DeleteOriginAccessControl",
-      "cloudfront:CreateDistribution*",
-      "cloudfront:UpdateDistribution",
-      "cloudfront:DeleteDistribution",
-      "cloudfront:TagResource",
-      "cloudfront:CreateOriginRequestPolicy",
-      "cloudfront:CreateCachePolicy",
-      "cloudfront:UpdateOriginRequestPolicy",
-      "cloudfront:CreateResponseHeadersPolicy",
-      "cloudfront:DeleteOriginRequestPolicy",
-      "cloudfront:DeleteResponseHeadersPolicy",
-      "cloudfront:*Function",
-      "rum:CreateAppMonitor",
-      "rum:UpdateAppMonitor",
-      "rum:DeleteAppMonitor",
-      "rum:TagResource",
-      "rum:UntagResource",
-      "rum:PutRumMetricsDestination",
-      "rum:DeleteRumMetricsDestination",
-      "rum:GetRumMetricsDestination",
-      "rum:ListRumMetricsDestinations",
-      "cloudwatch:PutMetricAlarm",
-      "cloudwatch:DeleteAlarms",
-      "cloudwatch:DescribeAlarms",
-      "cloudwatch:ListTagsForResource",
-      "cloudwatch:TagResource",
-      "cloudwatch:UntagResource",
+      "cloudfront:*",
+      "rum:*",
+      "cloudwatch:*",
     ]
     resources = [
       "*"
@@ -375,31 +350,15 @@ data "aws_iam_policy_document" "rw" {
 
   statement {
     actions = [
-      "logs:CreateLogGroup",
-      "logs:DeleteLogGroup",
-      "logs:TagResource",
-      "logs:UntagResource",
-      "logs:PutRetentionPolicy",
+      "logs:*",
       "s3:DeleteBucket",
       "s3:PutBucket*",
     ]
     resources = [
       "arn:${data.aws_partition.current.id}:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:log-group:*",
       "arn:${data.aws_partition.current.id}:s3:::${lower(local.prefix)}-*",
+      "*",
     ]
-  }
-
-  statement {
-    actions = [
-      "logs:CreateLogDelivery",
-      "logs:GetLogDelivery",
-      "logs:UpdateLogDelivery",
-      "logs:DeleteLogDelivery",
-      "logs:ListLogDeliveries",
-      "logs:PutResourcePolicy",
-      "logs:DescribeResourcePolicies",
-    ]
-    resources = ["*"]
   }
 
   statement {
@@ -549,27 +508,16 @@ data "aws_iam_policy_document" "rw_boundary" {
       "s3:CreateBucket",
       "cloudfront:*",
       "iam:SimulatePrincipalPolicy",
-      "cloudwatch:CreateLogStream",
-      "cloudwatch:PutLogEvents",
-      "cloudwatch:CreateLogGroup",
-      "cloudwatch:PutMetricAlarm",
-      "cloudwatch:DeleteAlarms",
-      "cloudwatch:DescribeAlarms",
+      "cloudwatch:*",
       "route53:ListHostedZones",
-      "rum:CreateAppMonitor",
-      "rum:UpdateAppMonitor",
-      "rum:DeleteAppMonitor",
-      "rum:GetAppMonitor",
-      "rum:ListAppMonitors",
-      "rum:TagResource",
-      "rum:UntagResource",
-      "rum:PutRumMetricsDestination",
-      "rum:DeleteRumMetricsDestination",
-      "rum:GetRumMetricsDestination",
-      "rum:ListRumMetricsDestinations",
-      "cloudwatch:ListTagsForResource",
-      "cloudwatch:TagResource",
-      "cloudwatch:UntagResource",
+      "rum:*",
+      "logs:CreateLogDelivery",
+      "logs:GetLogDelivery",
+      "logs:UpdateLogDelivery",
+      "logs:DeleteLogDelivery",
+      "logs:ListLogDeliveries",
+      "logs:PutResourcePolicy",
+      "logs:DescribeResourcePolicies",
     ]
     resources = [
       "*"
@@ -770,18 +718,5 @@ data "aws_iam_policy_document" "rw_boundary" {
       variable = "aws:ResourceTag/Name"
       values   = [local.prefix]
     }
-  }
-
-  statement {
-    actions = [
-      "logs:CreateLogDelivery",
-      "logs:GetLogDelivery",
-      "logs:UpdateLogDelivery",
-      "logs:DeleteLogDelivery",
-      "logs:ListLogDeliveries",
-      "logs:PutResourcePolicy",
-      "logs:DescribeResourcePolicies",
-    ]
-    resources = ["*"]
   }
 }
