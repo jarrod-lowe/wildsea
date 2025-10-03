@@ -68,6 +68,9 @@ locals {
 }
 
 resource "aws_cloudwatch_log_group" "delete_player_pipe" {
+  # checkov:skip=CKV_AWS_158:AWS-managed keys are sufficient for pipe logs
+  # checkov:skip=CKV_AWS_338:30-day retention is sufficient for pipe logs
+  # nosemgrep: aws-cloudwatch-log-group-aws-managed-key
   name              = "/aws/vendedlogs/pipes/${var.prefix}-delete"
   retention_in_days = 30
 
@@ -325,6 +328,9 @@ resource "aws_cloudwatch_event_target" "delete_target" {
 # Asset expiration infrastructure
 
 resource "aws_cloudwatch_log_group" "expire_asset_pipe" {
+  # checkov:skip=CKV_AWS_158:AWS-managed keys are sufficient for pipe logs
+  # checkov:skip=CKV_AWS_338:30-day retention is sufficient for pipe logs
+  # nosemgrep: aws-cloudwatch-log-group-aws-managed-key
   name              = "/aws/vendedlogs/pipes/${var.prefix}-expire-asset"
   retention_in_days = 30
 

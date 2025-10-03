@@ -381,6 +381,9 @@ resource "aws_pipes_pipe" "asset_uploads_pipe" {
 }
 
 resource "aws_cloudwatch_log_group" "asset_uploads_pipe" {
+  # checkov:skip=CKV_AWS_158:AWS-managed keys are sufficient for pipe logs
+  # checkov:skip=CKV_AWS_338:30-day retention is sufficient for pipe logs
+  # nosemgrep: aws-cloudwatch-log-group-aws-managed-key
   name              = "/aws/vendedlogs/pipes/${var.prefix}-asset-uploads"
   retention_in_days = 30
 
