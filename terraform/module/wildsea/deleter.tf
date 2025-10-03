@@ -67,6 +67,15 @@ locals {
   finalise_asset_detail_type      = "ObjectCreated"
 }
 
+resource "aws_cloudwatch_log_group" "delete_player_pipe" {
+  name              = "/aws/vendedlogs/pipes/${var.prefix}-delete"
+  retention_in_days = 30
+
+  tags = {
+    Application = var.prefix
+  }
+}
+
 resource "aws_iam_role" "delete_player_pipe" {
   name               = "${var.prefix}-delete-pipe"
   assume_role_policy = data.aws_iam_policy_document.delete_pipe_assume.json
@@ -110,6 +119,17 @@ data "aws_iam_policy_document" "delete_player_pipe" {
       aws_sfn_state_machine.delete_player_sm.arn
     ]
   }
+
+  statement {
+    sid = "WriteLogs"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.delete_player_pipe.arn}:*",
+    ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "delete_player_pipe" {
@@ -148,6 +168,12 @@ resource "aws_pipes_pipe" "delete_player_pipe" {
   target_parameters {
     step_function_state_machine_parameters {
       invocation_type = "FIRE_AND_FORGET"
+    }
+  }
+  log_configuration {
+    level = "ERROR"
+    cloudwatch_logs_log_destination {
+      log_group_arn = aws_cloudwatch_log_group.delete_player_pipe.arn
     }
   }
 }
@@ -298,6 +324,15 @@ resource "aws_cloudwatch_event_target" "delete_target" {
 
 # Asset expiration infrastructure
 
+resource "aws_cloudwatch_log_group" "expire_asset_pipe" {
+  name              = "/aws/vendedlogs/pipes/${var.prefix}-expire-asset"
+  retention_in_days = 30
+
+  tags = {
+    Application = var.prefix
+  }
+}
+
 resource "aws_iam_role" "expire_asset_pipe" {
   name               = "${var.prefix}-expire-asset-pipe"
   assume_role_policy = data.aws_iam_policy_document.expire_asset_pipe_assume.json
@@ -341,6 +376,17 @@ data "aws_iam_policy_document" "expire_asset_pipe" {
       aws_sfn_state_machine.expire_asset_sm.arn
     ]
   }
+
+  statement {
+    sid = "WriteLogs"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.expire_asset_pipe.arn}:*",
+    ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "expire_asset_pipe" {
@@ -382,6 +428,12 @@ resource "aws_pipes_pipe" "expire_asset_pipe" {
   target_parameters {
     step_function_state_machine_parameters {
       invocation_type = "FIRE_AND_FORGET"
+    }
+  }
+  log_configuration {
+    level = "ERROR"
+    cloudwatch_logs_log_destination {
+      log_group_arn = aws_cloudwatch_log_group.expire_asset_pipe.arn
     }
   }
 }

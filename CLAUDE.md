@@ -30,6 +30,15 @@ pushing to the development deployment.
 You will *never* need to run any command that isn't `make`. All the operations
 required are in the Makefile.
 
+### Deployment role changes deployment
+
+IAC roles are defined in `terraform/modules/iac-roles`.
+
+To set up the IAC roles:
+
+- For dev: `AWS_PROFILE=wildsea make iac-dev >/dev/null`
+- For prod: `AWS_PROFILE=wildsea make iac` -- you will need to enter the name of your github workspace
+
 ### Local Development
 
 ```bash

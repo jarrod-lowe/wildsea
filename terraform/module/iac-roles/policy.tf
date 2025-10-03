@@ -390,6 +390,19 @@ data "aws_iam_policy_document" "rw" {
   }
 
   statement {
+    actions = [
+      "logs:CreateLogDelivery",
+      "logs:GetLogDelivery",
+      "logs:UpdateLogDelivery",
+      "logs:DeleteLogDelivery",
+      "logs:ListLogDeliveries",
+      "logs:PutResourcePolicy",
+      "logs:DescribeResourcePolicies",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
     actions   = ["iam:CreateServiceLinkedRole"]
     resources = ["*"]
     condition {
@@ -757,5 +770,18 @@ data "aws_iam_policy_document" "rw_boundary" {
       variable = "aws:ResourceTag/Name"
       values   = [local.prefix]
     }
+  }
+
+  statement {
+    actions = [
+      "logs:CreateLogDelivery",
+      "logs:GetLogDelivery",
+      "logs:UpdateLogDelivery",
+      "logs:DeleteLogDelivery",
+      "logs:ListLogDeliveries",
+      "logs:PutResourcePolicy",
+      "logs:DescribeResourcePolicies",
+    ]
+    resources = ["*"]
   }
 }

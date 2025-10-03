@@ -368,6 +368,22 @@ resource "aws_pipes_pipe" "asset_uploads_pipe" {
     }
   }
 
+  log_configuration {
+    level = "ERROR"
+    cloudwatch_logs_log_destination {
+      log_group_arn = aws_cloudwatch_log_group.asset_uploads_pipe.arn
+    }
+  }
+
+  tags = {
+    Application = var.prefix
+  }
+}
+
+resource "aws_cloudwatch_log_group" "asset_uploads_pipe" {
+  name              = "/aws/vendedlogs/pipes/${var.prefix}-asset-uploads"
+  retention_in_days = 30
+
   tags = {
     Application = var.prefix
   }
@@ -547,5 +563,17 @@ data "aws_iam_policy_document" "asset_uploads_pipe" {
       "events:PutEvents"
     ]
     resources = [aws_cloudwatch_event_bus.bus.arn]
+  }
+
+  # Allow writing to CloudWatch Logs
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.asset_uploads_pipe.arn}:*",
+    ]
   }
 }
