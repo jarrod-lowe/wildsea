@@ -51,7 +51,7 @@ terraform/environment/aws/.apply: terraform/environment/aws/*.tf terraform/modul
 	AUTO_APPROVE=yes ./terraform/environment/aws/deploy.sh $(ACCOUNT_ID)
 	touch $@
 
-terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform $(GRAPHQL_JS) lambda/generatePresignedUrl/lambda_function.py
+terraform/environment/wildsea-dev/plan.tfplan: terraform/environment/wildsea-dev/*.tf terraform/module/wildsea/*.tf terraform/environment/wildsea-dev/.terraform $(GRAPHQL_JS) lambda/generatePresignedUrl/lambda_function.py terraform/module/wildsea/favicon.ico
 	cd terraform/environment/wildsea-dev ; ../../../scripts/run-as.sh $(RO_ROLE) \
 		terraform plan -out=./plan.tfplan
 

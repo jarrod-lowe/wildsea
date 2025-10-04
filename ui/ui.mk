@@ -68,3 +68,13 @@ ui-test: ui/node_modules
 	else \
 		cd ui && ./node_modules/.bin/jest --coverage ; \
 	fi
+
+.PHONY: favicon
+favicon: terraform/module/wildsea/favicon.ico
+
+terraform/module/wildsea/favicon.ico: ui/public/favicon.webp
+	docker run --rm \
+		-v "$$(pwd):/work" \
+		-w /work \
+		alpine:latest \
+		sh -c 'apk add --no-cache imagemagick libwebp-tools && magick ui/public/favicon.webp -define icon:auto-resize=48,32,16 terraform/module/wildsea/favicon.ico && chown $$(id -u):$$(id -g) terraform/module/wildsea/favicon.ico'

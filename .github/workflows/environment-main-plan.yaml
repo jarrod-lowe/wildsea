@@ -50,6 +50,9 @@ jobs:
           echo "No weapon data secret found, proceeding without weapon presets"
         fi
 
+    - name: Generate favicon
+      run: make favicon
+
     - name: Configure AWS Access
       uses: aws-actions/configure-aws-credentials@f226b0540e0de24b4ff8b81fdd0524c71cde478f
       with:

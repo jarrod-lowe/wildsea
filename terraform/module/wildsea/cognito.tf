@@ -1,5 +1,6 @@
 resource "aws_cognito_user_pool" "cognito" {
-  name = var.prefix
+  name           = var.prefix
+  user_pool_tier = "ESSENTIALS"
 
   admin_create_user_config {
     allow_admin_create_user_only = true
@@ -204,14 +205,163 @@ resource "aws_iam_role_policy_attachment" "cognito_unauth" {
 }
 
 resource "aws_cognito_user_pool_domain" "cognito" {
-  domain       = lower(var.prefix)
-  user_pool_id = aws_cognito_user_pool.cognito.id
+  domain                = lower(var.prefix)
+  user_pool_id          = aws_cognito_user_pool.cognito.id
+  managed_login_version = 2
 }
 
-resource "aws_cognito_user_pool_ui_customization" "cognito" {
+resource "aws_cognito_managed_login_branding" "cognito" {
+  user_pool_id = aws_cognito_user_pool.cognito.id
   client_id    = aws_cognito_user_pool_client.cognito.id
-  css          = file("${path.module}/../../cognito-ui.css")
-  user_pool_id = aws_cognito_user_pool_domain.cognito.user_pool_id
+
+  # Favicon - ICO format
+  asset {
+    bytes      = filebase64("${path.module}/favicon.ico")
+    category   = "FAVICON_ICO"
+    color_mode = "LIGHT"
+    extension  = "ICO"
+  }
+
+  settings = jsonencode({
+    categories = {
+      form = {
+        displayGraphics = false
+        location = {
+          horizontal = "CENTER"
+          vertical   = "CENTER"
+        }
+      }
+      global = {
+        colorSchemeMode = "LIGHT"
+      }
+    }
+    componentClasses = {
+      buttons = {
+        borderRadius = 8
+      }
+      input = {
+        borderRadius = 8
+        lightMode = {
+          defaults = {
+            backgroundColor = "ffffffff"
+            borderColor     = "dee2e6ff"
+          }
+          placeholderColor = "6c757dff"
+        }
+      }
+      link = {
+        lightMode = {
+          defaults = {
+            textColor = "0066ccff"
+          }
+          hover = {
+            textColor = "0052a3ff"
+          }
+        }
+      }
+      focusState = {
+        lightMode = {
+          borderColor = "0066ccff"
+        }
+      }
+      inputLabel = {
+        lightMode = {
+          textColor = "212529ff"
+        }
+      }
+      divider = {
+        lightMode = {
+          borderColor = "dee2e6ff"
+        }
+      }
+    }
+    components = {
+      primaryButton = {
+        lightMode = {
+          defaults = {
+            backgroundColor = "1e7e34ff"
+            textColor       = "ffffffff"
+          }
+          hover = {
+            backgroundColor = "155724ff"
+            textColor       = "ffffffff"
+          }
+          active = {
+            backgroundColor = "155724ff"
+            textColor       = "ffffffff"
+          }
+        }
+      }
+      secondaryButton = {
+        lightMode = {
+          defaults = {
+            backgroundColor = "ffffffff"
+            textColor       = "212529ff"
+            borderColor     = "dee2e6ff"
+          }
+          hover = {
+            backgroundColor = "f8f9faff"
+            textColor       = "212529ff"
+            borderColor     = "dee2e6ff"
+          }
+          active = {
+            backgroundColor = "f8f9faff"
+            textColor       = "212529ff"
+            borderColor     = "dee2e6ff"
+          }
+        }
+      }
+      idpButton = {
+        standard = {
+          lightMode = {
+            defaults = {
+              backgroundColor = "ffffffff"
+              textColor       = "495057ff"
+              borderColor     = "dee2e6ff"
+            }
+            hover = {
+              backgroundColor = "f8f9faff"
+              textColor       = "212529ff"
+              borderColor     = "c6c6cdff"
+            }
+            active = {
+              backgroundColor = "e9ecefff"
+              textColor       = "212529ff"
+              borderColor     = "c6c6cdff"
+            }
+          }
+        }
+      }
+      pageBackground = {
+        image = {
+          enabled = false
+        }
+        lightMode = {
+          color = "f8f9faff"
+        }
+      }
+      pageText = {
+        lightMode = {
+          bodyColor        = "212529ff"
+          headingColor     = "212529ff"
+          descriptionColor = "212529ff"
+        }
+      }
+      favicon = {
+        enabledTypes = ["ICO"]
+      }
+      form = {
+        backgroundImage = {
+          enabled = false
+        }
+        lightMode = {
+          backgroundColor = "ffffffff"
+          borderColor     = "e9ecefff"
+        }
+        borderRadius = 12
+      }
+    }
+  })
 
   depends_on = [aws_cognito_user_pool_domain.cognito]
 }
