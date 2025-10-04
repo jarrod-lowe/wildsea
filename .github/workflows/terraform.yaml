@@ -16,6 +16,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+    - name: Generate favicon
+      run: make favicon
     - name: Validate Terraform
       uses: dflook/terraform-validate@03889814f1c6cf2fea714787218b2f4edc85c369
       with:
