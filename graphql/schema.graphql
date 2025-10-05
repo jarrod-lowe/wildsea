@@ -350,6 +350,7 @@ type AssetUploadTicket @aws_cognito_user_pools {
   asset: Asset!
   uploadUrl: AWSURL!
   uploadFields: AWSJSON!
+  headers: AWSJSON!
 }
 
 input RequestAssetUploadInput {

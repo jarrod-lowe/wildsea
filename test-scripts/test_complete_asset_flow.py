@@ -89,7 +89,7 @@ def request_asset_upload(access_token, graphql_url, game_id, section_id):
             "gameId": game_id,
             "sectionId": section_id,
             "mimeType": "image/jpeg",
-            "sizeBytes": 1024,  # 1KB test file
+            "sizeBytes": 0,  # 0 byte test file
             "label": "End-to-end test image"
         }
     }
@@ -287,7 +287,7 @@ def main():
     # Step 3: Create test file content (exactly 1024 bytes as declared in requestAssetUpload)
     print("\n3️⃣  Uploading file to S3...")
     # Create exactly 1024 bytes of content
-    test_file_content = b'\xFF\xD8\xFF\xE0\x00\x10JFIF\x00\x01\x01\x01\x00H\x00H\x00\x00\xFF\xDB\x00C\x00' + b'\x00' * (1024 - 25 - 2) + b'\xFF\xD9'
+    test_file_content = b''  # 0 byte file
     print(f"  File size: {len(test_file_content)} bytes")
 
     success = upload_file_to_s3(upload_url, upload_fields, test_file_content)

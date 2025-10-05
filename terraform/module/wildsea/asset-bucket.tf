@@ -283,6 +283,19 @@ resource "aws_s3_bucket_lifecycle_configuration" "assets" {
       expired_object_delete_marker = true
     }
   }
+
+  rule {
+    id     = "cleanup-incoming-directory"
+    status = "Enabled"
+
+    filter {
+      prefix = "incoming/"
+    }
+
+    expiration {
+      days = 1
+    }
+  }
 }
 
 # SQS queue for S3 asset upload events
@@ -341,6 +354,7 @@ resource "aws_s3_bucket_notification" "assets_events" {
     queue_arn = aws_sqs_queue.asset_uploads.arn
     events    = ["s3:ObjectCreated:*"]
 
+    filter_prefix = "incoming/"
     filter_suffix = "/original"
   }
 }

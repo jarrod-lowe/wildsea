@@ -85,6 +85,7 @@ export interface DataAsset {
   label?: string;
   status: AssetStatus;
   bucket: string;
+  incomingKey: string;
   originalKey: string;
   variantsPrefix: string;
   mimeType: string;

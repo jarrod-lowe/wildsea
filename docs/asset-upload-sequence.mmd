@@ -27,18 +27,18 @@ sequenceDiagram
     DDB-->>ReqFn: Success
 
     ReqFn->>Lambda: Forward asset data
-    Lambda->>Lambda: Generate presigned POST URL
-    Lambda-->>AppSync: {assetData, uploadUrl, uploadFields}
+    Lambda->>Lambda: Generate presigned POST URL<br/>with metadata headers
+    Lambda-->>AppSync: {assetData, uploadUrl, uploadFields, headers}
 
-    AppSync-->>UI: AssetUploadTicket<br/>{asset, uploadUrl, uploadFields}
+    AppSync-->>UI: AssetUploadTicket<br/>{asset, uploadUrl, uploadFields, headers}
 
-    UI->>S3: HTTP POST to uploadUrl<br/>with file and fields
-    Note over S3: File stored at:<br/>asset/game/{gameId}/section/<br/>{sectionId}/{assetId}/original
+    UI->>S3: HTTP POST to uploadUrl<br/>with file, fields, and metadata headers<br/>(gameId, sectionId, assetId, requestedTime)
+    Note over S3: File stored at:<br/>incoming/game/{gameId}/section/<br/>{sectionId}/{assetId}/original<br/><br/>With metadata headers:<br/>x-amz-meta-gameid<br/>x-amz-meta-sectionid<br/>x-amz-meta-assetid<br/>x-amz-meta-requestedtime<br/><br/>Auto-deleted after 1 day
     S3-->>UI: Upload success
 
     Note over S3,FinFn: Automatic Finalization Flow
 
-    S3->>SQS: S3 ObjectCreated event<br/>(filtered by /original suffix)
+    S3->>SQS: S3 ObjectCreated event<br/>(filtered by incoming/ prefix and /original suffix)
     SQS->>Pipe: Pull message
     Pipe->>SFN: Enrichment invocation
     Note over SFN: Extract gameId, sectionId,<br/>assetId from S3 key

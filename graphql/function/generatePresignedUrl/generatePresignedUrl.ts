@@ -37,5 +37,6 @@ export function response(context: Context): AssetUploadTicket | null {
     },
     uploadUrl: result.uploadUrl,
     uploadFields: JSON.stringify(result.uploadFields),
+    headers: JSON.stringify(result.headers),
   };
 }

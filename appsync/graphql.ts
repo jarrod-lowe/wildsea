@@ -48,6 +48,7 @@ export enum AssetStatus {
 export type AssetUploadTicket = {
   __typename?: 'AssetUploadTicket';
   asset: Asset;
+  headers: Scalars['AWSJSON']['output'];
   uploadFields: Scalars['AWSJSON']['output'];
   uploadUrl: Scalars['AWSURL']['output'];
 };
