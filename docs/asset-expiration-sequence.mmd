@@ -1,0 +1,32 @@
+sequenceDiagram
+    participant UI as UI/Client
+    participant AppSync as AWS AppSync
+    participant DDB as DynamoDB
+    participant Stream as DynamoDB Stream
+    participant Pipe as EventBridge Pipe
+    participant EB as EventBridge Bus
+    participant Rule as EventBridge Rule
+    participant ExpFn as _expireAsset<br/>(Mutation)
+
+    autonumber
+
+    Note over UI,ExpFn: Asset Expiration Flow<br/>(When upload never completes)
+
+    Note over UI,DDB: Earlier: requestAssetUpload created<br/>PENDING asset with expireUploadAt
+
+    Note over DDB: Time passes...<br/>expireUploadAt reached
+
+    Stream->>Pipe: DynamoDB MODIFY event<br/>(TTL expiration)
+    Pipe->>EB: Put custom event<br/>source: "wildsea.table"<br/>detail-type: "ExpireAsset"
+
+    EB->>Rule: Match pattern
+    Rule->>AppSync: Invoke AppSync GraphQL
+
+    AppSync->>ExpFn: _expireAsset mutation<br/>{gameId, assetId}
+    ExpFn->>DDB: Conditional UpdateItem<br/>if status = PENDING
+    Note over DDB: Update status:<br/>PENDING → EXPIRED
+    DDB-->>ExpFn: Success
+
+    ExpFn-->>AppSync: Asset (EXPIRED)
+    AppSync->>UI: updatedAsset subscription<br/>(Asset with EXPIRED status)
+    UI->>UI: Clean up UI state<br/>for abandoned upload

@@ -257,6 +257,8 @@ If the secret is not set, the deployment will proceed without weapon presets (gr
 
 The application includes a comprehensive asset management system for handling file uploads with automatic status tracking and error handling.
 
+For detailed sequence diagrams and architecture documentation, see [docs/README.md](docs/README.md).
+
 ### Asset Upload and Finalization Flow
 
 #### 1. Initial Upload Flow
@@ -264,51 +266,49 @@ The application includes a comprehensive asset management system for handling fi
 ```plain
 User initiates upload
     ↓
-requestAssetUpload mutation
+requestAssetUpload mutation (GraphQL pipeline resolver)
     ↓
-Creates PENDING asset record in DynamoDB
+requestAssetUpload function (DynamoDB)
+    - Creates PENDING asset record in DynamoDB
+    - Updates game to decrement remainingAssets
+    - Updates section to add asset ID
     ↓
-Returns S3 upload URL and fields
+generatePresignedUrl function (Lambda)
+    - Generates S3 presigned POST URL with upload fields
     ↓
-User uploads file to S3 (asset/game/{gameId}/section/{sectionId}/{assetId}/original)
+Returns AssetUploadTicket to client
+    - asset: Asset object with PENDING status
+    - uploadUrl: S3 presigned POST URL
+    - uploadFields: Required form fields for upload
+    ↓
+User uploads file to S3 using presigned POST
+    - Path: asset/game/{gameId}/section/{sectionId}/{assetId}/original
 ```
 
 #### 2. Automatic Finalization Flow
 
 ```plain
-S3 Object Created Event
+S3 Object Created Event (s3:ObjectCreated:*)
     ↓
-EventBridge (aws.s3 source)
+S3 Bucket Notification (filters for /original suffix)
     ↓
-EventBridge Rule (filters for /original suffix)
+SQS Queue (asset_uploads)
     ↓
-_finaliseAsset GraphQL mutation
+EventBridge Pipe (asset_uploads_pipe)
     ↓
-Parses S3 object key to extract gameId, sectionId, assetId
+Step Function Enrichment (asset_path_parser)
+    - Extracts gameId, sectionId, assetId from S3 object key
+    ↓
+EventBridge Custom Bus (source: "asset.uploaded", detail-type: "ObjectCreated")
+    ↓
+EventBridge Rule (finalise_asset_rule)
+    ↓
+AppSync Target → _finaliseAsset GraphQL mutation
     ↓
 DynamoDB conditional update: PENDING → READY
+    - Only updates if status is still PENDING
     ↓
 updatedAsset subscription notifies clients
-```
-
-#### 3. Error Handling Flow (DLQ)
-
-```plain
-_finaliseAsset mutation fails
-    ↓
-EventBridge Target Dead Letter Queue (SQS)
-    ↓
-EventBridge Pipe reads from SQS
-    ↓
-EventBridge (asset.delete source)
-    ↓
-EventBridge Rule for asset deletion
-    ↓
-deleteAsset GraphQL mutation
-    ↓
-Currently returns "not yet implemented" error
-    ↓
-Future: Will handle authorization and asset cleanup
 ```
 
 ### Asset Status Lifecycle
@@ -331,19 +331,30 @@ This structure allows:
 
 ### EventBridge Sources
 
-* **aws.s3**: S3 bucket events for object creation
-* **wildsea.table**: DynamoDB stream events for record changes
+* **asset.uploaded**: S3 object creation events (after pipe enrichment)
+* **wildsea.table**: DynamoDB stream events for record changes (game/player deletions, asset expirations)
 
-### GraphQL Mutations
+### GraphQL Operations
 
-* **requestAssetUpload**: Initiates upload process, creates PENDING asset
+**Mutations:**
+
+* **requestAssetUpload**: Initiates upload process (Cognito auth)
+  * Pipeline: requestAssetUpload (DynamoDB) → generatePresignedUrl (Lambda)
+  * Creates PENDING asset record and returns presigned upload URL
 * **_finaliseAsset**: System mutation to mark assets as READY (IAM auth only)
+  * Triggered by EventBridge when S3 upload completes
+  * Conditional update: PENDING → READY
 * **_expireAsset**: System mutation to mark assets as EXPIRED (IAM auth only)
-* **deleteAsset**: Handles asset deletion for both user-initiated deletions and system cleanup (Cognito + IAM auth, not yet implemented)
+  * Triggered by EventBridge from DynamoDB stream when expireUploadAt is reached
+  * Conditional update: PENDING → EXPIRED
+* **deleteAsset**: Handles asset deletion (Cognito + IAM auth, not yet implemented)
+  * Future: Will handle user-initiated deletions and cleanup
 
-### Subscriptions
+**Subscriptions:**
 
 * **updatedAsset**: Real-time notifications for asset status changes
+  * Subscribes to: `_expireAsset`, `_finaliseAsset`, `deleteAsset` mutations
+  * Notifies clients when asset status changes (PENDING → READY, PENDING → EXPIRED, etc.)
 
 ## Scratch
 

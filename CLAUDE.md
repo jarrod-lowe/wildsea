@@ -282,3 +282,8 @@ AWS_PROFILE=wildsea aws dynamodb scan \
   --filter-expression "begins_with(SK, :sk) AND attribute_not_exists(remainingCharacters)" \
   --expression-attribute-values '{":sk":{"S":"GAME"}}'
 ```
+
+## Assets
+
+Any changes to the asset flows should update the README.md and docs/*.mmd (even
+adding a new diagram if necessary). Remake the SVGs with `make diagrams`.
