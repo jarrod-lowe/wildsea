@@ -51,6 +51,7 @@ export function request(
   }
 
   const bucket = `wildsea-${environment.name}-assets`;
+  const incomingKey = `incoming/game/${input.gameId}/section/${input.sectionId}/${assetId}/original`;
   const originalKey = `asset/game/${input.gameId}/section/${input.sectionId}/${assetId}/original`;
   const variantsPrefix = `asset/game/${input.gameId}/section/${input.sectionId}/${assetId}/variants/`;
 
@@ -62,6 +63,7 @@ export function request(
     label: input.label || undefined,
     status: ASSET_STATUS_PENDING,
     bucket: bucket,
+    incomingKey: incomingKey,
     originalKey: originalKey,
     variantsPrefix: variantsPrefix,
     mimeType: input.mimeType,

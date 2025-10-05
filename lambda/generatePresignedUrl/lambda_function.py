@@ -43,33 +43,59 @@ def lambda_handler(event, context):
         input_data = event.get('input', {})
 
         bucket = asset_data.get('bucket')
-        key = asset_data.get('originalKey')
+        key = asset_data.get('incomingKey')
         mime_type = input_data.get('mimeType')
         size_bytes = input_data.get('sizeBytes')
+        game_id = asset_data.get('gameId')
+        section_id = asset_data.get('sectionId')
+        asset_id = asset_data.get('assetId')
+        created_at = asset_data.get('createdAt')
 
-        if not all([bucket, key, mime_type, size_bytes]):
-            raise ValueError("Missing required parameters: bucket, key, mimeType, or sizeBytes")
+        if not all([bucket, key, mime_type, size_bytes is not None, game_id, section_id, asset_id, created_at]):
+            raise ValueError("Missing required parameters: bucket, key, mimeType, sizeBytes, gameId, sectionId, assetId, or createdAt")
+
+        # Fields to include in the presigned POST (including custom headers)
+        fields = {
+            "Content-Type": mime_type,
+            "x-amz-meta-gameid": game_id,
+            "x-amz-meta-sectionid": section_id,
+            "x-amz-meta-assetid": asset_id,
+            "x-amz-meta-requestedtime": created_at
+        }
 
         # Conditions for the presigned POST
         conditions = [
             {"Content-Type": mime_type},
             ["content-length-range", size_bytes, size_bytes],  # Exact size match
+            {"x-amz-meta-gameid": game_id},
+            {"x-amz-meta-sectionid": section_id},
+            {"x-amz-meta-assetid": asset_id},
+            {"x-amz-meta-requestedtime": created_at}
         ]
 
         # Generate presigned POST
         response = s3_client.generate_presigned_post(
             Bucket=bucket,
             Key=key,
-            Fields={"Content-Type": mime_type},
+            Fields=fields,
             Conditions=conditions,
             ExpiresIn=PRESIGNED_URL_EXPIRES_SECONDS
         )
+
+        # Extract headers that client needs to send
+        headers = {
+            "gameId": game_id,
+            "sectionId": section_id,
+            "assetId": asset_id,
+            "requestedTime": created_at
+        }
 
         # Return both asset data and presigned URL for final response
         return {
             'assetData': asset_data,
             'uploadUrl': response['url'],
-            'uploadFields': response['fields']
+            'uploadFields': response['fields'],
+            'headers': headers
         }
 
     except ClientError as e:

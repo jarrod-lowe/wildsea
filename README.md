@@ -280,9 +280,12 @@ Returns AssetUploadTicket to client
     - asset: Asset object with PENDING status
     - uploadUrl: S3 presigned POST URL
     - uploadFields: Required form fields for upload
+    - headers: Metadata headers (gameId, sectionId, assetId, requestedTime)
     ↓
-User uploads file to S3 using presigned POST
-    - Path: asset/game/{gameId}/section/{sectionId}/{assetId}/original
+User uploads file to S3 using presigned POST with metadata headers
+    - Upload path: incoming/game/{gameId}/section/{sectionId}/{assetId}/original
+    - Metadata: x-amz-meta-gameid, x-amz-meta-sectionid, x-amz-meta-assetid, x-amz-meta-requestedtime
+    - Lifecycle: incoming/ directory objects auto-delete after 1 day
 ```
 
 #### 2. Automatic Finalization Flow
@@ -320,13 +323,23 @@ updatedAsset subscription notifies clients
 
 ### S3 Object Key Structure
 
-Assets are stored with the following path structure:
-`asset/game/{gameId}/section/{sectionId}/{assetId}/original`
+Assets are uploaded with the following path structure:
+
+**Current Upload Path:**
+
+* `incoming/game/{gameId}/section/{sectionId}/{assetId}/original`
+* Includes metadata headers: `x-amz-meta-gameid`, `x-amz-meta-sectionid`, `x-amz-meta-assetid`, `x-amz-meta-requestedtime`
+* Auto-deleted after 1 day via S3 lifecycle policy
+
+**Future Enhancement (TODO):**
+
+* Move to final storage: `asset/game/{gameId}/section/{sectionId}/{assetId}/original`
 
 This structure allows:
 
-* Easy extraction of metadata from object keys
+* Easy extraction of metadata from object headers
 * Organized storage by game and section
+* Automatic cleanup of abandoned uploads via lifecycle policy
 * Future support for multiple file variants (thumbnails, processed versions)
 
 ### EventBridge Sources

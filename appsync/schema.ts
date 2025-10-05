@@ -181,7 +181,7 @@
       export const requestAssetUploadMutation = `
         mutation requestAssetUpload($input: RequestAssetUploadInput!) {
           requestAssetUpload(input: $input) {
-            asset { gameId sectionId assetId label status mimeType sizeBytes width height createdAt updatedAt type } uploadUrl uploadFields
+            asset { gameId sectionId assetId label status mimeType sizeBytes width height createdAt updatedAt type } uploadUrl uploadFields headers
           }
         }
       `;
