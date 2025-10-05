@@ -1,0 +1,57 @@
+Comment: "Move asset from incoming/ to asset/ directory using S3 copy and delete"
+StartAt: ProcessRecords
+States:
+  ProcessRecords:
+    Type: Map
+    ItemsPath: "$"
+    ItemProcessor:
+      ProcessorConfig:
+        Mode: INLINE
+      StartAt: CopyObject
+      States:
+        CopyObject:
+          Type: Task
+          Resource: arn:aws:states:::aws-sdk:s3:copyObject
+          Parameters:
+            Bucket: ${bucket_name}
+            CopySource.$: "States.Format('{}/{}', '${bucket_name}', $.dynamodb.NewImage.incomingKey.S)"
+            Key.$: "$.dynamodb.NewImage.originalKey.S"
+            MetadataDirective: "COPY"
+          ResultPath: "$.copyResult"
+          Next: DeleteSource
+          Retry:
+            - ErrorEquals:
+                - States.ALL
+              BackoffRate: 2
+              IntervalSeconds: 1
+              MaxAttempts: 3
+          Catch:
+            - ErrorEquals:
+                - States.ALL
+              ResultPath: "$.error"
+              Next: LogError
+
+        DeleteSource:
+          Type: Task
+          Resource: arn:aws:states:::aws-sdk:s3:deleteObject
+          Parameters:
+            Bucket: ${bucket_name}
+            Key.$: "$.dynamodb.NewImage.incomingKey.S"
+          End: true
+          Retry:
+            - ErrorEquals:
+                - States.ALL
+              BackoffRate: 2
+              IntervalSeconds: 1
+              MaxAttempts: 3
+          Catch:
+            - ErrorEquals:
+                - States.ALL
+              ResultPath: "$.error"
+              Next: LogError
+
+        LogError:
+          Type: Pass
+          Result: "Error during S3 move operation"
+          End: true
+    End: true

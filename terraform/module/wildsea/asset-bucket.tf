@@ -298,7 +298,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "assets" {
   }
 }
 
-# SQS queue for S3 asset upload events
+# SQS queue for S3 asset upload events (incoming/)
 resource "aws_sqs_queue" "asset_uploads" {
   name = "${var.prefix}-asset-uploads"
 
@@ -313,7 +313,22 @@ resource "aws_sqs_queue" "asset_uploads" {
   }
 }
 
-# SQS queue policy to allow S3 to send messages
+# SQS queue for S3 asset promotion events (asset/)
+resource "aws_sqs_queue" "asset_promotions" {
+  name = "${var.prefix}-asset-promotions"
+
+  # Message retention for 1 hour (enough for processing)
+  message_retention_seconds = 3600
+
+  # Visibility timeout should be longer than lambda timeout
+  visibility_timeout_seconds = 60
+
+  tags = {
+    Application = var.prefix
+  }
+}
+
+# SQS queue policy to allow S3 to send messages (incoming/)
 resource "aws_sqs_queue_policy" "asset_uploads" {
   queue_url = aws_sqs_queue.asset_uploads.id
   policy    = data.aws_iam_policy_document.asset_uploads_queue.json
@@ -346,15 +361,60 @@ data "aws_iam_policy_document" "asset_uploads_queue" {
   }
 }
 
-# S3 event notification to SQS (instead of EventBridge)
+# SQS queue policy to allow S3 to send messages (asset/)
+resource "aws_sqs_queue_policy" "asset_promotions" {
+  queue_url = aws_sqs_queue.asset_promotions.id
+  policy    = data.aws_iam_policy_document.asset_promotions_queue.json
+}
+
+data "aws_iam_policy_document" "asset_promotions_queue" {
+  statement {
+    sid    = "AllowS3ToSendMessages"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+
+    actions   = ["sqs:SendMessage"]
+    resources = [aws_sqs_queue.asset_promotions.arn]
+
+    condition {
+      test     = "ArnEquals"
+      variable = "aws:SourceArn"
+      values   = [aws_s3_bucket.assets.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+}
+
+# S3 event notifications to SQS (instead of EventBridge)
 resource "aws_s3_bucket_notification" "assets_events" {
   bucket = aws_s3_bucket.assets.id
 
+  # Notification for incoming/ directory (finalization)
   queue {
+    id        = "incoming-uploads"
     queue_arn = aws_sqs_queue.asset_uploads.arn
     events    = ["s3:ObjectCreated:*"]
 
     filter_prefix = "incoming/"
+    filter_suffix = "/original"
+  }
+
+  # Notification for asset/ directory (promotion)
+  queue {
+    id        = "asset-promotions"
+    queue_arn = aws_sqs_queue.asset_promotions.arn
+    events    = ["s3:ObjectCreated:*"]
+
+    filter_prefix = "asset/"
     filter_suffix = "/original"
   }
 }
@@ -394,11 +454,59 @@ resource "aws_pipes_pipe" "asset_uploads_pipe" {
   }
 }
 
+# EventBridge pipe to move promotion events from SQS to our custom bus
+resource "aws_pipes_pipe" "asset_promotions_pipe" {
+  name     = "${var.prefix}-asset-promotions"
+  role_arn = aws_iam_role.asset_promotions_pipe.arn
+  source   = aws_sqs_queue.asset_promotions.arn
+  target   = aws_cloudwatch_event_bus.bus.arn
+
+  source_parameters {
+    sqs_queue_parameters {
+      batch_size = 1
+    }
+  }
+
+  # Step Function enrichment to extract gameId, sectionId, assetId from S3 object key
+  # Reuses the same path parser as asset_uploads_pipe
+  enrichment = aws_sfn_state_machine.asset_path_parser.arn
+
+  target_parameters {
+    eventbridge_event_bus_parameters {
+      detail_type = local.promote_asset_detail_type
+      source      = local.promote_asset_source
+    }
+  }
+
+  log_configuration {
+    level = "ERROR"
+    cloudwatch_logs_log_destination {
+      log_group_arn = aws_cloudwatch_log_group.asset_promotions_pipe.arn
+    }
+  }
+
+  tags = {
+    Application = var.prefix
+  }
+}
+
 resource "aws_cloudwatch_log_group" "asset_uploads_pipe" {
   # checkov:skip=CKV_AWS_158:AWS-managed keys are sufficient for pipe logs
   # checkov:skip=CKV_AWS_338:30-day retention is sufficient for pipe logs
   # nosemgrep: aws-cloudwatch-log-group-aws-managed-key
   name              = "/aws/vendedlogs/pipes/${var.prefix}-asset-uploads"
+  retention_in_days = 30
+
+  tags = {
+    Application = var.prefix
+  }
+}
+
+resource "aws_cloudwatch_log_group" "asset_promotions_pipe" {
+  # checkov:skip=CKV_AWS_158:AWS-managed keys are sufficient for pipe logs
+  # checkov:skip=CKV_AWS_338:30-day retention is sufficient for pipe logs
+  # nosemgrep: aws-cloudwatch-log-group-aws-managed-key
+  name              = "/aws/vendedlogs/pipes/${var.prefix}-asset-promotions"
   retention_in_days = 30
 
   tags = {
@@ -591,6 +699,79 @@ data "aws_iam_policy_document" "asset_uploads_pipe" {
     ]
     resources = [
       "${aws_cloudwatch_log_group.asset_uploads_pipe.arn}:*",
+    ]
+  }
+}
+
+# IAM role for the asset promotions EventBridge pipe
+resource "aws_iam_role" "asset_promotions_pipe" {
+  name               = "${var.prefix}-asset-promotions-pipe"
+  assume_role_policy = data.aws_iam_policy_document.asset_promotions_pipe_assume.json
+
+  tags = {
+    Application = var.prefix
+  }
+}
+
+data "aws_iam_policy_document" "asset_promotions_pipe_assume" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["pipes.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+# IAM policy for the asset promotions EventBridge pipe
+resource "aws_iam_role_policy" "asset_promotions_pipe" {
+  name   = "${var.prefix}-asset-promotions-pipe"
+  role   = aws_iam_role.asset_promotions_pipe.id
+  policy = data.aws_iam_policy_document.asset_promotions_pipe.json
+}
+
+data "aws_iam_policy_document" "asset_promotions_pipe" {
+  # Allow reading from SQS queue
+  statement {
+    effect = "Allow"
+    actions = [
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes"
+    ]
+    resources = [aws_sqs_queue.asset_promotions.arn]
+  }
+
+  # Allow invoking Step Function for enrichment
+  statement {
+    effect = "Allow"
+    actions = [
+      "states:StartSyncExecution"
+    ]
+    resources = [aws_sfn_state_machine.asset_path_parser.arn]
+  }
+
+  # Allow sending events to our EventBridge bus
+  statement {
+    effect = "Allow"
+    actions = [
+      "events:PutEvents"
+    ]
+    resources = [aws_cloudwatch_event_bus.bus.arn]
+  }
+
+  # Allow writing to CloudWatch Logs
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.asset_promotions_pipe.arn}:*",
     ]
   }
 }

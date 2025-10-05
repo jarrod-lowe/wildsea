@@ -6,16 +6,23 @@ sequenceDiagram
     participant Lambda as generatePresignedUrl<br/>(Lambda)
     participant DDB as DynamoDB
     participant S3 as S3 Bucket
-    participant SQS as SQS Queue
-    participant Pipe as EventBridge Pipe
-    participant SFN as Step Function<br/>(Path Parser)
+    participant SQS1 as SQS Queue<br/>(incoming/)
+    participant Pipe1 as EventBridge Pipe<br/>(finalize)
+    participant SFN1 as Step Function<br/>(Path Parser)
     participant EB as EventBridge Bus
-    participant Rule as EventBridge Rule
+    participant Rule1 as EventBridge Rule<br/>(finalize)
     participant FinFn as _finaliseAsset<br/>(Mutation)
+    participant Stream as DynamoDB Stream
+    participant Pipe2 as EventBridge Pipe<br/>(move)
+    participant SFN2 as Step Function<br/>(Asset Mover)
+    participant SQS2 as SQS Queue<br/>(asset/)
+    participant Pipe3 as EventBridge Pipe<br/>(promote)
+    participant Rule2 as EventBridge Rule<br/>(promote)
+    participant ProFn as _promoteAsset<br/>(Mutation)
 
     autonumber
 
-    Note over User,FinFn: Asset Upload Flow
+    Note over User,ProFn: Asset Upload Flow
 
     User->>UI: Initiate file upload
     UI->>AppSync: requestAssetUpload mutation<br/>{gameId, sectionId, mimeType, sizeBytes}
@@ -36,23 +43,54 @@ sequenceDiagram
     Note over S3: File stored at:<br/>incoming/game/{gameId}/section/<br/>{sectionId}/{assetId}/original<br/><br/>With metadata headers:<br/>x-amz-meta-gameid<br/>x-amz-meta-sectionid<br/>x-amz-meta-assetid<br/>x-amz-meta-requestedtime<br/><br/>Auto-deleted after 1 day
     S3-->>UI: Upload success
 
-    Note over S3,FinFn: Automatic Finalization Flow
+    Note over S3,ProFn: Automatic Finalization & Promotion Flow
 
-    S3->>SQS: S3 ObjectCreated event<br/>(filtered by incoming/ prefix and /original suffix)
-    SQS->>Pipe: Pull message
-    Pipe->>SFN: Enrichment invocation
-    Note over SFN: Extract gameId, sectionId,<br/>assetId from S3 key
-    SFN-->>Pipe: {gameId, sectionId, assetId}
+    S3->>SQS1: S3 ObjectCreated event<br/>(filtered by incoming/ prefix and /original suffix)
+    SQS1->>Pipe1: Pull message
+    Pipe1->>SFN1: Enrichment invocation
+    Note over SFN1: Extract gameId, sectionId,<br/>assetId from S3 key
+    SFN1-->>Pipe1: {gameId, sectionId, assetId}
 
-    Pipe->>EB: Put custom event<br/>source: "asset.uploaded"<br/>detail-type: "ObjectCreated"
-    EB->>Rule: Match pattern
-    Rule->>AppSync: Invoke AppSync GraphQL
+    Pipe1->>EB: Put custom event<br/>source: "asset.uploaded"<br/>detail-type: "ObjectCreated"
+    EB->>Rule1: Match pattern
+    Rule1->>AppSync: Invoke AppSync GraphQL
 
     AppSync->>FinFn: _finaliseAsset mutation<br/>{gameId, sectionId, assetId}
     FinFn->>DDB: Conditional UpdateItem<br/>if status = PENDING
-    Note over DDB: Update status:<br/>PENDING → READY
+    Note over DDB: Update status:<br/>PENDING → FINALISING
     DDB-->>FinFn: Success
 
-    FinFn-->>AppSync: Asset (READY)
+    FinFn-->>AppSync: Asset (FINALISING)
+    AppSync->>UI: updatedAsset subscription<br/>(Asset with FINALISING status)
+
+    Note over DDB,S3: Asset Move Flow
+
+    DDB->>Stream: Stream event<br/>(status = FINALISING)
+    Stream->>Pipe2: Filter: MODIFY + FINALISING
+    Pipe2->>SFN2: Invoke Step Function
+    Note over SFN2: Copy S3 object:<br/>incoming/ → asset/<br/><br/>Delete from incoming/
+    SFN2->>S3: CopyObject
+    S3-->>SFN2: Success
+    SFN2->>S3: DeleteObject (incoming/)
+    S3-->>SFN2: Success
+
+    Note over S3,ProFn: Asset Promotion Flow
+
+    S3->>SQS2: S3 ObjectCreated event<br/>(filtered by asset/ prefix and /original suffix)
+    SQS2->>Pipe3: Pull message
+    Pipe3->>SFN1: Enrichment invocation (reused)
+    Note over SFN1: Extract gameId, sectionId,<br/>assetId from S3 key
+    SFN1-->>Pipe3: {gameId, sectionId, assetId}
+
+    Pipe3->>EB: Put custom event<br/>source: "asset.promoted"<br/>detail-type: "ObjectCreated"
+    EB->>Rule2: Match pattern
+    Rule2->>AppSync: Invoke AppSync GraphQL
+
+    AppSync->>ProFn: _promoteAsset mutation<br/>{gameId, assetId}
+    ProFn->>DDB: Conditional UpdateItem<br/>if status = FINALISING
+    Note over DDB: Update status:<br/>FINALISING → READY
+    DDB-->>ProFn: Success
+
+    ProFn-->>AppSync: Asset (READY)
     AppSync->>UI: updatedAsset subscription<br/>(Asset with READY status)
     UI->>User: Display uploaded asset

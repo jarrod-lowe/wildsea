@@ -9,7 +9,11 @@ export const PRESIGNED_URL_EXPIRES_SECONDS = 900; // 15 minutes
 export const LAMBDA_TIMEOUT_SECONDS = 30;
 
 // Asset status values (re-exported from assetStatus.ts)
-export { ASSET_STATUS_PENDING, ASSET_STATUS_EXPIRED } from "./assetStatus";
+export {
+  ASSET_STATUS_PENDING,
+  ASSET_STATUS_FINALISING,
+  ASSET_STATUS_EXPIRED,
+} from "./assetStatus";
 
 // Allowed MIME types for asset uploads
 export const ALLOWED_ASSET_MIME_TYPES = [

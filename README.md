@@ -290,10 +290,12 @@ User uploads file to S3 using presigned POST with metadata headers
 
 #### 2. Automatic Finalization Flow
 
+After S3 upload to incoming/ completes, the system automatically begins finalization:
+
 ```plain
 S3 Object Created Event (s3:ObjectCreated:*)
     ↓
-S3 Bucket Notification (filters for /original suffix)
+S3 Bucket Notification (filters for incoming/ prefix and /original suffix)
     ↓
 SQS Queue (asset_uploads)
     ↓
@@ -308,32 +310,80 @@ EventBridge Rule (finalise_asset_rule)
     ↓
 AppSync Target → _finaliseAsset GraphQL mutation
     ↓
-DynamoDB conditional update: PENDING → READY
+DynamoDB conditional update: PENDING → FINALISING
     - Only updates if status is still PENDING
     ↓
-updatedAsset subscription notifies clients
+updatedAsset subscription notifies clients (FINALISING status)
+```
+
+#### 3. Asset Move Flow
+
+When asset status changes to FINALISING, the file is moved to permanent storage:
+
+```plain
+DynamoDB Stream (detects status = FINALISING)
+    ↓
+EventBridge Pipe (move_asset_pipe) - filters for MODIFY + FINALISING
+    ↓
+Step Function (move_asset_sm) - native S3 SDK integration
+    - CopyObject: incoming/ → asset/
+    - DeleteObject: incoming/ (source cleanup)
+    ↓
+S3 object now at: asset/game/{gameId}/section/{sectionId}/{assetId}/original
+```
+
+#### 4. Automatic Promotion Flow
+
+After file move completes, S3 event triggers asset promotion:
+
+```plain
+S3 Object Created Event (s3:ObjectCreated:*)
+    ↓
+S3 Bucket Notification (filters for asset/ prefix and /original suffix)
+    ↓
+SQS Queue (asset_promotions)
+    ↓
+EventBridge Pipe (asset_promotions_pipe)
+    ↓
+Step Function Enrichment (asset_path_parser - reused)
+    - Extracts gameId, sectionId, assetId from S3 object key
+    ↓
+EventBridge Custom Bus (source: "asset.promoted", detail-type: "ObjectCreated")
+    ↓
+EventBridge Rule (promote_asset_rule)
+    ↓
+AppSync Target → _promoteAsset GraphQL mutation
+    ↓
+DynamoDB conditional update: FINALISING → READY
+    - Only updates if status is still FINALISING
+    ↓
+updatedAsset subscription notifies clients (READY status)
 ```
 
 ### Asset Status Lifecycle
 
 * **PENDING**: Asset record created, waiting for file upload
-* **READY**: File successfully uploaded and processed
+* **FINALISING**: File uploaded to incoming/, being moved to permanent storage
+* **READY**: File successfully moved to asset/ directory and ready for use
 * **EXPIRED**: Asset expired due to timeout (handled by separate flow)
 * **CANCELED**: Asset upload was canceled (future state)
 
 ### S3 Object Key Structure
 
-Assets are uploaded with the following path structure:
+Assets follow a two-stage storage approach:
 
-**Current Upload Path:**
+**Temporary Upload Path (incoming/):**
 
 * `incoming/game/{gameId}/section/{sectionId}/{assetId}/original`
 * Includes metadata headers: `x-amz-meta-gameid`, `x-amz-meta-sectionid`, `x-amz-meta-assetid`, `x-amz-meta-requestedtime`
 * Auto-deleted after 1 day via S3 lifecycle policy
+* Used during initial upload and PENDING/FINALISING states
 
-**Future Enhancement (TODO):**
+**Permanent Storage Path (asset/):**
 
-* Move to final storage: `asset/game/{gameId}/section/{sectionId}/{assetId}/original`
+* `asset/game/{gameId}/section/{sectionId}/{assetId}/original`
+* File is moved here when status changes to FINALISING
+* Permanent storage for READY assets
 
 This structure allows:
 
@@ -344,8 +394,9 @@ This structure allows:
 
 ### EventBridge Sources
 
-* **asset.uploaded**: S3 object creation events (after pipe enrichment)
-* **wildsea.table**: DynamoDB stream events for record changes (game/player deletions, asset expirations)
+* **asset.uploaded**: S3 object creation events from incoming/ directory (after pipe enrichment)
+* **asset.promoted**: S3 object creation events from asset/ directory (after pipe enrichment)
+* **wildsea.table**: DynamoDB stream events for record changes (game/player deletions, asset expirations, status changes)
 
 ### GraphQL Operations
 
@@ -354,9 +405,13 @@ This structure allows:
 * **requestAssetUpload**: Initiates upload process (Cognito auth)
   * Pipeline: requestAssetUpload (DynamoDB) → generatePresignedUrl (Lambda)
   * Creates PENDING asset record and returns presigned upload URL
-* **_finaliseAsset**: System mutation to mark assets as READY (IAM auth only)
-  * Triggered by EventBridge when S3 upload completes
-  * Conditional update: PENDING → READY
+* **_finaliseAsset**: System mutation to begin asset finalization (IAM auth only)
+  * Triggered by EventBridge when S3 upload to incoming/ completes
+  * Conditional update: PENDING → FINALISING
+  * Triggers DynamoDB Stream event that moves file from incoming/ to asset/
+* **_promoteAsset**: System mutation to mark assets as READY (IAM auth only)
+  * Triggered by EventBridge when file move to asset/ completes
+  * Conditional update: FINALISING → READY
 * **_expireAsset**: System mutation to mark assets as EXPIRED (IAM auth only)
   * Triggered by EventBridge from DynamoDB stream when expireUploadAt is reached
   * Conditional update: PENDING → EXPIRED
@@ -366,7 +421,7 @@ This structure allows:
 **Subscriptions:**
 
 * **updatedAsset**: Real-time notifications for asset status changes
-  * Subscribes to: `_expireAsset`, `_finaliseAsset`, `deleteAsset` mutations
+  * Subscribes to: `_expireAsset`, `_finaliseAsset`, `_promoteAsset`, `deleteAsset` mutations
   * Notifies clients when asset status changes (PENDING → READY, PENDING → EXPIRED, etc.)
 
 ## Scratch
