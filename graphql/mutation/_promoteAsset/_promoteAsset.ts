@@ -1,14 +1,14 @@
 import { util, Context } from "@aws-appsync/utils";
 import type { DynamoDBUpdateItemRequest } from "@aws-appsync/utils/lib/resolver-return-types";
-import { FinaliseAssetInput } from "../../../appsync/graphql";
+import { PromoteAssetInput } from "../../../appsync/graphql";
 import { DDBPrefixGame, DDBPrefixAsset } from "../../lib/constants/dbPrefixes";
 import {
-  ASSET_STATUS_PENDING,
   ASSET_STATUS_FINALISING,
+  ASSET_STATUS_READY,
 } from "../../lib/constants/assetStatus";
 
 export function request(
-  context: Context<{ input: FinaliseAssetInput }>,
+  context: Context<{ input: PromoteAssetInput }>,
 ): DynamoDBUpdateItemRequest {
   const input = context.arguments.input;
   const timestamp = util.time.nowISO8601();
@@ -22,23 +22,23 @@ export function request(
       SK: DDBPrefixAsset + "#" + assetId,
     }),
     update: {
-      expression: "SET #status = :finalising, #updatedAt = :updatedAt",
+      expression: "SET #status = :ready, #updatedAt = :updatedAt",
       expressionNames: {
         "#status": "status",
         "#updatedAt": "updatedAt",
       },
       expressionValues: util.dynamodb.toMapValues({
-        ":finalising": ASSET_STATUS_FINALISING,
+        ":ready": ASSET_STATUS_READY,
         ":updatedAt": timestamp,
       }),
     },
     condition: {
-      expression: "#status = :pending",
+      expression: "#status = :finalising",
       expressionNames: {
         "#status": "status",
       },
       expressionValues: util.dynamodb.toMapValues({
-        ":pending": ASSET_STATUS_PENDING,
+        ":finalising": ASSET_STATUS_FINALISING,
       }),
     },
   };

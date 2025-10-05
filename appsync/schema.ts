@@ -202,6 +202,14 @@
         }
       `;
     
+      export const _promoteAssetMutation = `
+        mutation _promoteAsset($input: PromoteAssetInput!) {
+          _promoteAsset(input: $input) {
+            gameId sectionId assetId label status mimeType sizeBytes width height createdAt updatedAt type
+          }
+        }
+      `;
+    
       export const deleteAssetMutation = `
         mutation deleteAsset($input: DeleteAssetInput!) {
           deleteAsset(input: $input) {

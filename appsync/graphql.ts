@@ -41,6 +41,7 @@ export type Asset = {
 export enum AssetStatus {
   Canceled = 'CANCELED',
   Expired = 'EXPIRED',
+  Finalising = 'FINALISING',
   Pending = 'PENDING',
   Ready = 'READY'
 }
@@ -233,6 +234,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   _expireAsset: Asset;
   _finaliseAsset: Asset;
+  _promoteAsset: Asset;
   createGame: GameSummary;
   createNPC: PlayerSheetSummary;
   createSection: SheetSection;
@@ -259,6 +261,11 @@ export type Mutation_ExpireAssetArgs = {
 
 export type Mutation_FinaliseAssetArgs = {
   input: FinaliseAssetInput;
+};
+
+
+export type Mutation_PromoteAssetArgs = {
+  input: PromoteAssetInput;
 };
 
 
@@ -367,6 +374,11 @@ export type PlayerSheetSummary = {
   type: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
   userId: Scalars['ID']['output'];
+};
+
+export type PromoteAssetInput = {
+  assetId: Scalars['ID']['input'];
+  gameId: Scalars['ID']['input'];
 };
 
 export type Query = {

@@ -34,6 +34,7 @@ type Mutation {
     requestAssetUpload(input: RequestAssetUploadInput!): AssetUploadTicket! @aws_cognito_user_pools
     _expireAsset(input: ExpireAssetInput!): Asset! @aws_iam
     _finaliseAsset(input: FinaliseAssetInput!): Asset! @aws_iam
+    _promoteAsset(input: PromoteAssetInput!): Asset! @aws_iam
     deleteAsset(input: DeleteAssetInput!): Asset! @aws_cognito_user_pools @aws_iam
 }
 
@@ -61,7 +62,7 @@ type Subscription @aws_cognito_user_pools {
   diceRolled(gameId: ID!): DiceRoll @aws_subscribe(mutations: ["rollDice"])
   updatedUserSettings: UserSettings @aws_subscribe(mutations: ["updateUserSettings"])
   systemNotificationUpdated: SystemNotification @aws_subscribe(mutations: ["setSystemNotification"])
-  updatedAsset(gameId: ID!): Asset @aws_subscribe(mutations: ["_expireAsset", "_finaliseAsset", "deleteAsset"])
+  updatedAsset(gameId: ID!): Asset @aws_subscribe(mutations: ["_expireAsset", "_finaliseAsset", "_promoteAsset", "deleteAsset"])
 }
 
 input GetGameInput {
@@ -341,6 +342,7 @@ type Asset @aws_cognito_user_pools @aws_iam {
 
 enum AssetStatus {
   PENDING
+  FINALISING
   READY
   EXPIRED
   CANCELED
@@ -370,6 +372,11 @@ input FinaliseAssetInput {
   gameId: ID!
   assetId: ID!
   sectionId: ID!
+}
+
+input PromoteAssetInput {
+  gameId: ID!
+  assetId: ID!
 }
 
 input DeleteAssetInput {

@@ -59,12 +59,32 @@ locals {
             }
         }
     EOT
+  graphql_promote_asset_mutation  = <<-EOT
+        mutation PromoteAssetBackground($input: PromoteAssetInput!) {
+            _promoteAsset(input: $input) {
+                assetId
+                createdAt
+                gameId
+                height
+                label
+                mimeType
+                sectionId
+                sizeBytes
+                status
+                type
+                updatedAt
+                width
+            }
+        }
+    EOT
   delete_source                   = "wildsea.table"
   delete_player_detail_type       = "DeletePlayer"
   expire_asset_source             = "wildsea.table"
   expire_asset_detail_type        = "ExpireAsset"
   finalise_asset_source           = "asset.uploaded"
   finalise_asset_detail_type      = "ObjectCreated"
+  promote_asset_source            = "asset.promoted"
+  promote_asset_detail_type       = "ObjectCreated"
 }
 
 resource "aws_cloudwatch_log_group" "delete_player_pipe" {
@@ -654,6 +674,83 @@ resource "aws_cloudwatch_event_target" "finalise_asset_target" {
 
   appsync_target {
     graphql_operation = local.graphql_finalise_asset_mutation
+  }
+}
+
+# Asset promotion infrastructure
+
+resource "aws_iam_role" "promote_asset_bus" {
+  name               = "${var.prefix}-promote-asset-bus"
+  assume_role_policy = data.aws_iam_policy_document.promote_asset_bus_assume.json
+}
+
+data "aws_iam_policy_document" "promote_asset_bus_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "promote_asset_bus" {
+  name   = "${var.prefix}-promote-asset-bus"
+  policy = data.aws_iam_policy_document.promote_asset_bus.json
+}
+
+data "aws_iam_policy_document" "promote_asset_bus" {
+  statement {
+    sid = "InvokeGraphQL"
+    actions = [
+      "appsync:GraphQL",
+    ]
+    resources = [
+      "${aws_appsync_graphql_api.graphql.arn}/types/Mutation/fields/_promoteAsset",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "promote_asset_bus" {
+  role       = aws_iam_role.promote_asset_bus.name
+  policy_arn = aws_iam_policy.promote_asset_bus.arn
+}
+
+resource "aws_cloudwatch_event_rule" "promote_asset_rule" {
+  name           = "${var.prefix}-promote-asset"
+  description    = "Promote assets when moved to final location"
+  event_bus_name = aws_cloudwatch_event_bus.bus.name
+  state          = "ENABLED"
+  event_pattern = jsonencode({
+    "source"      = [local.promote_asset_source]
+    "detail-type" = [local.promote_asset_detail_type]
+  })
+}
+
+resource "aws_cloudwatch_event_target" "promote_asset_target" {
+  target_id      = "appsync-promote-asset"
+  rule           = aws_cloudwatch_event_rule.promote_asset_rule.name
+  arn            = local.graphql_ep_arn
+  role_arn       = aws_iam_role.promote_asset_bus.arn
+  event_bus_name = aws_cloudwatch_event_bus.bus.name
+
+  input_transformer {
+    input_paths = {
+      gameId  = "$.detail.gameId"
+      assetId = "$.detail.assetId"
+    }
+    input_template = <<-EOT
+      {
+          "input": {
+              "gameId": "<gameId>",
+              "assetId": "<assetId>"
+          }
+      }
+    EOT
+  }
+
+  appsync_target {
+    graphql_operation = local.graphql_promote_asset_mutation
   }
 }
 
