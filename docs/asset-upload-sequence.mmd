@@ -1,0 +1,58 @@
+sequenceDiagram
+    participant User
+    participant UI as UI/Client
+    participant AppSync as AWS AppSync
+    participant ReqFn as requestAssetUpload<br/>(DynamoDB Function)
+    participant Lambda as generatePresignedUrl<br/>(Lambda)
+    participant DDB as DynamoDB
+    participant S3 as S3 Bucket
+    participant SQS as SQS Queue
+    participant Pipe as EventBridge Pipe
+    participant SFN as Step Function<br/>(Path Parser)
+    participant EB as EventBridge Bus
+    participant Rule as EventBridge Rule
+    participant FinFn as _finaliseAsset<br/>(Mutation)
+
+    autonumber
+
+    Note over User,FinFn: Asset Upload Flow
+
+    User->>UI: Initiate file upload
+    UI->>AppSync: requestAssetUpload mutation<br/>{gameId, sectionId, mimeType, sizeBytes}
+
+    Note over AppSync: Pipeline Resolver
+    AppSync->>ReqFn: Execute function
+    ReqFn->>DDB: TransactWriteItems
+    Note over DDB: Creates PENDING asset<br/>Decrements remainingAssets<br/>Adds assetId to section
+    DDB-->>ReqFn: Success
+
+    ReqFn->>Lambda: Forward asset data
+    Lambda->>Lambda: Generate presigned POST URL
+    Lambda-->>AppSync: {assetData, uploadUrl, uploadFields}
+
+    AppSync-->>UI: AssetUploadTicket<br/>{asset, uploadUrl, uploadFields}
+
+    UI->>S3: HTTP POST to uploadUrl<br/>with file and fields
+    Note over S3: File stored at:<br/>asset/game/{gameId}/section/<br/>{sectionId}/{assetId}/original
+    S3-->>UI: Upload success
+
+    Note over S3,FinFn: Automatic Finalization Flow
+
+    S3->>SQS: S3 ObjectCreated event<br/>(filtered by /original suffix)
+    SQS->>Pipe: Pull message
+    Pipe->>SFN: Enrichment invocation
+    Note over SFN: Extract gameId, sectionId,<br/>assetId from S3 key
+    SFN-->>Pipe: {gameId, sectionId, assetId}
+
+    Pipe->>EB: Put custom event<br/>source: "asset.uploaded"<br/>detail-type: "ObjectCreated"
+    EB->>Rule: Match pattern
+    Rule->>AppSync: Invoke AppSync GraphQL
+
+    AppSync->>FinFn: _finaliseAsset mutation<br/>{gameId, sectionId, assetId}
+    FinFn->>DDB: Conditional UpdateItem<br/>if status = PENDING
+    Note over DDB: Update status:<br/>PENDING → READY
+    DDB-->>FinFn: Success
+
+    FinFn-->>AppSync: Asset (READY)
+    AppSync->>UI: updatedAsset subscription<br/>(Asset with READY status)
+    UI->>User: Display uploaded asset
