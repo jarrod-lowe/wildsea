@@ -56,7 +56,7 @@ jobs:
       run: make favicon
 
     - name: Configure AWS Access
-      uses: aws-actions/configure-aws-credentials@2475ef7675c7f555fe065dad4cbebafc7f953779
+      uses: aws-actions/configure-aws-credentials@f2964c7281262753f549b15ae39f1cbbb033b9e4
       with:
         role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE }}
         role-session-name: GitHubDeploy-${{ vars.ENVIRONMENT }}
