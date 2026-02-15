@@ -9,11 +9,12 @@ const mockUpdateSection = jest.fn();
 
 // Helper to create JSON with stable key ordering for tests
 const stableStringify = (obj: unknown): string => {
-  // Use a replacer function that sorts object keys
+  // Use a replacer function that sorts object keys with explicit comparator
+  // Using simple string comparison (non-locale) for deterministic ordering
   return JSON.stringify(obj, (_key, value) => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       return Object.keys(value)
-        .sort()
+        .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
         .reduce((sorted, k) => {
           sorted[k] = value[k];
           return sorted;
