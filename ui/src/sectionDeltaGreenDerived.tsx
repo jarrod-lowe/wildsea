@@ -239,7 +239,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     const hasDisorder = sanItem && sanItem.current <= bpCurrent;
 
     const wpItem = content.items.find(item => item.attributeType === 'WP');
-    const isWpDepleted = wpItem && wpItem.current === 0;
+    const isWpDepleted = wpItem?.current === 0;
 
     return (
       <div className="delta-green-derived-grid">
