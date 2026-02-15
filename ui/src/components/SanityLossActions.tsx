@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { generateClient } from "aws-amplify/api";
 import { rollDiceMutation } from "../../../appsync/schema";
-import { RollDiceInput } from "../../../appsync/graphql";
+import { RollDiceInput, DiceRoll } from "../../../appsync/graphql";
 import { RollTypes } from "../../../graphql/lib/constants/rollTypes";
 
 interface SanityLossActionsProps {
@@ -10,6 +10,9 @@ interface SanityLossActionsProps {
   onBehalfOf?: string;
   onSanityLoss: (amount: number) => void;
   onCloseAndShowNewRoll?: (rollResult: any) => void;
+  isAdaptedToViolence?: boolean;
+  isAdaptedToHelplessness?: boolean;
+  rollResult?: DiceRoll;
 }
 
 interface SanityLossOption {
@@ -28,14 +31,40 @@ const sanityLossOptions: SanityLossOption[] = [
   { dice: '1d20', size: 20, label: '1d20' },
 ];
 
+const getAdaptationReminderKey = (
+  violence: boolean,
+  helplessness: boolean
+): string | null => {
+  if (violence && helplessness) return 'sanityLoss.adaptedBoth';
+  if (violence) return 'sanityLoss.adaptedViolence';
+  if (helplessness) return 'sanityLoss.adaptedHelplessness';
+  return null;
+};
+
 export const SanityLossActions: React.FC<SanityLossActionsProps> = ({
   gameId,
   onBehalfOf,
   onSanityLoss,
-  onCloseAndShowNewRoll
+  onCloseAndShowNewRoll,
+  isAdaptedToViolence,
+  isAdaptedToHelplessness,
+  rollResult
 }) => {
   const intl = useIntl();
   const [isRolling, setIsRolling] = useState(false);
+
+  // Check if the roll failed (value > target in Delta Green)
+  const rollFailed = rollResult?.value !== undefined &&
+                     rollResult?.target !== undefined &&
+                     rollResult.value > rollResult.target;
+
+  // Only show reminder if roll failed
+  const reminderKey = rollFailed
+    ? getAdaptationReminderKey(
+        isAdaptedToViolence || false,
+        isAdaptedToHelplessness || false
+      )
+    : null;
 
   const handleStaticSanityLoss = (amount: number) => {
     // Apply the sanity loss immediately
@@ -93,6 +122,15 @@ export const SanityLossActions: React.FC<SanityLossActionsProps> = ({
       </h4>
       <p className="sanity-loss-description">
         <FormattedMessage id="sanityLoss.description" />
+
+        {reminderKey && (
+          <>
+            <br /><br />
+            <span className="adapted-label">
+              <FormattedMessage id={reminderKey} />
+            </span>
+          </>
+        )}
       </p>
 
       <div className="sanity-loss-static-buttons">

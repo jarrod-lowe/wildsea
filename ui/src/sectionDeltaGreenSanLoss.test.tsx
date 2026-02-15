@@ -207,4 +207,182 @@ describe('SectionDeltaGreenSanLoss', () => {
     const tickButtons = container.querySelectorAll('.tick-checkbox');
     expect(tickButtons[0]).toBeDisabled();
   });
+
+  describe('data attributes for adaptation status', () => {
+    it('sets data-adapted-violence to false when violence is not adapted', () => {
+      const section = {
+        ...mockSection,
+        content: stableStringify({
+          showEmpty: true,
+          items: [
+            { id: 'violence', name: 'Violence', length: 3, ticked: 0, description: '' },
+            { id: 'helplessness', name: 'Helplessness', length: 3, ticked: 0, description: '' }
+          ]
+        })
+      };
+
+      const { container } = renderWithIntl(
+        <SectionDeltaGreenSanLoss
+          section={section}
+          userSubject="user-1"
+          mayEditSheet={true}
+          onUpdate={mockUpdateSection}
+        />
+      );
+
+      const sanLossContainer = container.querySelector('.delta-green-sanloss-section');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-violence', 'false');
+    });
+
+    it('sets data-adapted-violence to true when violence is adapted', () => {
+      const section = {
+        ...mockSection,
+        content: stableStringify({
+          showEmpty: true,
+          items: [
+            { id: 'violence', name: 'Violence', length: 3, ticked: 3, description: '' },
+            { id: 'helplessness', name: 'Helplessness', length: 3, ticked: 0, description: '' }
+          ]
+        })
+      };
+
+      const { container } = renderWithIntl(
+        <SectionDeltaGreenSanLoss
+          section={section}
+          userSubject="user-1"
+          mayEditSheet={true}
+          onUpdate={mockUpdateSection}
+        />
+      );
+
+      const sanLossContainer = container.querySelector('.delta-green-sanloss-section');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-violence', 'true');
+    });
+
+    it('sets data-adapted-helplessness to false when helplessness is not adapted', () => {
+      const section = {
+        ...mockSection,
+        content: stableStringify({
+          showEmpty: true,
+          items: [
+            { id: 'violence', name: 'Violence', length: 3, ticked: 0, description: '' },
+            { id: 'helplessness', name: 'Helplessness', length: 3, ticked: 0, description: '' }
+          ]
+        })
+      };
+
+      const { container } = renderWithIntl(
+        <SectionDeltaGreenSanLoss
+          section={section}
+          userSubject="user-1"
+          mayEditSheet={true}
+          onUpdate={mockUpdateSection}
+        />
+      );
+
+      const sanLossContainer = container.querySelector('.delta-green-sanloss-section');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-helplessness', 'false');
+    });
+
+    it('sets data-adapted-helplessness to true when helplessness is adapted', () => {
+      const section = {
+        ...mockSection,
+        content: stableStringify({
+          showEmpty: true,
+          items: [
+            { id: 'violence', name: 'Violence', length: 3, ticked: 0, description: '' },
+            { id: 'helplessness', name: 'Helplessness', length: 3, ticked: 3, description: '' }
+          ]
+        })
+      };
+
+      const { container } = renderWithIntl(
+        <SectionDeltaGreenSanLoss
+          section={section}
+          userSubject="user-1"
+          mayEditSheet={true}
+          onUpdate={mockUpdateSection}
+        />
+      );
+
+      const sanLossContainer = container.querySelector('.delta-green-sanloss-section');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-helplessness', 'true');
+    });
+
+    it('sets both data attributes correctly when both are adapted', () => {
+      const section = {
+        ...mockSection,
+        content: stableStringify({
+          showEmpty: true,
+          items: [
+            { id: 'violence', name: 'Violence', length: 3, ticked: 3, description: '' },
+            { id: 'helplessness', name: 'Helplessness', length: 3, ticked: 3, description: '' }
+          ]
+        })
+      };
+
+      const { container } = renderWithIntl(
+        <SectionDeltaGreenSanLoss
+          section={section}
+          userSubject="user-1"
+          mayEditSheet={true}
+          onUpdate={mockUpdateSection}
+        />
+      );
+
+      const sanLossContainer = container.querySelector('.delta-green-sanloss-section');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-violence', 'true');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-helplessness', 'true');
+    });
+
+    it('handles missing violence item gracefully', () => {
+      const section = {
+        ...mockSection,
+        content: stableStringify({
+          showEmpty: true,
+          items: [
+            { id: 'helplessness', name: 'Helplessness', length: 3, ticked: 3, description: '' }
+          ]
+        })
+      };
+
+      const { container } = renderWithIntl(
+        <SectionDeltaGreenSanLoss
+          section={section}
+          userSubject="user-1"
+          mayEditSheet={true}
+          onUpdate={mockUpdateSection}
+        />
+      );
+
+      const sanLossContainer = container.querySelector('.delta-green-sanloss-section');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-violence', 'false');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-helplessness', 'true');
+    });
+
+    it('handles missing helplessness item gracefully', () => {
+      const section = {
+        ...mockSection,
+        content: stableStringify({
+          showEmpty: true,
+          items: [
+            { id: 'violence', name: 'Violence', length: 3, ticked: 3, description: '' }
+          ]
+        })
+      };
+
+      const { container } = renderWithIntl(
+        <SectionDeltaGreenSanLoss
+          section={section}
+          userSubject="user-1"
+          mayEditSheet={true}
+          onUpdate={mockUpdateSection}
+        />
+      );
+
+      const sanLossContainer = container.querySelector('.delta-green-sanloss-section');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-violence', 'true');
+      expect(sanLossContainer).toHaveAttribute('data-adapted-helplessness', 'false');
+    });
+  });
 });

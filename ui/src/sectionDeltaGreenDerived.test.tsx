@@ -47,6 +47,82 @@ describe("SectionDeltaGreenDerived - Sanity Modifier", () => {
   });
 });
 
+describe("SectionDeltaGreenDerived - getAdaptationStatusFromDataAttributes", () => {
+  beforeEach(() => {
+    // Clear DOM
+    document.body.innerHTML = '';
+  });
+
+  it("returns false for both when no container exists", () => {
+    // Import the helper function - we'll need to export it
+    const { getAdaptationStatusFromDataAttributes } = require('./sectionDeltaGreenDerived');
+
+    const result = getAdaptationStatusFromDataAttributes();
+
+    expect(result).toEqual({ violence: false, helplessness: false });
+  });
+
+  it("returns false for both when attributes are 'false'", () => {
+    document.body.innerHTML = `
+      <div class="delta-green-sanloss-section"
+           data-adapted-violence="false"
+           data-adapted-helplessness="false">
+      </div>
+    `;
+
+    const { getAdaptationStatusFromDataAttributes } = require('./sectionDeltaGreenDerived');
+
+    const result = getAdaptationStatusFromDataAttributes();
+
+    expect(result).toEqual({ violence: false, helplessness: false });
+  });
+
+  it("returns true for violence when attribute is 'true'", () => {
+    document.body.innerHTML = `
+      <div class="delta-green-sanloss-section"
+           data-adapted-violence="true"
+           data-adapted-helplessness="false">
+      </div>
+    `;
+
+    const { getAdaptationStatusFromDataAttributes } = require('./sectionDeltaGreenDerived');
+
+    const result = getAdaptationStatusFromDataAttributes();
+
+    expect(result).toEqual({ violence: true, helplessness: false });
+  });
+
+  it("returns true for helplessness when attribute is 'true'", () => {
+    document.body.innerHTML = `
+      <div class="delta-green-sanloss-section"
+           data-adapted-violence="false"
+           data-adapted-helplessness="true">
+      </div>
+    `;
+
+    const { getAdaptationStatusFromDataAttributes } = require('./sectionDeltaGreenDerived');
+
+    const result = getAdaptationStatusFromDataAttributes();
+
+    expect(result).toEqual({ violence: false, helplessness: true });
+  });
+
+  it("returns true for both when both attributes are 'true'", () => {
+    document.body.innerHTML = `
+      <div class="delta-green-sanloss-section"
+           data-adapted-violence="true"
+           data-adapted-helplessness="true">
+      </div>
+    `;
+
+    const { getAdaptationStatusFromDataAttributes } = require('./sectionDeltaGreenDerived');
+
+    const result = getAdaptationStatusFromDataAttributes();
+
+    expect(result).toEqual({ violence: true, helplessness: true });
+  });
+});
+
 describe("SectionDeltaGreenDerived - Integration", () => {
   // Set up DOM with stats before each test
   beforeEach(() => {

@@ -68,19 +68,33 @@ export const SectionDeltaGreenSanLoss: React.FC<SectionDefinition> = (props) => 
     updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
     isEditing: boolean,
   ) => {
-    return content.items
-      .filter(item => content.showEmpty || item.ticked > 0)
-      .map(item => {
-        const adapted = isItemAdapted(item);
-        return (
-          <SectionItem
-            key={item.id}
-            item={item}
-            className={adapted ? 'adapted-item' : ''}
-            renderContent={() => renderItemContent(item, content, setContent, updateSection, mayEditSheet, adapted)}
-          />
-        );
-      });
+    // Find violence and helplessness items by ID
+    const violenceItem = content.items.find(i => i.id === 'violence');
+    const helplessnessItem = content.items.find(i => i.id === 'helplessness');
+
+    // Check adaptation status
+    const dataAttributes = {
+      'data-adapted-violence': (violenceItem ? isItemAdapted(violenceItem) : false).toString(),
+      'data-adapted-helplessness': (helplessnessItem ? isItemAdapted(helplessnessItem) : false).toString()
+    };
+
+    return (
+      <div className="delta-green-sanloss-section" {...dataAttributes}>
+        {content.items
+          .filter(item => content.showEmpty || item.ticked > 0)
+          .map(item => {
+            const adapted = isItemAdapted(item);
+            return (
+              <SectionItem
+                key={item.id}
+                item={item}
+                className={adapted ? 'adapted-item' : ''}
+                renderContent={() => renderItemContent(item, content, setContent, updateSection, mayEditSheet, adapted)}
+              />
+            );
+          })}
+      </div>
+    );
   };
 
   const renderEditForm = (

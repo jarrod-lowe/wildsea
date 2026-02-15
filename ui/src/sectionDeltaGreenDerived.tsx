@@ -31,6 +31,16 @@ const getStatsFromDataAttributes = () => {
   return stats;
 };
 
+export const getAdaptationStatusFromDataAttributes = () => {
+  const sanLossContainer = document.querySelector('.delta-green-sanloss-section') as HTMLElement;
+  if (!sanLossContainer) return { violence: false, helplessness: false };
+
+  return {
+    violence: sanLossContainer.dataset.adaptedViolence === 'true',
+    helplessness: sanLossContainer.dataset.adaptedHelplessness === 'true'
+  };
+};
+
 export const calculateDerivedAttributes = (stats: { [key: string]: number }, sanityModifier: number = 0) => {
   const str = stats.STR || 0;
   const con = stats.CON || 0;
@@ -98,6 +108,28 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     setDiceModalOpen(false);
     // Show the sanity loss result in a new modal
     setSanityLossResult(rollResult);
+  }, []);
+
+  const createSanityLossActions = useCallback((
+    gameId: string,
+    onBehalfOf: string | undefined,
+    onSanityLoss: (amount: number) => void,
+    onCloseAndShowNewRoll: (rollResult: any) => void
+  ) => {
+    return (rollResult: any) => {
+      const adaptationStatus = getAdaptationStatusFromDataAttributes();
+      return (
+        <SanityLossActions
+          gameId={gameId}
+          onBehalfOf={onBehalfOf}
+          onSanityLoss={onSanityLoss}
+          onCloseAndShowNewRoll={onCloseAndShowNewRoll}
+          isAdaptedToViolence={adaptationStatus.violence}
+          isAdaptedToHelplessness={adaptationStatus.helplessness}
+          rollResult={rollResult}
+        />
+      );
+    };
   }, []);
 
   const handleCurrentChange = useCallback((
@@ -359,14 +391,14 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
           skillValue={selectedStat.value}
           initialAction={selectedStat.actionText}
           onBehalfOf={onBehalfOfValue}
-          customActionsAfterRoll={selectedStat.attributeType === 'SAN' ? (
-            <SanityLossActions
-              gameId={props.section.gameId}
-              onBehalfOf={onBehalfOfValue}
-              onSanityLoss={handleSanityLoss}
-              onCloseAndShowNewRoll={handleCloseAndShowNewRoll}
-            />
-          ) : undefined}
+          customActionsAfterRoll={selectedStat.attributeType === 'SAN'
+            ? createSanityLossActions(
+                props.section.gameId,
+                onBehalfOfValue,
+                handleSanityLoss,
+                handleCloseAndShowNewRoll
+              )
+            : undefined}
         />
       )}
       {sanityLossResult && (

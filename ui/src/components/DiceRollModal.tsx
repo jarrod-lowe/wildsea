@@ -15,7 +15,7 @@ interface DiceRollModalProps {
   initialAction: string;
   onRollComplete?: (result: DiceRoll) => void;
   onBehalfOf?: string;
-  customActionsAfterRoll?: React.ReactNode;
+  customActionsAfterRoll?: React.ReactNode | ((rollResult: DiceRoll) => React.ReactNode);
   prePopulatedResult?: DiceRoll;
   messageType?: string;
 }
@@ -191,18 +191,26 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
                 <FormattedMessage id="diceRollModal.result" />
               </h3>
               <DiceRollFormatter roll={rollResult} />
-              
-              {customActionsAfterRoll && (
-                <div className="custom-actions-panel">
-                  {customActionsAfterRoll}
-                </div>
-              )}
-              
+
+              {(() => {
+                if (!customActionsAfterRoll) return null;
+
+                const actions = typeof customActionsAfterRoll === 'function'
+                  ? customActionsAfterRoll(rollResult)
+                  : customActionsAfterRoll;
+
+                return actions ? (
+                  <div className="custom-actions-panel">
+                    {actions}
+                  </div>
+                ) : null;
+              })()}
+
               <div className="form-actions">
                 <button
                   className="btn-secondary"
                   onClick={handleClose}
-                  autoFocus={!customActionsAfterRoll}
+                  autoFocus={true}
                 >
                   <FormattedMessage id="diceRollModal.close" />
                 </button>

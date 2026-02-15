@@ -320,6 +320,9 @@ export const messagesKlingon = {
     'sanityLoss.rollTitle': '{dice} DIch valwI\' DIch mugh',
     'sanityLoss.staticTitle': 'valwI\' {amount} DIch mugh',
     'sanityLoss.rollError': 'valwI\' DIch mugh DIch. DIch DIch naDev.',
+    'sanityLoss.adaptedViolence': '⚠️ HIv paH Qap qoj yIchoH (yIchelta\')',
+    'sanityLoss.adaptedHelplessness': '⚠️ jagh paH Qap qoj yIchoH (yIchelta\')',
+    'sanityLoss.adaptedBoth': '⚠️ HIv joq jagh paH Qap qoj yIchoH (yIchelta\')',
 
     // Auto-populate translations
     'autoPopulate.title': 'DIch nugh nugh DIch',
