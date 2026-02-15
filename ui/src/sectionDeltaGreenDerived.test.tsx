@@ -336,3 +336,144 @@ describe('WP Depletion Styling', () => {
     expect(disorderRows.length).toBeGreaterThan(0);
   });
 });
+
+describe('HP Depletion Styling', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div class="delta-green-stats-grid"
+           data-stat-str="10"
+           data-stat-con="10"
+           data-stat-pow="10">
+      </div>
+    `;
+  });
+
+  it('applies hp-depleted class when HP current is 0', () => {
+    const mockSection = {
+      gameId: 'test-game',
+      sectionId: 'section-id',
+      sectionName: 'Derived Attributes',
+      sectionType: 'deltagreenderived',
+      userId: 'user-1',
+      content: JSON.stringify({
+        showEmpty: false,
+        items: [
+          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 0, description: '' },
+          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 10, description: '' },
+          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 50, description: '' },
+          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
+        ]
+      }),
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      position: 0,
+      type: 'section'
+    };
+
+    const { container } = render(
+      <ToastProvider>
+        <IntlProvider locale="en" messages={messagesEnglish}>
+          <CharacterDeathProvider>
+            <SectionDeltaGreenDerived
+              section={mockSection}
+              userSubject="user-1"
+              mayEditSheet={true}
+              onUpdate={() => {}}
+            />
+          </CharacterDeathProvider>
+        </IntlProvider>
+      </ToastProvider>
+    );
+
+    const hpRow = container.querySelector('.derived-row.hp-depleted');
+    expect(hpRow).toBeTruthy();
+  });
+
+  it('does not apply hp-depleted class when HP current is greater than 0', () => {
+    const mockSection = {
+      gameId: 'test-game',
+      sectionId: 'section-id',
+      sectionName: 'Derived Attributes',
+      sectionType: 'deltagreenderived',
+      userId: 'user-1',
+      content: JSON.stringify({
+        showEmpty: false,
+        items: [
+          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 5, description: '' },
+          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 10, description: '' },
+          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 50, description: '' },
+          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
+        ]
+      }),
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      position: 0,
+      type: 'section'
+    };
+
+    const { container } = render(
+      <ToastProvider>
+        <IntlProvider locale="en" messages={messagesEnglish}>
+          <CharacterDeathProvider>
+            <SectionDeltaGreenDerived
+              section={mockSection}
+              userSubject="user-1"
+              mayEditSheet={true}
+              onUpdate={() => {}}
+            />
+          </CharacterDeathProvider>
+        </IntlProvider>
+      </ToastProvider>
+    );
+
+    const hpDepletedRow = container.querySelector('.derived-row.hp-depleted');
+    expect(hpDepletedRow).toBeFalsy();
+  });
+
+  it('can show hp-depleted, wp-depleted, and disorder-warning simultaneously', () => {
+    const mockSection = {
+      gameId: 'test-game',
+      sectionId: 'section-id',
+      sectionName: 'Derived Attributes',
+      sectionType: 'deltagreenderived',
+      userId: 'user-1',
+      content: JSON.stringify({
+        showEmpty: false,
+        items: [
+          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 0, description: '' },
+          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 0, description: '' },
+          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 35, description: '' },
+          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
+        ]
+      }),
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      position: 0,
+      type: 'section'
+    };
+
+    const { container } = render(
+      <ToastProvider>
+        <IntlProvider locale="en" messages={messagesEnglish}>
+          <CharacterDeathProvider>
+            <SectionDeltaGreenDerived
+              section={mockSection}
+              userSubject="user-1"
+              mayEditSheet={true}
+              onUpdate={() => {}}
+            />
+          </CharacterDeathProvider>
+        </IntlProvider>
+      </ToastProvider>
+    );
+
+    // All three status classes should be present on different rows
+    const hpDepletedRow = container.querySelector('.derived-row.hp-depleted');
+    const wpDepletedRow = container.querySelector('.derived-row.wp-depleted');
+    const disorderRows = container.querySelectorAll('.derived-row.disorder-warning');
+
+    expect(hpDepletedRow).toBeTruthy();
+    expect(wpDepletedRow).toBeTruthy();
+    expect(disorderRows.length).toBeGreaterThan(0);
+  });
+});
