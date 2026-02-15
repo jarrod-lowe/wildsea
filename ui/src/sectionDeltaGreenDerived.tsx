@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
@@ -7,6 +7,7 @@ import { getDeltaGreenDerivedSeed } from './seed';
 import { SupportedLanguage } from './translations';
 import { DiceRollModal } from './components/DiceRollModal';
 import { SanityLossActions } from './components/SanityLossActions';
+import { useCharacterDeath } from './contexts/CharacterDeathContext';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
@@ -60,16 +61,30 @@ export const calculateDerivedAttributes = (stats: { [key: string]: number }, san
 export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => {
   const { section, userSubject } = props;
   const intl = useIntl();
+  const { setCharacterDead } = useCharacterDeath();
   const [diceModalOpen, setDiceModalOpen] = useState(false);
   const [selectedStat, setSelectedStat] = useState<{ name: string; value: number; actionText: string; attributeType?: string } | null>(null);
   const [sanityLossResult, setSanityLossResult] = useState<any>(null);
-  
+
   // Track previous stats to detect changes
   const prevStatsRef = useRef<string | undefined>(undefined);
   // Track pending updates to prevent race conditions
   const updateTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   // Store the current update functions for sanity loss
   const sanityUpdateRef = useRef<{ updateSection?: (section: Partial<SheetSection>) => Promise<void>, setContent?: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>, content?: SectionTypeDeltaGreenDerived } | undefined>(undefined);
+
+  // Set initial death state on mount
+  useEffect(() => {
+    try {
+      const content: SectionTypeDeltaGreenDerived = JSON.parse(section.content || '{}');
+      const hpItem = content.items?.find(item => item.attributeType === 'HP');
+      if (hpItem !== undefined) {
+        setCharacterDead(section.userId, hpItem.current === 0);
+      }
+    } catch (error) {
+      console.error('Error parsing section content for death state:', error);
+    }
+  }, []); // Only on mount
 
   const handleDiceClick = (statName: string, statValue: number, attributeType?: string) => {
     setSelectedStat({ name: statName, value: statValue, actionText: statName, attributeType });
@@ -144,31 +159,36 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     const derivedCalcs = stats ? calculateDerivedAttributes(stats, content.sanityModifier || 0) : null;
     const calc = derivedCalcs?.[item.attributeType];
     const currentMax = calc && 'max' in calc ? calc.max : undefined;
-    
+
     let clampedCurrent = Math.max(0, newCurrent);
     if (currentMax !== undefined) {
       clampedCurrent = Math.min(currentMax, clampedCurrent);
     }
-    
+
     const newItems = [...content.items];
     const itemIndex = newItems.findIndex(i => i.id === item.id);
     const { maximum, ...itemWithoutMaximum } = item as any; // Remove maximum field if it exists
     const updatedItem = { ...itemWithoutMaximum, current: clampedCurrent };
     newItems[itemIndex] = updatedItem;
     const newContent = { ...content, items: newItems };
-    
+
     // Update local state immediately for responsive UI
     setContent(newContent);
-    
+
+    // Push death state to context when HP changes
+    if (item.attributeType === 'HP') {
+      setCharacterDead(section.userId, clampedCurrent === 0);
+    }
+
     // Debounce the backend update to prevent race conditions
     if (updateTimeoutRef.current) {
       clearTimeout(updateTimeoutRef.current);
     }
-    
+
     updateTimeoutRef.current = setTimeout(async () => {
       await updateSection({ content: JSON.stringify(newContent) });
     }, 150); // Short delay for buttons
-  }, []);
+  }, [section.userId, setCharacterDead]);
 
   const renderItems = (
     content: SectionTypeDeltaGreenDerived,

@@ -336,6 +336,9 @@ export const messagesKlingon = {
     'autoPopulate.loadingTemplates': 'DIch nugh naDev...',
     'autoPopulate.noTemplates': 'DIch Dub mI\' DIch nugh DIch nugh DIch.',
 
+    // Character sheet states
+    'characterSheet.agentTerminated': '⚠️ QIN CHONTA\' ⚠️',
+
     // Common section translations
     'sectionObject.updateError': 'DIch DIch choq DIch',
     'sectionObject.addItem': '✚ DIch DIch DIch',

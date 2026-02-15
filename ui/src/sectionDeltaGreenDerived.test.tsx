@@ -4,6 +4,7 @@ import { SectionDeltaGreenDerived, calculateDerivedAttributes, createDefaultDelt
 import { IntlProvider } from "react-intl";
 import { messagesEnglish } from "./translations.en";
 import { ToastProvider } from "./notificationToast";
+import { CharacterDeathProvider } from "./contexts/CharacterDeathContext";
 
 describe("SectionDeltaGreenDerived - Sanity Modifier", () => {
   it("reduces SAN max when modifier is applied", () => {
@@ -159,12 +160,14 @@ describe("SectionDeltaGreenDerived - Integration", () => {
     const { container } = render(
       <ToastProvider>
         <IntlProvider locale="en" messages={messagesEnglish}>
-          <SectionDeltaGreenDerived
-            section={mockSection}
-            userSubject="user-1"
-            mayEditSheet={true}
-            onUpdate={() => {}}
-          />
+          <CharacterDeathProvider>
+            <SectionDeltaGreenDerived
+              section={mockSection}
+              userSubject="user-1"
+              mayEditSheet={true}
+              onUpdate={() => {}}
+            />
+          </CharacterDeathProvider>
         </IntlProvider>
       </ToastProvider>
     );
