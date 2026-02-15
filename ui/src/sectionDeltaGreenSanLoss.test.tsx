@@ -7,6 +7,22 @@ import { ToastProvider } from './notificationToast';
 
 const mockUpdateSection = jest.fn();
 
+// Helper to create JSON with stable key ordering for tests
+const stableStringify = (obj: unknown): string => {
+  // Use a replacer function that sorts object keys
+  return JSON.stringify(obj, (key, value) => {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return Object.keys(value)
+        .sort()
+        .reduce((sorted, k) => {
+          sorted[k] = value[k];
+          return sorted;
+        }, {} as Record<string, unknown>);
+    }
+    return value;
+  });
+};
+
 const renderWithIntl = (component: React.ReactElement) => {
   return render(
     <ToastProvider>
@@ -27,7 +43,7 @@ describe('SectionDeltaGreenSanLoss', () => {
     id: 'section-1',
     sectionName: 'Incidents of SAN loss without going insane',
     sectionType: 'DELTAGREENSANLOSS',
-    content: JSON.stringify({
+    content: stableStringify({
       showEmpty: true,
       items: [
         { id: '1', name: 'Violence', length: 3, ticked: 0, description: '' },
@@ -60,7 +76,7 @@ describe('SectionDeltaGreenSanLoss', () => {
   it('shows adapted label when all boxes are ticked', async () => {
     const adaptedSection = {
       ...mockSection,
-      content: JSON.stringify({
+      content: stableStringify({
         showEmpty: true,
         items: [
           { id: '1', name: 'Violence', length: 3, ticked: 3, description: '' },
@@ -92,7 +108,7 @@ describe('SectionDeltaGreenSanLoss', () => {
   it('applies adapted-item class when all boxes are ticked', () => {
     const adaptedSection = {
       ...mockSection,
-      content: JSON.stringify({
+      content: stableStringify({
         showEmpty: true,
         items: [
           { id: '1', name: 'Violence', length: 3, ticked: 3, description: '' }
@@ -136,7 +152,7 @@ describe('SectionDeltaGreenSanLoss', () => {
   it('tracks adaptation independently for each item', async () => {
     const mixedSection = {
       ...mockSection,
-      content: JSON.stringify({
+      content: stableStringify({
         showEmpty: true,
         items: [
           { id: '1', name: 'Violence', length: 3, ticked: 3, description: '' },
