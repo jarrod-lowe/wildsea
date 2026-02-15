@@ -353,6 +353,9 @@ export const messagesEnglish = {
     'autoPopulate.loadingTemplates': 'Loading templates...',
     'autoPopulate.noTemplates': 'No character templates are available for this game type.',
 
+    // Character sheet states
+    'characterSheet.agentTerminated': '⚠️ AGENT TERMINATED ⚠️',
+
     // Common section translations
     'sectionObject.updateError': 'Failed to update the section',
     'sectionObject.addItem': '✚ Add New Item',

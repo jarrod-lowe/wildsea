@@ -66,6 +66,7 @@
   --color-shadow-light: 0 4px 6px rgb(0 0 0 / 10%);
   --color-shadow-strong: 0 4px 12px rgb(0 0 0 / 15%);
   --color-shadow-darker: 0 4px 12px rgb(0 0 0 / 30%);
+  --color-shadow-dramatic: 0 8px 24px rgb(0 0 0 / 40%), 0 4px 12px rgb(0 0 0 / 30%);
   --color-shadow-section: 0 2px 8px rgb(0 0 0 / 20%);
   
   /* Toast notification colors */

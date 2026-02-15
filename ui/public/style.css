@@ -723,6 +723,58 @@ body {
   background-color: var(--color-surface);
 }
 
+/* Death overlay - covers entire character sheet when HP = 0 */
+.player-sheet.character-deceased {
+  position: relative;
+  filter: grayscale(70%) opacity(0.5);  /* More pronounced fade */
+}
+
+.death-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;  /* Position banner at top, not center */
+  justify-content: center;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.death-banner {
+  position: sticky;           /* Stick to top while scrolling */
+  top: 120px;                 /* Stay 120px from top of viewport */
+  margin-top: 120px;          /* Initial offset from top of sheet */
+  background-color: var(--color-danger);
+  color: var(--color-text-inverse);
+  padding: 1.5rem 3rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-align: center;
+  text-transform: uppercase;
+  border: 4px solid var(--color-text);
+  border-radius: var(--radius-md);
+  box-shadow: var(--color-shadow-dramatic);
+  z-index: 100;               /* Same as overlay, below top nav */
+  max-width: 90vw;            /* Responsive on mobile */
+}
+
+/* Tab strikethrough for dead characters */
+.deceased-character-name {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .death-banner {
+    font-size: 1.3rem;
+    padding: 1rem 2rem;
+  }
+}
+
 .section {
   margin-bottom: 20px;
   padding: 10px;

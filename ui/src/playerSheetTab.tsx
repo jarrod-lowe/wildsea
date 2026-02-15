@@ -14,6 +14,7 @@ import Modal from 'react-modal';
 import { DeletePlayerModal } from './deletePlayer';
 import { DeleteGameModal } from './deleteGame';
 import { SectionAutoPopulate } from './sectionAutoPopulate';
+import { useCharacterDeath } from './contexts/CharacterDeathContext';
 
 const reorderSections = (sections: SheetSection[], startIndex: number, endIndex: number) => {
   const result = Array.from(sections);
@@ -39,6 +40,10 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   const sectionTypes = getSectionTypes();
   const intl = useIntl();
   const toast = useToast();
+  const { isCharacterDead } = useCharacterDeath();
+
+  // Check if character is dead (HP = 0)
+  const isDead = isCharacterDead(sheet.userId);
 
   // Reset editing state when the active sheet changes
   useEffect(() => {
@@ -234,7 +239,7 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
   };
 
   return (
-    <div className="player-sheet">
+    <div className={`player-sheet ${isDead ? 'character-deceased' : ''}`}>
       <SheetHeader
         sheet={sheet}
         mayEditSheet={mayEditSheet}
@@ -245,7 +250,15 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
         isDragLocked={isDragLocked}
         setIsDragLocked={setIsDragLocked}
       />
-      
+
+      {isDead && (
+        <div className="death-overlay">
+          <div className="death-banner">
+            <FormattedMessage id="characterSheet.agentTerminated" />
+          </div>
+        </div>
+      )}
+
       {mayEditSheet ? (
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="sections">

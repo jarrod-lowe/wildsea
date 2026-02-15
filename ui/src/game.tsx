@@ -13,6 +13,7 @@ import { EditGameModal } from './editGame';
 import { JoinCodeModal } from './joinCodeModal';
 import { DiceRollPanel } from './diceRollPanel';
 import { loadTheme } from './themeLoader';
+import { CharacterDeathProvider, useCharacterDeath } from './contexts/CharacterDeathContext';
 
 const MAX_RETRIES = 5;
 const INITIAL_BACKOFF_TIME = 1000; // 1 second
@@ -350,6 +351,7 @@ const GameContent: React.FC<{
   const actualLanguage = resolveLanguage(currentLanguage);
   const toast = useToast();
   const intl = useIntl();
+  const { isCharacterDead } = useCharacterDeath();
 
   useEffect(() => {
     async function fetchGame() {
@@ -450,7 +452,9 @@ const GameContent: React.FC<{
                 { name: sheet.characterName, selected: activeSheet === sheet.userId }
               )}
             >
-              {sheet.characterName}
+              <span className={isCharacterDead(sheet.userId) ? 'deceased-character-name' : ''}>
+                {sheet.characterName}
+              </span>
             </button>
           ))}
       </div>
@@ -499,7 +503,9 @@ const AppGame: React.FC<{
   onLanguageChange?: (language: SupportedLanguage) => void;
   version?: string;
 }> = (props) => (
-  <GameContent {...props} />
+  <CharacterDeathProvider>
+    <GameContent {...props} />
+  </CharacterDeathProvider>
 );
 
 async function fetchUserSubject(): Promise<string> {
