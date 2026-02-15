@@ -31,6 +31,16 @@ const getStatsFromDataAttributes = () => {
   return stats;
 };
 
+export const getAdaptationStatusFromDataAttributes = () => {
+  const sanLossContainer = document.querySelector('.delta-green-sanloss-section') as HTMLElement;
+  if (!sanLossContainer) return { violence: false, helplessness: false };
+
+  return {
+    violence: sanLossContainer.dataset.adaptedViolence === 'true',
+    helplessness: sanLossContainer.dataset.adaptedHelplessness === 'true'
+  };
+};
+
 export const calculateDerivedAttributes = (stats: { [key: string]: number }, sanityModifier: number = 0) => {
   const str = stats.STR || 0;
   const con = stats.CON || 0;
@@ -359,14 +369,20 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
           skillValue={selectedStat.value}
           initialAction={selectedStat.actionText}
           onBehalfOf={onBehalfOfValue}
-          customActionsAfterRoll={selectedStat.attributeType === 'SAN' ? (
-            <SanityLossActions
-              gameId={props.section.gameId}
-              onBehalfOf={onBehalfOfValue}
-              onSanityLoss={handleSanityLoss}
-              onCloseAndShowNewRoll={handleCloseAndShowNewRoll}
-            />
-          ) : undefined}
+          customActionsAfterRoll={selectedStat.attributeType === 'SAN' ? (rollResult) => {
+            const adaptationStatus = getAdaptationStatusFromDataAttributes();
+            return (
+              <SanityLossActions
+                gameId={props.section.gameId}
+                onBehalfOf={onBehalfOfValue}
+                onSanityLoss={handleSanityLoss}
+                onCloseAndShowNewRoll={handleCloseAndShowNewRoll}
+                isAdaptedToViolence={adaptationStatus.violence}
+                isAdaptedToHelplessness={adaptationStatus.helplessness}
+                rollResult={rollResult}
+              />
+            );
+          } : undefined}
         />
       )}
       {sanityLossResult && (

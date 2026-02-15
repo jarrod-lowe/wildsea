@@ -337,6 +337,9 @@ export const messagesEnglish = {
     'sanityLoss.rollTitle': 'Roll {dice} for sanity loss',
     'sanityLoss.staticTitle': 'Lose {amount} sanity points',
     'sanityLoss.rollError': 'Error rolling for sanity loss. Please try again.',
+    'sanityLoss.adaptedViolence': '⚠️ Take the success penalty for violence checks (adapted)',
+    'sanityLoss.adaptedHelplessness': '⚠️ Take the success penalty for helplessness checks (adapted)',
+    'sanityLoss.adaptedBoth': '⚠️ Take the success penalty for violence or helplessness checks (adapted)',
 
     // Auto-populate translations
     'autoPopulate.title': 'Auto-Populate Character',

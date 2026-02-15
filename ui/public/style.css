@@ -1866,6 +1866,11 @@ body {
   font-size: 0.9em;
 }
 
+/* Delta Green SAN Loss - Make wrapper transparent to CSS Grid layout */
+.delta-green-sanloss-section {
+  display: contents;
+}
+
 /* Delta Green Skills grid styling */
 .section-items .delta-green-skills-grid {
   grid-column: 1 / -1;
