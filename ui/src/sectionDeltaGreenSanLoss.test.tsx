@@ -11,6 +11,7 @@ const mockUpdateSection = jest.fn();
 const stableStringify = (obj: unknown): string => {
   // Use a replacer function that sorts object keys with explicit comparator
   // Using simple string comparison (non-locale) for deterministic ordering
+  // codacy-disable-next-line
   return JSON.stringify(obj, (_key, value) => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       return Object.keys(value)
