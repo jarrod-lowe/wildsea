@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { SectionDeltaGreenDerived, calculateDerivedAttributes, createDefaultDeltaGreenDerivedContent } from "./sectionDeltaGreenDerived";
 import { IntlProvider } from "react-intl";
 import { messagesEnglish } from "./translations.en";
@@ -94,9 +94,6 @@ describe("SectionDeltaGreenDerived - Integration", () => {
     );
 
     // The component should display max SAN as 45 (50 - 5)
-    const maxValues = container.querySelectorAll('.derived-col-maximum');
-    // HP, WP, SAN, BP - SAN is the 3rd one (index 2)
-    // We're looking for the SAN row which should show 45
     expect(container.textContent).toContain('45'); // Adjusted max should be visible
   });
 

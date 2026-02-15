@@ -24,9 +24,9 @@ const getStatsFromDataAttributes = () => {
   if (!statsContainer) return null;
   
   const stats: { [key: string]: number } = {};
-  stats.STR = parseInt(statsContainer.getAttribute('data-stat-str') || '0');
-  stats.CON = parseInt(statsContainer.getAttribute('data-stat-con') || '0');
-  stats.POW = parseInt(statsContainer.getAttribute('data-stat-pow') || '0');
+  stats.STR = Number.parseInt(statsContainer.getAttribute('data-stat-str') || '0');
+  stats.CON = Number.parseInt(statsContainer.getAttribute('data-stat-con') || '0');
+  stats.POW = Number.parseInt(statsContainer.getAttribute('data-stat-pow') || '0');
   
   return stats;
 };
@@ -228,7 +228,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                     min="0"
                     max={displayMax}
                     value={displayCurrent}
-                    onChange={(e) => handleCurrentChange(item, parseInt(e.target.value) || 0, content, setContent, updateSection)}
+                    onChange={(e) => handleCurrentChange(item, Number.parseInt(e.target.value) || 0, content, setContent, updateSection)}
                     disabled={!mayEditSheet || item.attributeType === 'BP'}
                     className="current-input"
                   />
@@ -314,7 +314,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                 min="0"
                 value={currentModifier}
                 onChange={(e) => {
-                  const newModifier = Math.max(0, parseInt(e.target.value) || 0);
+                  const newModifier = Math.max(0, Number.parseInt(e.target.value) || 0);
                   setContent({ ...content, sanityModifier: newModifier });
                 }}
                 className="score-input-inline"
