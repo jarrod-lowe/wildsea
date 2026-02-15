@@ -55,11 +55,11 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
   const [sanityLossResult, setSanityLossResult] = useState<any>(null);
   
   // Track previous stats to detect changes
-  const prevStatsRef = useRef<string>();
+  const prevStatsRef = useRef<string | undefined>(undefined);
   // Track pending updates to prevent race conditions
-  const updateTimeoutRef = useRef<NodeJS.Timeout>();
+  const updateTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   // Store the current update functions for sanity loss
-  const sanityUpdateRef = useRef<{ updateSection?: (section: Partial<SheetSection>) => Promise<void>, setContent?: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>, content?: SectionTypeDeltaGreenDerived }>();
+  const sanityUpdateRef = useRef<{ updateSection?: (section: Partial<SheetSection>) => Promise<void>, setContent?: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>, content?: SectionTypeDeltaGreenDerived } | undefined>(undefined);
 
   const handleDiceClick = (statName: string, statValue: number, attributeType?: string) => {
     setSelectedStat({ name: statName, value: statValue, actionText: statName, attributeType });

@@ -10,7 +10,7 @@ const mockUpdateSection = jest.fn();
 // Helper to create JSON with stable key ordering for tests
 const stableStringify = (obj: unknown): string => {
   // Use a replacer function that sorts object keys
-  return JSON.stringify(obj, (key, value) => {
+  return JSON.stringify(obj, (_key, value) => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       return Object.keys(value)
         .sort()
@@ -41,8 +41,10 @@ describe('SectionDeltaGreenSanLoss', () => {
 
   const mockSection = {
     id: 'section-1',
+    sectionId: 'section-1',
     sectionName: 'Incidents of SAN loss without going insane',
     sectionType: 'DELTAGREENSANLOSS',
+    type: 'DELTAGREENSANLOSS',
     content: stableStringify({
       showEmpty: true,
       items: [
@@ -51,7 +53,10 @@ describe('SectionDeltaGreenSanLoss', () => {
       ]
     }),
     sheetId: 'sheet-1',
+    gameId: 'game-1',
+    userId: 'user-1',
     order: 0,
+    position: 0,
     createdAt: '2024-01-01T00:00:00Z',
     updatedAt: '2024-01-01T00:00:00Z'
   };
@@ -60,12 +65,9 @@ describe('SectionDeltaGreenSanLoss', () => {
     const { getByText } = renderWithIntl(
       <SectionDeltaGreenSanLoss
         section={mockSection}
-        updateSection={mockUpdateSection}
-        deleteSection={jest.fn()}
+        userSubject="user-1"
         mayEditSheet={true}
-        playerId="player-1"
-        sheetId="sheet-1"
-        gameName="Test Game"
+        onUpdate={mockUpdateSection}
       />
     );
 
@@ -88,12 +90,9 @@ describe('SectionDeltaGreenSanLoss', () => {
     const { getByText, queryByText } = renderWithIntl(
       <SectionDeltaGreenSanLoss
         section={adaptedSection}
-        updateSection={mockUpdateSection}
-        deleteSection={jest.fn()}
+        userSubject="user-1"
         mayEditSheet={true}
-        playerId="player-1"
-        sheetId="sheet-1"
-        gameName="Test Game"
+        onUpdate={mockUpdateSection}
       />
     );
 
@@ -119,12 +118,9 @@ describe('SectionDeltaGreenSanLoss', () => {
     const { container } = renderWithIntl(
       <SectionDeltaGreenSanLoss
         section={adaptedSection}
-        updateSection={mockUpdateSection}
-        deleteSection={jest.fn()}
+        userSubject="user-1"
         mayEditSheet={true}
-        playerId="player-1"
-        sheetId="sheet-1"
-        gameName="Test Game"
+        onUpdate={mockUpdateSection}
       />
     );
 
@@ -136,12 +132,9 @@ describe('SectionDeltaGreenSanLoss', () => {
     const { container } = renderWithIntl(
       <SectionDeltaGreenSanLoss
         section={mockSection}
-        updateSection={mockUpdateSection}
-        deleteSection={jest.fn()}
+        userSubject="user-1"
         mayEditSheet={true}
-        playerId="player-1"
-        sheetId="sheet-1"
-        gameName="Test Game"
+        onUpdate={mockUpdateSection}
       />
     );
 
@@ -164,12 +157,9 @@ describe('SectionDeltaGreenSanLoss', () => {
     const { container, queryAllByText } = renderWithIntl(
       <SectionDeltaGreenSanLoss
         section={mixedSection}
-        updateSection={mockUpdateSection}
-        deleteSection={jest.fn()}
+        userSubject="user-1"
         mayEditSheet={true}
-        playerId="player-1"
-        sheetId="sheet-1"
-        gameName="Test Game"
+        onUpdate={mockUpdateSection}
       />
     );
 
@@ -186,12 +176,9 @@ describe('SectionDeltaGreenSanLoss', () => {
     const { container } = renderWithIntl(
       <SectionDeltaGreenSanLoss
         section={mockSection}
-        updateSection={mockUpdateSection}
-        deleteSection={jest.fn()}
+        userSubject="user-1"
         mayEditSheet={true}
-        playerId="player-1"
-        sheetId="sheet-1"
-        gameName="Test Game"
+        onUpdate={mockUpdateSection}
       />
     );
 
@@ -203,12 +190,9 @@ describe('SectionDeltaGreenSanLoss', () => {
     const { container } = renderWithIntl(
       <SectionDeltaGreenSanLoss
         section={mockSection}
-        updateSection={mockUpdateSection}
-        deleteSection={jest.fn()}
+        userSubject="user-1"
         mayEditSheet={false}
-        playerId="player-1"
-        sheetId="sheet-1"
-        gameName="Test Game"
+        onUpdate={mockUpdateSection}
       />
     );
 
