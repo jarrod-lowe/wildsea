@@ -197,3 +197,142 @@ describe("SectionDeltaGreenDerived - Integration", () => {
     expect(contentWithModifier.sanityModifier).toBe(10);
   });
 });
+
+describe('WP Depletion Styling', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div class="delta-green-stats-grid"
+           data-stat-str="10"
+           data-stat-con="10"
+           data-stat-pow="10">
+      </div>
+    `;
+  });
+
+  it('applies wp-depleted class when WP current is 0', () => {
+    const mockSection = {
+      gameId: 'test-game',
+      sectionId: 'section-id',
+      sectionName: 'Derived Attributes',
+      sectionType: 'deltagreenderived',
+      userId: 'user-1',
+      content: JSON.stringify({
+        showEmpty: false,
+        items: [
+          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 10, description: '' },
+          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 0, description: '' },
+          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 50, description: '' },
+          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
+        ]
+      }),
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      position: 0,
+      type: 'section'
+    };
+
+    const { container } = render(
+      <ToastProvider>
+        <IntlProvider locale="en" messages={messagesEnglish}>
+          <CharacterDeathProvider>
+            <SectionDeltaGreenDerived
+              section={mockSection}
+              userSubject="user-1"
+              mayEditSheet={true}
+              onUpdate={() => {}}
+            />
+          </CharacterDeathProvider>
+        </IntlProvider>
+      </ToastProvider>
+    );
+
+    const wpRow = container.querySelector('.derived-row.wp-depleted');
+    expect(wpRow).toBeTruthy();
+  });
+
+  it('does not apply wp-depleted class when WP current is greater than 0', () => {
+    const mockSection = {
+      gameId: 'test-game',
+      sectionId: 'section-id',
+      sectionName: 'Derived Attributes',
+      sectionType: 'deltagreenderived',
+      userId: 'user-1',
+      content: JSON.stringify({
+        showEmpty: false,
+        items: [
+          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 10, description: '' },
+          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 5, description: '' },
+          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 50, description: '' },
+          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
+        ]
+      }),
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      position: 0,
+      type: 'section'
+    };
+
+    const { container } = render(
+      <ToastProvider>
+        <IntlProvider locale="en" messages={messagesEnglish}>
+          <CharacterDeathProvider>
+            <SectionDeltaGreenDerived
+              section={mockSection}
+              userSubject="user-1"
+              mayEditSheet={true}
+              onUpdate={() => {}}
+            />
+          </CharacterDeathProvider>
+        </IntlProvider>
+      </ToastProvider>
+    );
+
+    const wpDepletedRow = container.querySelector('.derived-row.wp-depleted');
+    expect(wpDepletedRow).toBeFalsy();
+  });
+
+  it('can show both wp-depleted and disorder-warning simultaneously', () => {
+    const mockSection = {
+      gameId: 'test-game',
+      sectionId: 'section-id',
+      sectionName: 'Derived Attributes',
+      sectionType: 'deltagreenderived',
+      userId: 'user-1',
+      content: JSON.stringify({
+        showEmpty: false,
+        items: [
+          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 10, description: '' },
+          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 0, description: '' },
+          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 35, description: '' },
+          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
+        ]
+      }),
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      position: 0,
+      type: 'section'
+    };
+
+    const { container } = render(
+      <ToastProvider>
+        <IntlProvider locale="en" messages={messagesEnglish}>
+          <CharacterDeathProvider>
+            <SectionDeltaGreenDerived
+              section={mockSection}
+              userSubject="user-1"
+              mayEditSheet={true}
+              onUpdate={() => {}}
+            />
+          </CharacterDeathProvider>
+        </IntlProvider>
+      </ToastProvider>
+    );
+
+    // Both classes should be present on different rows
+    const wpDepletedRow = container.querySelector('.derived-row.wp-depleted');
+    const disorderRows = container.querySelectorAll('.derived-row.disorder-warning');
+
+    expect(wpDepletedRow).toBeTruthy();
+    expect(disorderRows.length).toBeGreaterThan(0);
+  });
+});

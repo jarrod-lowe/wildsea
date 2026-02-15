@@ -238,6 +238,9 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     const bpCurrent = derivedCalcs?.BP?.current ?? bpItem?.current ?? 0;
     const hasDisorder = sanItem && sanItem.current <= bpCurrent;
 
+    const wpItem = content.items.find(item => item.attributeType === 'WP');
+    const isWpDepleted = wpItem && wpItem.current === 0;
+
     return (
       <div className="delta-green-derived-grid">
         <div className="derived-header">
@@ -251,11 +254,12 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
           const displayMax = calc && 'max' in calc ? calc.max : undefined;
           const displayCurrent = item.attributeType === 'BP' ? (calc?.current ?? item.current) : item.current;
           const isDisorderRow = hasDisorder && (item.attributeType === 'SAN' || item.attributeType === 'BP');
-          
+          const isWpDepletedRow = isWpDepleted && item.attributeType === 'WP';
+
           const inputId = `derived-current-${item.id}`;
-          
+
           return (
-            <div key={item.id} className={`derived-row ${isDisorderRow ? 'disorder-warning' : ''}`}>
+            <div key={item.id} className={`derived-row ${isDisorderRow ? 'disorder-warning' : ''} ${isWpDepletedRow ? 'wp-depleted' : ''}`}>
               <div className="derived-col-attribute">
                 <label htmlFor={inputId}>{item.name}</label>
               </div>
