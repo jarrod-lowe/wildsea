@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { IntlProvider } from 'react-intl';
 import { messagesEnglish } from './translations.en';
 import { ToastProvider } from './notificationToast';
-import { Game, PlayerSheet } from '../../appsync/graphql';
+import { PlayerSheet } from '../../appsync/graphql';
 import { CharacterDeathProvider, useCharacterDeath } from './contexts/CharacterDeathContext';
 
 // Mock AWS Amplify

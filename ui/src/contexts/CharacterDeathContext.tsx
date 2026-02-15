@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 
 interface CharacterDeathState {
   [userId: string]: boolean; // userId -> isDead
@@ -25,8 +25,13 @@ export const CharacterDeathProvider: React.FC<{ children: ReactNode }> = ({ chil
     }));
   };
 
+  const value = useMemo(
+    () => ({ isCharacterDead, setCharacterDead }),
+    [isCharacterDead, setCharacterDead]
+  );
+
   return (
-    <CharacterDeathContext.Provider value={{ isCharacterDead, setCharacterDead }}>
+    <CharacterDeathContext.Provider value={value}>
       {children}
     </CharacterDeathContext.Provider>
   );

@@ -58,12 +58,8 @@ describe('PlayerSheetTab - Death State', () => {
     );
   };
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('applies character-deceased class when character is dead', () => {
-    // Create a test component that sets death state before rendering
+  // Helper component that sets a character as dead before rendering
+  const createDeadCharacterComponent = () => {
     const TestComponent = () => {
       const { setCharacterDead } = useCharacterDeath();
 
@@ -73,7 +69,15 @@ describe('PlayerSheetTab - Death State', () => {
 
       return <PlayerSheetTab {...mockProps} />;
     };
+    return TestComponent;
+  };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('applies character-deceased class when character is dead', () => {
+    const TestComponent = createDeadCharacterComponent();
     const { container } = renderWithProviders(<TestComponent />);
 
     const playerSheet = container.querySelector('.player-sheet');
@@ -81,17 +85,7 @@ describe('PlayerSheetTab - Death State', () => {
   });
 
   it('shows death banner when character is dead', () => {
-    // Create a test component that sets death state before rendering
-    const TestComponent = () => {
-      const { setCharacterDead } = useCharacterDeath();
-
-      React.useEffect(() => {
-        setCharacterDead('user-1', true);
-      }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-      return <PlayerSheetTab {...mockProps} />;
-    };
-
+    const TestComponent = createDeadCharacterComponent();
     renderWithProviders(<TestComponent />);
 
     expect(screen.getByText(/AGENT TERMINATED/i)).toBeInTheDocument();
