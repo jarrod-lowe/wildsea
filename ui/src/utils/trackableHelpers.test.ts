@@ -1,5 +1,4 @@
 import { TrackableItem, TrackableContent, handleTrackableTickClick, isItemAdapted } from './trackableHelpers';
-import { SheetSection } from "../../../appsync/graphql";
 
 describe('trackableHelpers', () => {
   describe('isItemAdapted', () => {

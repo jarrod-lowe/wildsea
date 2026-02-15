@@ -17,7 +17,7 @@ const TickCheckbox: React.FC<{
 
   return (
     <button
-      onClick={!disabled ? onClick : undefined}
+      onClick={disabled ? undefined : onClick}
       disabled={disabled}
       className={`tick-checkbox ${state}`}
       aria-label={intl.formatMessage({ id: `sectionObject.buttonState.${state}` })}
@@ -29,6 +29,37 @@ const TickCheckbox: React.FC<{
 
 export const SectionDeltaGreenSanLoss: React.FC<SectionDefinition> = (props) => {
   const intl = useIntl();
+
+  const renderItemContent = (
+    item: TrackableItem,
+    content: TrackableContent,
+    setContent: React.Dispatch<React.SetStateAction<TrackableContent>>,
+    updateSection: (updatedSection: Partial<SheetSection>) => Promise<void>,
+    mayEditSheet: boolean,
+    adapted: boolean,
+  ) => (
+    <>
+      <span className="sr-only" aria-live="polite">
+        {intl.formatMessage(
+          { id: 'sectionObject.trackableSummary' },
+          { ticked: item.ticked, total: item.length }
+        )}
+      </span>
+      {[...new Array(item.length)].map((_, index) => (
+        <TickCheckbox
+          key={`${item.id}-${index}`}
+          state={index < item.ticked ? 'ticked' : 'unticked'}
+          onClick={() => handleTrackableTickClick(item, index, content, setContent, updateSection)}
+          disabled={!mayEditSheet}
+        />
+      ))}
+      {adapted && (
+        <span className="adapted-label">
+          <FormattedMessage id="deltaGreenSanLoss.adapted" />
+        </span>
+      )}
+    </>
+  );
 
   const renderItems = (
     content: TrackableContent,
@@ -46,29 +77,7 @@ export const SectionDeltaGreenSanLoss: React.FC<SectionDefinition> = (props) => 
             key={item.id}
             item={item}
             className={adapted ? 'adapted-item' : ''}
-            renderContent={(item) => (
-              <>
-                <span className="sr-only" aria-live="polite">
-                  {intl.formatMessage(
-                    { id: 'sectionObject.trackableSummary' },
-                    { ticked: item.ticked, total: item.length }
-                  )}
-                </span>
-                {[...Array(item.length)].map((_, index) => (
-                  <TickCheckbox
-                    key={`${item.id}-${index}`}
-                    state={index < item.ticked ? 'ticked' : 'unticked'}
-                    onClick={() => handleTrackableTickClick(item, index, content, setContent, updateSection)}
-                    disabled={!mayEditSheet}
-                  />
-                ))}
-                {adapted && (
-                  <span className="adapted-label">
-                    <FormattedMessage id="deltaGreenSanLoss.adapted" />
-                  </span>
-                )}
-              </>
-            )}
+            renderContent={() => renderItemContent(item, content, setContent, updateSection, mayEditSheet, adapted)}
           />
         );
       });
