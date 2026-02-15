@@ -45,7 +45,7 @@ export const SectionDeltaGreenSanLoss: React.FC<SectionDefinition> = (props) => 
           { ticked: item.ticked, total: item.length }
         )}
       </span>
-      {[...new Array(item.length)].map((_, index) => (
+      {Array.from({ length: item.length }, (_, index) => (
         <TickCheckbox
           key={`${item.id}-${index}`}
           state={index < item.ticked ? 'ticked' : 'unticked'}
