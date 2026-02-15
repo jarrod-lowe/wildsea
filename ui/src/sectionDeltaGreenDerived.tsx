@@ -20,14 +20,14 @@ type SectionTypeDeltaGreenDerived = BaseSectionContent<DeltaGreenDerivedItem> & 
 };
 
 const getStatsFromDataAttributes = () => {
-  const statsContainer = document.querySelector('.delta-green-stats-grid');
+  const statsContainer = document.querySelector('.delta-green-stats-grid') as HTMLElement;
   if (!statsContainer) return null;
-  
+
   const stats: { [key: string]: number } = {};
-  stats.STR = Number.parseInt(statsContainer.getAttribute('data-stat-str') || '0');
-  stats.CON = Number.parseInt(statsContainer.getAttribute('data-stat-con') || '0');
-  stats.POW = Number.parseInt(statsContainer.getAttribute('data-stat-pow') || '0');
-  
+  stats.STR = Number.parseInt(statsContainer.dataset.statStr || '0');
+  stats.CON = Number.parseInt(statsContainer.dataset.statCon || '0');
+  stats.POW = Number.parseInt(statsContainer.dataset.statPow || '0');
+
   return stats;
 };
 
