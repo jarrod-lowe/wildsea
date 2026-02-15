@@ -1846,6 +1846,26 @@ body {
   }
 }
 
+/* Delta Green SAN Loss - Consistent spacing for all items */
+.section-item.object-item {
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+}
+
+/* Delta Green SAN Loss - Adapted item styling */
+.section-item.adapted-item {
+  background-color: var(--color-warning-light);
+  border-color: var(--color-warning-border);
+}
+
+.adapted-label {
+  color: var(--color-warning);
+  font-weight: 600;
+  margin-left: 0.5rem;
+  font-size: 0.9em;
+}
+
 /* Delta Green Skills grid styling */
 .section-items .delta-green-skills-grid {
   grid-column: 1 / -1;

@@ -170,6 +170,7 @@ export const messagesKlingon = {
     'deltaGreenStats.distinguishingFeaturesPlaceholder': 'DIch mI\' DIch (40 DIch naDev)',
 
     'sectionType.deltagreendered': 'Delta DIch DIch mI\' DIch',
+    'sectionType.deltagreensanloss': 'mI\'lugh SuD SAN Huj \'e\' DIch',
     'deltaGreenDerived.derivedAttribute': 'DIch mI\' DIch',
     'deltaGreenDerived.maximum': 'DIch naDev',
     'deltaGreenDerived.current': 'DaH',
@@ -180,6 +181,9 @@ export const messagesKlingon = {
     'deltaGreenDerived.sanityModifierHelp': 'SAN\'e\' tIn choH (reH SAN Qaw\' vo\')',
     'deltaGreenDerived.increaseModifier': 'yab\'e\' choH DIch',
     'deltaGreenDerived.decreaseModifier': 'yab\'e\' choH puS',
+
+    'deltaGreenSanLoss.adapted': '✓ yIchelta\'',
+
     'sectionDeltaGreenDerived.increase': '{name} DIch',
     'sectionDeltaGreenDerived.decrease': '{name} puS',
     'sectionDeltaGreenDerived.incrementSymbol': '+',

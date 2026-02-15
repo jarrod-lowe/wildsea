@@ -458,8 +458,7 @@ This structure allows:
   6. AppSync Target
     - Resource: aws_cloudwatch_event_target.finalise_asset_target (terraform/module/wildsea/deleter.tf:604)
     - Target ID: appsync-finalise-asset
-    - GraphQL Operation: _finaliseAsset mutation
-
+    - GraphQL Operation: `_finaliseAsset` mutation
 
   Resource Flow Diagram:
 
@@ -470,4 +469,4 @@ This structure allows:
     → aws_cloudwatch_event_bus.bus
     → aws_cloudwatch_event_rule.finalise_asset_rule
     → aws_cloudwatch_event_target.finalise_asset_target
-    → AppSync _finaliseAsset
+    → AppSync `_finaliseAsset`

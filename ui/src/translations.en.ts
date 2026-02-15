@@ -173,6 +173,7 @@ export const messagesEnglish = {
     'deltaGreenStats.distinguishingFeaturesPlaceholder': 'Enter features (max 40 chars)',
 
     'sectionType.deltagreendered': 'Delta Green Derived Attributes',
+    'sectionType.deltagreensanloss': 'Delta Green SAN Loss Incidents',
     'deltaGreenDerived.derivedAttribute': 'Derived Attribute',
     'deltaGreenDerived.maximum': 'Maximum',
     'deltaGreenDerived.current': 'Current',
@@ -183,6 +184,8 @@ export const messagesEnglish = {
     'deltaGreenDerived.sanityModifierHelp': 'Subtracts from maximum Sanity (e.g., from permanent SAN loss)',
     'deltaGreenDerived.increaseModifier': 'Increase sanity modifier',
     'deltaGreenDerived.decreaseModifier': 'Decrease sanity modifier',
+
+    'deltaGreenSanLoss.adapted': '✓ Adapted',
     'sectionDeltaGreenDerived.increase': 'Increase {name}',
     'sectionDeltaGreenDerived.decrease': 'Decrease {name}',
     'sectionDeltaGreenDerived.incrementSymbol': '+',
