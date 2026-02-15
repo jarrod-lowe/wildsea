@@ -7,36 +7,43 @@ import { getDeltaGreenDerivedSeed } from './seed';
 import { SupportedLanguage } from './translations';
 import { DiceRollModal } from './components/DiceRollModal';
 import { SanityLossActions } from './components/SanityLossActions';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 interface DeltaGreenDerivedItem extends BaseSectionItem {
   attributeType: 'HP' | 'WP' | 'SAN' | 'BP';
   current: number;
 }
 
-type SectionTypeDeltaGreenDerived = BaseSectionContent<DeltaGreenDerivedItem>;
+type SectionTypeDeltaGreenDerived = BaseSectionContent<DeltaGreenDerivedItem> & {
+  sanityModifier?: number;
+};
 
 const getStatsFromDataAttributes = () => {
-  const statsContainer = document.querySelector('.delta-green-stats-grid');
+  const statsContainer = document.querySelector('.delta-green-stats-grid') as HTMLElement;
   if (!statsContainer) return null;
-  
+
   const stats: { [key: string]: number } = {};
-  stats.STR = parseInt(statsContainer.getAttribute('data-stat-str') || '0');
-  stats.CON = parseInt(statsContainer.getAttribute('data-stat-con') || '0');
-  stats.POW = parseInt(statsContainer.getAttribute('data-stat-pow') || '0');
-  
+  stats.STR = Number.parseInt(statsContainer.dataset.statStr || '0');
+  stats.CON = Number.parseInt(statsContainer.dataset.statCon || '0');
+  stats.POW = Number.parseInt(statsContainer.dataset.statPow || '0');
+
   return stats;
 };
 
-const calculateDerivedAttributes = (stats: { [key: string]: number }) => {
+export const calculateDerivedAttributes = (stats: { [key: string]: number }, sanityModifier: number = 0) => {
   const str = stats.STR || 0;
   const con = stats.CON || 0;
   const pow = stats.POW || 0;
-  
+
+  const baseSanMax = pow * 5;
+  const adjustedSanMax = Math.max(0, baseSanMax - sanityModifier);
+
   return {
     HP: { max: Math.ceil((str + con) / 2), current: Math.ceil((str + con) / 2) },
     WP: { max: pow, current: pow },
-    SAN: { max: pow * 5, current: pow * 5 },
-    BP: { current: (pow * 5) - pow }
+    SAN: { max: adjustedSanMax, current: adjustedSanMax },
+    BP: { current: adjustedSanMax - pow }
   };
 };
 
@@ -102,7 +109,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
   ) => {
     // Get current calculated maximum
     const stats = getStatsFromDataAttributes();
-    const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
+    const derivedCalcs = stats ? calculateDerivedAttributes(stats, content.sanityModifier || 0) : null;
     const calc = derivedCalcs?.[item.attributeType];
     const currentMax = calc && 'max' in calc ? calc.max : undefined;
     
@@ -140,9 +147,9 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
   ) => {
     // Store current update functions for sanity loss
     sanityUpdateRef.current = { updateSection, setContent, content };
-    
+
     const stats = getStatsFromDataAttributes();
-    const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
+    const derivedCalcs = stats ? calculateDerivedAttributes(stats, content.sanityModifier || 0) : null;
 
     // Auto-clamp and sync on every render if needed (not ideal but works)
     if (derivedCalcs && mayEditSheet) {
@@ -221,7 +228,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                     min="0"
                     max={displayMax}
                     value={displayCurrent}
-                    onChange={(e) => handleCurrentChange(item, parseInt(e.target.value) || 0, content, setContent, updateSection)}
+                    onChange={(e) => handleCurrentChange(item, Number.parseInt(e.target.value) || 0, content, setContent, updateSection)}
                     disabled={!mayEditSheet || item.attributeType === 'BP'}
                     className="current-input"
                   />
@@ -263,10 +270,68 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     );
   };
 
-  const renderEditForm = (_content: SectionTypeDeltaGreenDerived, _setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>, handleUpdate: () => void, handleCancel: () => void) => {
+  const renderEditForm = (content: SectionTypeDeltaGreenDerived, setContent: React.Dispatch<React.SetStateAction<SectionTypeDeltaGreenDerived>>, handleUpdate: () => void, handleCancel: () => void) => {
+    const currentModifier = content.sanityModifier || 0;
+
     return (
       <div className="delta-green-derived-edit">
-        <p><FormattedMessage id="deltaGreenDerived.editNote" /></p>
+        <div className="section-item-edit">
+          <FormattedMessage id="deltaGreenDerived.editNote" />
+        </div>
+        <div className="section-item-edit">
+          <div className="preset-weapon-row">
+            <label htmlFor="sanity-modifier" className="preset-label">
+              <FormattedMessage id="deltaGreenDerived.sanityModifier" />
+              <Tippy
+                content={intl.formatMessage({ id: 'deltaGreenDerived.sanityModifierHelp' })}
+                trigger="click"
+                arrow={true}
+                placement="top"
+              >
+                <button
+                  className="btn-icon info"
+                  aria-label={intl.formatMessage({ id: 'showInfo.sanityModifier' })}
+                >
+                  ℹ
+                </button>
+              </Tippy>
+            </label>
+            <div className="score-inline-controls">
+              <button
+                onClick={() => {
+                  const newModifier = Math.max(0, currentModifier - 1);
+                  setContent({ ...content, sanityModifier: newModifier });
+                }}
+                disabled={currentModifier <= 0}
+                className="adjust-btn small"
+                aria-label={intl.formatMessage({ id: 'deltaGreenDerived.decreaseModifier' })}
+              >
+                <FormattedMessage id="sectionDeltaGreenDerived.decrementSymbol" />
+              </button>
+              <input
+                id="sanity-modifier"
+                type="number"
+                min="0"
+                value={currentModifier}
+                onChange={(e) => {
+                  const newModifier = Math.max(0, Number.parseInt(e.target.value) || 0);
+                  setContent({ ...content, sanityModifier: newModifier });
+                }}
+                className="score-input-inline"
+              />
+              <button
+                onClick={() => {
+                  const newModifier = currentModifier + 1;
+                  setContent({ ...content, sanityModifier: newModifier });
+                }}
+                className="adjust-btn small"
+                aria-label={intl.formatMessage({ id: 'deltaGreenDerived.increaseModifier' })}
+              >
+                <FormattedMessage id="sectionDeltaGreenDerived.incrementSymbol" />
+              </button>
+            </div>
+          </div>
+        </div>
         <div className="section-edit-buttons">
           <button className="btn-standard btn-small" onClick={handleUpdate}>
             <FormattedMessage id="save" />
@@ -321,7 +386,7 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
 export const createDefaultDeltaGreenDerivedContent = (_sheet?: any, language?: SupportedLanguage): SectionTypeDeltaGreenDerived => {
   // Try to get stats from data attributes (will be null on initial creation)
   const stats = getStatsFromDataAttributes();
-  const derivedCalcs = stats ? calculateDerivedAttributes(stats) : null;
+  const derivedCalcs = stats ? calculateDerivedAttributes(stats, 0) : null;
   const derivedData = getDeltaGreenDerivedSeed(language || 'en');
 
   return {
