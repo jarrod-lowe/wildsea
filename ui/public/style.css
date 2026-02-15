@@ -1686,6 +1686,16 @@ body {
   background-color: var(--color-accent-disorder2);
 }
 
+/* HP Depletion Styling */
+.derived-row.hp-depleted {
+  background-color: var(--color-accent-disorder1);
+  box-shadow: inset 4px 0 0 var(--color-danger);
+}
+
+.derived-row.hp-depleted:nth-child(even) {
+  background-color: var(--color-accent-disorder2);
+}
+
 .derived-col-attribute,
 .derived-col-maximum,
 .derived-col-current,

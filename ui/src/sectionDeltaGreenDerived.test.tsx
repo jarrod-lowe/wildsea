@@ -6,6 +6,85 @@ import { messagesEnglish } from "./translations.en";
 import { ToastProvider } from "./notificationToast";
 import { CharacterDeathProvider } from "./contexts/CharacterDeathContext";
 
+// Test helper types and functions
+interface MockSectionConfig {
+  hpCurrent?: number;
+  wpCurrent?: number;
+  sanCurrent?: number;
+  bpCurrent?: number;
+}
+
+const createMockDeltaGreenDerivedSection = (config: MockSectionConfig = {}) => {
+  const {
+    hpCurrent = 10,
+    wpCurrent = 10,
+    sanCurrent = 50,
+    bpCurrent = 40
+  } = config;
+
+  return {
+    gameId: 'test-game',
+    sectionId: 'section-id',
+    sectionName: 'Derived Attributes',
+    sectionType: 'deltagreenderived',
+    userId: 'user-1',
+    content: JSON.stringify({
+      showEmpty: false,
+      items: [
+        { id: 'hp-1', name: 'HP', attributeType: 'HP', current: hpCurrent, description: '' },
+        { id: 'wp-1', name: 'WP', attributeType: 'WP', current: wpCurrent, description: '' },
+        { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: sanCurrent, description: '' },
+        { id: 'bp-1', name: 'BP', attributeType: 'BP', current: bpCurrent, description: '' }
+      ]
+    }),
+    createdAt: '2023-01-01T00:00:00Z',
+    updatedAt: '2023-01-01T00:00:00Z',
+    position: 0,
+    type: 'section'
+  };
+};
+
+interface RenderDeltaGreenDerivedOptions {
+  section?: ReturnType<typeof createMockDeltaGreenDerivedSection>;
+  userSubject?: string;
+  mayEditSheet?: boolean;
+  onUpdate?: () => void;
+}
+
+const renderDeltaGreenDerived = (options: RenderDeltaGreenDerivedOptions = {}) => {
+  const {
+    section = createMockDeltaGreenDerivedSection(),
+    userSubject = 'user-1',
+    mayEditSheet = true,
+    onUpdate = () => {}
+  } = options;
+
+  // Set up DOM with stats
+  document.body.innerHTML = `
+    <div class="delta-green-stats-grid"
+         data-stat-str="10"
+         data-stat-con="10"
+         data-stat-pow="10">
+    </div>
+  `;
+
+  // Render with all required providers
+  return render(
+    <ToastProvider>
+      <IntlProvider locale="en" messages={messagesEnglish}>
+        <CharacterDeathProvider>
+          <SectionDeltaGreenDerived
+            section={section}
+            userSubject={userSubject}
+            mayEditSheet={mayEditSheet}
+            onUpdate={onUpdate}
+          />
+        </CharacterDeathProvider>
+      </IntlProvider>
+    </ToastProvider>
+  );
+};
+
 describe("SectionDeltaGreenDerived - Sanity Modifier", () => {
   it("reduces SAN max when modifier is applied", () => {
     const stats = { STR: 10, CON: 10, POW: 10 };
@@ -199,139 +278,70 @@ describe("SectionDeltaGreenDerived - Integration", () => {
 });
 
 describe('WP Depletion Styling', () => {
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <div class="delta-green-stats-grid"
-           data-stat-str="10"
-           data-stat-con="10"
-           data-stat-pow="10">
-      </div>
-    `;
-  });
-
   it('applies wp-depleted class when WP current is 0', () => {
-    const mockSection = {
-      gameId: 'test-game',
-      sectionId: 'section-id',
-      sectionName: 'Derived Attributes',
-      sectionType: 'deltagreenderived',
-      userId: 'user-1',
-      content: JSON.stringify({
-        showEmpty: false,
-        items: [
-          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 10, description: '' },
-          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 0, description: '' },
-          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 50, description: '' },
-          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
-        ]
-      }),
-      createdAt: '2023-01-01T00:00:00Z',
-      updatedAt: '2023-01-01T00:00:00Z',
-      position: 0,
-      type: 'section'
-    };
-
-    const { container } = render(
-      <ToastProvider>
-        <IntlProvider locale="en" messages={messagesEnglish}>
-          <CharacterDeathProvider>
-            <SectionDeltaGreenDerived
-              section={mockSection}
-              userSubject="user-1"
-              mayEditSheet={true}
-              onUpdate={() => {}}
-            />
-          </CharacterDeathProvider>
-        </IntlProvider>
-      </ToastProvider>
-    );
+    const { container } = renderDeltaGreenDerived({
+      section: createMockDeltaGreenDerivedSection({ wpCurrent: 0 })
+    });
 
     const wpRow = container.querySelector('.derived-row.wp-depleted');
     expect(wpRow).toBeTruthy();
   });
 
   it('does not apply wp-depleted class when WP current is greater than 0', () => {
-    const mockSection = {
-      gameId: 'test-game',
-      sectionId: 'section-id',
-      sectionName: 'Derived Attributes',
-      sectionType: 'deltagreenderived',
-      userId: 'user-1',
-      content: JSON.stringify({
-        showEmpty: false,
-        items: [
-          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 10, description: '' },
-          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 5, description: '' },
-          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 50, description: '' },
-          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
-        ]
-      }),
-      createdAt: '2023-01-01T00:00:00Z',
-      updatedAt: '2023-01-01T00:00:00Z',
-      position: 0,
-      type: 'section'
-    };
-
-    const { container } = render(
-      <ToastProvider>
-        <IntlProvider locale="en" messages={messagesEnglish}>
-          <CharacterDeathProvider>
-            <SectionDeltaGreenDerived
-              section={mockSection}
-              userSubject="user-1"
-              mayEditSheet={true}
-              onUpdate={() => {}}
-            />
-          </CharacterDeathProvider>
-        </IntlProvider>
-      </ToastProvider>
-    );
+    const { container } = renderDeltaGreenDerived({
+      section: createMockDeltaGreenDerivedSection({ wpCurrent: 5 })
+    });
 
     const wpDepletedRow = container.querySelector('.derived-row.wp-depleted');
     expect(wpDepletedRow).toBeFalsy();
   });
 
   it('can show both wp-depleted and disorder-warning simultaneously', () => {
-    const mockSection = {
-      gameId: 'test-game',
-      sectionId: 'section-id',
-      sectionName: 'Derived Attributes',
-      sectionType: 'deltagreenderived',
-      userId: 'user-1',
-      content: JSON.stringify({
-        showEmpty: false,
-        items: [
-          { id: 'hp-1', name: 'HP', attributeType: 'HP', current: 10, description: '' },
-          { id: 'wp-1', name: 'WP', attributeType: 'WP', current: 0, description: '' },
-          { id: 'san-1', name: 'SAN', attributeType: 'SAN', current: 35, description: '' },
-          { id: 'bp-1', name: 'BP', attributeType: 'BP', current: 40, description: '' }
-        ]
-      }),
-      createdAt: '2023-01-01T00:00:00Z',
-      updatedAt: '2023-01-01T00:00:00Z',
-      position: 0,
-      type: 'section'
-    };
+    const { container } = renderDeltaGreenDerived({
+      section: createMockDeltaGreenDerivedSection({ wpCurrent: 0, sanCurrent: 35 })
+    });
 
-    const { container } = render(
-      <ToastProvider>
-        <IntlProvider locale="en" messages={messagesEnglish}>
-          <CharacterDeathProvider>
-            <SectionDeltaGreenDerived
-              section={mockSection}
-              userSubject="user-1"
-              mayEditSheet={true}
-              onUpdate={() => {}}
-            />
-          </CharacterDeathProvider>
-        </IntlProvider>
-      </ToastProvider>
-    );
-
-    // Both classes should be present on different rows
     const wpDepletedRow = container.querySelector('.derived-row.wp-depleted');
     const disorderRows = container.querySelectorAll('.derived-row.disorder-warning');
 
+    expect(wpDepletedRow).toBeTruthy();
+    expect(disorderRows.length).toBeGreaterThan(0);
+  });
+});
+
+describe('HP Depletion Styling', () => {
+  it('applies hp-depleted class when HP current is 0', () => {
+    const { container } = renderDeltaGreenDerived({
+      section: createMockDeltaGreenDerivedSection({ hpCurrent: 0 })
+    });
+
+    const hpRow = container.querySelector('.derived-row.hp-depleted');
+    expect(hpRow).toBeTruthy();
+  });
+
+  it('does not apply hp-depleted class when HP current is greater than 0', () => {
+    const { container } = renderDeltaGreenDerived({
+      section: createMockDeltaGreenDerivedSection({ hpCurrent: 5 })
+    });
+
+    const hpDepletedRow = container.querySelector('.derived-row.hp-depleted');
+    expect(hpDepletedRow).toBeFalsy();
+  });
+
+  it('can show hp-depleted, wp-depleted, and disorder-warning simultaneously', () => {
+    const { container } = renderDeltaGreenDerived({
+      section: createMockDeltaGreenDerivedSection({
+        hpCurrent: 0,
+        wpCurrent: 0,
+        sanCurrent: 35
+      })
+    });
+
+    const hpDepletedRow = container.querySelector('.derived-row.hp-depleted');
+    const wpDepletedRow = container.querySelector('.derived-row.wp-depleted');
+    const disorderRows = container.querySelectorAll('.derived-row.disorder-warning');
+
+    expect(hpDepletedRow).toBeTruthy();
     expect(wpDepletedRow).toBeTruthy();
     expect(disorderRows.length).toBeGreaterThan(0);
   });
