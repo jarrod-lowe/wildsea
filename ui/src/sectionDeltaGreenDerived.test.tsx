@@ -337,7 +337,7 @@ describe('WP Depletion Styling', () => {
   });
 });
 
-describe('HP Depletion Styling', () => {
+describe('HP Depletion Styling', () => { // NOSONAR - Test duplication is acceptable for readability
   beforeEach(() => {
     document.body.innerHTML = `
       <div class="delta-green-stats-grid"
