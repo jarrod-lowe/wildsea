@@ -6,6 +6,7 @@ import { SectionKeyValue } from './sectionKeyValue';
 import { SectionRichText } from './sectionRichText';
 import { SectionDeltaGreenStats, createDefaultDeltaGreenStatsContent } from './sectionDeltaGreenStats';
 import { SectionDeltaGreenDerived, createDefaultDeltaGreenDerivedContent } from './sectionDeltaGreenDerived';
+import { SectionDeltaGreenSanLoss } from './sectionDeltaGreenSanLoss';
 import { SectionDeltaGreenSkills, createDefaultDeltaGreenSkillsContent } from './sectionDeltaGreenSkills';
 import { SectionDeltaGreenWeapons, createDefaultDeltaGreenWeaponsContent } from './sectionDeltaGreenWeapons';
 import { SectionDeltaGreenBonds, createDefaultDeltaGreenBondsContent } from './sectionDeltaGreenBonds';
@@ -26,6 +27,7 @@ const sectionRegistry: Record<string, SectionTypeConfig> = {
   'RICHTEXT': { component: SectionRichText, label: 'sectionType.richtext', seed: () => ({items: [{content: ""}]}) },
   'DELTAGREENSTATS': { component: SectionDeltaGreenStats, label: 'sectionType.deltagreenstats', seed: (sheet, language) => createDefaultDeltaGreenStatsContent(language) },
   'DELTAGREENDERED': { component: SectionDeltaGreenDerived, label: 'sectionType.deltagreendered', seed: (sheet, language) => createDefaultDeltaGreenDerivedContent(sheet, language) },
+  'DELTAGREENSANLOSS': { component: SectionDeltaGreenSanLoss, label: 'sectionType.deltagreensanloss', seed: () => ({showEmpty: true, items: []}) },
   'DELTAGREENSKILLS': { component: SectionDeltaGreenSkills, label: 'sectionType.deltagreenskills', seed: (sheet, language) => createDefaultDeltaGreenSkillsContent(language) },
   'DELTAGREENWEAPONS': { component: SectionDeltaGreenWeapons, label: 'sectionType.deltagreenweapons', seed: () => createDefaultDeltaGreenWeaponsContent() },
   'DELTAGREENBONDS': { component: SectionDeltaGreenBonds, label: 'sectionType.deltagreenbonds', seed: () => createDefaultDeltaGreenBondsContent() },

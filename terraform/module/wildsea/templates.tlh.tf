@@ -334,7 +334,7 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic_tlh" {
         },
         {
           sectionName = "SAN Huj 'e' DIch"
-          sectionType = "TRACKABLE"
+          sectionType = "DELTAGREENSANLOSS"
           content = jsonencode({
             items = [
               {

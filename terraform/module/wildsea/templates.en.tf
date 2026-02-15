@@ -334,7 +334,7 @@ resource "aws_dynamodb_table_item" "template_deltagreen_basic_en" {
         },
         {
           sectionName = "Incidents of SAN loss without going insane"
-          sectionType = "TRACKABLE"
+          sectionType = "DELTAGREENSANLOSS"
           content = jsonencode({
             items = [
               {

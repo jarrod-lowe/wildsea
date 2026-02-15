@@ -9,13 +9,14 @@ import MDEditor, { getCommands, ICommand } from '@uiw/react-md-editor';
 interface SectionItemProps<T extends BaseSectionItem> {
   readonly item: T;
   readonly renderContent: (item: T) => React.ReactNode;
+  readonly className?: string;
 }
 
-export function SectionItem<T extends BaseSectionItem>({ item, renderContent }: Readonly<SectionItemProps<T>>) {
+export function SectionItem<T extends BaseSectionItem>({ item, renderContent, className }: Readonly<SectionItemProps<T>>) {
   const intl = useIntl();
-  
+
   return (
-    <div className={`section-item ${item.constructor.name.toLowerCase()}-item`}>
+    <div className={`section-item ${item.constructor.name.toLowerCase()}-item ${className || ''}`}>
       <span>
         {item.name}
         { item.description && (
