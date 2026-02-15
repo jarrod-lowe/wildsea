@@ -125,17 +125,15 @@ export function request(
       SK: DDBPrefixSection + "#" + input.sectionId,
     }),
     update: {
-      expression:
-        "SET #updatedAt = :updatedAt, #assets = list_append(if_not_exists(#assets, :emptyList), :assetList)",
+      expression: "SET #updatedAt = :updatedAt ADD #assets :assetId",
       expressionNames: {
         "#updatedAt": "updatedAt",
         "#assets": "assets",
       },
-      expressionValues: util.dynamodb.toMapValues({
-        ":updatedAt": timestamp,
-        ":emptyList": [],
-        ":assetList": [assetId],
-      }),
+      expressionValues: {
+        ":updatedAt": { S: timestamp },
+        ":assetId": { SS: [assetId] },
+      },
     },
     condition: {
       expression: "#userId = :userId",
