@@ -110,6 +110,28 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
     setSanityLossResult(rollResult);
   }, []);
 
+  const createSanityLossActions = useCallback((
+    gameId: string,
+    onBehalfOf: string | undefined,
+    onSanityLoss: (amount: number) => void,
+    onCloseAndShowNewRoll: (rollResult: any) => void
+  ) => {
+    return (rollResult: any) => {
+      const adaptationStatus = getAdaptationStatusFromDataAttributes();
+      return (
+        <SanityLossActions
+          gameId={gameId}
+          onBehalfOf={onBehalfOf}
+          onSanityLoss={onSanityLoss}
+          onCloseAndShowNewRoll={onCloseAndShowNewRoll}
+          isAdaptedToViolence={adaptationStatus.violence}
+          isAdaptedToHelplessness={adaptationStatus.helplessness}
+          rollResult={rollResult}
+        />
+      );
+    };
+  }, []);
+
   const handleCurrentChange = useCallback((
     item: DeltaGreenDerivedItem,
     newCurrent: number,
@@ -369,20 +391,14 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
           skillValue={selectedStat.value}
           initialAction={selectedStat.actionText}
           onBehalfOf={onBehalfOfValue}
-          customActionsAfterRoll={selectedStat.attributeType === 'SAN' ? (rollResult) => {
-            const adaptationStatus = getAdaptationStatusFromDataAttributes();
-            return (
-              <SanityLossActions
-                gameId={props.section.gameId}
-                onBehalfOf={onBehalfOfValue}
-                onSanityLoss={handleSanityLoss}
-                onCloseAndShowNewRoll={handleCloseAndShowNewRoll}
-                isAdaptedToViolence={adaptationStatus.violence}
-                isAdaptedToHelplessness={adaptationStatus.helplessness}
-                rollResult={rollResult}
-              />
-            );
-          } : undefined}
+          customActionsAfterRoll={selectedStat.attributeType === 'SAN'
+            ? createSanityLossActions(
+                props.section.gameId,
+                onBehalfOfValue,
+                handleSanityLoss,
+                handleCloseAndShowNewRoll
+              )
+            : undefined}
         />
       )}
       {sanityLossResult && (
