@@ -115,6 +115,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "assets_logs" {
     id     = "log-retention"
     status = "Enabled"
 
+    filter {}
+
     expiration {
       days = 90
     }
@@ -269,6 +271,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "assets" {
   rule {
     id     = "cleanup-incomplete-uploads"
     status = "Enabled"
+
+    filter {}
 
     abort_incomplete_multipart_upload {
       days_after_initiation = 3

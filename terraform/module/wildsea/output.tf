@@ -18,11 +18,11 @@ output "graphql_uri" {
 }
 
 output "region" {
-  value = data.aws_region.current.name
+  value = data.aws_region.current.region
 }
 
 output "cognito_login_domain" {
-  value = "${aws_cognito_user_pool_domain.cognito.domain}.auth.${data.aws_region.current.name}.amazoncognito.com"
+  value = "${aws_cognito_user_pool_domain.cognito.domain}.auth.${data.aws_region.current.region}.amazoncognito.com"
 }
 
 output "ui_bucket" {
@@ -50,7 +50,7 @@ output "rum_application_id" {
 }
 
 output "rum_application_region" {
-  value = var.enable_rum ? data.aws_region.current.name : null
+  value = var.enable_rum ? data.aws_region.current.region : null
 }
 
 output "rum_identity_pool_id" {
@@ -62,7 +62,7 @@ output "rum_guest_role_arn" {
 }
 
 output "rum_endpoint" {
-  value = var.enable_rum ? "https://dataplane.rum.${data.aws_region.current.name}.${data.aws_partition.current.dns_suffix}" : null
+  value = var.enable_rum ? "https://dataplane.rum.${data.aws_region.current.region}.${data.aws_partition.current.dns_suffix}" : null
 }
 
 output "rum_session_sample_rate" {
