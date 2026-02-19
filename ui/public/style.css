@@ -3331,6 +3331,7 @@ body {
 
 
 .roll-result-container {
+  position: relative;
   text-align: center;
 }
 
