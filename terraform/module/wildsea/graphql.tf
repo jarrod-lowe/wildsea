@@ -13,7 +13,7 @@ resource "aws_appsync_graphql_api" "graphql" {
     authentication_type = "AMAZON_COGNITO_USER_POOLS"
     user_pool_config {
       user_pool_id = aws_cognito_user_pool.cognito.id
-      aws_region   = data.aws_region.current.name
+      aws_region   = data.aws_region.current.region
     }
   }
 
@@ -165,7 +165,7 @@ resource "aws_appsync_datasource" "graphql" {
 
   dynamodb_config {
     table_name = aws_dynamodb_table.table.name
-    region     = data.aws_region.current.name
+    region     = data.aws_region.current.region
   }
 }
 
