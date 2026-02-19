@@ -3337,6 +3337,9 @@ body {
 
 .roll-result-container h3 {
   margin: 0 0 20px;
+}
+
+.roll-result-container h3:not([class]) {
   color: var(--color-text);
 }
 
