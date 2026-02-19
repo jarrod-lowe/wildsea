@@ -39,7 +39,7 @@ graphql-test: graphql/node_modules appsync/graphql.ts appsync/schema.ts graphql/
 .PHONY: graphql-eslint
 graphql-eslint: $(GRAPHQL_TS)
 	if [ -z "$(IN_PIPELINE)" ] ; then \
-		docker run --rm --user $$(id -u):$$(id -g) -v $(PWD)/graphql:/code pipelinecomponents/eslint eslint --fix ; \
+		docker run --rm --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/graphql --entrypoint ./node_modules/eslint/bin/eslint.js node:20 --fix ; \
 	else \
 		cd graphql && eslint ; \
 	fi
