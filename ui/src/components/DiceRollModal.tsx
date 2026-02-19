@@ -239,8 +239,8 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
 
               {showFireworks && (
                 <div className="panel-animation fireworks-animation" aria-hidden="true">
-                  {[...Array(8)].map((_, i) => (
-                    <div key={i} className={`firework firework-${i + 1}`}>
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                    <div key={n} className={`firework firework-${n}`}>
                       <FormattedMessage id="diceRoll.animation.firework" />
                     </div>
                   ))}
@@ -248,8 +248,8 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
               )}
               {showSkulls && (
                 <div className="panel-animation skulls-animation" aria-hidden="true">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className={`skull skull-${i + 1}`}>
+                  {[1, 2, 3, 4, 5, 6].map((n) => (
+                    <div key={n} className={`skull skull-${n}`}>
                       <FormattedMessage id="diceRoll.animation.skull" />
                     </div>
                   ))}
