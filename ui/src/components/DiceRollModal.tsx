@@ -5,7 +5,7 @@ import { generateClient } from "aws-amplify/api";
 import { rollDiceMutation } from "../../../appsync/schema";
 import { RollDiceInput, DiceRoll } from "../../../appsync/graphql";
 import { RollTypes, Grades } from "../../../graphql/lib/constants/rollTypes";
-import { DiceRollFormatter } from './DiceRollFormatter';
+import { DiceRollFormatter, formatGrade } from './DiceRollFormatter';
 
 interface DiceRollModalProps {
   isOpen: boolean;
@@ -208,9 +208,12 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
             </form>
           ) : (
             <div className="roll-result-container">
-              <h3>
-                <FormattedMessage id="diceRollModal.result" />
-              </h3>
+              {(() => {
+                const gradeInfo = formatGrade(rollResult.grade, rollResult.rollType, intl);
+                return gradeInfo.text
+                  ? <h3 className={gradeInfo.className}>{gradeInfo.emoji} {gradeInfo.text}</h3>
+                  : <h3><FormattedMessage id="diceRollModal.result" /></h3>;
+              })()}
               <DiceRollFormatter roll={rollResult} />
 
               {(() => {
