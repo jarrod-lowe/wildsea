@@ -207,12 +207,12 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
               </div>
             </form>
           ) : (
-            <div className="roll-result-container">
+            <div className="roll-result-container" aria-live="polite" aria-atomic="true">
               {(() => {
                 const gradeInfo = formatGrade(rollResult.grade, rollResult.rollType, intl);
                 return gradeInfo.text
-                  ? <h3 className={gradeInfo.className}>{gradeInfo.emoji} {gradeInfo.text}</h3>
-                  : <h3><FormattedMessage id="diceRollModal.result" /></h3>;
+                  ? <h3 className={gradeInfo.className} tabIndex={-1} autoFocus>{gradeInfo.emoji} {gradeInfo.text}</h3>
+                  : <h3 tabIndex={-1} autoFocus><FormattedMessage id="diceRollModal.result" /></h3>;
               })()}
               <DiceRollFormatter roll={rollResult} />
 
@@ -234,7 +234,6 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
                 <button
                   className="btn-secondary"
                   onClick={handleClose}
-                  autoFocus={true}
                 >
                   <FormattedMessage id="diceRollModal.close" />
                 </button>

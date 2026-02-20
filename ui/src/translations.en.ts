@@ -3,6 +3,7 @@ export const messagesEnglish = {
     'playerSheetTab.download.button': 'Download as JSON',
     'playerSheetTab.download.filename': 'character-sheet',
     'playerSheetTab.download.noPermission': 'You do not have permission to download this sheet',
+    'skipToContent': 'Skip to main content',
     'wildsea': 'Wildsea',
     'pleaseLogin': 'Please Log In',
     'unableToJoin': 'Unable to join game',

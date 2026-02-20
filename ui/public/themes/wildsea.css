@@ -51,7 +51,7 @@
   --color-accent-fumble: #7c2d12;
   --color-accent-neutral: #6b7280;
   --color-accent-sane: var(--color-action);
-  --color-focus: rgb(0 123 255 / 25%);
+  --color-focus: rgb(0 123 255 / 60%);
   --color-accent-disorder1: #ffe6e6;
   --color-accent-disorder2: #fdd;
   

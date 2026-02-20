@@ -393,6 +393,9 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
         
         return (
             <div>
+                <a href="#main-content" className="skip-link">
+                    <FormattedMessage id="skipToContent" />
+                </a>
                 <header>
                     <div className="gameslist">
                         <TopBar
@@ -406,7 +409,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
                         />
                     </div>
                 </header>
-                <main>
+                <main id="main-content">
                     <div className="gameslist">
                         <div><FormattedMessage id="pleaseLogin" /></div>
                     </div>
@@ -423,8 +426,11 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
 
     return (
         <div>
+            <a href="#main-content" className="skip-link">
+                <FormattedMessage id="skipToContent" />
+            </a>
             <SystemNotificationPanel isAuthenticated={!!userEmail} />
-            <main>
+            <main id="main-content">
                 <Suspense fallback={<LoadingScreen message={<FormattedMessage id="loadingGamesMenu" />} />}>
                     {gameId ?
                         <AppGame

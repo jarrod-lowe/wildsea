@@ -2,6 +2,23 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-sm);
+  z-index: 10000;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: var(--space-sm);
+}
+
 body {
   background-color: var(--color-surface);
   color: var(--color-text);
@@ -2917,11 +2934,16 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.btn-icon:hover,
+.btn-icon:hover {
+  background-color: var(--color-surface-light);
+  color: var(--color-danger-hover);
+}
+
 .btn-icon:focus {
   background-color: var(--color-surface-light);
   color: var(--color-danger-hover);
-  outline: none;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .btn-icon.info {
