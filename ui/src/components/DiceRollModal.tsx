@@ -206,59 +206,59 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
                 </button>
               </div>
             </form>
-          ) : (
-            <div className="roll-result-container" aria-live="polite" aria-atomic="true">
-              {(() => {
-                const gradeInfo = formatGrade(rollResult.grade, rollResult.rollType, intl);
-                return gradeInfo.text
-                  ? <h3 className={gradeInfo.className} tabIndex={-1} autoFocus>{gradeInfo.emoji} {gradeInfo.text}</h3>
-                  : <h3 tabIndex={-1} autoFocus><FormattedMessage id="diceRollModal.result" /></h3>;
-              })()}
-              <DiceRollFormatter roll={rollResult} />
+          ) : (() => {
+              const gradeInfo = formatGrade(rollResult.grade, rollResult.rollType, intl);
+              const gradeText = gradeInfo.text || intl.formatMessage({ id: 'diceRollModal.result' });
+              const closeLabel = `${gradeText}. ${intl.formatMessage({ id: 'diceRollModal.close' })}`;
+              const customActions = typeof customActionsAfterRoll === 'function'
+                ? customActionsAfterRoll(rollResult)
+                : customActionsAfterRoll;
+              return (
+                <div className="roll-result-container">
+                  {gradeInfo.text
+                    ? <h3 className={gradeInfo.className} aria-hidden="true">{gradeInfo.emoji} {gradeInfo.text}</h3>
+                    : <h3 aria-hidden="true"><FormattedMessage id="diceRollModal.result" /></h3>
+                  }
+                  <DiceRollFormatter roll={rollResult} />
 
-              {(() => {
-                if (!customActionsAfterRoll) return null;
+                  {customActions && (
+                    <div className="custom-actions-panel">
+                      {customActions}
+                    </div>
+                  )}
 
-                const actions = typeof customActionsAfterRoll === 'function'
-                  ? customActionsAfterRoll(rollResult)
-                  : customActionsAfterRoll;
-
-                return actions ? (
-                  <div className="custom-actions-panel">
-                    {actions}
+                  <div className="form-actions">
+                    <button
+                      className="btn-secondary"
+                      onClick={handleClose}
+                      autoFocus
+                      aria-label={closeLabel}
+                    >
+                      <FormattedMessage id="diceRollModal.close" />
+                    </button>
                   </div>
-                ) : null;
-              })()}
 
-              <div className="form-actions">
-                <button
-                  className="btn-secondary"
-                  onClick={handleClose}
-                >
-                  <FormattedMessage id="diceRollModal.close" />
-                </button>
-              </div>
-
-              {showFireworks && (
-                <div className="panel-animation fireworks-animation" aria-hidden="true">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                    <div key={n} className={`firework firework-${n}`}>
-                      <FormattedMessage id="diceRoll.animation.firework" />
+                  {showFireworks && (
+                    <div className="panel-animation fireworks-animation" aria-hidden="true">
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                        <div key={n} className={`firework firework-${n}`}>
+                          <FormattedMessage id="diceRoll.animation.firework" />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-              {showSkulls && (
-                <div className="panel-animation skulls-animation" aria-hidden="true">
-                  {[1, 2, 3, 4, 5, 6].map((n) => (
-                    <div key={n} className={`skull skull-${n}`}>
-                      <FormattedMessage id="diceRoll.animation.skull" />
+                  )}
+                  {showSkulls && (
+                    <div className="panel-animation skulls-animation" aria-hidden="true">
+                      {[1, 2, 3, 4, 5, 6].map((n) => (
+                        <div key={n} className={`skull skull-${n}`}>
+                          <FormattedMessage id="diceRoll.animation.skull" />
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
-          )}
+              );
+            })()}
         </div>
     </Modal>
   );
