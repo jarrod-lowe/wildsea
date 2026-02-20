@@ -27,6 +27,8 @@ export function SectionItem<T extends BaseSectionItem>({ item, renderContent, cl
             arrow={true}
             placement="top"
             className="markdown-tippy"
+            appendTo="parent"
+            onShown={(instance) => { (instance.popper.querySelector('.tippy-box') as HTMLElement)?.focus(); }}
           >
             <button
               className="btn-icon info"
