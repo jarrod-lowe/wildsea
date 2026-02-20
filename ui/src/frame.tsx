@@ -65,6 +65,8 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
             arrow={true}
             placement="bottom"
             className="markdown-tippy"
+            appendTo="parent"
+            onShown={(instance) => { (instance.popper.querySelector('.tippy-box') as HTMLElement)?.focus(); }}
           >
             <button 
               className="btn-icon info"

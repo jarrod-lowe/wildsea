@@ -348,6 +348,8 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
                 trigger="click"
                 arrow={true}
                 placement="top"
+                appendTo="parent"
+                onShown={(instance) => { (instance.popper.querySelector('.tippy-box') as HTMLElement)?.focus(); }}
               >
                 <button
                   className="btn-icon info"
