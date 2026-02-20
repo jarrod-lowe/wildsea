@@ -4,15 +4,15 @@ export const messagesEnglish = {
     'playerSheetTab.download.filename': 'character-sheet',
     'playerSheetTab.download.noPermission': 'You do not have permission to download this sheet',
     'skipToContent': 'Skip to main content',
-    'wildsea': 'Wildsea',
+    'wildsea': 'Wild\u00ADsea',
     'pleaseLogin': 'Please Log In',
     'unableToJoin': 'Unable to join game',
 
     'footer.privacyPolicy': 'Privacy Policy and Terms of Service',
     'footer.github': 'GitHub Repository',
-    'footer.wildseaOfficial': 'Official Wildsea Site',
+    'footer.wildseaOfficial': 'Official Wild\u00ADsea Site',
     'footer.deltaGreenOfficial': 'Official Delta Green Site',
-    'footer.disclaimer': 'This app is not affiliated with or endorsed by the owners of Wildsea or Delta Green.',
+    'footer.disclaimer': 'This app is not affiliated with or endorsed by the owners of Wild\u00ADsea or Delta Green.',
 
     'availableGames': 'Available Games',
     'createNewGame': 'Create New Game',
@@ -55,7 +55,7 @@ export const messagesEnglish = {
     'errorCheckingPermissions': 'Failed to get permissions information.',
     'errorUpdatingLanguage': 'Error updating language settings.',
 
-    'gameType.wildsea.name': 'Wildsea',
+    'gameType.wildsea.name': 'Wild\u00ADsea',
     'gameType.deltaGreen.name': 'Delta Green',
     'gameType.unknown.name': 'Unknown Game Type',
 
