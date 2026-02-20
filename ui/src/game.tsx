@@ -14,6 +14,7 @@ import { JoinCodeModal } from './joinCodeModal';
 import { DiceRollPanel } from './diceRollPanel';
 import { loadTheme } from './themeLoader';
 import { CharacterDeathProvider, useCharacterDeath } from './contexts/CharacterDeathContext';
+import { LoadingScreen } from './components/LoadingScreen';
 
 const MAX_RETRIES = 5;
 const INITIAL_BACKOFF_TIME = 1000; // 1 second
@@ -407,7 +408,7 @@ const GameContent: React.FC<{
   }
 
   if (!game) {
-    return <div><FormattedMessage id="loadingGameData" /></div>;
+    return <LoadingScreen message={<FormattedMessage id="loadingGameData" />} />;
   }
 
   // Find the currently active sheet object

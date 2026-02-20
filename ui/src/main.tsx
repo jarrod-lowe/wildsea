@@ -15,6 +15,7 @@ import Modal from 'react-modal';
 import FooterBar from './footerBar';
 import { loadDefaultTheme } from './themeLoader';
 import { SystemNotificationPanel } from './components/SystemNotificationPanel';
+import { LoadingScreen } from './components/LoadingScreen';
 import { initializeRum } from './rumClient';
 
 const GamesMenu = React.lazy(() => import("./gamesMenu"))
@@ -383,7 +384,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
     }, [userEmail, isAmplifyConfigured]);
 
     if (!isAmplifyConfigured || isCheckingAuth ) {
-        return <div data-testid="loading"><FormattedMessage id="loading" /></div>;
+        return <LoadingScreen testId="loading" message={<FormattedMessage id="loading" />} />;
     }
 
     if (!userEmail) {
@@ -424,7 +425,7 @@ function AppContentWrapper({ onLanguageChange, currentLanguage }: { readonly onL
         <div>
             <SystemNotificationPanel isAuthenticated={!!userEmail} />
             <main>
-                <Suspense fallback={<div><FormattedMessage id="loadingGamesMenu" /></div>}>
+                <Suspense fallback={<LoadingScreen message={<FormattedMessage id="loadingGamesMenu" />} />}>
                     {gameId ?
                         <AppGame
                             id={gameId}
