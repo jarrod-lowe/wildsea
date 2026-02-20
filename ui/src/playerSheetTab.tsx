@@ -3,6 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { Game, SheetSection, PlayerSheet, CreateSectionInput, UpdatePlayerInput, DeleteGameInput, CreateNpcInput } from "../../appsync/graphql";
 import { createSectionMutation, createNPCMutation, deleteGameMutation, deletePlayerMutation, deleteSectionMutation, updatePlayerMutation, updateSectionMutation } from "../../appsync/schema";
 import { FormattedMessage, useIntl } from 'react-intl';
+import { EmojiButtonText } from './components/EmojiButtonText';
 import { SupportedLanguage, resolveLanguage } from './translations';
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { TypeGM, TypeNPC } from "../../graphql/lib/constants/entityTypes";
@@ -296,10 +297,10 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
             className="btn-standard btn-small"
             disabled={sheet.remainingSections <= 0}
           >
-            <FormattedMessage id="playerSheetTab.addSection" />
+            <EmojiButtonText id="playerSheetTab.addSection" />
           </button>
           <button onClick={() => setShowDeleteSectionModal(true)} className="btn-danger btn-small">
-            <FormattedMessage id="playerSheetTab.deleteSection" />
+            <EmojiButtonText id="playerSheetTab.deleteSection" />
           </button>
         </>
       )}
@@ -329,10 +330,10 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
               ))}
             </select>
             <button onClick={handleCreateSection} className="btn-standard btn-small">
-              <FormattedMessage id="create" />
+              <EmojiButtonText id="create" />
             </button>
             <button onClick={handleCancelCreateSection} className="btn-secondary btn-small">
-              <FormattedMessage id="cancel" />
+              <EmojiButtonText id="cancel" />
             </button>
           </div>
         </div>
@@ -351,19 +352,19 @@ export const PlayerSheetTab: React.FC<{ sheet: PlayerSheet, userSubject: string,
           className="btn-standard btn-small"
           disabled={game.remainingCharacters <= 0}
         >
-          <FormattedMessage id="createShipModal.buttonLabel" />
+          <EmojiButtonText id="createShipModal.buttonLabel" />
         </button>
       )}
 
       {(userSubject === sheet.userId || userSubject === sheet.gmUserId ) && (sheet.userId != sheet.gmUserId) && (
         <button onClick={() => setShowDeleteModal(true)} className="btn-danger btn-small">
-          <FormattedMessage id={deleteButtonId} />
+          <EmojiButtonText id={deleteButtonId} />
         </button>
       )}
 
       {(userSubject === sheet.gmUserId) && (sheet.userId == sheet.gmUserId) && (
         <button onClick={() => setShowDeleteGameModal(true)} className="btn-danger btn-small">
-          <FormattedMessage id="deleteGameModal.deleteGame" />
+          <EmojiButtonText id="deleteGameModal.deleteGame" />
         </button>
       )}
 
@@ -473,15 +474,15 @@ const SheetHeader: React.FC<{
             placeholder={intl.formatMessage({ id: "characterName" })}
             aria-label={intl.formatMessage({ id: "characterName" })}
           />
-          <button onClick={handleSave} className="btn-standard btn-small"><FormattedMessage id="save" /></button>
-          <button onClick={() => setIsEditing(false)} className="btn-secondary btn-small"><FormattedMessage id="cancel" /></button>
+          <button onClick={handleSave} className="btn-standard btn-small"><EmojiButtonText id="save" /></button>
+          <button onClick={() => setIsEditing(false)} className="btn-secondary btn-small"><EmojiButtonText id="cancel" /></button>
         </div>
       ) : (
         <div className="view-character-name">
           <h2>{sheet.characterName}
             {mayEditSheet && (
               <span className="own-ops">
-                <button className="btn-standard btn-small edit" onClick={() => setIsEditing(true)}>{intl.formatMessage({ id: 'edit' })}</button>
+                <button className="btn-standard btn-small edit" onClick={() => setIsEditing(true)}><EmojiButtonText id="edit" /></button>
                 <button 
                   ref={buttonRef}
                   className="btn-standard btn-small drag-toggle" 
@@ -543,7 +544,7 @@ export const DeleteSectionModal: React.FC<DeleteSectionModalProps> = ({
         ))}
       </ul>
       <button onClick={onRequestClose} className="btn-secondary btn-small">
-        <FormattedMessage id="close" />
+        <EmojiButtonText id="close" />
       </button>
     </Modal>
   );
@@ -590,14 +591,14 @@ const CreateNPCModal: React.FC<{
       />
       <div className="modal-buttons">
         <button onClick={onRequestClose} className="btn-secondary btn-small">
-          <FormattedMessage id="cancel" />
+          <EmojiButtonText id="cancel" />
         </button>
         <button
           onClick={handleConfirm}
           disabled={!npcName.trim() || game.remainingCharacters <= 0}
           className="btn-standard btn-small"
         >
-          <FormattedMessage id="create" />
+          <EmojiButtonText id="create" />
         </button>
       </div>
     </Modal>

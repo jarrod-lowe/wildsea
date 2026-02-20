@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { EmojiButtonText } from './components/EmojiButtonText';
 import { generateClient } from "aws-amplify/api";
 import { Game, UpdateGameInput } from "../../appsync/graphql";
 import { updateGameMutation } from "../../appsync/schema";
@@ -81,8 +82,8 @@ export const EditGameModal: React.FC<EditGameModalProps> = ({
       />
       
       <div className="modal-buttons">
-        <button onClick={onRequestClose} className="btn-secondary btn-small"><FormattedMessage id="cancel" /></button>
-        <button onClick={handleSave} className="btn-standard btn-small"><FormattedMessage id="save" /></button>
+        <button onClick={onRequestClose} className="btn-secondary btn-small"><EmojiButtonText id="cancel" /></button>
+        <button onClick={handleSave} className="btn-standard btn-small"><EmojiButtonText id="save" /></button>
       </div>
     </Modal>
   );

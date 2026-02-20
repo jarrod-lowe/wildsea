@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SheetSection, UpdateSectionInput } from "../../appsync/graphql";
 import { useIntl } from 'react-intl';
+import { EmojiButtonText } from './components/EmojiButtonText';
 import { useToast } from './notificationToast';
 import { generateClient, GraphQLResult } from 'aws-amplify/api';
 import { updateSectionMutation } from '../../appsync/schema';
@@ -151,7 +152,7 @@ export const BaseSection = <T extends BaseSectionItem>({
                 setOriginalContent(content);
                 setOriginalSectionName(section.sectionName);
                 setIsEditing(true);
-            }}>{intl.formatMessage({ id: 'edit' })}</button></h3>
+            }}><EmojiButtonText id="edit" /></button></h3>
             <div className="section-items">
                 {renderItems(content, mayEditSheet, setContent, updateSection, false)}
             </div>
