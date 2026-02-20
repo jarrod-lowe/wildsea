@@ -1,5 +1,6 @@
 // Klingon (tlhIngan Hol) translations for Wildsea
 export const messagesKlingon = {
+    'skipToContent': 'wa\'DIch Qap tagh',
     'wildsea': 'yoD DIch',
     'pleaseLogin': 'naDev yap',
     'unableToJoin': 'DIch Dub DIch',

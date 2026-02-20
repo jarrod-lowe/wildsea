@@ -96,10 +96,12 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
       <div className="top-bar">
         {renderTitle()}
         <div className="user-menu" ref={dropdownRef}>
-          <button 
+          <button
             className="user-menu-button"
             onClick={() => setShowDropdown(!showDropdown)}
             aria-label="User menu"
+            aria-expanded={showDropdown}
+            aria-haspopup="true"
           >
             <img src={gravatarUrl} alt="User avatar" />
           </button>
