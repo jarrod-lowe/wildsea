@@ -8,7 +8,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   values?: Record<string, string | number>;
 }
 
-export function ButtonWithEmoji({ id, values, ...buttonProps }: Props) {
+export function ButtonWithEmoji({ id, values, ...buttonProps }: Readonly<Props>) {
   const intl = useIntl();
   const label = stripEmoji(intl.formatMessage({ id }, values));
   return (
