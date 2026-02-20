@@ -3,6 +3,7 @@ import { signInWithRedirect, signOut } from "@aws-amplify/auth";
 import React, { useState, useEffect, useRef } from "react";
 import { FormattedMessage, useIntl } from 'react-intl';
 import Tippy from '@tippyjs/react';
+import { ButtonWithEmoji } from './components/ButtonWithEmoji';
 import ReactMarkdown from 'react-markdown';
 import { supportedLanguages, type SupportedLanguage } from './translations';
 import { PlayerSheet } from '../../appsync/graphql';
@@ -76,13 +77,9 @@ export const TopBar: React.FC<TopBarProps> = ({ title, userEmail, gameDescriptio
       )}
       {isGM && (
         <span className="game-actions">
-          <button className="btn-standard btn-small share" onClick={onShareGame}>
-            {intl.formatMessage({ id: 'share' })}
-          </button>
+          <ButtonWithEmoji id="share" className="btn-standard btn-small share" onClick={onShareGame} />
           {onEditGame && (
-            <button className="btn-standard btn-small edit" onClick={onEditGame}>
-              {intl.formatMessage({ id: 'edit' })}
-            </button>
+            <ButtonWithEmoji id="edit" className="btn-standard btn-small edit" onClick={onEditGame} />
           )}
         </span>
       )}

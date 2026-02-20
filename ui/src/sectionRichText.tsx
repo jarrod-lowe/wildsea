@@ -2,7 +2,8 @@ import React from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import ReactMarkdown from 'react-markdown';
 import { SectionItemDescription } from './components/SectionItem';
-import { useIntl, FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
+import { ButtonWithEmoji } from './components/ButtonWithEmoji';
 
 interface RichTextItem extends BaseSectionItem {
   markdown: string;
@@ -43,12 +44,8 @@ export const SectionRichText: React.FC<SectionDefinition> = (props) => {
           </div>
         ))}
         <div className="section-edit-buttons">
-          <button className="btn-standard btn-small" onClick={handleUpdate}>
-            <FormattedMessage id="save" />
-          </button>
-          <button className="btn-secondary btn-small" onClick={handleCancel}>
-            <FormattedMessage id="cancel" />
-          </button>
+          <ButtonWithEmoji id="save" onClick={handleUpdate} className="btn-standard btn-small" />
+          <ButtonWithEmoji id="cancel" onClick={handleCancel} className="btn-secondary btn-small" />
         </div>
       </>
     );
