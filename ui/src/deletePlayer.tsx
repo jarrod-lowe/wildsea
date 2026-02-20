@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { TypeNPC } from '../../graphql/lib/constants/entityTypes';
+import { ButtonWithEmoji } from './components/ButtonWithEmoji';
 
 interface DeletePlayerModalProps {
   isOpen: boolean;
@@ -74,16 +75,8 @@ export const DeletePlayerModal: React.FC<DeletePlayerModalProps> = ({
         <FormattedMessage id="playerSheetTab.deletePlayerUnderstand" />
       </label>
       <div className="modal-buttons">
-        <button onClick={onRequestClose} className="btn-secondary btn-small">
-          <FormattedMessage id="cancel" />
-        </button>
-        <button
-          onClick={handleConfirm}
-          disabled={!isConfirmed}
-          className="btn-danger btn-small"
-        >
-          <FormattedMessage id={buttonId} />
-        </button>
+        <ButtonWithEmoji id="cancel" onClick={onRequestClose} className="btn-secondary btn-small" />
+        <ButtonWithEmoji id={buttonId} onClick={handleConfirm} disabled={!isConfirmed} className="btn-danger btn-small" />
       </div>
     </Modal>
   );

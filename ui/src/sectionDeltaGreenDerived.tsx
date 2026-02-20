@@ -2,6 +2,7 @@ import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { BaseSection, BaseSectionContent, BaseSectionItem, SectionDefinition } from './baseSection';
 import { SheetSection } from "../../appsync/graphql";
 import { useIntl, FormattedMessage } from 'react-intl';
+import { ButtonWithEmoji } from './components/ButtonWithEmoji';
 import { v4 as uuidv4 } from 'uuid';
 import { getDeltaGreenDerivedSeed } from './seed';
 import { SupportedLanguage } from './translations';
@@ -393,12 +394,8 @@ export const SectionDeltaGreenDerived: React.FC<SectionDefinition> = (props) => 
           </div>
         </div>
         <div className="section-edit-buttons">
-          <button className="btn-standard btn-small" onClick={handleUpdate}>
-            <FormattedMessage id="save" />
-          </button>
-          <button className="btn-secondary btn-small" onClick={handleCancel}>
-            <FormattedMessage id="cancel" />
-          </button>
+          <ButtonWithEmoji id="save" onClick={handleUpdate} className="btn-standard btn-small" />
+          <ButtonWithEmoji id="cancel" onClick={handleCancel} className="btn-secondary btn-small" />
         </div>
       </div>
     );

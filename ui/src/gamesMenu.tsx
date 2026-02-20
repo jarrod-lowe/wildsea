@@ -4,6 +4,7 @@ import { createGameMutation, getGamesQuery, getGameTypesQuery } from "../../apps
 import { PlayerSheetSummary, CreateGameInput, Game, GameTypeMetadata, GamesWithQuota } from "../../appsync/graphql";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { FormattedMessage, useIntl } from 'react-intl';
+import { ButtonWithEmoji } from './components/ButtonWithEmoji';
 import { type SupportedLanguage } from './translations';
 import { TopBar } from "./frame";
 import ReactMarkdown from 'react-markdown';
@@ -239,13 +240,7 @@ export const GamesMenuContent: React.FC<{
                                 </div>
                                 
                                 <div className="form-field">
-                                    <button 
-                                        type="submit"
-                                        className="btn-standard"
-                                        disabled={remainingGames <= 0}
-                                    >
-                                        <FormattedMessage id="createGame" />
-                                    </button>
+                                    <ButtonWithEmoji id="createGame" type="submit" className="btn-standard" disabled={remainingGames <= 0} />
                                     {remainingGames <= 0 && (
                                         <p className="quota-exceeded-message" role="alert">
                                             <FormattedMessage 

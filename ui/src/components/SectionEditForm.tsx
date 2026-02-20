@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { BaseSectionItem, BaseSectionContent } from '../baseSection';
+import { ButtonWithEmoji } from './ButtonWithEmoji';
 
 interface SectionEditFormProps<T extends BaseSectionItem> {
   readonly content: BaseSectionContent<T>;
@@ -54,15 +55,9 @@ export function SectionEditForm<T extends BaseSectionItem>({
         </div>
       ))}
       <div className="section-edit-buttons">
-        <button onClick={addItem} className="btn-standard btn-small">
-          <FormattedMessage id={`sectionObject.addItem`} />
-        </button>
-        <button onClick={handleUpdate} className="btn-standard btn-small">
-          <FormattedMessage id="save" />
-        </button>
-        <button onClick={handleCancel} className="btn-secondary btn-small">
-          <FormattedMessage id="cancel" />
-        </button>
+        <ButtonWithEmoji id="sectionObject.addItem" onClick={addItem} className="btn-standard btn-small" />
+        <ButtonWithEmoji id="save" onClick={handleUpdate} className="btn-standard btn-small" />
+        <ButtonWithEmoji id="cancel" onClick={handleCancel} className="btn-secondary btn-small" />
       </div>
     </div>
   );

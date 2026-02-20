@@ -249,7 +249,7 @@ export const DiceRollPanel: React.FC<DiceRollPanelProps> = ({ gameId }) => {
           aria-controls="dice-rolls-panel"
           aria-describedby={unreadCount > 0 ? "dice-roll-count" : undefined}
         >
-          🎲
+          <span aria-hidden="true">🎲</span>
           {unreadCount > 0 && (
             <span id="dice-roll-count" className="roll-count" aria-hidden="true">
               {unreadCount}

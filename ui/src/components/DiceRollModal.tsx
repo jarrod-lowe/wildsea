@@ -6,6 +6,7 @@ import { rollDiceMutation } from "../../../appsync/schema";
 import { RollDiceInput, DiceRoll } from "../../../appsync/graphql";
 import { RollTypes, Grades } from "../../../graphql/lib/constants/rollTypes";
 import { DiceRollFormatter, formatGrade } from './DiceRollFormatter';
+import { stripEmoji } from '../utils/emojiUtils';
 
 interface DiceRollModalProps {
   isOpen: boolean;
@@ -201,6 +202,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
                   className="btn-secondary"
                   onClick={handleClose}
                   disabled={isRolling}
+                  aria-label={stripEmoji(intl.formatMessage({ id: 'diceRollModal.close' }))}
                 >
                   <FormattedMessage id="diceRollModal.close" />
                 </button>
@@ -209,7 +211,7 @@ export const DiceRollModal: React.FC<DiceRollModalProps> = ({
           ) : (() => {
               const gradeInfo = formatGrade(rollResult.grade, rollResult.rollType, intl);
               const gradeText = gradeInfo.text || intl.formatMessage({ id: 'diceRollModal.result' });
-              const closeLabel = `${gradeText}. ${intl.formatMessage({ id: 'diceRollModal.close' })}`;
+              const closeLabel = `${gradeText}. ${stripEmoji(intl.formatMessage({ id: 'diceRollModal.close' }))}`;
               const customActions = typeof customActionsAfterRoll === 'function'
                 ? customActionsAfterRoll(rollResult)
                 : customActionsAfterRoll;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { ButtonWithEmoji } from './components/ButtonWithEmoji';
 import { generateClient } from "aws-amplify/api";
 import { Game, UpdateJoinCodeInput } from "../../appsync/graphql";
 import { updateJoinCodeMutation } from "../../appsync/schema";
@@ -96,22 +97,18 @@ export const JoinCodeModal: React.FC<JoinCodeModalProps> = ({
             placeholder={intl.formatMessage({ id: "joinCodeModal.noUrl" })}
           />
           <div className="join-url-buttons">
-            <button 
+            <ButtonWithEmoji
+              id="joinCodeModal.copyUrl"
               onClick={handleCopyJoinUrl}
               disabled={!currentJoinCode}
               className="btn-standard btn-small"
-            >
-              <FormattedMessage id="joinCodeModal.copyUrl" />
-            </button>
-            <button 
+            />
+            <ButtonWithEmoji
+              id="joinCodeModal.refreshUrl"
               onClick={handleRefreshJoinCode}
               className="btn-standard btn-small"
-            >
-              <FormattedMessage id="joinCodeModal.refreshUrl" />
-            </button>
-            <button onClick={onRequestClose} className="btn-secondary btn-small">
-              <FormattedMessage id="close" />
-            </button>
+            />
+            <ButtonWithEmoji id="close" onClick={onRequestClose} className="btn-secondary btn-small" />
           </div>
         </div>
       </div>
