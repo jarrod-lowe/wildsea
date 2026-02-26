@@ -2,7 +2,7 @@
     "name": "graphql",
     "version": "1.0.0",
     "dependencies": {
-        "@aws-appsync/utils": "2.0.3",
+        "@aws-appsync/utils": "2.1.1",
         "@aws-sdk/util-dynamodb": "^3.637.0"
     },
     "devDependencies": {
