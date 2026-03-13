@@ -346,6 +346,7 @@ enum AssetStatus {
   READY
   EXPIRED
   CANCELED
+  DELETED
 }
 
 type AssetUploadTicket @aws_cognito_user_pools {
