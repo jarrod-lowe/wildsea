@@ -13,7 +13,7 @@
         "eslint-plugin-prettier": "5.5.5",
         "globals": "17.4.0",
         "jest": "30.3.0",
-        "ts-jest": "29.4.6",
+        "ts-jest": "29.4.9",
         "typescript": "5.9.3",
         "typescript-eslint": "8.57.1"
     },
