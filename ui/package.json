@@ -3,7 +3,7 @@
     "@aws-amplify/api-graphql": "^4.3.3",
     "@hello-pangea/dnd": "18.0.1",
     "@tippyjs/react": "4.2.6",
-    "@uiw/react-md-editor": "4.0.11",
+    "@uiw/react-md-editor": "4.1.0",
     "@vitejs/plugin-react": "6.0.1",
     "aws-amplify": "6.16.0",
     "aws-rum-web": "^2.0.0",
