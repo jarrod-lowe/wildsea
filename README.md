@@ -146,6 +146,43 @@ You can run the UI without pushing to the S3 bucket by running
 `AWS_PROFILE=<profile> make ui-local`. This may still perform a terraform
 apply.
 
+## Troubleshooting: aws-amplify Login Breaks After Dependency Upgrade
+
+If an automated dependency upgrade (Renovate) causes Login to fail with
+"Amplify has not been configured" or "Auth UserPool not configured":
+
+**Cause**: `aws-amplify` pins `@aws-amplify/core` to an exact version inside its
+own `node_modules/`, but npm may resolve the top-level `@aws-amplify/core`
+(peer dependency) to a different version. This creates two separate Amplify
+singletons — `Amplify.configure()` sets one, but auth functions read the other.
+
+**Check**: Compare the two versions:
+
+```bash
+grep '"version"' ui/node_modules/@aws-amplify/core/package.json
+grep '"version"' ui/node_modules/aws-amplify/node_modules/@aws-amplify/core/package.json
+```
+
+If they differ, that is the problem.
+
+**Fix**: Pin `@aws-amplify/core` in `ui/package.json` to the same version that
+`aws-amplify` uses internally. Find that version with:
+
+```bash
+grep '"@aws-amplify/core"' ui/node_modules/aws-amplify/package.json
+```
+
+Then add it to `ui/package.json` dependencies and reinstall:
+
+```bash
+rm -rf ui/node_modules
+make ui-test
+```
+
+The integration test in `ui/tests/amplifyConfig.test.ts` catches this regression
+— it uses the real aws-amplify library (not mocks) and will fail if
+`signInWithRedirect` throws "not configured" after `Amplify.configure()`.
+
 ## Game Deletion
 
 When a game is deleted, the system cleans up all related data automatically.
