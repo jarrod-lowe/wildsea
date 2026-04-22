@@ -67,8 +67,7 @@ ui-test: ui/node_modules
 		docker run --rm --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --entrypoint ./node_modules/.bin/jest node:20 --coverage ; \
 		docker run --rm --user $$(id -u):$$(id -g) -v $(PWD):/app -w /app/ui --entrypoint ./node_modules/.bin/jest node:20 --config jest.integration.config.js ; \
 	else \
-		cd ui && ./node_modules/.bin/jest --coverage ; \
-		cd ui && ./node_modules/.bin/jest --config jest.integration.config.js ; \
+		cd ui && ./node_modules/.bin/jest --coverage && ./node_modules/.bin/jest --config jest.integration.config.js ; \
 	fi
 
 .PHONY: favicon
