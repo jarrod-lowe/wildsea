@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@graphql-codegen/cli": "6.2.1",
+    "@graphql-codegen/cli": "6.3.1",
     "@types/node": "24.12.2",
     "fs": "0.0.1-security",
     "path": "0.12.7",
