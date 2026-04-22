@@ -6,19 +6,13 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!uuid)/"
+    "/node_modules/(?!(aws-amplify|@aws-amplify|uuid)/)"
   ],
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "amplifyConfig\\.test\\."
-  ],
+  testMatch: ['**/tests/amplifyConfig.test.ts'],
   globals: {
     "process.env.NODE_ENV": "test"
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    'react-markdown': '<rootDir>/mocks/react-markdown.tsx',
     '\\.css$': '<rootDir>/mocks/style.js',
-    '@uiw/react-md-editor': '<rootDir>/mocks/react-md-editor.tsx'
   },
 };
