@@ -13,6 +13,6 @@ module.exports = {
     "process.env.NODE_ENV": "test"
   },
   moduleNameMapper: {
-    '\\.css$': '<rootDir>/mocks/style.js',
-  },
+    '\\.css$': '<rootDir>/mocks/style.js'
+  }
 };
