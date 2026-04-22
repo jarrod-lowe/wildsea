@@ -8,6 +8,10 @@ module.exports = {
   transformIgnorePatterns: [
     "/node_modules/(?!uuid)/"
   ],
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "amplifyConfig\\.test\\."
+  ],
   globals: {
     "process.env.NODE_ENV": "test"
   },
