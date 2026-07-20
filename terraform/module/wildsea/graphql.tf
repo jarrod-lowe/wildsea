@@ -353,9 +353,9 @@ locals {
   # Resolvers that should not use the DynamoDB data source (use local/none data source)
   local_data_source_resolvers = ["updatedUserSettings", "systemNotificationUpdated"]
 
-  all       = merge(local.mutations_map, local.queries_map, local.subscriptions_map, local.functions_map)
-  resolvers = merge(local.mutations_map, local.queries_map, local.subscriptions_map)
+  all = merge(local.mutations_map, local.queries_map, local.subscriptions_map, local.functions_map)
 
+  # Exclude pipeline resolvers from regular resolvers
   pipelines_map = {
     createGame = {
       type : "Mutation",
@@ -401,6 +401,11 @@ locals {
       type : "Mutation",
       functions = ["requestAssetUpload", "generatePresignedUrl"]
     }
+  }
+
+  resolvers = {
+    for k, v in merge(local.mutations_map, local.queries_map, local.subscriptions_map) :
+    k => v if !contains(keys(local.pipelines_map), k)
   }
 }
 

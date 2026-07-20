@@ -40,6 +40,7 @@ export type Asset = {
 
 export enum AssetStatus {
   Canceled = 'CANCELED',
+  Deleted = 'DELETED',
   Expired = 'EXPIRED',
   Finalising = 'FINALISING',
   Pending = 'PENDING',

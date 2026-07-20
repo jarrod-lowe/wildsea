@@ -1,0 +1,129 @@
+Comment: "Delete all asset files (original and variants) from S3 for both incoming/ and asset/ directories"
+StartAt: ProcessRecords
+States:
+  ProcessRecords:
+    Type: Map
+    ItemsPath: "$"
+    ItemProcessor:
+      ProcessorConfig:
+        Mode: INLINE
+      StartAt: DeleteIncomingAssets
+      States:
+        # Delete all objects under incoming/ prefix
+        DeleteIncomingAssets:
+          Type: Task
+          Resource: arn:aws:states:::aws-sdk:s3:listObjectsV2
+          Parameters:
+            Bucket: ${bucket_name}
+            Prefix.$: "States.Format('incoming/game/{}/section/{}/{}/', $.dynamodb.OldImage.gameId.S, $.dynamodb.OldImage.sectionId.S, $.dynamodb.OldImage.assetId.S)"
+          ResultPath: "$.incomingList"
+          Next: CheckIncomingObjects
+          Retry:
+            - ErrorEquals:
+                - States.TaskFailed
+              IntervalSeconds: 2
+              MaxAttempts: 3
+              BackoffRate: 2
+          Catch:
+            - ErrorEquals:
+                - States.ALL
+              ResultPath: "$.incomingError"
+              Next: DeleteAssetDir
+
+        CheckIncomingObjects:
+          Type: Choice
+          Choices:
+            - Variable: "$.incomingList.Contents[0]"
+              IsPresent: true
+              Next: DeleteIncomingLoop
+          Default: DeleteAssetDir
+
+        DeleteIncomingLoop:
+          Type: Map
+          ItemsPath: "$.incomingList.Contents"
+          MaxConcurrency: 10
+          ResultPath: "$.incomingDeleteResults"
+          Iterator:
+            StartAt: DeleteOneIncomingObject
+            States:
+              DeleteOneIncomingObject:
+                Type: Task
+                Resource: arn:aws:states:::aws-sdk:s3:deleteObject
+                Parameters:
+                  Bucket: ${bucket_name}
+                  Key.$: "$.Key"
+                End: true
+                Retry:
+                  - ErrorEquals:
+                      - States.TaskFailed
+                    IntervalSeconds: 2
+                    MaxAttempts: 3
+                    BackoffRate: 2
+          Next: DeleteAssetDir
+          Catch:
+            - ErrorEquals:
+                - States.ALL
+              ResultPath: "$.incomingDeleteError"
+              Next: DeleteAssetDir
+
+        # Delete all objects under asset/ prefix
+        DeleteAssetDir:
+          Type: Task
+          Resource: arn:aws:states:::aws-sdk:s3:listObjectsV2
+          Parameters:
+            Bucket: ${bucket_name}
+            Prefix.$: "States.Format('asset/game/{}/section/{}/{}/', $.dynamodb.OldImage.gameId.S, $.dynamodb.OldImage.sectionId.S, $.dynamodb.OldImage.assetId.S)"
+          ResultPath: "$.assetList"
+          Next: CheckAssetObjects
+          Retry:
+            - ErrorEquals:
+                - States.TaskFailed
+              IntervalSeconds: 2
+              MaxAttempts: 3
+              BackoffRate: 2
+          Catch:
+            - ErrorEquals:
+                - States.ALL
+              ResultPath: "$.assetError"
+              Next: Complete
+
+        CheckAssetObjects:
+          Type: Choice
+          Choices:
+            - Variable: "$.assetList.Contents[0]"
+              IsPresent: true
+              Next: DeleteAssetLoop
+          Default: Complete
+
+        DeleteAssetLoop:
+          Type: Map
+          ItemsPath: "$.assetList.Contents"
+          MaxConcurrency: 10
+          ResultPath: "$.assetDeleteResults"
+          Iterator:
+            StartAt: DeleteOneAssetObject
+            States:
+              DeleteOneAssetObject:
+                Type: Task
+                Resource: arn:aws:states:::aws-sdk:s3:deleteObject
+                Parameters:
+                  Bucket: ${bucket_name}
+                  Key.$: "$.Key"
+                End: true
+                Retry:
+                  - ErrorEquals:
+                      - States.TaskFailed
+                    IntervalSeconds: 2
+                    MaxAttempts: 3
+                    BackoffRate: 2
+          End: true
+          Catch:
+            - ErrorEquals:
+                - States.ALL
+              ResultPath: "$.assetDeleteError"
+              Next: Complete
+
+        Complete:
+          Type: Pass
+          End: true
+    End: true
